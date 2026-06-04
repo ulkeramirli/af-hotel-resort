@@ -1,0 +1,78 @@
+{
+  "nav": {
+    "rooms": "Otaqlar",
+    "aquapark": "Aqua Park",
+    "dining": "Restoran",
+    "spa": "SPA",
+    "events": "Tədbirlər",
+    "button": "Online Rezervasiya"
+  },
+  "hero": {
+    "title": "Xəyallarınızdakı Dəniz Kənarı İstirahət",
+    "subtitle": "Novxanıda lüks otel, möhtəşəm Aqua Park və unudulmaz ailəvi istirahət bir ünvanda.",
+    "checkIn": "Giriş Tarixi",
+    "checkOut": "Çıxış Tarixi",
+    "guests": "Qonaq Sayı",
+    "search": "Axtar",
+    "guestCount": {
+      "1": "1 Böyük",
+      "2": "2 Böyük",
+      "3": "3 Böyük",
+      "family": "Ailə (2+2)"
+    }
+  },
+  "rooms": {
+    "tag": "Gecələmə",
+    "title": "Otaqlar və Kotecclər",
+    "moreInfo": "Ətraflı bax və Rezerv et",
+    "filterAll": "Hamısı",
+    "size": "Sahə",
+    "capacity": "Tutumu",
+    "types": {
+      "standart": "Standart",
+      "deluxe": "Deluxe",
+      "apartament": "Apartament",
+      "cottec": "Koteclər"
+    },
+    "data": [
+      { "id": 1, "title": "Standart Single / Double", "price": "80 AZN", "size": "28 m²", "capacity": "1-2 Böyük" },
+      { "id": 2, "title": "Deluxe Room", "price": "140 AZN", "size": "42 m²", "capacity": "2 Böyük + 1 Uşaq" },
+      { "id": 3, "title": "Family Apartament", "price": "220 AZN", "size": "65 m²", "capacity": "4 Böyük" },
+      { "id": 4, "title": "VIP Apartament", "price": "350 AZN", "size": "90 m²", "capacity": "4+ Böyük" },
+      { "id": 5, "title": "Lüks Kotec (Cottec)", "price": "280 AZN", "size": "80 m²", "capacity": "Ailəvi (5-6 Nəfər)" }
+    ]
+  },
+  "features": {
+    "aquaTag": "Əyləncə",
+    "aquaTitle": "Möhtəşəm Aqua Park və Hovuzlar",
+    "diningTag": "Qastronomiya",
+    "diningTitle": "Restoranlar və Dadlı Təamlar",
+    "moreInfo": "Daha Ətraflı",
+    "aquaItems": [
+      { "title": "Ekstremal Slaydlar", "desc": "Böyüklər üçün adrenalin dolu hündür su slaydları və sürətli enişlər." },
+      { "title": "Uşaq Su Dünyası", "desc": "Yenilənmiş təhlükəsiz uşaq hovuzları, mini-slaydlar və fəvvarələr." },
+      { "title": "Ailəvi Hovuz", "desc": "Dəniz mənzərəli, sakit və geniş istirahət zonasına malik böyük hovuz." }
+    ],
+    "diningItems": [
+      { "title": "Xəzər Restoranı", "desc": "Milli və Avropa mətbəxinin ən dadlı nümunələri dəniz mənzərəsi ile." },
+      { "title": "Aqua Bar & Lounge", "desc": "Hovuz kənarında təravətləndirici kokteyllər, soyuq içkilər və fast-food." }
+    ]
+  },
+  "booking": {
+    "tag": "Rezervasiya",
+    "title": "Online Müraciət",
+    "name": "Adınız və Soyadınız",
+    "phone": "Telefon Nömrəniz",
+    "roomType": "Otaq Tipi Seçin",
+    "selectPlaceholder": "Seçin...",
+    "submit": "Müraciəti Göndər",
+    "success": "Təbrik edirik! Müraciətiniz qəbul olundu. Tezliklə sizinlə əlaqə saxlayacağıq."
+  },
+  "footer": {
+    "desc": "Novxanıda dəniz kənarında premium ailəvi istirahət mərkəzi və Aqua Park.",
+    "linksTitle": "Faydalı Linklər",
+    "contactsTitle": "Əlaqə Vasitələri",
+    "address": "Novxanı qəsəbəsi, Sahil küçəsi, Bakı, Azərbaycan",
+    "rights": "Bütün hüquqlar qorunur."
+  }
+}

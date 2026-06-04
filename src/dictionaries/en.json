@@ -1,0 +1,78 @@
+{
+  "nav": {
+    "rooms": "Rooms",
+    "aquapark": "Aqua Park",
+    "dining": "Dining",
+    "spa": "SPA",
+    "events": "Events",
+    "button": "Book Online"
+  },
+  "hero": {
+    "title": "The Seaside Holiday of Your Dreams",
+    "subtitle": "A luxury hotel in Novkhani, a magnificent Aqua Park, and an unforgettable family vacation all in one place.",
+    "checkIn": "Check-in Date",
+    "checkOut": "Check-out Date",
+    "guests": "Guests",
+    "search": "Search",
+    "guestCount": {
+      "1": "1 Adult",
+      "2": "2 Adults",
+      "3": "3 Adults",
+      "family": "Family (2+2)"
+    }
+  },
+  "rooms": {
+    "tag": "Accommodation",
+    "title": "Rooms & Cottages",
+    "moreInfo": "Details & Booking",
+    "filterAll": "All",
+    "size": "Size",
+    "capacity": "Capacity",
+    "types": {
+      "standart": "Standard",
+      "deluxe": "Deluxe",
+      "apartament": "Apartment",
+      "cottec": "Cottages"
+    },
+    "data": [
+      { "id": 1, "title": "Standard Single / Double", "price": "80 AZN", "size": "28 m²", "capacity": "1-2 Adults" },
+      { "id": 2, "title": "Deluxe Room", "price": "140 AZN", "size": "42 m²", "capacity": "2 Adults + 1 Child" },
+      { "id": 3, "title": "Family Apartment", "price": "220 AZN", "size": "65 m²", "capacity": "4 Adults" },
+      { "id": 4, "title": "VIP Apartment", "price": "350 AZN", "size": "90 m²", "capacity": "4+ Adults" },
+      { "id": 5, "title": "Luxury Cottage", "price": "280 AZN", "size": "80 m²", "capacity": "Family (5-6 Pers.)" }
+    ]
+  },
+  "features": {
+    "aquaTag": "Entertainment",
+    "aquaTitle": "Magnificent Aqua Park & Pools",
+    "diningTag": "Gastronomy",
+    "diningTitle": "Restaurants & Fine Dining",
+    "moreInfo": "Learn More",
+    "aquaItems": [
+      { "title": "Extreme Slides", "desc": "Adrenaline-filled high water slides and fast descents for adults." },
+      { "title": "Kids Water World", "desc": "Renovated safe kids' pools, mini-slides, and fun water fountains." },
+      { "title": "Family Pool", "desc": "A large swimming pool with a sea view and a peaceful relaxation area." }
+    ],
+    "diningItems": [
+      { "title": "Caspian Restaurant", "desc": "The finest Azerbaijani and European cuisine paired with stunning sea views." },
+      { "title": "Aqua Bar & Lounge", "desc": "Refreshing cocktails, cold drinks, and snacks right by the poolside." }
+    ]
+  },
+  "booking": {
+    "tag": "Reservation",
+    "title": "Online Request",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "roomType": "Select Room Type",
+    "selectPlaceholder": "Select...",
+    "submit": "Send Request",
+    "success": "Congratulations! Your request has been received. We will contact you shortly."
+  },
+  "footer": {
+    "desc": "Premium family resort and Aqua Park right on the seashore in Novkhani.",
+    "linksTitle": "Useful Links",
+    "contactsTitle": "Contact Us",
+    "address": "Sahil street, Novkhani settlement, Baku, Azerbaijan",
+    "rights": "All rights reserved."
+  }
+}

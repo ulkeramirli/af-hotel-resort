@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+:root {
+  /* Добавляем наши фирменные цвета отеля */
+  --color-hotel-blue: #004693;
+  --color-hotel-blue-dark: #002f65;
+  --color-hotel-gold: #d4af37;
+  --color-hotel-gold-hover: #bfa030;
+  --color-hotel-dark: #121212;
+  --color-hotel-light: #fcfbf7;
+
+  /* Подключаем кастомный шрифт, который мы прописали в layout */
+  --font-sans: var(--font-montserrat), sans-serif;
+}
+
+/* Сбрасываем стандартные стили для HTML и Body */
+html, body {
+  background-color: var(--color-hotel-light);
+  color: var(--color-hotel-dark);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}
