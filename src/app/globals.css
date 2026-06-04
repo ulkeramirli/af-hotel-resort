@@ -21,3 +21,14 @@ html, body {
   min-height: 100vh;
   scroll-behavior: smooth;
 }
+
+@layer utilities {
+  /* Прячет скроллбар для аккуратных мобильных табов */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

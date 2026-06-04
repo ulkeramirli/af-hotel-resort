@@ -124,7 +124,7 @@ export default function Rooms() {
         'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80'
       ],
       desc: {
-        az: 'Müstəqil qonaq otağı, дәрин ванна вә ексклузив дизайн елементләри илә зәнгин фәрди резиденсиа һисси.',
+        az: 'Müstəqil qonaq otağı, dəрин vanna və ekskluziv dizayn elementləri ilə zəngin fərdi rezidensia hissi.',
         en: 'Separate living room, deep soaking bathtub, and custom designer touches for an elite residential feel.',
         ru: 'Изолированная гостиная, глубокая отдельно стоящая ванная комната и утонченные дизайнерские акценты.'
       },
@@ -214,18 +214,15 @@ export default function Rooms() {
   };
 
   const btnText = { az: 'Ətraflı', en: 'Details', ru: 'Подробнее' }[currentLang];
-  const closeText = { az: 'Bağla', en: 'Close', ru: 'Закрыть' }[currentLang];
   const bookText = { az: 'Bu nömrəni bron et', en: 'Reserve This Room', ru: 'Забронировать номер' }[currentLang];
   const quickBookText = { az: 'Bron et', en: 'Book', ru: 'Бронь' }[currentLang];
   const inclTitle = { az: 'Otağın üstünlükləri:', en: 'Room Amenities:', ru: 'В номере имеется:' }[currentLang];
 
-  // Функция открытия модального окна
   const openDetails = (room: Room) => {
     setSelectedRoom(room);
     setActiveImgIndex(0);
   };
 
-  // Функция триггера и скролла к букингу
   const handleRoomSelection = (roomId: string) => {
     const event = new CustomEvent('selectRoomForBooking', { detail: roomId });
     window.dispatchEvent(event);
@@ -234,7 +231,7 @@ export default function Rooms() {
   };
 
   return (
-    <section id="rooms" className="py-24 bg-white text-stone-900 select-none font-sans">
+    <section id="rooms" className="py-24 bg-white text-stone-900 select-none font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-12">
         
         {/* Заголовок */}
@@ -245,20 +242,22 @@ export default function Rooms() {
         </div>
 
         {/* Фильтры-табы */}
-        <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 border-b border-stone-100 pb-2 max-w-2xl mx-auto text-[11px] uppercase tracking-widest font-light">
-          {(['all', 'standard', 'deluxe', 'cottage'] as const).map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`pb-2 transition-all relative cursor-pointer ${
-                activeCategory === cat 
-                  ? 'text-[#00b5d5] font-semibold after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-[#00b5d5]' 
-                  : 'text-stone-400 hover:text-[#00b5d5]'
-              }`}
-            >
-              {tabs[cat][currentLang]}
-            </button>
-          ))}
+        <div className="w-full max-w-2xl mx-auto border-b border-stone-100">
+          <div className="flex overflow-x-auto md:flex-wrap md:justify-center items-center gap-x-6 gap-y-2 pb-2 text-[11px] uppercase tracking-widest font-light [ms-overflow-style:none] [&::-webkit-scrollbar]:hidden whitespace-nowrap scroll-smooth scrollbar-none">
+            {(['all', 'standard', 'deluxe', 'cottage'] as const).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`pb-2 transition-all relative cursor-pointer shrink-0 ${
+                  activeCategory === cat 
+                    ? 'text-[#00b5d5] font-semibold after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-[#00b5d5]' 
+                    : 'text-stone-400 hover:text-[#00b5d5]'
+                }`}
+              >
+                {tabs[cat][currentLang]}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Сетка карточек */}
@@ -269,7 +268,6 @@ export default function Rooms() {
               onClick={() => openDetails(room)}
               className="group flex flex-col justify-between bg-white border border-stone-200/50 p-3 pb-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:border-stone-300/80 cursor-pointer transform hover:-translate-y-0.5"
             >
-              {/* Кликабельный верх карточки */}
               <div className="space-y-3">
                 <div className="overflow-hidden bg-stone-100 aspect-4/3 relative w-full rounded-lg">
                   <Image 
@@ -294,7 +292,6 @@ export default function Rooms() {
                 </div>
               </div>
 
-              {/* Нижняя панель */}
               <div className="space-y-2.5 pt-3 px-1">
                 <div className="h-px bg-stone-100 w-full"></div>
                 <div className="flex justify-between items-end">
@@ -304,15 +301,13 @@ export default function Rooms() {
                   </div>
                   
                   <div className="flex items-center space-x-3">
-                    {/* Текст «Подробнее» работает как визуальный индикатор, так как вся карточка кликабельна */}
                     <span className="text-[10px] font-medium text-stone-400 group-hover:text-stone-900 tracking-widest uppercase transition-colors">
                       {btnText}
                     </span>
                     
-                    {/* Кнопка мгновенного букинга с остановкой всплытия (stopPropagation) */}
                     <button 
                       onClick={(e) => {
-                        e.stopPropagation(); // Важно: предотвращает открытие модалки при клике на Бронь
+                        e.stopPropagation(); 
                         handleRoomSelection(room.id);
                       }}
                       className="text-[10px] font-semibold bg-[#ff6c02] text-white px-2.5 py-1 rounded-md hover:bg-[#e55f00] tracking-wider uppercase cursor-pointer transition-colors shadow-sm"
@@ -331,90 +326,105 @@ export default function Rooms() {
 
       {/* Модальное окно */}
       {selectedRoom && (
-        <div className="fixed inset-0 bg-stone-950/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 md:p-8 animate-fade-in">
-          <div className="bg-white w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-12 max-h-[90vh] lg:max-h-[80vh]">
+        <div className="fixed inset-0 bg-stone-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 md:p-6 animate-fade-in">
+          
+          {/* Главный контейнер карточки: overflow-hidden на мобильных, чтобы сама карточка не растягивалась */}
+          <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col lg:grid lg:grid-cols-12 max-h-[88vh] lg:h-[73vh] relative overflow-hidden">
             
-            <div className="lg:col-span-7 bg-stone-50 p-4 flex flex-col justify-between overflow-y-auto h-80 lg:h-auto">
-              <div className="w-full aspect-4/3 bg-stone-200 relative border border-stone-200/40 rounded-xl overflow-hidden">
-                <Image 
-                  src={selectedRoom.images[activeImgIndex]} 
-                  alt="Room preview" 
-                  fill
-                  unoptimized
-                  sizes="(max-w-5xl) 50vw, 100vw"
-                  className="object-cover transition-all duration-300"
-                />
-              </div>
-              
-              <div className="grid grid-cols-4 gap-2 mt-3">
-                {selectedRoom.images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImgIndex(idx)}
-                    className={`aspect-4/3 bg-stone-200 cursor-pointer transition-all relative border rounded-lg overflow-hidden ${
-                      activeImgIndex === idx ? 'border-[#ff6c02]' : 'border-transparent opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    <Image src={img} alt="Thumbnail" fill unoptimized sizes="10vw" className="object-cover" />
-                  </button>
-                ))}
-              </div>
-            </div>
+            {/* КРЕСТИК ЗАКРЫТИЯ (Аккуратно сдвинут ближе к углу без вылета за края) */}
+              <button 
+                 onClick={() => setSelectedRoom(null)}
+                 className="absolute top-2.5 right-2.5 z-50 w-9 h-9 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white/95 hover:bg-stone-100 text-[#1e325c] hover:text-[#ff6c02] transition-all cursor-pointer shadow-md border border-stone-200/80"
+              >
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                 </svg>
+              </button>
 
-            <div className="lg:col-span-5 p-6 md:p-8 flex flex-col justify-between overflow-y-auto text-left bg-white">
-              <div className="space-y-5">
-                <div className="flex justify-between items-start gap-4 border-b border-stone-100 pb-3">
-                  <div>
-                    <span className="text-[9px] text-[#00b5d5] uppercase tracking-widest font-bold block mb-0.5">
+            {/* Внутренний контейнер для мобильного скролла (на ПК отключается через lg:contents) */}
+            <div className="flex flex-col flex-1 overflow-y-auto lg:overflow-hidden lg:grid lg:grid-cols-12 lg:col-span-12 lg:h-full">
+
+              {/* Левая колонка: Фотогалерея */}
+              <div className="lg:col-span-6 bg-stone-50 p-5 flex flex-col justify-center shrink-0 lg:h-full border-b lg:border-b-0 lg:border-r border-stone-100">
+                <div className="w-full bg-stone-200 relative border border-stone-200/40 rounded-xl overflow-hidden flex-1 aspect-video lg:aspect-[4/3.3] max-h-52 lg:max-h-none">
+                  <Image 
+                    src={selectedRoom.images[activeImgIndex]} 
+                    alt="Room preview" 
+                    fill
+                    unoptimized
+                    sizes="(max-w-5xl) 50vw, 100vw"
+                    className="object-cover transition-all duration-300"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-4 gap-2 mt-3 shrink-0">
+                  {selectedRoom.images.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImgIndex(idx)}
+                      className={`bg-stone-200 cursor-pointer transition-all relative border rounded-lg overflow-hidden aspect-video lg:aspect-[4/3.3] ${
+                        activeImgIndex === idx ? 'border-[#ff6c02] scale-[0.98]' : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <Image src={img} alt="Thumbnail" fill unoptimized sizes="10vw" className="object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Правая колонка: Информация */}
+              <div className="lg:col-span-6 flex flex-col bg-white flex-1 min-h-0 lg:h-full">
+                
+                {/* Текст контента: скроллится на ПК независимо */}
+                <div className="flex-1 lg:overflow-y-auto p-6 md:p-8 space-y-4 text-left pr-6 lg:pr-8">
+                  <div className="space-y-1">
+                    <span className="text-[9px] text-[#00b5d5] uppercase tracking-widest font-bold block">
                       {tabs[selectedRoom.category][currentLang]}
                     </span>
                     <h3 className="text-xl font-serif text-[#1e325c] font-light leading-tight tracking-wide">
                       {selectedRoom.title[currentLang]}
                     </h3>
                   </div>
+
+                  <div className="flex items-center space-x-4 text-[10px] uppercase tracking-widest font-light text-stone-400 border-y border-stone-100 py-2">
+                    <div>Size: <span className="text-stone-800 font-normal">{selectedRoom.size}</span></div>
+                    <div>•</div>
+                    <div>Occupancy: <span className="text-stone-800 font-normal">{selectedRoom.capacity[currentLang]}</span></div>
+                  </div>
+
+                  <p className="text-xs text-stone-500 font-light leading-relaxed font-sans">
+                    {selectedRoom.desc[currentLang]}
+                  </p>
+
+                  <div className="space-y-2 pt-1">
+                    <h4 className="text-[9px] font-bold uppercase tracking-widest text-stone-400">{inclTitle}</h4>
+                    <div className="grid grid-cols-1 gap-y-1.5 pt-1">
+                      {selectedRoom.includes[currentLang].map((feat, fIdx) => (
+                        <div key={fIdx} className="flex items-center space-x-2.5 text-xs font-light text-stone-600">
+                          <span className="w-1 h-1 bg-[#00b5d5] rounded-full shrink-0"></span>
+                          <span>{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Липкий подвал карточки */}
+                <div className="border-t border-stone-100 p-6 md:p-8 bg-stone-50/50 shrink-0 mt-auto">
+                  <div className="flex justify-between items-center mb-4">
+                    <div>
+                      <span className="text-[9px] uppercase tracking-wider text-stone-400 block">Rate per night</span>
+                      <span className="text-xl font-serif font-light text-[#1e325c]">{selectedRoom.price}</span>
+                    </div>
+                  </div>
                   <button 
-                    onClick={() => setSelectedRoom(null)}
-                    aria-label={closeText}
-                    className="text-stone-400 hover:text-black text-sm cursor-pointer transition-colors"
+                    onClick={() => handleRoomSelection(selectedRoom.id)}
+                    className="w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white rounded-xl font-bold text-xs uppercase text-center py-3.5 transition-colors tracking-widest shadow-md cursor-pointer"
                   >
-                    ✕
+                    {bookText}
                   </button>
                 </div>
 
-                <div className="flex items-center space-x-4 text-[10px] uppercase tracking-widest font-light text-stone-400">
-                  <div>Size: <span className="text-stone-800 font-normal">{selectedRoom.size}</span></div>
-                  <div>•</div>
-                  <div>Occupancy: <span className="text-stone-800 font-normal">{selectedRoom.capacity[currentLang]}</span></div>
-                </div>
-
-                <p className="text-xs text-stone-500 font-light leading-relaxed font-sans">
-                  {selectedRoom.desc[currentLang]}
-                </p>
-
-                <div className="space-y-2 pt-1">
-                  <h4 className="text-[9px] font-bold uppercase tracking-widest text-stone-400">{inclTitle}</h4>
-                  <div className="grid grid-cols-1 gap-y-1.5 border-t border-stone-100 pt-2">
-                    {selectedRoom.includes[currentLang].map((feat, fIdx) => (
-                      <div key={fIdx} className="flex items-center space-x-2.5 text-xs font-light text-stone-600">
-                        <span className="w-1 h-1 bg-[#00b5d5] rounded-full"></span>
-                        <span>{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-6 space-y-3">
-                <div className="text-left">
-                  <span className="text-[9px] uppercase tracking-wider text-stone-400 block">Rate per night</span>
-                  <span className="text-xl font-serif font-light text-stone-900">{selectedRoom.price}</span>
-                </div>
-                <button 
-                  onClick={() => handleRoomSelection(selectedRoom.id)}
-                  className="block w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white rounded-xl font-semibold text-xs uppercase text-center py-3.5 transition-colors tracking-widest shadow-sm cursor-pointer"
-                >
-                  {bookText}
-                </button>
               </div>
 
             </div>
