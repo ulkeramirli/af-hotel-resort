@@ -1,7 +1,7 @@
 'use client';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-// 1. Строго описываем типы для всего сайта, чтобы TypeScript не ругался
+// tipi vseqo sayta
 interface TranslationStructure {
   nav: {
     rooms: string;
@@ -45,7 +45,7 @@ interface LanguageContextType {
   t: TranslationStructure;
 }
 
-// 2. Сами словари переводов (AZ, EN, RU)
+// yaziki i perevodi dlya vsego sayta, chtoby ne duplikirovat tekst v komponentax i ne delat tolko dlya hero, a dlya vsego kontenta, chtoby v budushem legko bylo dobavlyat novye yazyki ili redaktirovat sushestvuyushie bez riskov propustit gde-to tekst
 const translations: Record<'az' | 'en' | 'ru', TranslationStructure> = {
   az: {
     nav: {

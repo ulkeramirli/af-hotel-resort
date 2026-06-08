@@ -15,12 +15,12 @@ export default function ScrollReveal({ children, className = '' }: ScrollRevealP
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          // Отключаем слежку после того, как элемент один раз появился
+          // otkluchayem slejku posle pervogo pokaza, chtoby ne nagruzhat prosmotr
           if (domRef.current) observer.unobserve(domRef.current);
         }
       });
     }, {
-      threshold: 0.1, // Анимация начнется, когда 10% блока покажутся на экране
+      threshold: 0.1, //animaciya nachinayetsya, kogda 10% elementa viden
     });
 
     const currentRef = domRef.current;

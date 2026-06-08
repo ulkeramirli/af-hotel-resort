@@ -6,7 +6,7 @@ export default function Booking() {
   const { lang } = useLanguage();
   const currentLang = (lang as 'az' | 'en' | 'ru') || 'az';
   
-  // 1. Управление состояниями формы
+//  upravleniye sostoyaniyem formi i otpravkoy
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ export default function Booking() {
     phone: ''
   });
 
-  // Автоматический выбор комнаты при клике из компонента Rooms
+//  avtomaticheskiy vybor nomera pri klike na knopku "Zabronirovat" v komponente Rooms
   useEffect(() => {
     const handleAutoSelect = (e: Event) => {
       const customEvent = e as CustomEvent;
@@ -30,7 +30,7 @@ export default function Booking() {
     return () => window.removeEventListener('selectRoomForBooking', handleAutoSelect);
   }, []);
 
-  // Словарь переводов
+//  slojnyy kontent s lokalizatsiyey dlya vsekh yazykov
   const content = {
     tag: { az: 'RESERVASYON', en: 'RESERVATION', ru: 'БРОНИРОВАНИЕ' }[currentLang],
     title: { az: 'Lüksü İndi Sifariş Edin', en: 'Book Your Luxury Stay', ru: 'Забронируйте Свой Отдых' }[currentLang],
@@ -48,7 +48,7 @@ export default function Booking() {
     newRequest: { az: 'Yeni müraciət', en: 'New request', ru: 'Новая заявка' }[currentLang]
   };
 
-  // 2. Функция отслеживания и фильтрации ввода
+  // funktsiya dlya kontrolya vvodimix dannix i avtomaticheskogo udaleniya nelegalnix simvolov
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
@@ -63,7 +63,7 @@ export default function Booking() {
     }
   };
 
-  // 3. Функция отправки
+  // funkciya otpravki formi s imitatsiyey asinkhronnogo zaprosa i obrabotkoy sostoyaniy
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -82,7 +82,7 @@ export default function Booking() {
   return (
     <section id="booking" className="py-32 bg-[#fdfbf7] text-stone-800 scroll-mt-20 relative select-none">
       
-      {/* Полное скрытие дефолтной иконки браузера, чтобы раскрытие шло по всей площади */}
+      {/* polnoye otkrytiye inputov dlya datepickerov (udaleniye standartnoy ikonkoy kalendarya i zamena yey na strogo chernuyu SVG) */}
       <style jsx global>{`
         input[type="date"]::-webkit-calendar-picker-indicator {
           background: transparent;
@@ -100,7 +100,7 @@ export default function Booking() {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
         
-        {/* Левая сторона */}
+        {/* levaya storona: tekst i knopka */}
         <div className="lg:col-span-5 space-y-6 text-left">
           <span className="text-[#00b5d5] text-xs font-semibold tracking-[0.3em] uppercase block">
             {content.tag}
@@ -113,7 +113,7 @@ export default function Booking() {
           </p>
         </div>
 
-        {/* Правая сторона: Форма */}
+        {/* pravaya storona: forma */}
         <div className="lg:col-span-7 bg-[#f4f1eb] border border-stone-200 rounded-3xl p-8 md:p-12 shadow-sm">
           {success ? (
             <div className="text-center py-16 space-y-4 animate-fade-in">
@@ -137,7 +137,7 @@ export default function Booking() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               
-              {/* Выбор номера */}
+             {/* viber nomera i daty s avtomaticheskim udaleniem nelegalnix simvolov */}
               <div className="space-y-2 text-left">
                 <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-bold">
                   {content.roomLabel} <span className="text-red-500 ml-0.5 text-xs">*</span>
@@ -166,10 +166,10 @@ export default function Booking() {
                 </div>
               </div>
 
-              {/* Укрупненные Черно-Белые Даты */}
+              {/* cherno-beliye dati */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                 
-                {/* Дата Заезда */}
+                {/* data zayezda */}
                 <div className="space-y-2">
                   <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-bold">
                     {content.dateIn} <span className="text-red-500 ml-0.5 text-xs">*</span>
@@ -183,7 +183,7 @@ export default function Booking() {
                       onChange={handleInputChange}
                       className="w-full bg-white border border-stone-200 text-stone-900 rounded-xl p-5 text-sm font-medium tracking-wide outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all cursor-pointer pr-12 shadow-sm" 
                     />
-                    {/* Строгая черно-белая SVG иконка */}
+                    {/* strict black-and-white SVG icon */}
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-stone-400 group-hover:text-stone-900 transition-colors">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
@@ -192,7 +192,7 @@ export default function Booking() {
                   </div>
                 </div>
 
-                {/* Дата Выезда */}
+                {/* data viyezda */}
                 <div className="space-y-2">
                   <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-bold">
                     {content.dateOut} <span className="text-red-500 ml-0.5 text-xs">*</span>
@@ -206,7 +206,7 @@ export default function Booking() {
                       onChange={handleInputChange}
                       className="w-full bg-white border border-stone-200 text-stone-900 rounded-xl p-5 text-sm font-medium tracking-wide outline-none focus:border-stone-900 focus:ring-1 focus:ring-stone-900 transition-all cursor-pointer pr-12 shadow-sm" 
                     />
-                    {/* Строгая черно-белая SVG иконка */}
+                    {/* strict black-and-white SVG icon */}
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-stone-400 group-hover:text-stone-900 transition-colors">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
@@ -217,7 +217,7 @@ export default function Booking() {
 
               </div>
 
-              {/* Личные данные */}
+              {/* lichniye danniye */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                 <div className="space-y-2">
                   <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-bold">
@@ -249,7 +249,7 @@ export default function Booking() {
                 </div>
               </div>
 
-              {/* Кнопка отправки */}
+              {/* knopka otpravki */}
               <button 
                 type="submit" 
                 disabled={loading}

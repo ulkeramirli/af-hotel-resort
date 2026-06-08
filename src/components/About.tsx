@@ -6,7 +6,7 @@ import { motion, Variants } from 'framer-motion';
 export default function About() {
   const { t } = useLanguage();
 
-  // Анимации появления
+  // animanciya dlya kartinok i teksta
   const leftCardVariants: Variants = {
     hidden: { opacity: 0, x: -60, y: 10 },
     visible: { 
@@ -41,10 +41,10 @@ export default function About() {
     <section id="about" className="py-32 bg-[#ffff] scroll-mt-20 select-none overflow-hidden font-sans">
       <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
         
-        {/* ЛЕВАЯ СТОРОНА: Панорамный, вытянутый в ширину коллаж */}
+        {/* levaya storona: kartinki */}
         <div className="lg:col-span-7 relative h-112.5 sm:h-125 md:h-162.5 w-full flex items-center">
           
-          {/* Большая левая картинка (Широкоформатная панорама, w-[80%] при h-[68%]) */}
+         {/* bolshaya kartina */}
           <motion.div 
             initial="hidden"
             whileInView="visible"
@@ -62,7 +62,7 @@ export default function About() {
             />
           </motion.div>
           
-          {/* Маленькая правая картинка (Тоже вытянута в ширину: w-[60%] при h-[50%]) */}
+         {/* malenkaya kartina */}
           <motion.div 
             initial="hidden"
             whileInView="visible"
@@ -82,7 +82,7 @@ export default function About() {
 
         </div>
 
-        {/* ПРАВАЯ СТОРОНА: Стилизованный премиальный текст */}
+        {/* pravaya storona: tekst i knopka */}
         <motion.div 
           initial="hidden"
           whileInView="visible"
@@ -104,7 +104,7 @@ export default function About() {
             <p>{t.about.p2}</p>
           </div>
 
-          {/* Премиальная подпись бренда */}
+          
           <div className="pt-4 border-t border-stone-200/60 max-w-xs">
             <p className="font-serif italic text-xl text-[#1e325c] tracking-wide">AF Hotel & Resort</p>
             {/* <p className="text-[10px] text-stone-400 uppercase tracking-widest mt-0.5">Premium Standard</p> */}

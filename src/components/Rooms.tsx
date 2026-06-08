@@ -234,14 +234,14 @@ export default function Rooms() {
     <section id="rooms" className="py-24 bg-white text-stone-900 select-none font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-12">
         
-        {/* Заголовок */}
+       {/* zaqolovok */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-extralight font-serif text-[#1e325c] tracking-tight leading-tight">
             {currentLang === 'az' ? 'Zəriflik və Rahatlığın Harmoniyası' : currentLang === 'en' ? 'A Sanctuary of Refined Comfort' : 'Искусство Роскошного Отдыха'}
           </h2>
         </div>
 
-        {/* Фильтры-табы */}
+       {/* filtri i tabi kartochek */}
         <div className="w-full max-w-2xl mx-auto border-b border-stone-100">
           <div className="flex overflow-x-auto md:flex-wrap md:justify-center items-center gap-x-6 gap-y-2 pb-2 text-[11px] uppercase tracking-widest font-light [ms-overflow-style:none] [&::-webkit-scrollbar]:hidden whitespace-nowrap scroll-smooth scrollbar-none">
             {(['all', 'standard', 'deluxe', 'cottage'] as const).map((cat) => (
@@ -260,7 +260,7 @@ export default function Rooms() {
           </div>
         </div>
 
-        {/* Сетка карточек */}
+        {/* setka kartochek */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredRooms.map((room) => (
             <div 
@@ -324,14 +324,14 @@ export default function Rooms() {
 
       </div>
 
-      {/* Модальное окно */}
+      {/* modalnoye okno */}
       {selectedRoom && (
         <div className="fixed inset-0 bg-stone-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 md:p-6 animate-fade-in">
           
-          {/* Главный контейнер карточки: overflow-hidden на мобильных, чтобы сама карточка не растягивалась */}
+          {/* qlavniy vid kartochki na mobile */}
           <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col lg:grid lg:grid-cols-12 max-h-[88vh] lg:h-[73vh] relative overflow-hidden">
             
-            {/* КРЕСТИК ЗАКРЫТИЯ (Аккуратно сдвинут ближе к углу без вылета за края) */}
+            {/* krestik zakritiya */}
               <button 
                  onClick={() => setSelectedRoom(null)}
                  className="absolute top-2.5 right-2.5 z-50 w-9 h-9 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white/95 hover:bg-stone-100 text-[#1e325c] hover:text-[#ff6c02] transition-all cursor-pointer shadow-md border border-stone-200/80"
@@ -341,10 +341,10 @@ export default function Rooms() {
                  </svg>
               </button>
 
-            {/* Внутренний контейнер для мобильного скролла (на ПК отключается через lg:contents) */}
+            {/* vnitrenniy konteyney dla mobilnoqo scrolla */}
             <div className="flex flex-col flex-1 overflow-y-auto lg:overflow-hidden lg:grid lg:grid-cols-12 lg:col-span-12 lg:h-full">
 
-              {/* Левая колонка: Фотогалерея */}
+              {/* levaya kolonna: izobrazheniya  */}
               <div className="lg:col-span-6 bg-stone-50 p-5 flex flex-col justify-center shrink-0 lg:h-full border-b lg:border-b-0 lg:border-r border-stone-100">
                 <div className="w-full bg-stone-200 relative border border-stone-200/40 rounded-xl overflow-hidden flex-1 aspect-video lg:aspect-[4/3.3] max-h-52 lg:max-h-none">
                   <Image 
@@ -372,10 +372,10 @@ export default function Rooms() {
                 </div>
               </div>
 
-              {/* Правая колонка: Информация */}
+              {/* pravaya kolonna: tekst i knopka bronirovaniya */}
               <div className="lg:col-span-6 flex flex-col bg-white flex-1 min-h-0 lg:h-full">
                 
-                {/* Текст контента: скроллится на ПК независимо */}
+                {/* tekst kontenta scrollilsya nezavisemo ot kontenta */}
                 <div className="flex-1 lg:overflow-y-auto p-6 md:p-8 space-y-4 text-left pr-6 lg:pr-8">
                   <div className="space-y-1">
                     <span className="text-[9px] text-[#00b5d5] uppercase tracking-widest font-bold block">
@@ -409,7 +409,7 @@ export default function Rooms() {
                   </div>
                 </div>
 
-                {/* Липкий подвал карточки */}
+               {/* nijnaya chast gde price i bronirovanie, ona otdelena ot teksta i scrollitsya nezavisimo, chtoby price i knopka vsegda byli na vidu  */}
                 <div className="border-t border-stone-100 p-6 md:p-8 bg-stone-50/50 shrink-0 mt-auto">
                   <div className="flex justify-between items-center mb-4">
                     <div>

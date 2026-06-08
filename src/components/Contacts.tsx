@@ -41,7 +41,7 @@ export default function Contacts() {
       
       <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative z-10">
         
-        {/* ФОРМА ОТЗЫВОВ (СЛЕВА) */}
+        {/* forma otzivov (sleva) */}
         <div className="lg:col-span-5 w-full order-2 lg:order-1 sticky top-28">
           {sent ? (
             <div className="bg-[#fdfbf7] rounded-2xl p-10 text-center border border-stone-200/80 shadow-md space-y-4 animate-fade-in">
@@ -76,7 +76,7 @@ export default function Contacts() {
           )}
         </div>
 
-        {/* ИНФОРМАЦИЯ И КАРТА (СПРАВА) */}
+        {/* information and map (right side) */}
         <div className="lg:col-span-7 space-y-6 order-1 lg:order-2 lg:pl-4">
           <div className="space-y-2 text-left">
             <span className="text-[#00b5d5] text-[10px] font-bold tracking-widest uppercase bg-white/60 px-3 py-1 rounded-md inline-block border border-white">
@@ -109,7 +109,7 @@ export default function Contacts() {
             </div>
           </div>
 
-          {/* ИНТЕРАКТИВНАЯ КАРТА */}
+          {/* interaktivnaya karta */}
           <div className="w-full h-64 md:h-72 bg-stone-100 border border-white rounded-xl overflow-hidden shadow-sm relative">
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3032.073400585868!2d49.7997864765691!3d40.54045514870535!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1m2s9x403080641b9bf8e7%3A0x7d6f5552db6a2ecb!2sAF%20Hotel%20%26%20Aqua%20Park!5e0!3m2!1sru!2saz!4v1717500000000!5m2!1sru!2saz"

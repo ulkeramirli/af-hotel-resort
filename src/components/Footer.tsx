@@ -22,11 +22,11 @@ export default function Footer() {
     <footer className="bg-[#e9f7fa] text-stone-600 pt-16 pb-8 border-t border-cyan-100 relative overflow-hidden select-none text-left">
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-12 relative z-10">
         
-        {/* Главная панель */}
+        {/* qlavnaya panel */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-8 border-b border-cyan-100/60 items-start">
           
           <div className="lg:col-span-6 space-y-4">
-            {/* ФИРМЕННЫЙ ЛОГОТИП ИЗ ХЕДЕРА */}
+           {/* loqotip iz headera */}
             <div className="h-12 pb-4 relative flex items-center">
               <Image
                 src="/loqo-af.png"
@@ -56,7 +56,7 @@ export default function Footer() {
 
         </div>
 
-        {/* Навигационные ссылки */}
+        {/* naviqacionniye ssilki */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs">
           <div className="space-y-3">
             <h4 className="text-[9px] font-bold uppercase tracking-widest text-stone-400">The Resort</h4>
@@ -95,7 +95,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Копирайт */}
+        {/* kopirayder */}
         <div className="pt-6 border-t border-cyan-100/60 flex flex-col md:flex-row justify-between items-center gap-3 text-[9px] text-stone-400 font-mono tracking-wider">
           <p>© {new Date().getFullYear()} AF HOTEL & AQUA PARK. All rights reserved.</p>
           <div className="flex space-x-4 uppercase font-bold">
