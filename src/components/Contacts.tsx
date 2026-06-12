@@ -1,10 +1,10 @@
 'use client';
 import { useState, FormEvent } from 'react';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Contacts() {
-  const { lang } = useLanguage();
-  const currentLang = (lang as 'az' | 'en' | 'ru') || 'az';
+  const { language } = useLanguage();
+  const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
   const [sent, setSent] = useState(false);
 
   const handleSend = (e: FormEvent) => {

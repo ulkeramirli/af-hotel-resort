@@ -1,0 +1,22 @@
+model SystemSettings {
+  id              Int      @id @default(autoincrement())
+  hotelName       String   @default("AF Hotel & Resort")
+  themeColor      String   @default("#00b4d8")
+  backgroundColor String   @default("#ffffff")
+  heroTitle       String   @default("Lüks və Rahatlığın Ünvanı")
+  heroSubtitle    String   @default("Xəzər dənizinin sahilində unudulmaz istirahət")
+  contactPhone    String   @default("+994 (12) 447 00 00")
+  contactEmail    String   @default("info@afhotel.az")
+  updatedAt       DateTime @updatedAt
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userName  String
+  userImage String   @default("")
+  userEmail String
+  rating    Int      @default(5)
+  comment   String
+  replyText String?  // Ответ админа на отзыв
+  createdAt DateTime @default(now())
+}

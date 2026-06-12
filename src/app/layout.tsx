@@ -1,30 +1,28 @@
-import { Montserrat } from "next/font/google";
+// src/app/layout.tsx
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import React from "react";
-import { LanguageProvider } from "@/context/LanguageContext";
+import Providers from "@/components/Providers"; // <-- Импортируем нашу новую обертку
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["300", "400", "600", "700"],
-  variable: "--font-montserrat",
-});
+const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "AF Hotel & Aqua Park | Modern Resort Novxanı",
-  description: "Novxanıda dəniz kənarında lüks otel, möhtəşəm Aqua Park və unudulmaz ailəvi istirahət.",
+export const metadata: Metadata = {
+  title: "AF Hotel & Aqua Park",
+  description: "Resort and Hotel in Baku",
 };
 
-interface RootLayoutProps {
+export default function RootLayout({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
+}) {
   return (
-    <html lang="az" className="scroll-smooth">
-      <body className={`${montserrat.variable} font-sans bg-[#fcfbf7] text-[#121212] antialiased min-h-screen flex flex-col`}>
-        <LanguageProvider>
+    <html lang="en">
+      <body className={inter.className}>
+        {/* Оборачиваем в клиентский Providers, теперь контекст не будет ругаться на сервер */}
+        <Providers>
           {children}
-        </LanguageProvider>
+        </Providers>
       </body>
     </html>
   );

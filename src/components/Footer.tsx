@@ -1,10 +1,10 @@
 'use client';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
 
 export default function Footer() {
-  const { lang, t } = useLanguage();
-  const currentLang = (lang as 'az' | 'en' | 'ru') || 'az';
+  const { language, t } = useLanguage();
+  const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
 
   const content = {
     desc: {
