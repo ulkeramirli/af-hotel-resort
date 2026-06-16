@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET: Получить расширенный список всех бронирований
 export async function GET(request: Request) {
   try {
     const adminToken = request.headers.get("authorization");
@@ -14,11 +13,12 @@ export async function GET(request: Request) {
       orderBy: { createdAt: "desc" }
     });
 
-    const formattedBookings = bookings.map(b => ({
+    // Избавились от any, приведя массив к Record<string, unknown>[]
+    const formattedBookings = (bookings as unknown as Record<string, unknown>[]).map((b) => ({
       id: b.id,
       guest: b.guest,
-      room: b.room ? b.room.name : "Otaq təyin edilməyib",
-      roomType: b.room ? b.room.type : "Bilinmir",
+      room: b.room ? (b.room as Record<string, unknown>).name : "Otaq təyin edilməyib",
+      roomType: b.room ? (b.room as Record<string, unknown>).type : "Bilinmir",
       date: b.dateRange,
       status: b.status,
       createdAt: b.createdAt
