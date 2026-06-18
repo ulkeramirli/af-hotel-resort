@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
-import { useSession, signIn, signOut } from 'next-auth/react';
+
 import { User, Briefcase, Award, Wallet, MessageSquare, Heart, LogOut } from 'lucide-react';
 
 type LangType = 'az' | 'en' | 'ru';
@@ -50,7 +50,8 @@ export default function Header() {
   const [activeNav, setActiveNav] = useState('home');
   const [scrolled, setScrolled] = useState(false);
   
-  const { data: session, status } = useSession();
+  const session = null;
+  const status = 'unauthenticated';
   const { language, setLanguage } = useLanguage();
   const currentLang = (language as LangType) || 'az';
   
@@ -93,20 +94,8 @@ export default function Header() {
     return () => window.removeEventListener('favoritesUpdated', updateFavCount);
   }, []);
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      const google = (window as unknown as { google?: GoogleAccounts }).google;
-      if (google?.accounts) {
-        google.accounts.id.initialize({
-          client_id: "378867877376-lchmr100dbjg4a9bq95rs4j2oa5jvqu1.apps.googleusercontent.com",
-          callback: async (response: GoogleCredentialResponse) => {
-            await signIn("google", { credential: response.credential });
-          },
-        });
-        google.accounts.id.prompt();
-      }
-    }
-  }, [status]);
+  // Google auth deactivated - no backend configured
+  void status;
 
   useEffect(() => {
     const handleScroll = () => { setScrolled(window.scrollY > 20); };
@@ -225,93 +214,8 @@ export default function Header() {
             <svg className="w-3.5 h-3.5 stroke-current fill-none" viewBox="0 0 24 24" strokeWidth={2.5}><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
           </a>
 
-          {session?.user ? (
-            <div className="relative" ref={menuRef}>
-              <button 
-                onClick={() => setMenuOpen(!menuOpen)} 
-                className="relative flex items-center space-x-2 px-2 py-1.5 rounded-xl hover:bg-stone-100/70 transition-all cursor-pointer outline-none border border-transparent bg-transparent"
-              >
-                <div className="relative w-7 h-7 shrink-0">
-                  <Image 
-                    src={session.user.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"} 
-                    alt={session.user.name || "User"} 
-                    fill
-                    sizes="28px"
-                    className="rounded-full border border-stone-200 object-cover"
-                  />
-                </div>
-                
-                <div className="hidden md:flex flex-col text-left leading-tight select-none">
-                  <span className="text-[11px] font-bold text-slate-800 max-w-28 truncate">
-                    {session.user.name}
-                  </span>
-                  <span className="text-[9px] font-medium text-stone-400 tracking-wide">
-                    {texts.myAccount}
-                  </span>
-                </div>
-                <svg className={`w-2.5 h-2.5 text-stone-400 transition-transform duration-300 ${menuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M19 9l-7 7-7-7" /></svg>
-              </button>
-              
-              {menuOpen && (
-                <div className="absolute right-0 mt-2.5 w-64 bg-white border border-stone-200 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.12)] py-1.5 z-50 animate-fade-in">
-                  <button className={dropdownItemClass}>
-                    <div className="flex items-center space-x-3">
-                      <User className="w-4 h-4 text-stone-500 stroke-[1.8]" />
-                      <span>{texts.myAccount}</span>
-                    </div>
-                  </button>
-                  <button className={dropdownItemClass}>
-                    <div className="flex items-center space-x-3">
-                      <Briefcase className="w-4 h-4 text-stone-500 stroke-[1.8]" />
-                      <span>{texts.bookings}</span>
-                    </div>
-                  </button>
-                  <button className={dropdownItemClass}>
-                    <div className="flex items-center space-x-3">
-                      <Award className="w-4 h-4 text-stone-500 stroke-[1.8]" />
-                      <span>{texts.genius}</span>
-                    </div>
-                  </button>
-                  <button className={dropdownItemClass}>
-                    <div className="flex items-center space-x-3">
-                      <Wallet className="w-4 h-4 text-stone-500 stroke-[1.8]" />
-                      <span>{texts.wallet}</span>
-                    </div>
-                  </button>
-                  <button className={dropdownItemClass}>
-                    <div className="flex items-center space-x-3">
-                      <MessageSquare className="w-4 h-4 text-stone-500 stroke-[1.8]" />
-                      <span>{texts.reviews}</span>
-                    </div>
-                  </button>
-                  
-                  <button className={dropdownItemClass}>
-                    <div className="flex items-center space-x-3">
-                      <Heart className={`w-4 h-4 stroke-[1.8] ${favCount > 0 ? 'fill-rose-500 text-rose-500' : 'text-stone-500'}`} />
-                      <span>{texts.saved}</span>
-                    </div>
-                    {favCount > 0 && (
-                      <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
-                        {favCount}
-                      </span>
-                    )}
-                  </button>
-                  
-                  <div className="h-px bg-stone-100 my-1" />
-                  
-                  <button 
-                    onClick={() => { setMenuOpen(false); signOut(); }}
-                    className="w-full flex items-center space-x-3 px-4 py-2.5 text-xs text-rose-600 hover:bg-rose-50/60 font-semibold text-left last:rounded-b-xl cursor-pointer border-none bg-transparent outline-none"
-                  >
-                    <LogOut className="w-4 h-4 text-rose-500 stroke-[1.8]" />
-                    <span>{texts.logout}</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <button 
-              onClick={() => signIn('google')}
+          <button 
+              onClick={() => window.location.href = '/login'}
               className="flex items-center space-x-2.5 px-3.5 py-2.5 bg-white border border-stone-200 hover:border-slate-400 hover:bg-stone-50 text-slate-700 rounded-xl shadow-xs transition-all duration-300 cursor-pointer active:scale-[0.98]"
             >
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -324,7 +228,6 @@ export default function Header() {
                 {texts.login}
               </span>
             </button>
-          )}
 
           <button onClick={() => setIsOpen(!isOpen)} className="flex flex-col justify-center items-center w-8 h-8 space-y-1.5 lg:hidden z-50 relative outline-none cursor-pointer bg-transparent border-none">
             <span className={`block w-6 h-0.5 bg-slate-800 transition-all duration-500 ${isOpen ? 'rotate-45 translate-y-2' : ''}`} />

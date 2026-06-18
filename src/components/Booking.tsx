@@ -1,12 +1,12 @@
 'use client';
 import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useSession } from 'next-auth/react';
+
 
 export default function Booking() {
   const { language } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
-  const { data: session } = useSession();
+  const session = null;
   
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
