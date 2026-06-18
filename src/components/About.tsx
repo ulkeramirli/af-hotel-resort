@@ -86,6 +86,7 @@ export default function About() {
               src="/AF-aqua.jpg"
               alt="AF Hotel"
               fill
+              sizes="(max-width: 768px) 90vw, 60vw"
               className="object-cover object-[center_30%]"
               priority
             />
@@ -102,6 +103,7 @@ export default function About() {
               src="/AF-aqua2.jpg"
               alt="AF Hotel Resort"
               fill
+              sizes="(max-width: 768px) 80vw, 50vw"
               className="object-cover object-center"
               priority
             />
