@@ -5,7 +5,7 @@ import { authMiddleware } from "@/middleware/auth.middleware";
 export async function POST(req: Request) {
   await connectDB();
   try {
-    const user = authMiddleware(req);
+    const user = authMiddleware(req) as any;
 
     if (user.role !== "admin") {
       throw new Error("Only admin can create rooms");

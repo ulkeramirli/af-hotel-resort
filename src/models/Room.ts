@@ -5,12 +5,13 @@ const roomSchema = new mongoose.Schema(
     name: { type: String, required: true },
     type: {
       type: String,
-      enum: ["standard", "deluxe", "cottage"],
+      enum: ["Single", "Single Double", "Single Twin", "Apartment for 4"],
       required: true,
     },
     description: { type: String, required: true },
     price: { type: Number, required: true },
     capacity: { type: Number, required: true },
+    images: { type: [String], default: [] },
     amenities: [
       {
         type: String,

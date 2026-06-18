@@ -7,15 +7,15 @@ import Link from 'next/link';
 import InfoModal from './InfoModal';
 
 interface Room {
-  id: string;
-  category: string;
-  title: { az: string; en: string; ru: string };
-  price: string;
-  size: string;
-  capacity: { az: string; en: string; ru: string };
+  _id: string;
+  name: string;
+  type: string;
+  description: string;
+  price: number;
+  capacity: number;
   images: string[];
-  desc: { az: string; en: string; ru: string };
-  includes: { az: string[]; en: string[]; ru: string[] };
+  amenities: string[];
+  isAvailable: boolean;
 }
 
 const CATEGORIES = {
@@ -37,14 +37,17 @@ export default function Rooms() {
   const [modalData, setModalData] = useState({ isOpen: false, title: '', desc: '', price: '' });
 
   // Основная функция запроса
-  const fetchRooms = useCallback(async (cat: string, pg: number, append = false) => {
+  const fetchRooms = useCallback(async (cat: string, _pg: number, append = false) => {
     setLoading(true);
     try {
-      const url = `/api/rooms?page=${pg}&limit=6${cat !== 'all' ? `&category=${cat}` : ''}`;
-      const res = await fetch(url);
+      const res = await fetch('/api/rooms');
       const data = await res.json();
-      setRooms(prev => append ? [...prev, ...data.rooms] : data.rooms);
-      setHasMore(data.hasMore);
+      const allRooms: Room[] = data.rooms || [];
+      const filtered = cat === 'all'
+        ? allRooms
+        : allRooms.filter(r => r.type?.toLowerCase().includes(cat));
+      setRooms(prev => append ? [...prev, ...filtered] : filtered);
+      setHasMore(false);
     } catch {
       setRooms([]);
     } finally {
@@ -114,26 +117,32 @@ export default function Rooms() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {rooms.map(room => (
             <div
-              key={room.id}
+              key={room._id}
               className="group bg-white rounded-3xl overflow-hidden border border-stone-100 hover:shadow-xl transition-all duration-500 flex flex-col"
             >
               {/* Фото */}
               <div className="relative h-56 overflow-hidden bg-stone-100">
-                <Image
-                  src={room.images[0]}
-                  alt={room.title[l]}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {room.images && room.images[0] ? (
+                  <Image
+                    src={room.images[0]}
+                    alt={room.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-stone-200 flex items-center justify-center">
+                    <span className="text-stone-400 text-xs">🏨</span>
+                  </div>
+                )}
                 <div className="absolute top-3 left-3">
                   <span className="bg-white/90 backdrop-blur-sm text-[#1e325c] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
-                    {room.category}
+                    {room.type}
                   </span>
                 </div>
                 <div className="absolute top-3 right-3">
                   <span className="bg-[#ff6c02] text-white text-xs font-bold px-3 py-1 rounded-lg">
-                    {room.price}
+                    {room.price} AZN
                   </span>
                 </div>
               </div>
@@ -141,33 +150,35 @@ export default function Rooms() {
               {/* Контент */}
               <div className="p-6 flex flex-col grow">
                 <h3 className="text-base font-semibold text-[#1e325c] mb-2 group-hover:text-[#00b5d5] transition-colors">
-                  {room.title[l]}
+                  {room.name}
                 </h3>
                 <p className="text-xs text-stone-400 font-light leading-relaxed mb-4 line-clamp-2">
-                  {room.desc[l]}
+                  {room.description}
                 </p>
 
                 {/* Характеристики */}
                 <div className="flex gap-4 mb-5 mt-auto">
-                  <span className="text-[10px] text-stone-400 font-medium">📐 {room.size}</span>
-                  <span className="text-[10px] text-stone-400 font-medium">👥 {room.capacity[l]}</span>
+                  <span className="text-[10px] text-stone-400 font-medium">👥 {room.capacity} {l === 'az' ? 'nəfər' : l === 'en' ? 'guests' : 'гостей'}</span>
+                  {room.amenities && room.amenities.length > 0 && (
+                    <span className="text-[10px] text-stone-400 font-medium">✨ {room.amenities.slice(0, 2).join(', ')}</span>
+                  )}
                 </div>
 
                 {/* Цена + кнопки */}
                 <div className="flex items-center justify-between pt-4 border-t border-stone-100 gap-3">
                   <div>
-                    <span className="text-lg font-bold text-[#1e325c]">{room.price}</span>
+                    <span className="text-lg font-bold text-[#1e325c]">{room.price} AZN</span>
                     <span className="text-[10px] text-stone-400 font-light ml-1">/ {perNight}</span>
                   </div>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => setModalData({ isOpen: true, title: room.title[l], desc: room.desc[l], price: room.price })}
+                      onClick={() => setModalData({ isOpen: true, title: room.name, desc: room.description, price: `${room.price} AZN` })}
                       className="text-[10px] font-semibold text-stone-500 hover:text-[#1e325c] px-3 py-2 border border-stone-200 rounded-xl transition-all cursor-pointer"
                     >
                       {moreInfoLabel}
                     </button>
                     <Link
-                      href={`/rooms/${room.id}`}
+                      href={`/rooms/${room._id}`}
                       className="text-[10px] font-bold text-white bg-[#00b5d5] hover:bg-[#0096b2] px-4 py-2 rounded-xl transition-all"
                     >
                       {bookLabel}

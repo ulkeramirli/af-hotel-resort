@@ -18,7 +18,7 @@ export async function PUT(
 ) {
   await connectDB();
 
-  const user = authMiddleware(req);
+  const user = authMiddleware(req) as any;
   if (user.role !== "admin") {
     return NextResponse.json(
       {
@@ -40,7 +40,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   await connectDB();
-  const user = authMiddleware(req);
+  const user = authMiddleware(req) as any;
   if (user.role !== "admin") {
     return NextResponse.json(
       {
