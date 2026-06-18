@@ -4,13 +4,16 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { 
-  LayoutDashboard, 
-  CalendarCheck, 
-  MessageSquare, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  CalendarCheck,
+  BedDouble,
+  MessageSquare,
+  Star,
+  BarChart3,
+  Settings,
   LogOut,
-  Hotel
+  Hotel,
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -22,17 +25,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const menuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    { name: "Otaqlar", href: "/admin/otaqlar", icon: BedDouble },
     { name: "Bronlar", href: "/admin/bronlar", icon: CalendarCheck },
+    { name: "Rəylər", href: "/admin/reviews", icon: Star },
     { name: "Mesajlar", href: "/admin/mesajlar", icon: MessageSquare },
     { name: "Statistika", href: "/admin/statistika", icon: BarChart3 },
+    { name: "Sayt Tənzimləmələri", href: "/admin/settings", icon: Settings },
   ];
 
   return (
     <div className="min-h-screen flex bg-gray-50/50">
-      {/* БОКОВАЯ ПАНЕЛЬ (SIDEBAR) */}
+      {/* БОКОВАЯ ПАНЕЛЬ */}
       <aside className="w-64 bg-white border-r border-gray-100 flex flex-col justify-between p-6 shrink-0 h-screen sticky top-0">
         <div className="space-y-8">
-          {/* ЛОГОТИП ОТЕЛЯ */}
           <div className="flex items-center gap-2.5 px-2">
             <div className="w-9 h-9 bg-cyan-50 text-[#00b4d8] rounded-xl flex items-center justify-center shadow-sm">
               <Hotel className="w-5 h-5" />
@@ -43,7 +48,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </div>
 
-          {/* НАВИГАЦИОННОЕ МЕНЮ */}
           <nav className="space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -66,7 +70,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </nav>
         </div>
 
-        {/* КНОПКА ВЫХОДА С СЕРВЕРНОЙ СЕССИЕЙ */}
         <div className="border-t border-gray-50 pt-4">
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
@@ -78,11 +81,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
       </aside>
 
-      {/* ОСНОВНОЙ КОНТЕНТ СТРАНИЦ */}
       <main className="flex-1 p-8 overflow-y-auto h-screen">
-        <div className="max-w-6xl mx-auto">
-          {children}
-        </div>
+        <div className="max-w-6xl mx-auto">{children}</div>
       </main>
     </div>
   );
