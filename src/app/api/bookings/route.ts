@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     // Запрашиваем из базы параллельно бронирования, комнаты и сообщения
     const [bookings, rooms, messages] = await Promise.all([
       prisma.booking.findMany({
-        include: { room: true }, // Подтягиваем связанные данные о комнате
+        include: { room: true, guest: true }, // Подтягиваем связанные данные о комнате и госте
         orderBy: { createdAt: "desc" }
       }),
       prisma.room.findMany({ orderBy: { id: "asc" } }),
@@ -23,13 +23,17 @@ export async function GET(request: Request) {
     ]);
 
     // Безопасное форматирование бронирований под нужды фронтенда
-    const formattedBookings = bookings.map(b => ({
-      id: b.id,
-      guest: b.guest,
-      room: b.room ? b.room.name : "Otaq təyin edilməyib",
-      date: b.dateRange,
-      status: b.status
-    }));
+    const formattedBookings = bookings.map((b) => {
+      const bookingDate = b.createdAt ? b.createdAt.toISOString() : "";
+
+      return {
+        id: b.id,
+        guest: (b.guest as { name: string } | null | undefined)?.name ?? "Qonaq məlumatı tapılmadı",
+        room: b.room ? b.room.nameAz : "Otaq təyin edilməyib",
+        date: bookingDate,
+        status: b.status
+      };
+    });
 
     return NextResponse.json({ bookings: formattedBookings, rooms, messages }, { status: 200 });
   } catch (error) {
@@ -51,17 +55,17 @@ export async function PATCH(request: Request) {
     // Обновляем нужную таблицу в зависимости от типа операции
     if (type === "BOOKING") {
       await prisma.booking.update({
-        where: { id: Number(id) },
+        where: { id: String(id) },
         data: { status: newStatus }
       });
     } else if (type === "ROOM") {
       await prisma.room.update({
-        where: { id: Number(id) },
+        where: { id: String(id) },
         data: { status: newStatus }
       });
     } else if (type === "MESSAGE") {
       await prisma.message.update({
-        where: { id: Number(id) },
+        where: { id: String(id) },
         data: { unread: false }
       });
     }

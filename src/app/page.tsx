@@ -1,7 +1,7 @@
 // src/app/page.tsx
 'use client';
 
-import Providers from "@/components/Providers"; // <-- Наш новый объединенный провайдер
+import Providers from "@/components/Providers"; 
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -17,7 +17,7 @@ import FloatingActions from "@/components/FloatingActions";
 
 export default function Home() {
   return (
-    <Providers> {/* <-- Заменили LanguageProvider на Providers */}
+    <Providers> {/* LanguageProvider na Providers */}
       <div className="bg-white min-h-screen antialiased selection:bg-slate-900 selection:text-white">
         <Header />
         <main>
