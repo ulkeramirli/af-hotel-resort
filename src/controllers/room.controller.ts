@@ -1,3 +1,4 @@
+import Booking from "@/models/Booking";
 import Room from "@/models/Room";
 import "@/models/User";
 import { NextResponse } from "next/server";
@@ -164,5 +165,18 @@ export class RoomController {
         },
       );
     }
+  }
+  static async getAvailability(roomId: string) {
+    const bookings = await Booking.find({
+      room: roomId,
+      status: {
+        $ne: "cancelled",
+      },
+    }).select("checkIn checkOut");
+
+    return NextResponse.json({
+      success: true,
+      bookings,
+    });
   }
 }
