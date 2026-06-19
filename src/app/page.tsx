@@ -1,13 +1,13 @@
 // src/app/page.tsx
 'use client';
 
-import Providers from "@/components/Providers"; // <-- Наш новый объединенный провайдер
+import Providers from "@/components/Providers"; 
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Rooms from "@/components/Rooms";
 import Aquapark from "@/components/Aquapark";
-import Dining from "@/components/Dining";
+import Dining from "@/components/Restoran";
 // import Gallery from "@/components/Gallery";
 import Reviews from "@/components/Reviews";
 import Booking from "@/components/Booking";
@@ -17,7 +17,7 @@ import FloatingActions from "@/components/FloatingActions";
 
 export default function Home() {
   return (
-    <Providers> {/* <-- Заменили LanguageProvider на Providers */}
+    <Providers> {/* LanguageProvider na Providers */}
       <div className="bg-white min-h-screen antialiased selection:bg-slate-900 selection:text-white">
         <Header />
         <main>

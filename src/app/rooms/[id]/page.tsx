@@ -1,167 +1,189 @@
-// src/app/rooms/[id]/page.tsx
-import { notFound } from "next/navigation";
-import RoomDetail from "../../../components/RoomDetail";
+"use client";
+import { useState, useEffect, use } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Heart, Users, Maximize2, Check, Loader2 } from "lucide-react";
+import { getPublicRoomById } from "@/services/api";
+import type { PublicRoom } from "@/services/api";
+import { toggleFavorite, isFavorite } from "@/lib/favorites";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const ALL_ROOMS = [
-  {
-    id: 'std-king',
-    category: 'standard',
-    title: { az: 'Superior King Otağı', en: 'Superior King Room', ru: 'Номер Супериор King' },
-    price: '120 AZN',
-    priceNum: 120,
-    size: '42 m²',
-    capacity: { az: '2 Böyük', en: '2 Adults', ru: '2 Взрослых' },
-    images: [
-      'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=1200&q=80',
-    ],
-    desc: {
-      az: 'Minimalist elementlərlə zənginləşdirilmiş klassik dizayn. İşgüzar və ya istirahət məqsədli səyahətlər üçün ideal seçimdir. Geniş pəncərələrdən Xəzər dənizinin möhtəşəm mənzərəsi açılır.',
-      en: 'Classic design enriched with minimalist premium elements. An ideal choice for business or leisure travelers. Wide windows reveal stunning views of the Caspian Sea.',
-      ru: 'Классический дизайн с минималистичными премиальными элементами. Идеален для деловых и туристических поездок. Широкие окна открывают потрясающий вид на Каспийское море.',
-    },
-    includes: {
-      az: ['King-size yataq', 'Premium Wi-Fi', 'Mərmər vanna otağı', 'Nespresso maşını', 'Smart TV 55"', 'Mini-bar', 'Kondisioner', 'Təhlükəsizlik seyfi'],
-      en: ['King-size bed', 'Premium Wi-Fi', 'Marble bathroom', 'Nespresso machine', 'Smart TV 55"', 'Mini-bar', 'Air conditioning', 'Safety deposit box'],
-      ru: ['Кровать King-size', 'Премиум Wi-Fi', 'Мраморная ванная', 'Кофемашина Nespresso', 'Smart TV 55"', 'Мини-бар', 'Кондиционер', 'Сейф'],
-    },
-  },
-  {
-    id: 'std-twin',
-    category: 'standard',
-    title: { az: 'Superior Twin Otağı', en: 'Superior Twin Room', ru: 'Номер Супериор Twin' },
-    price: '135 AZN',
-    priceNum: 135,
-    size: '45 m²',
-    capacity: { az: '2 Böyük', en: '2 Adults', ru: '2 Взрослых' },
-    images: [
-      'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=1200&q=80',
-    ],
-    desc: {
-      az: 'İki ədəd geniş təkli yataq və funksional iş zonası ilə təmin olunmuş lüks qonaqlıq təcrübəsi.',
-      en: 'A luxury stay featuring two spacious twin beds and a highly functional work area.',
-      ru: 'Роскошное пространство с двумя раздельными кроватями и функциональной рабочей зоной.',
-    },
-    includes: {
-      az: ['2 ədəd təkli yataq', 'Yüksək sürətli Wi-Fi', 'İş masası', 'Mini-bar', 'Smart TV', 'Kondisioner'],
-      en: ['2 Twin beds', 'High-speed Wi-Fi', 'Work desk', 'Mini-bar', 'Smart TV', 'Air conditioning'],
-      ru: ['2 Раздельные кровати', 'Высокоскоростной Wi-Fi', 'Рабочий стол', 'Мини-бар', 'Smart TV', 'Кондиционер'],
-    },
-  },
-  {
-    id: 'dlx-sea',
-    category: 'deluxe',
-    title: { az: 'Dəniz Mənzərəli Deluxe', en: 'Deluxe Ocean Suite', ru: 'Делюкс с видом на море' },
-    price: '240 AZN',
-    priceNum: 240,
-    size: '68 m²',
-    capacity: { az: '3 Böyük', en: '3 Adults', ru: '3 Взрослых' },
-    images: [
-      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1200&q=80',
-    ],
-    desc: {
-      az: 'Xəzər dənizinin sonsuz üfüqlərinə açılan panoram pəncərələr və geniş fərdi istirahət terası.',
-      en: 'Panoramic windows facing the Caspian Sea and a vast private terrace for ultimate relaxation.',
-      ru: 'Панорамные окна с видом на Каспийское море и просторная частная терраса.',
-    },
-    includes: {
-      az: ['Panoramik dəniz mənzərəsi', 'Xüsusi geniş terasa', 'Ağıllı ev sistemi', 'Jacuzzi', 'Premium mini-bar', 'Butler xidməti'],
-      en: ['Panoramic sea view', 'Private large terrace', 'Smart home system', 'Jacuzzi', 'Premium mini-bar', 'Butler service'],
-      ru: ['Панорамный вид на море', 'Большая терраса', 'Умный дом', 'Джакузи', 'Премиум mini-bar', 'Батлер-сервис'],
-    },
-  },
-  {
-    id: 'dlx-family',
-    category: 'deluxe',
-    title: { az: 'Premium Ailəvi Süit', en: 'Premium Family Suite', ru: 'Семейный Люкс' },
-    price: '280 AZN',
-    priceNum: 280,
-    size: '75 m²',
-    capacity: { az: '4 Böyük', en: '4 Adults', ru: '4 Взрослых' },
-    images: [
-      'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
-    ],
-    desc: {
-      az: 'Uşaqları ilə səyahət edən ailələr üçün xüsusi planlaşdırılmış geniş iki otaqlı lüks süit.',
-      en: 'Spacious two-room suite designed for families with children.',
-      ru: 'Двухкомнатный люкс, разработанный специально для семей с детьми.',
-    },
-    includes: {
-      az: ['2 ayrı otaq', 'Uşaq çarpayısı (istəklə)', 'Geniş eyvan', 'Oyun konsolu', 'Ailə mini-bar', 'Smart TV × 2'],
-      en: ['Two separate rooms', 'Baby cot (on request)', 'Large balcony', 'Gaming console', 'Family mini-bar', 'Smart TV × 2'],
-      ru: ['Две изолированные комнаты', 'Детская кроватка', 'Большой балкон', 'Мини-бар', 'Smart TV × 2'],
-    },
-  },
-  {
-    id: 'cot-duplex',
-    category: 'cottage',
-    title: { az: 'Ailəvi Kotec', en: 'Family Cottage', ru: 'Семейный Коттедж' },
-    price: '450 AZN',
-    priceNum: 450,
-    size: '140 m²',
-    capacity: { az: '5 Böyük', en: '5 Adults', ru: '5 Взрослых' },
-    images: [
-      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    ],
-    desc: {
-      az: 'Tam məxfilik təmin edən iki mərtəbəli villa. Şəxsi bağçası, mətbəxi və ailəvi şam yeməyi zonası mövcuddur.',
-      en: 'Two-story villa providing absolute privacy with a private garden, full kitchen, and dining area.',
-      ru: 'Двухэтажная вилла для полного уединения с садом, кухней и обеденной зоной.',
-    },
-    includes: {
-      az: ['2 Mərtəbəli villa', 'Tam mətbəx', 'Şəxsi həyət + manqal', 'Paltaryuyan maşın', 'Parklanma yeri', '3 yataq otağı'],
-      en: ['2-Story villa', 'Full kitchen', 'Private yard + BBQ', 'Washing machine', 'Parking spot', '3 Bedrooms'],
-      ru: ['2 этажа', 'Полная кухня', 'Двор + мангал', 'Стиральная машина', 'Парковка', '3 Спальни'],
-    },
-  },
-  {
-    id: 'cot-presidential',
-    category: 'cottage',
-    title: { az: 'Prezident Rezidensiyası', en: 'Presidential Villa', ru: 'Президентская Вилла' },
-    price: '750 AZN',
-    priceNum: 750,
-    size: '220 m²',
-    capacity: { az: '6 Böyük', en: '6 Adults', ru: '6 Взрослых' },
-    images: [
-      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80',
-    ],
-    desc: {
-      az: 'Qapalı çimərlik zonasına çıxışı olan ultra-lüks fərdi rezidensiya. Fərdi hovuz və 24/7 butler xidməti.',
-      en: 'Ultra-luxury beachfront villa with private pool and 24/7 dedicated butler service.',
-      ru: 'Вилла высшего класса с выходом на пляж, личным бассейном и батлером 24/7.',
-    },
-    includes: {
-      az: ['Çimərliyə birбаşa çıxış', 'Şəxsi hovuz + Jacuzzi', '24/7 Butler', 'Hava limanı transferi', 'Şef aşpaz', '4 yataq otağı'],
-      en: ['Direct beach access', 'Private pool + Jacuzzi', '24/7 Butler', 'Airport transfer', 'Personal chef', '4 Bedrooms'],
-      ru: ['Выход к морю', 'Бассейн + Джакузи', 'Батлер 24/7', 'Трансфер из аэропорта', 'Личный повар', '4 Спальни'],
-    },
-  },
-];
+const content = {
+  az: { back: "Geri", book: "İndi Bron Et", includes: "Daxildir", perNight: "/ gecə", notFound: "Otaq tapılmadı" },
+  en: { back: "Back", book: "Book Now", includes: "Includes", perNight: "/ night", notFound: "Room not found" },
+  ru: { back: "Назад", book: "Забронировать", includes: "Включено", perNight: "/ ночь", notFound: "Номер не найден" },
+};
 
-export async function generateStaticParams() {
-  return ALL_ROOMS.map(r => ({ id: r.id }));
-}
+export default function RoomDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const { language } = useLanguage();
+  const l = (language as "az" | "en" | "ru") || "az";
+  const c = content[l];
+  const router = useRouter();
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const room = ALL_ROOMS.find(r => r.id === id);
-  if (!room) return { title: 'Room not found' };
-  return {
-    title: `${room.title.en} — AF Hotel & Aqua Park`,
-    description: room.desc.en,
+  const [room, setRoom] = useState<PublicRoom | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [fav, setFav] = useState(false);
+  const [activeImg, setActiveImg] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    getPublicRoomById(id)
+      .then((data) => {
+        if (!cancelled) {
+          setRoom(data);
+          if (data) setFav(isFavorite(data.id));
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [id]);
+
+  const handleFav = () => {
+    if (!room) return;
+    const next = toggleFavorite(room.id);
+    setFav(next);
   };
-}
 
-export default async function RoomPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const room = ALL_ROOMS.find(r => r.id === id);
-  if (!room) notFound();
-  
-  return <RoomDetail room={room} allRooms={ALL_ROOMS} />;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: "var(--color-hotel-blue)" }} />
+      </div>
+    );
+  }
+
+  if (!room) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center gap-4 text-stone-400">
+        <p className="text-lg font-semibold">{c.notFound}</p>
+        <Link href="/#rooms" className="text-sm underline" style={{ color: "#00b5d5" }}>
+          {c.back}
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen" style={{ background: "var(--color-hotel-light)" }}>
+      <div className="max-w-6xl mx-auto px-6 lg:px-16 py-12 space-y-10">
+        {/* Back */}
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-sm font-semibold text-stone-500 hover:text-[#1e325c] transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {c.back}
+        </button>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Images */}
+          <div className="space-y-3">
+            <div className="relative h-80 rounded-3xl overflow-hidden">
+              <Image
+                src={room.images[activeImg] ?? room.images[0]}
+                alt={room.title[l]}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+                priority
+              />
+              <button
+                onClick={handleFav}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+              >
+                <Heart
+                  className="w-5 h-5"
+                  style={{
+                    fill: fav ? "#e11d48" : "none",
+                    color: fav ? "#e11d48" : "#9ca3af",
+                  }}
+                />
+              </button>
+            </div>
+            {/* Thumbnails */}
+            {room.images.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto">
+                {room.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    className={`relative w-20 h-16 rounded-xl overflow-hidden shrink-0 border-2 transition-colors ${
+                      activeImg === i ? "border-[#00b5d5]" : "border-transparent"
+                    }`}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${room.title[l]} ${i + 1}`}
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Info */}
+          <div className="space-y-6">
+            <div>
+              <span className="text-[#00b5d5] text-[10px] font-bold tracking-widest uppercase block mb-2">
+                {room.category}
+              </span>
+              <h1 className="text-3xl font-bold text-[#1e325c] font-serif">{room.title[l]}</h1>
+            </div>
+
+            <div className="flex items-center gap-6 text-sm text-stone-500">
+              <span className="flex items-center gap-1.5">
+                <Users className="w-4 h-4" />
+                {room.capacity[l]}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Maximize2 className="w-4 h-4" />
+                {room.size}
+              </span>
+            </div>
+
+            <p className="text-sm text-stone-600 leading-relaxed">{room.desc[l]}</p>
+
+            {/* Includes */}
+            <div>
+              <h3 className="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">
+                {c.includes}
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {room.includes[l].map((item) => (
+                  <div key={item} className="flex items-center gap-2 text-xs text-stone-600">
+                    <Check className="w-3.5 h-3.5 shrink-0" style={{ color: "#00b5d5" }} />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Price + Book */}
+            <div className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm flex items-center justify-between">
+              <div>
+                <span className="text-3xl font-bold text-[#1e325c]">{room.price}</span>
+                <span className="text-sm text-stone-400 ml-1">{c.perNight}</span>
+              </div>
+              <Link
+                href={`/booking?room=${room.id}`}
+                className="px-6 py-3 text-white text-sm font-bold rounded-xl transition-opacity hover:opacity-90"
+                style={{ background: "var(--color-hotel-blue)" }}
+              >
+                {c.book}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

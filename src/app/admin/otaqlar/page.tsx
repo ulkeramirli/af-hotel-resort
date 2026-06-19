@@ -1,172 +1,272 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { Plus, Trash2, BedDouble, Loader2 } from "lucide-react";
+import { Plus, Trash2, BedDouble, Loader2, Pencil, X, Check } from "lucide-react";
+import { getRooms, createRoom, updateRoom, deleteRoom } from "@/services/api";
+import type { Room, RoomType } from "@/types/api";
 
-interface Room {
-  id: number;
-  name: string;
-  type: string;
-  status: string;
-}
+const ROOM_TYPES: { value: RoomType; label: string }[] = [
+  { value: "standard", label: "Standart" },
+  { value: "deluxe", label: "Deluxe" },
+  { value: "cottage", label: "Kotec" },
+];
+
+const emptyForm = {
+  name: "",
+  type: "standard" as RoomType,
+  description: "",
+  price: 0,
+  capacity: 2,
+  amenities: "",
+  isAvailable: true,
+};
 
 export default function AdminRoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Поля формы для создания новой комнаты
-  const [roomId, setRoomId] = useState("");
-  const [roomName, setRoomName] = useState("");
-  const [roomType, setRoomType] = useState("");
+  const [editId, setEditId] = useState<string | null>(null);
+  const [form, setForm] = useState(emptyForm);
 
-  // Чистый useEffect: вся логика фетча изолирована внутри, чтобы ESLint не ругался
   useEffect(() => {
-    let isMounted = true;
+    let cancelled = false;
+    getRooms()
+      .then((data) => { if (!cancelled) setRooms(data); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
 
-    async function startFetching() {
-      try {
-        const res = await fetch("/api/bookings", {
-          headers: { "Authorization": "Bearer af-hotel-super-secret-token" }
-        });
-        const data = await res.json();
-        
-        if (isMounted) {
-          setRooms(data.rooms || []);
-        }
-      } catch (err) {
-        console.error("Otaqlar yüklənmədi:", err);
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    }
+  const refresh = () => getRooms().then(setRooms);
 
-    startFetching();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []); // Пустой массив зависимостей — сработает один раз при старте
-
-  const handleCreateRoom = async (e: React.FormEvent) => {
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!roomId || !roomName || !roomType) return alert("Bütün xanaları doldurun!");
-
-    const newRoom = {
-      id: Number(roomId),
-      name: roomName,
-      type: roomType,
-      status: "Boş"
-    };
-
-    // Оптимистичное обновление для мгновенного рендера на экране
-    setRooms(prev => [...prev, newRoom]);
-
-    try {
-      await fetch("/api/rooms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newRoom)
-      });
-      
-      setRoomId("");
-      setRoomName("");
-      setRoomType("");
-    } catch (err) {
-      console.error("Otaq yaradıla bilmədi:", err);
+    if (!form.name || !form.description || !form.price) {
+      alert("Bütün xanaları doldurun!");
+      return;
     }
+    await createRoom({
+      name: form.name,
+      type: form.type,
+      description: form.description,
+      price: Number(form.price),
+      capacity: Number(form.capacity),
+      amenities: form.amenities
+        .split(",")
+        .map((a) => a.trim())
+        .filter(Boolean),
+    });
+    setForm(emptyForm);
+    refresh();
   };
 
-  const handleDeleteRoom = async (id: number) => {
+  const handleUpdate = async (id: string) => {
+    await updateRoom(id, {
+      name: form.name,
+      type: form.type,
+      description: form.description,
+      price: Number(form.price),
+      capacity: Number(form.capacity),
+      amenities: form.amenities
+        .split(",")
+        .map((a) => a.trim())
+        .filter(Boolean),
+      isAvailable: form.isAvailable,
+    });
+    setEditId(null);
+    setForm(emptyForm);
+    refresh();
+  };
+
+  const startEdit = (room: Room) => {
+    setEditId(room._id);
+    setForm({
+      name: room.name,
+      type: room.type,
+      description: room.description,
+      price: room.price,
+      capacity: room.capacity,
+      amenities: room.amenities.join(", "),
+      isAvailable: room.isAvailable,
+    });
+  };
+
+  const handleDelete = async (id: string) => {
     if (!confirm("Bu otağı silmək istədiyinizə əminsiniz?")) return;
-
-    setRooms(prev => prev.filter(r => r.id !== id));
-
-    try {
-      await fetch(`/api/rooms?id=${id}`, { method: "DELETE" });
-    } catch (err) {
-      console.error("Otaq silinmədi:", err);
-    }
+    await deleteRoom(id);
+    refresh();
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[#00b4d8]" />
+        <Loader2
+          className="w-8 h-8 animate-spin"
+          style={{ color: "var(--color-hotel-blue)" }}
+        />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* ФОРМА ДОБАВЛЕНИЯ НОВОЙ КОМНАТЫ */}
-      <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-        <h3 className="font-bold text-gray-800 text-base mb-4 flex items-center gap-2">
-          <Plus className="w-4 h-4 text-[#00b4d8]" /> Yeni Otaq Əlavə Et
+      <div>
+        <h2 className="text-xl font-bold text-[#1e325c]">Otaqların İdarə Edilməsi</h2>
+        <p className="text-xs text-stone-400 mt-1">Mock data — POST/PUT/DELETE /rooms</p>
+      </div>
+
+      {/* FORM */}
+      <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
+        <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
+          <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
+          {editId ? "Otağı Redaktə Et" : "Yeni Otaq Əlavə Et"}
         </h3>
-        <form onSubmit={handleCreateRoom} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <div>
-            <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase">Otaq Nömrəsi</label>
-            <input 
-              type="number" 
-              placeholder="Məsələn: 305" 
-              value={roomId}
-              onChange={e => setRoomId(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#00b4d8] focus:bg-white transition-all"
-            />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (editId) void handleUpdate(editId);
+            else void handleCreate(e);
+          }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
+          <input
+            placeholder="Otaq adı"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+          />
+          <select
+            value={form.type}
+            onChange={(e) => setForm({ ...form, type: e.target.value as RoomType })}
+            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+          >
+            {ROOM_TYPES.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+          <input
+            type="number"
+            placeholder="Qiymət (AZN)"
+            value={form.price || ""}
+            onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+          />
+          <input
+            type="number"
+            placeholder="Tutum (nəfər)"
+            value={form.capacity}
+            onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) })}
+            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+          />
+          <input
+            placeholder="Amenities (vergüllə: Wi-Fi, Jakuzi)"
+            value={form.amenities}
+            onChange={(e) => setForm({ ...form, amenities: e.target.value })}
+            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-2 focus:outline-none focus:border-[#00b5d5]"
+          />
+          <textarea
+            placeholder="Təsvir"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-3 h-20 resize-none focus:outline-none focus:border-[#00b5d5]"
+          />
+          {editId && (
+            <label className="flex items-center gap-2 text-xs font-semibold text-stone-600">
+              <input
+                type="checkbox"
+                checked={form.isAvailable}
+                onChange={(e) => setForm({ ...form, isAvailable: e.target.checked })}
+              />
+              Mövcuddur (isAvailable)
+            </label>
+          )}
+          <div className="flex gap-2 md:col-span-3">
+            <button
+              type="submit"
+              className="px-5 py-2.5 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-opacity hover:opacity-90"
+              style={{ background: "var(--color-hotel-blue)" }}
+            >
+              {editId ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+              {editId ? "Yadda Saxla" : "Otaq Yarat"}
+            </button>
+            {editId && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditId(null);
+                  setForm(emptyForm);
+                }}
+                className="px-5 py-2.5 bg-stone-100 text-stone-600 text-xs font-bold rounded-xl flex items-center gap-2"
+              >
+                <X className="w-4 h-4" /> Ləğv et
+              </button>
+            )}
           </div>
-          <div>
-            <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase">Otağın Adı</label>
-            <input 
-              type="text" 
-              placeholder="Məsələn: Premium Suite 305" 
-              value={roomName}
-              onChange={e => setRoomName(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#00b4d8] focus:bg-white transition-all"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase">Təsvir və Qiymət</label>
-            <input 
-              type="text" 
-              placeholder="Məsələn: 3 nəfər · 160 AZN/gecə" 
-              value={roomType}
-              onChange={e => setRoomType(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#00b4d8] focus:bg-white transition-all"
-            />
-          </div>
-          <button type="submit" className="bg-[#00b4d8] hover:bg-[#0077b6] text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm">
-            Baza Yadda Saxla
-          </button>
         </form>
       </div>
 
-      {/* СПИСОК ВСЕХ КОМНАТ */}
-      <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-        <h3 className="font-bold text-gray-800 text-base mb-4">Sistemdə olan otaqlar ({rooms.length})</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {rooms.map(room => (
-            <div key={room.id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-start group hover:bg-white hover:border-gray-200 transition-all">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <BedDouble className="w-4 h-4 text-gray-400 group-hover:text-[#00b4d8]" />
-                  <h4 className="font-bold text-sm text-gray-800">{room.name}</h4>
-                </div>
-                <p className="text-xs text-gray-400 font-medium">{room.type}</p>
-                <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold mt-2 ${
-                  room.status === "Boş" ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
-                }`}>{room.status}</span>
+      {/* LIST */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {rooms.map((room) => (
+          <div
+            key={room._id}
+            className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex items-center gap-2">
+                <BedDouble
+                  className="w-4 h-4"
+                  style={{ color: "var(--color-hotel-gold)" }}
+                />
+                <h4 className="font-bold text-sm text-[#1e325c]">{room.name}</h4>
               </div>
-              <button 
-                onClick={() => handleDeleteRoom(room.id)}
-                className="p-1.5 text-gray-400 hover:text-rose-500 rounded-lg hover:bg-rose-50 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => startEdit(room)}
+                  className="p-1.5 text-stone-400 hover:text-[#1e325c] rounded-lg hover:bg-stone-50"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleDelete(room._id)}
+                  className="p-1.5 text-stone-400 hover:text-rose-500 rounded-lg hover:bg-rose-50"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-          ))}
-        </div>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5] mb-1">
+              {room.type}
+            </p>
+            <p className="text-xs text-stone-500 line-clamp-2 mb-3">{room.description}</p>
+            <div className="flex flex-wrap gap-1 mb-3">
+              {room.amenities.map((a) => (
+                <span
+                  key={a}
+                  className="text-[10px] px-2 py-0.5 bg-stone-50 border border-stone-100 rounded-full text-stone-500"
+                >
+                  {a}
+                </span>
+              ))}
+            </div>
+            <div className="flex justify-between items-center">
+              <span
+                className="text-sm font-bold"
+                style={{ color: "var(--color-hotel-blue)" }}
+              >
+                {room.price} AZN / gecə
+              </span>
+              <span
+                className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  room.isAvailable
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "bg-rose-50 text-rose-600"
+                }`}
+              >
+                {room.isAvailable ? "Mövcud" : "Dolu"}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

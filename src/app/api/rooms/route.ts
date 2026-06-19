@@ -1,6 +1,7 @@
 import { RoomController } from "@/controllers/room.controller";
 import { connectDB } from "@/lib/db";
 import { authMiddleware } from "@/middleware/auth.middleware";
+
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
     );
   }
 }
+
 export async function GET() {
   await connectDB();
   return RoomController.getAllRooms();
