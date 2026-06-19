@@ -139,6 +139,62 @@ export async function GET() {
             message: { type: "string", example: "Xəta mesajı" },
           },
         },
+        Activity: {
+          type: "object",
+          properties: {
+            _id: { type: "string", example: "64f1a2b3c4d5e6f7a8b9c0d1" },
+            title: { type: "string", example: "Su idman növləri" },
+            description: { type: "string", example: "Hovuzda su idman növləri və əyləncələr" },
+            image: { type: "string", example: "https://.../image.jpg" },
+            category: { type: "string", enum: ["kids", "family", "extreme"], example: "family" },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+          },
+        },
+        Faq: {
+          type: "object",
+          properties: {
+            _id: { type: "string", example: "64f1a2b3c4d5e6f7a8b9c0d2" },
+            question: { type: "string", example: "Otelə giriş saat neçədədir?" },
+            answer: { type: "string", example: "Giriş saat 14:00-dan etibarən mümkündür." },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+          },
+        },
+        Review: {
+          type: "object",
+          properties: {
+            _id: { type: "string", example: "64f1a2b3c4d5e6f7a8b9c0d3" },
+            fullName: { type: "string", example: "Əli Əliyev" },
+            emailOrPhone: { type: "string", example: "ali@example.com" },
+            message: { type: "string", example: "Hər şey çox gözəl idi, təşəkkürlər!" },
+            adminReply: { type: "string", example: "Xoş sözləriniz üçün təşəkkürlər!" },
+            status: { type: "string", enum: ["pending", "approved", "rejected"], example: "approved" },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+          },
+        },
+        About: {
+          type: "object",
+          properties: {
+            _id: { type: "string", example: "64f1a2b3c4d5e6f7a8b9c0d4" },
+            title: { type: "string", example: "Bizim Haqqımızda" },
+            description: { type: "string", example: "Otelin yaranma tarixi və xidmətlərimiz..." },
+            images: { type: "array", items: { type: "string" }, example: ["https://.../img1.jpg", "https://.../img2.jpg"] },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+          },
+        },
+        Ticket: {
+          type: "object",
+          properties: {
+            _id: { type: "string", example: "64f1a2b3c4d5e6f7a8b9c0d5" },
+            name: { type: "string", example: "Aquapark Giriş Bileti" },
+            price: { type: "string", example: "20" },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+          },
+        },
       },
     },
     paths: {
@@ -955,6 +1011,229 @@ export async function GET() {
             },
           },
         },
+      },
+
+      // ─── Activities ───────────────────────────────────────────────────
+      "/activities": {
+        get: {
+          tags: ["Activities"],
+          summary: "Bütün fəaliyyətləri gətir",
+          description: "Kateqoriyaya görə filterasiya etmək mümkündür (?category=kids).",
+          parameters: [
+            {
+              name: "category",
+              in: "query",
+              required: false,
+              description: "Fəaliyyət kateqoriyası (kids, family, extreme)",
+              schema: { type: "string" }
+            }
+          ],
+          responses: {
+            "200": {
+              description: "Uğurlu əməliyyat",
+              content: {
+                "application/json": {
+                  schema: { type: "object", properties: { success: { type: "boolean" }, activities: { type: "array", items: { $ref: "#/components/schemas/Activity" } } } }
+                }
+              }
+            }
+          }
+        },
+        post: {
+          tags: ["Activities"],
+          summary: "Yeni fəaliyyət yarat (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["title", "description", "image", "category"],
+                  properties: {
+                    title: { type: "string" },
+                    description: { type: "string" },
+                    image: { type: "string" },
+                    category: { type: "string", enum: ["kids", "family", "extreme"] }
+                  }
+                }
+              }
+            }
+          },
+          responses: {
+            "201": { description: "Yaradıldı", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, activity: { $ref: "#/components/schemas/Activity" } } } } } }
+          }
+        }
+      },
+      "/activities/{id}": {
+        get: {
+          tags: ["Activities"],
+          summary: "Fəaliyyəti ID-yə görə gətir",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Uğurlu", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, activity: { $ref: "#/components/schemas/Activity" } } } } } } }
+        },
+        put: {
+          tags: ["Activities"],
+          summary: "Fəaliyyəti yenilə (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: { title: { type: "string" }, description: { type: "string" }, image: { type: "string" }, category: { type: "string" } }
+                }
+              }
+            }
+          },
+          responses: { "200": { description: "Yeniləndi", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, activity: { $ref: "#/components/schemas/Activity" } } } } } } }
+        },
+        delete: {
+          tags: ["Activities"],
+          summary: "Fəaliyyəti sil (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Silindi" } }
+        }
+      },
+      // ─── FAQs ─────────────────────────────────────────────────────────
+      "/faqs": {
+        get: {
+          tags: ["FAQs"],
+          summary: "FAQ siyahısını gətir",
+          responses: { "200": { description: "Uğurlu", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, faqs: { type: "array", items: { $ref: "#/components/schemas/Faq" } } } } } } } }
+        },
+        post: {
+          tags: ["FAQs"],
+          summary: "Yeni FAQ yarat (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          requestBody: { required: true, content: { "application/json": { schema: { type: "object", required: ["question", "answer"], properties: { question: { type: "string" }, answer: { type: "string" } } } } } },
+          responses: { "201": { description: "Yaradıldı" } }
+        }
+      },
+      "/faqs/{id}": {
+        get: {
+          tags: ["FAQs"],
+          summary: "FAQ ID-yə görə gətir",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Uğurlu" } }
+        },
+        put: {
+          tags: ["FAQs"],
+          summary: "FAQ yenilə (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { question: { type: "string" }, answer: { type: "string" } } } } } },
+          responses: { "200": { description: "Yeniləndi" } }
+        },
+        delete: {
+          tags: ["FAQs"],
+          summary: "FAQ sil (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Silindi" } }
+        }
+      },
+      // ─── About ────────────────────────────────────────────────────────
+      "/about": {
+        get: {
+          tags: ["About"],
+          summary: "Haqqımızda məlumatını gətir",
+          responses: { "200": { description: "Uğurlu", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, about: { type: "array", items: { $ref: "#/components/schemas/About" } } } } } } } }
+        },
+        patch: {
+          tags: ["About"],
+          summary: "Haqqımızda məlumatını yenilə (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          requestBody: { content: { "application/json": { schema: { type: "object", properties: { title: { type: "string" }, description: { type: "string" }, images: { type: "array", items: { type: "string" } } } } } } },
+          responses: { "200": { description: "Yeniləndi" } }
+        }
+      },
+      // ─── Reviews ──────────────────────────────────────────────────────
+      "/reviews": {
+        get: {
+          tags: ["Reviews"],
+          summary: "Təsdiqlənmiş rəyləri siyahıla",
+          responses: { "200": { description: "Uğurlu", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, totalReviews: { type: "number" }, review: { type: "array", items: { $ref: "#/components/schemas/Review" } } } } } } } }
+        },
+        post: {
+          tags: ["Reviews"],
+          summary: "Yeni rəy yarat",
+          requestBody: { required: true, content: { "application/json": { schema: { type: "object", required: ["fullName", "emailOrPhone", "message"], properties: { fullName: { type: "string" }, emailOrPhone: { type: "string" }, message: { type: "string" } } } } } },
+          responses: { "201": { description: "Yaradıldı" } }
+        }
+      },
+      "/reviews/{id}": {
+        get: {
+          tags: ["Reviews"],
+          summary: "Rəyi gətir",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Uğurlu" } }
+        },
+        put: {
+          tags: ["Reviews"],
+          summary: "Rəyi yenilə / təsdiqlə (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: { content: { "application/json": { schema: { type: "object", properties: { status: { type: "string", enum: ["pending", "approved", "rejected"] }, adminReply: { type: "string" } } } } } },
+          responses: { "200": { description: "Yeniləndi" } }
+        },
+        delete: {
+          tags: ["Reviews"],
+          summary: "Rəyi sil (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Silindi" } }
+        }
+      },
+      // ─── Tickets ──────────────────────────────────────────────────────
+      "/tickets": {
+        get: {
+          tags: ["Tickets"],
+          summary: "Bütün biletləri siyahıla",
+          responses: { "200": { description: "Uğurlu", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, tickets: { type: "array", items: { $ref: "#/components/schemas/Ticket" } } } } } } } }
+        },
+        post: {
+          tags: ["Tickets"],
+          summary: "Yeni bilet yarat (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          requestBody: { required: true, content: { "application/json": { schema: { type: "object", required: ["name", "price"], properties: { name: { type: "string" }, price: { type: "string" } } } } } },
+          responses: { "201": { description: "Yaradıldı" } }
+        }
+      },
+      "/tickets/{id}": {
+        get: {
+          tags: ["Tickets"],
+          summary: "Bileti gətir",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Uğurlu" } }
+        },
+        put: {
+          tags: ["Tickets"],
+          summary: "Bileti yenilə (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: { content: { "application/json": { schema: { type: "object", properties: { name: { type: "string" }, price: { type: "string" } } } } } },
+          responses: { "200": { description: "Yeniləndi" } }
+        },
+        delete: {
+          tags: ["Tickets"],
+          summary: "Bileti sil (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Silindi" } }
+        }
+      },
+      // ─── Dashboard ────────────────────────────────────────────────────
+      "/dashboard": {
+        get: {
+          tags: ["Dashboard"],
+          summary: "Dashboard statistikası (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          responses: { "200": { description: "Uğurlu" } }
+        }
       },
 
       // ─── Upload ───────────────────────────────────────────────────────
