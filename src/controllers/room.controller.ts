@@ -2,8 +2,14 @@ import Room from "@/models/Room";
 import "@/models/User";
 import { NextResponse } from "next/server";
 
+interface UserPayload {
+  id: string;
+  role: string;
+  [key: string]: unknown;
+}
+
 export class RoomController {
-  static async create(req: Request, user: any) {
+  static async create(req: Request, user: UserPayload) {
     try {
       const { name, type, description, price, capacity, images, amenities } =
         await req.json();
@@ -18,6 +24,7 @@ export class RoomController {
         amenities,
         createdBy: user.id,
       });
+
       return NextResponse.json(
         {
           success: true,
@@ -25,20 +32,22 @@ export class RoomController {
         },
         {
           status: 201,
-        },
+        }
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
           success: false,
-          message: error.message,
+          message,
         },
         {
           status: 400,
-        },
+        }
       );
     }
   }
+
   static async getAllRooms() {
     try {
       const rooms = await Room.find().populate("createdBy", "name email");
@@ -50,20 +59,22 @@ export class RoomController {
         },
         {
           status: 200,
-        },
+        }
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
           success: false,
-          message: error.message,
+          message,
         },
         {
           status: 400,
-        },
+        }
       );
     }
   }
+
   static async getById(id: string) {
     try {
       const room = await Room.findById(id).populate("createdBy", "name email");
@@ -75,7 +86,7 @@ export class RoomController {
           },
           {
             status: 404,
-          },
+          }
         );
       }
       return NextResponse.json(
@@ -85,21 +96,23 @@ export class RoomController {
         },
         {
           status: 200,
-        },
+        }
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
           success: false,
-          message: error.message,
+          message,
         },
         {
           status: 400,
-        },
+        }
       );
     }
   }
-  static async update(id: string, body: any) {
+
+  static async update(id: string, body: Record<string, unknown>) {
     try {
       const room = await Room.findByIdAndUpdate(id, body, {
         new: true,
@@ -113,25 +126,27 @@ export class RoomController {
           },
           {
             status: 404,
-          },
+          }
         );
       }
       return NextResponse.json({
         success: true,
         room,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
           success: false,
-          message: error.message,
+          message,
         },
         {
           status: 400,
-        },
+        }
       );
     }
   }
+
   static async delete(id: string) {
     try {
       const room = await Room.findByIdAndDelete(id);
@@ -143,25 +158,28 @@ export class RoomController {
           },
           {
             status: 404,
-          },
+          }
         );
       }
       return NextResponse.json(
         {
           success: true,
-          message: "Roomd deleted successfully",
+          message: "Room deleted successfully",
         },
-        {},
+        {
+          status: 200,
+        }
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
           success: false,
-          message: error.message,
+          message,
         },
         {
           status: 400,
-        },
+        }
       );
     }
   }

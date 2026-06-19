@@ -1,24 +1,12 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import Image from 'next/image';
 
 import { User, Briefcase, Award, Wallet, MessageSquare, Heart, LogOut } from 'lucide-react';
 
 type LangType = 'az' | 'en' | 'ru';
-
-interface GoogleCredentialResponse {
-  credential: string;
-}
-
-interface GoogleAccounts {
-  accounts: {
-    id: {
-      initialize: (config: { client_id: string; callback: (res: GoogleCredentialResponse) => void }) => void;
-      prompt: () => void;
-    };
-  };
-}
 
 const FlagIcon = ({ code }: { code: LangType }) => {
   if (code === 'az') return (
@@ -50,8 +38,7 @@ export default function Header() {
   const [activeNav, setActiveNav] = useState('home');
   const [scrolled, setScrolled] = useState(false);
   
-  const session = null;
-  const status = 'unauthenticated';
+  const { user, signOut } = useAuth();
   const { language, setLanguage } = useLanguage();
   const currentLang = (language as LangType) || 'az';
   
@@ -94,9 +81,6 @@ export default function Header() {
     return () => window.removeEventListener('favoritesUpdated', updateFavCount);
   }, []);
 
-  // Google auth deactivated - no backend configured
-  void status;
-
   useEffect(() => {
     const handleScroll = () => { setScrolled(window.scrollY > 20); };
     window.addEventListener('scroll', handleScroll);
@@ -135,28 +119,25 @@ export default function Header() {
     myAccount: { az: 'Mənim hesabım', en: 'Manage account', ru: 'Мой аккаунт' }[currentLang],
     bookings: { az: 'Rezervasiyalar və səfərlər', en: 'Bookings & Trips', ru: 'Бронирования и поездки' }[currentLang],
     genius: { az: 'Genius loyallıq proqramı', en: 'Genius loyalty programme', ru: 'Программа лояльности Genius' }[currentLang],
-    wallet: { az: 'Mükafatlar və Pul kisəsi', en: 'Rewards & Wallet', ru: 'Вознаграждения и Кошелек' }[currentLang],
+    wallet: { az: 'Müкаfatlar və Pul kisəsi', en: 'Rewards & Wallet', ru: 'Вознаграждения и Кошелек' }[currentLang],
     reviews: { az: 'Rəylər', en: 'Reviews', ru: 'Отзывы' }[currentLang],
     saved: { az: 'Saxlanılanlar', en: 'Saved', ru: 'Сохраненное' }[currentLang],
     logout: { az: 'Çıxış', en: 'Sign out', ru: 'Выйти' }[currentLang]
   };
 
-  // const galleryLabel = { az: 'Qalereya', en: 'Gallery', ru: 'Галерея' }[currentLang];
   const reviewsLabel = { az: 'Rəylər', en: 'Reviews', ru: 'Отзывы' }[currentLang];
   const bookingLabel = { az: 'Rezervasiya', en: 'Booking', ru: 'Бронирование' }[currentLang];
 
-  // Исправлено: Привязали ссылки к объекту перевода texts и локальным переменным
   const navLinks = [
     { id: 'home', href: '#', label: texts.home },
     { id: 'rooms', href: '#rooms', label: texts.rooms },
-    // { id: 'gallery', href: '#gallery', label: galleryLabel },
     { id: 'aquapark', href: '#aquapark', label: texts.aquapark },
     { id: 'dining', href: '#dining', label: texts.dining },
     { id: 'reviews', href: '#reviews', label: reviewsLabel },
     { id: 'booking', href: '#booking', label: bookingLabel },
   ];
 
-  const dropdownItemClass = "w-full flex items-center justify-between px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors duration-150 font-medium text-left first:rounded-t-xl last:rounded-b-xl cursor-pointer border-none bg-transparent outline-none";
+  const dropdownItemClass = "w-full flex items-center gap-3 px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors duration-150 font-medium text-left first:rounded-t-xl last:rounded-b-xl cursor-pointer border-none bg-transparent outline-none";
 
   return (
     <>
@@ -164,13 +145,11 @@ export default function Header() {
         scrolled 
           ? 'bg-white/95 backdrop-blur-md border-b border-stone-200/60 shadow-[0_4px_30px_rgba(0,0,0,0.03)]' 
           : 'bg-white/98 backdrop-blur-xs border-b border-stone-100 shadow-xs'
-      }`}>
-        
+      }`}>        
         <div className="flex items-center select-none transition-transform duration-500 hover:scale-[1.04] active:scale-[0.97] pl-4 md:pl-6">
           <Image src="/loqo-af.png" alt="AF Hotel & Resort" width={160} height={80} priority className="w-28 h-auto sm:w-32 md:w-36 object-contain" />
         </div>
 
-        {/* Исправлено: Заменено navItems на правильный массив navLinks */}
         <nav className="hidden lg:flex items-center space-x-6 text-[11.5px] font-black uppercase tracking-wider text-slate-700">
           {navLinks.map((item) => (
             <div key={item.id} className="relative py-2 group">
@@ -214,20 +193,87 @@ export default function Header() {
             <svg className="w-3.5 h-3.5 stroke-current fill-none" viewBox="0 0 24 24" strokeWidth={2.5}><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
           </a>
 
-          <button 
-              onClick={() => window.location.href = '/login'}
-              className="flex items-center space-x-2.5 px-3.5 py-2.5 bg-white border border-stone-200 hover:border-slate-400 hover:bg-stone-50 text-slate-700 rounded-xl shadow-xs transition-all duration-300 cursor-pointer active:scale-[0.98]"
-            >
-              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114A5.79 5.79 0 0 1 8.2 12.725a5.79 5.79 0 0 1 5.79-5.789c2.497 0 4.549 1.54 5.318 3.712l3.96-3.078C21.107 4.135 17.844 2 13.99 2 8.03 2 3.2 6.83 3.2 12.79s4.83 10.79 10.79 10.79c5.842 0 10.826-4.22 10.826-10.79 0-.703-.06-1.396-.176-2.065l-12.4 1.15z"/>
-                <path fill="#4285F4" d="M24.64 12.925c0-.703-.06-1.396-.176-2.065H12.24V15h6.887a5.55 5.55 0 0 1-2.426 3.514l3.96 3.078c2.316-2.137 3.979-5.283 3.979-8.667z"/>
-                <path fill="#FBBC05" d="M13.99 23.58c3.854 0 7.117-2.135 9.276-5.567l-3.96-3.078a5.75 5.75 0 0 1-5.316 3.579 5.79 5.79 0 0 1-5.79-4.789l-4.062 3.14a10.74 10.74 0 0 0 9.852 6.714z"/>
-                <path fill="#34A853" d="M8.2 12.725c0-.62.083-1.218.238-1.785L4.376 7.8a10.74 10.74 0 0 0 0 9.85l4.062-3.14A5.73 5.73 0 0 1 8.2 12.725z"/>
-              </svg>
-              <span className="text-[11px] font-black uppercase tracking-wider text-slate-800">
-                {texts.login}
-              </span>
-            </button>
+          {/* USER SYSTEM CONTROL */}
+          <div className="relative" ref={menuRef}>
+            {user ? (
+              <>
+                <button
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="flex items-center gap-2 px-3 py-2.5 bg-white border border-stone-200 rounded-xl shadow-xs hover:border-slate-400 hover:bg-stone-50 transition-all duration-300 cursor-pointer active:scale-[0.98]"
+                >
+                  <User className="w-4 h-4 text-slate-700" />
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-800">{user.name || user.email}</span>
+                </button>
+
+                {menuOpen && (
+                  <div className="absolute right-0 mt-2.5 w-72 bg-white rounded-xl border border-stone-200/80 shadow-lg py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <button className={dropdownItemClass}>
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-stone-500" />
+                        <span>{texts.myAccount}</span>
+                      </div>
+                    </button>
+
+                    <button className={dropdownItemClass}>
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="w-4 h-4 text-stone-500" />
+                        <span>{texts.bookings}</span>
+                      </div>
+                    </button>
+
+                    <button className={dropdownItemClass}>
+                      <div className="flex items-center gap-2">
+                        <Award className="w-4 h-4 text-stone-500" />
+                        <span>{texts.genius}</span>
+                      </div>
+                    </button>
+
+                    <button className={dropdownItemClass}>
+                      <div className="flex items-center gap-2">
+                        <Wallet className="w-4 h-4 text-stone-500" />
+                        <span>{texts.wallet}</span>
+                      </div>
+                    </button>
+
+                    <button className={dropdownItemClass}>
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-stone-500" />
+                        <span>{texts.reviews}</span>
+                      </div>
+                    </button>
+
+                    <button className={dropdownItemClass}>
+                      <div className="flex items-center gap-2">
+                        <Heart className="w-4 h-4 text-stone-500" />
+                        <span>{texts.saved}</span>
+                      </div>
+                      <span className="bg-[#00b5d5]/10 text-[#00b5d5] px-2 py-0.5 rounded-md font-black text-[10px]">{favCount}</span>
+                    </button>
+
+                    <button
+                      onClick={() => { signOut(); setMenuOpen(false); }}
+                      className={`${dropdownItemClass} text-red-600 hover:bg-red-50 border-t border-stone-100 mt-1`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <LogOut className="w-4 h-4" />
+                        <span>{texts.logout}</span>
+                      </div>
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <button
+                onClick={() => window.location.href = '/auth/sign-in'}
+                className="flex items-center space-x-2.5 px-3.5 py-2.5 bg-white border border-stone-200 hover:border-slate-400 hover:bg-stone-50 text-slate-700 rounded-xl shadow-xs transition-all duration-300 cursor-pointer active:scale-[0.98]"
+              >
+                <User className="w-4 h-4 shrink-0" />
+                <span className="text-[11px] font-black uppercase tracking-wider text-slate-800">
+                  {texts.login}
+                </span>
+              </button>
+            )}
+          </div>
 
           <button onClick={() => setIsOpen(!isOpen)} className="flex flex-col justify-center items-center w-8 h-8 space-y-1.5 lg:hidden z-50 relative outline-none cursor-pointer bg-transparent border-none">
             <span className={`block w-6 h-0.5 bg-slate-800 transition-all duration-500 ${isOpen ? 'rotate-45 translate-y-2' : ''}`} />
@@ -237,16 +283,16 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Мобильное меню — тоже исправлено на navLinks */}
+      {/* MOBILE MENU */}
       <div className={`fixed inset-0 z-40 bg-white/99 backdrop-blur-xl flex flex-col justify-center items-center transition-all duration-700 lg:hidden ${
         isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
-      }`}>
+      }`}>        
         <nav className="flex flex-col items-center space-y-6 text-center mb-6">
           {navLinks.map((item, index) => (
             <a 
               key={item.id} 
               href={item.href} 
-              onClick={(e) => { setIsOpen(false); handleHomeClick(e, item.id); }} 
+              onClick={() => { setIsOpen(false); }} 
               style={{ 
                 transitionDelay: isOpen ? `${index * 50}ms` : '0ms',
                 transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
@@ -254,7 +300,7 @@ export default function Header() {
               } as React.CSSProperties}
               className={`text-xl font-black tracking-wider transition-all duration-500 ${
                 activeNav === item.id ? 'text-[#00b5d5]' : 'text-slate-800 hover:text-[#00b5d5]'
-              }`}
+              }`}            
             >
               {item.label}
             </a>

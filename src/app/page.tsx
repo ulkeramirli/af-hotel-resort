@@ -7,7 +7,7 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Rooms from "@/components/Rooms";
 import Aquapark from "@/components/Aquapark";
-import Dining from "@/components/Dining";
+import Dining from "@/components/Restoran";
 // import Gallery from "@/components/Gallery";
 import Reviews from "@/components/Reviews";
 import Booking from "@/components/Booking";
