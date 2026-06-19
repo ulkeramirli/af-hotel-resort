@@ -1,20 +1,18 @@
-import Ticket from "@/models/Ticket";
+import Faq from "@/models/Faq";
 import { NextResponse } from "next/server";
 
-export class TicketController {
+export class FaqController {
   static async create(req: Request) {
     const body = await req.json();
-
-    const { name, price } = body;
-
-    const ticket = await Ticket.create({
-      name,
-      price,
+    const { question, answer } = body;
+    const faq = await Faq.create({
+      question,
+      answer,
     });
     return NextResponse.json(
       {
         success: true,
-        ticket,
+        faq,
       },
       {
         status: 201,
@@ -22,46 +20,45 @@ export class TicketController {
     );
   }
   static async getAll() {
-    const tickets = await Ticket.find().sort({
+    const faq = await Faq.find().sort({
       createdAt: -1,
     });
     return NextResponse.json({
       success: true,
-      tickets,
+      faq,
     });
   }
   static async getById(id: string) {
-    const ticket = await Ticket.findById(id);
-
-    if (!ticket) {
-      throw new Error("Ticket not found");
+    const faq = await Faq.findById(id);
+    if (!faq) {
+      throw new Error("FAQ not found");
     }
     return NextResponse.json({
       success: true,
-      ticket,
+      faq,
     });
   }
   static async update(id: string, body: Record<string, unknown>) {
-    const ticket = await Ticket.findByIdAndUpdate(id, body, {
+    const faq = await Faq.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
     });
-    if (!ticket) {
-      throw new Error("Ticket not found");
+    if (!faq) {
+      throw new Error("FAQ not found");
     }
     return NextResponse.json({
       success: true,
-      ticket,
+      faq,
     });
   }
   static async delete(id: string) {
-    const ticket = await Ticket.findByIdAndDelete(id);
-    if (!ticket) {
-      throw new Error("Ticket not found");
+    const faq = await Faq.findByIdAndDelete(id);
+    if (!faq) {
+      throw new Error("FAQ not found");
     }
     return NextResponse.json({
       success: true,
-      message: "Ticket deleted successfully",
+      message: "FAQ deleted succesfully",
     });
   }
 }
