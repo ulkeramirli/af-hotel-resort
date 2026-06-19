@@ -167,6 +167,11 @@ export class RoomController {
     }
   }
   static async getAvailability(roomId: string) {
+    const room = await Room.findById(roomId);
+
+    if (!room) {
+      throw new Error("Room not found");
+    }
     const bookings = await Booking.find({
       room: roomId,
       status: {
@@ -176,7 +181,11 @@ export class RoomController {
 
     return NextResponse.json({
       success: true,
-      bookings,
+      room: {
+        id: room._id,
+        name: room.name,
+      },
+      unavailableDates: bookings,
     });
   }
 }
