@@ -1,6 +1,7 @@
 import Booking from "@/models/Booking";
 import Room from "@/models/Room";
 import "@/models/User";
+import "@/models/RoomType";
 import { NextResponse } from "next/server";
 
 interface UserPayload {
