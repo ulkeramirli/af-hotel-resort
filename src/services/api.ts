@@ -286,18 +286,14 @@ export async function getBookings(): Promise<Booking[]> {
 }
 
 // PATCH /api/bookings/[id] → { success, message, booking }
-// NOTE: backend uses PATCH for status update
-export async function updateBookingStatus(id: string, status: string, notes?: string) {
-  const payload: any = { status };
-  if (notes !== undefined) payload.notes = notes;
-
+export async function updateBooking(id: string, payload: any) {
   const res = await fetch(`${BASE}/bookings/${id}`, {
     method: "PATCH",
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Status yenilənmədi");
+  if (!data.success) throw new Error(data.message || "Bron yenilənmədi");
   return data;
 }
 

@@ -11,7 +11,7 @@ import {
   ShieldAlert,
   Loader2,
 } from "lucide-react";
-import { getDashboardStats, updateBookingStatus } from "@/services/api";
+import { getDashboardStats, updateBooking } from "@/services/api";
 import type { DashboardStats, Booking } from "@/types/api";
 
 export default function DashboardPage() {
@@ -58,7 +58,7 @@ export default function DashboardPage() {
       };
     });
     try {
-      await updateBookingStatus(id, next);
+      await updateBooking(id, { status: next });
       loadData();
     } catch (err: any) {
       loadData();

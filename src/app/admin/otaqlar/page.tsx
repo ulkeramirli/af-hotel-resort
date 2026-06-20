@@ -92,7 +92,7 @@ export default function AdminRoomsPage() {
     setEditRoomId(room._id);
     setRoomForm({
       name: room.name,
-      type: typeof room.type === 'object' ? (room.type as any)._id : room.type,
+      type: room.type ? (typeof room.type === 'object' ? (room.type as any)._id : room.type) : "",
       description: room.description,
       price: room.price,
       capacity: room.capacity,
@@ -341,7 +341,7 @@ export default function AdminRoomsPage() {
                   </div>
                 </div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5] mb-1">
-                  {typeof room.type === 'object' ? (room.type as any).name : room.type}
+                  {room.type ? (typeof room.type === 'object' ? (room.type as any).name : room.type) : "Kateqoriya silinib"}
                 </p>
                 <p className="text-xs text-stone-500 line-clamp-2 mb-3">{room.description}</p>
                 <div className="flex flex-wrap gap-1 mb-3">

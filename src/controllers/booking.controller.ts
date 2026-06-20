@@ -125,29 +125,49 @@ export class BookingController {
   static async updateStatus(id: string, req: Request) {
     const body = await req.json();
 
-    const { status, notes } = body;
-
-    if (!["pending", "confirmed", "cancelled"].includes(status)) {
-      throw new Error("Invalid status");
-    }
+    const { status, notes, room, checkIn, checkOut, guestName, email, phone } = body;
 
     const booking = await Booking.findById(id).populate("room");
 
     if (!booking) {
       throw new Error("Booking not found");
     }
-    console.log("BODY:", body);
-    console.log("NOTES:", notes);
-    booking.status = status;
-    if (notes !== undefined) {
-      booking.notes = notes;
+
+    if (status) {
+      if (!["pending", "confirmed", "cancelled"].includes(status)) {
+        throw new Error("Invalid status");
+      }
+      booking.status = status;
     }
+
+    if (notes !== undefined) booking.notes = notes;
+    if (room !== undefined) booking.room = room;
+    if (checkIn !== undefined) booking.checkIn = new Date(checkIn);
+    if (checkOut !== undefined) booking.checkOut = new Date(checkOut);
+    if (guestName !== undefined) booking.guestName = guestName;
+    if (email !== undefined) booking.email = email;
+    if (phone !== undefined) booking.phone = phone;
+
+    if (room || checkIn || checkOut) {
+       const conflictBooking = await Booking.findOne({
+         _id: { $ne: id },
+         room: booking.room ? (typeof booking.room === "object" ? (booking.room as any)._id : booking.room) : null,
+         status: { $ne: "cancelled" },
+         checkIn: { $lt: booking.checkOut },
+         checkOut: { $gt: booking.checkIn },
+       });
+       if (conflictBooking) throw new Error("Seçilmiş tarixlərdə bu otaq artıq doludur (Conflict)");
+    }
+
     await booking.save();
-    console.log("BOOKING AFTER SAVE:", booking);
+    await booking.populate("room");
+    
+    const roomName = booking.room ? booking.room.name : "Silinmiş otaq";
+
     if (status === "confirmed") {
       const mail = bookingConfirmedEmail(
         booking.guestName,
-        booking.room.name,
+        roomName,
         booking.checkIn,
         booking.checkOut,
       );
@@ -157,7 +177,7 @@ export class BookingController {
     if (status === "cancelled") {
       const mail = bookingCancelledEmail(
         booking.guestName,
-        booking.room.name,
+        roomName,
         booking.checkIn,
         booking.checkOut,
       );
