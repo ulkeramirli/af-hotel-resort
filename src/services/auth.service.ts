@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { generateOtp } from "@/lib/generate-otp";
 import { sendMail } from "@/lib/send-email";
 import { verifyEmailTemplate } from "@/lib/emails/verify-email";
+import { forgotPasswordTemplate } from "@/lib/emails/forgot-password";
 export class AuthService {
   static async register(name: string, email: string, password: string) {
     const existingUser = await User.findOne({ email });
@@ -81,6 +82,43 @@ export class AuthService {
     await user.save();
     return {
       message: "Email verified successfully",
+    };
+  }
+  static async forgotPassword(email: string) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const otp = generateOtp();
+    user.otp = otp;
+    user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+    const mail = forgotPasswordTemplate(user.name, otp);
+    await sendMail(user.email, mail.subject, mail.html);
+    return {
+      message: "Password reset code sent to email",
+    };
+  }
+  static async resetPassword(email: string, otp: string, newPassword: string) {
+    const user = await User.findOne({
+      email,
+    });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (user.otp !== otp) {
+      throw new Error("Invalid OTP");
+    }
+    if (user.otpExpires < new Date()) {
+      throw new Error("OTP expired");
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.otp = null;
+    user.otpExpires = null;
+    await user.save();
+    return {
+      message: "Password reset successfully",
     };
   }
 }
