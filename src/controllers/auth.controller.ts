@@ -42,7 +42,27 @@ export class AuthController {
         {
           status: 400,
         },
-      );  
+      );
+    }
+  }
+  static async verifyOTP(req: Request) {
+    try {
+      const { email, otp } = await req.json();
+      const result = await AuthService.verifyOTP(email, otp);
+      return NextResponse.json({
+        success: true,
+        data: result,
+      });
+    } catch (error: any) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: error.message,
+        },
+        {
+          status: 400,
+        },
+      );
     }
   }
 }
