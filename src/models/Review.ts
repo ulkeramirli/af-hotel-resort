@@ -4,15 +4,15 @@ const reviewSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
-      require: true,
+      required: true,
     },
     emailOrPhone: {
       type: String,
-      require: true,
+      required: true,
     },
     message: {
       type: String,
-      require: true,
+      required: true,
     },
     adminReply: {
       type: String,

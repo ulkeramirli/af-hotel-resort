@@ -4,20 +4,20 @@ const activitySchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      require: true,
+      required: true,
     },
     description: {
       type: String,
-      require: true,
+      required: true,
     },
     image: {
       type: String,
-      require: true,
+      required: true,
     },
     category: {
-      type: String,
-      enum: ["kids", "family", "extreme"],
-      require: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ActivityCategory",
+      required: true,
     },
   },
   {

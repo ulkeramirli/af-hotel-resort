@@ -4,11 +4,11 @@ const ticketSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: true,
+      required: true,
     },
     price: {
       type: String,
-      require: true,
+      required: true,
     },
   },
   {

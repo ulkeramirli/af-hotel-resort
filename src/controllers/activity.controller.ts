@@ -1,4 +1,5 @@
 import Activity from "@/models/Activity";
+import "@/models/ActivityCategory";
 import { NextResponse } from "next/server";
 
 export class ActivityController {
@@ -28,7 +29,7 @@ export class ActivityController {
 
     const filter = category ? { category } : {};
 
-    const activities = await Activity.find(filter).sort({
+    const activities = await Activity.find(filter).populate("category").sort({
       createdAt: -1,
     });
 
@@ -38,7 +39,7 @@ export class ActivityController {
     });
   }
   static async getById(id: string) {
-    const activity = await Activity.findById(id);
+    const activity = await Activity.findById(id).populate("category");
     if (!activity) {
       throw new Error("Activity not found");
     }

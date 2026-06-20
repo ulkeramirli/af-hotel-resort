@@ -4,8 +4,8 @@ const roomSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     type: {
-      type: String,
-      enum: ["Single", "Single Double", "Single Twin", "Apartment for 4"],
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RoomType",
       required: true,
     },
     description: { type: String, required: true },

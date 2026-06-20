@@ -51,7 +51,9 @@ export class RoomController {
 
   static async getAllRooms() {
     try {
-      const rooms = await Room.find().populate("createdBy", "name email");
+      const rooms = await Room.find()
+        .populate("createdBy", "name email")
+        .populate("type");
 
       return NextResponse.json(
         {
@@ -78,7 +80,9 @@ export class RoomController {
 
   static async getById(id: string) {
     try {
-      const room = await Room.findById(id).populate("createdBy", "name email");
+      const room = await Room.findById(id)
+        .populate("createdBy", "name email")
+        .populate("type");
       if (!room) {
         return NextResponse.json(
           {
