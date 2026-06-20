@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   await connectDB();
-  return BookingController.getAll();
+  return BookingController.getAll(req);
 }

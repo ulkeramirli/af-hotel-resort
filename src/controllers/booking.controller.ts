@@ -74,7 +74,7 @@ export class BookingController {
       checkIn,
       checkOut,
     );
-    
+
     await sendMail(process.env.HOTEL_EMAIL!, adminMail.subject, adminMail.html);
     return NextResponse.json({
       success: true,
@@ -85,12 +85,25 @@ export class BookingController {
     });
   }
 
-  static async getAll() {
-    const bookings = await Booking.find().populate("room");
-
+  static async getAll(req: Request) {
+    const { searchParams } = new URL(req.url);
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 10;
+    const skip = (page - 1) * limit;
+    const total = await Booking.countDocuments();
+    const bookings = await Booking.find()
+      .populate("room")
+      .sort({
+        createdAt: -1,
+      })
+      .skip(skip)
+      .limit(limit);
     return NextResponse.json({
       success: true,
-
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
       bookings,
     });
   }
