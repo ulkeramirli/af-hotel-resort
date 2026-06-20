@@ -1,3 +1,4 @@
+import { authMiddleware } from "@/middleware/auth.middleware";
 import { AuthService } from "@/services/auth.service";
 import { NextResponse } from "next/server";
 
@@ -89,6 +90,32 @@ export class AuthController {
     try {
       const { email, otp, newPassword } = await req.json();
       const result = await AuthService.resetPassword(email, otp, newPassword);
+      return NextResponse.json({
+        success: true,
+        data: result,
+      });
+    } catch (error: any) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: error.message,
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+  }
+  static async changePassword(req: Request) {
+    try {
+      const user = authMiddleware(req) as any;
+      const { currentPassword, newPassword } = await req.json();
+      const result = await AuthService.changePassword(
+        user.id,
+        currentPassword,
+        newPassword,
+      );
+
       return NextResponse.json({
         success: true,
         data: result,
