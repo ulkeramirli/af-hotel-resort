@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export default function Booking() {
   const { language } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
-  const session = null;
+  const session: any = null;
   
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);

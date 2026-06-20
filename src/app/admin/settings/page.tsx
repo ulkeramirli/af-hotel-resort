@@ -1,56 +1,63 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { Palette, Save, Loader2, CheckCircle2, Phone, Mail, Type } from "lucide-react";
+import { Save, Loader2, CheckCircle2, Phone, Mail, MapPin, Link as LinkIcon } from "lucide-react";
+import { getSettings, updateSettings } from "@/services/api";
+import type { Settings } from "@/types/api";
 
-export default function SuperAdminConfigPage() {
-  const [form, setForm] = useState({
-    hotelName: "",
-    themeColor: "#00b4d8",
-    backgroundColor: "#ffffff",
-    heroTitle: "",
-    heroSubtitle: "",
-    contactPhone: "",
-    contactEmail: ""
-  });
+const defaultSettings: Settings = {
+  hotelName: "",
+  phone: "",
+  email: "",
+  address: "",
+  instagram: "",
+  facebook: "",
+  tiktok: "",
+  googleMapsLink: "",
+  reception: "",
+  aquapark: "",
+  dining: ""
+};
+
+export default function AdminSettingsPage() {
+  const [form, setForm] = useState<Settings>(defaultSettings);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/settings")
-      .then(res => res.json())
+    getSettings()
       .then(data => {
         if (data) setForm(data);
-        setLoading(false);
-      }).catch(() => setLoading(false));
+      })
+      .catch(err => setError(err.message || "Tənzimləmələr yüklənərkən xəta baş verdi"))
+      .finally(() => setLoading(false));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setError(null);
     try {
-      const res = await fetch("/api/admin/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
-      });
-      if (res.ok) {
-        setSuccess(true);
-        setTimeout(() => setSuccess(false), 3000);
-      }
-    } catch (err) {
-      console.error(err);
+      await updateSettings(form);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err: any) {
+      setError(err.message || "Yadda saxlanılarkən xəta baş verdi");
     } finally {
       setSaving(false);
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   if (loading) {
     return (
       <div className="py-20 flex flex-col items-center justify-center gap-2">
-        <Loader2 className="w-6 h-6 animate-spin text-[#00b4d8]" />
-        <p className="text-xs text-gray-400">Konstruktor yüklənir...</p>
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "var(--color-hotel-blue)" }} />
+        <p className="text-xs text-stone-400">Tənzimləmələr yüklənir...</p>
       </div>
     );
   }
@@ -58,63 +65,90 @@ export default function SuperAdminConfigPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h2 className="text-lg font-bold text-gray-800">No-Code Sayt Konstruktoru</h2>
-        <p className="text-xs text-gray-400">VS Code açmadan saytın dizaynını, mətnlərini və əlaqə məlumatlarını idarə edin</p>
+        <h2 className="text-xl font-bold text-[#1e325c]">Tənzimləmələr</h2>
+        <p className="text-xs text-stone-400 mt-1">Otel məlumatları, əlaqə və sosial şəbəkələr</p>
       </div>
 
       {success && (
         <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center gap-2 text-emerald-600 text-xs font-bold">
           <CheckCircle2 className="w-4 h-4" />
-          <span>Dizayn və mətnlər real vaxt rejimində yeniləndi!</span>
+          <span>Məlumatlar uğurla yeniləndi!</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-xs font-bold">
+          {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Vizual Görünüş</h3>
+        {/* Ümumi Məlumatlar */}
+        <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm space-y-4">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">Ümumi Məlumatlar</h3>
+          
           <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><Type className="w-3.5 h-3.5" /> Otel Adı</label>
-            <input type="text" value={form.hotelName} onChange={e => setForm({...form, hotelName: e.target.value})} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#00b4d8]" />
+            <label className="text-xs font-bold text-stone-500">Otel Adı</label>
+            <input type="text" name="hotelName" value={form.hotelName} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
           </div>
-          <div className="grid grid-cols-2 gap-4 pt-2">
-            <div>
-              <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><Palette className="w-3.5 h-3.5" /> Əsas Rəng</label>
-              <input type="color" value={form.themeColor} onChange={e => setForm({...form, themeColor: e.target.value})} className="w-full h-10 mt-1 rounded-xl cursor-pointer bg-transparent" />
-            </div>
-            <div>
-              <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><Palette className="w-3.5 h-3.5" /> Fon Rəngi</label>
-              <input type="color" value={form.backgroundColor} onChange={e => setForm({...form, backgroundColor: e.target.value})} className="w-full h-10 mt-1 rounded-xl cursor-pointer bg-transparent" />
-            </div>
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-stone-500 flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" /> Əsas Telefon</label>
+            <input type="text" name="phone" value={form.phone} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-stone-500 flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> Email</label>
+            <input type="email" name="email" value={form.email} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-stone-500 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> Ünvan</label>
+            <input type="text" name="address" value={form.address} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-stone-500">Google Maps Linki</label>
+            <input type="text" name="googleMapsLink" value={form.googleMapsLink} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Başlıq mətnləri (Hero Section)</h3>
+        {/* Daxili Nömrələr */}
+        <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm space-y-4">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">Daxili Nömrələr</h3>
+          
           <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-500">Əsas Böyük Başlıq</label>
-            <input type="text" value={form.heroTitle} onChange={e => setForm({...form, heroTitle: e.target.value})} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none" />
+            <label className="text-xs font-bold text-stone-500">Resepşn</label>
+            <input type="text" name="reception" value={form.reception} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-500">Alt Mətn (Subtitle)</label>
-            <textarea value={form.heroSubtitle} onChange={e => setForm({...form, heroSubtitle: e.target.value})} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none h-20 resize-none" />
+            <label className="text-xs font-bold text-stone-500">Aquapark</label>
+            <input type="text" name="aquapark" value={form.aquapark} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-stone-500">Restoran & Şadlıq Sarayı</label>
+            <input type="text" name="dining" value={form.dining} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4 md:col-span-2">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Əlaqə Məlumatları</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Sosial Şəbəkələr */}
+        <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm space-y-4 md:col-span-2">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">Sosial Şəbəkələr</h3>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" /> Telefon</label>
-              <input type="text" value={form.contactPhone} onChange={e => setForm({...form, contactPhone: e.target.value})} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium" />
+              <label className="text-xs font-bold text-stone-500 flex items-center gap-1.5"><LinkIcon className="w-3.5 h-3.5" /> Instagram</label>
+              <input type="text" name="instagram" value={form.instagram} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-bold text-gray-500 flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> Email</label>
-              <input type="email" value={form.contactEmail} onChange={e => setForm({...form, contactEmail: e.target.value})} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium" />
+              <label className="text-xs font-bold text-stone-500 flex items-center gap-1.5"><LinkIcon className="w-3.5 h-3.5" /> Facebook</label>
+              <input type="text" name="facebook" value={form.facebook} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-stone-500 flex items-center gap-1.5"><LinkIcon className="w-3.5 h-3.5" /> TikTok</label>
+              <input type="text" name="tiktok" value={form.tiktok} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
             </div>
           </div>
-          <button type="submit" disabled={saving} className="w-full mt-4 py-2.5 bg-[#00b4d8] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-transform active:scale-95">
+          
+          <button type="submit" disabled={saving} className="w-full mt-6 py-3 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-opacity hover:opacity-90 disabled:opacity-50" style={{ background: "var(--color-hotel-blue)" }}>
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            <span>Dizaynı və Mətnləri Canlı Yenilə</span>
+            <span>Yadda Saxla</span>
           </button>
         </div>
       </form>

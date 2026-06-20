@@ -11,103 +11,82 @@ import {
   ShieldAlert,
   Loader2,
 } from "lucide-react";
-import {
-  getDashboardData,
-  updateBookingStatus,
-  markMessageRead,
-} from "@/services/api";
-import type { Booking } from "@/types/api";
-
-interface DashBooking {
-  id: string;
-  guest: string;
-  room: string;
-  date: string;
-  status: string;
-}
-
-interface DashRoom {
-  id: string;
-  name: string;
-  type: string;
-  status: string;
-}
-
-interface DashMessage {
-  id: string;
-  name: string;
-  text: string;
-  time: string;
-  initials: string;
-  unread: boolean;
-}
+import { getDashboardStats, updateBookingStatus } from "@/services/api";
+import type { DashboardStats, Booking } from "@/types/api";
 
 export default function DashboardPage() {
-  const [bookings, setBookings] = useState<DashBooking[]>([]);
-  const [rooms, setRooms] = useState<DashRoom[]>([]);
-  const [messages, setMessages] = useState<DashMessage[]>([]);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState("Hamısı");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentTime, setCurrentTime] = useState("");
 
-  useEffect(() => {
-    let cancelled = false;
-    getDashboardData()
-      .then((data) => {
-        if (cancelled) return;
-        setBookings(data.bookings ?? []);
-        setRooms(data.rooms ?? []);
-        setMessages(data.messages ?? []);
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Xəta");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => { cancelled = true; };
-  }, []);
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getDashboardStats();
+      setStats(data);
+    } catch (err: any) {
+      setError(err.message || "Xəta baş verdi");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { loadData(); }, []);
 
   useEffect(() => {
     const tick = () =>
-      setCurrentTime(
-        new Date().toLocaleTimeString("az-AZ", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        })
-      );
+      setCurrentTime(new Date().toLocaleTimeString("az-AZ", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
     tick();
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
   }, []);
 
   const toggleBookingStatus = async (id: string, currentStatus: string) => {
-    const statuses = ["Gözləyir", "Təsdiqlənib", "Ləğv edilib"] as const;
-    const next = statuses[(statuses.indexOf(currentStatus as typeof statuses[number]) + 1) % statuses.length];
-    setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status: next } : b)));
-    await updateBookingStatus(id, next as Booking["status"]);
+    const statuses = ["pending", "confirmed", "cancelled"] as const;
+    const next = statuses[(statuses.indexOf(currentStatus as any) + 1) % statuses.length];
+    setStats((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        recentBookings: prev.recentBookings?.map((b) =>
+          b._id === id ? { ...b, status: next } : b
+        ),
+      };
+    });
+    try {
+      await updateBookingStatus(id, next);
+      loadData();
+    } catch (err: any) {
+      loadData();
+    }
   };
 
-  const readMessage = async (id: string) => {
-    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, unread: false } : m)));
-    await markMessageRead(id);
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "pending": return "Gözləyir";
+      case "confirmed": return "Təsdiqlənib";
+      case "cancelled": return "Ləğv edilib";
+      default: return status;
+    }
   };
 
-  const filteredBookings = bookings.filter((b) => {
-    const matchFilter = activeFilter === "Hamısı" || b.status === activeFilter;
+  const statusMap: Record<string, string> = {
+    "Gözləyir": "pending",
+    "Təsdiqlənib": "confirmed",
+    "Ləğv edilib": "cancelled",
+  };
+
+  const filteredBookings = (stats?.recentBookings || []).filter((b) => {
+    const matchFilter = activeFilter === "Hamısı" || b.status === statusMap[activeFilter];
     const matchSearch =
-      b.guest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      b.room.toLowerCase().includes(searchQuery.toLowerCase());
+      b.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (b.room?.name || "").toLowerCase().includes(searchQuery.toLowerCase());
     return matchFilter && matchSearch;
   });
-
-  const confirmed = bookings.filter((b) => b.status === "Təsdiqlənib").length;
-  const revenue = bookings
-  .filter((b) => b.status === "Təsdiqlənib")
-  .reduce((s) => s + 140, 0)
 
   return (
     <div className="space-y-6">
@@ -119,9 +98,7 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-2xl border border-stone-100 shadow-sm gap-4">
         <div className="flex items-center gap-2 text-sm text-stone-500 font-medium">
           <Clock className="w-4 h-4" style={{ color: "var(--color-hotel-blue)" }} />
-          <span>
-            Canlı: <strong className="text-[#1e325c]">{currentTime || "..."}</strong>
-          </span>
+          <span>Canlı: <strong className="text-[#1e325c]">{currentTime || "..."}</strong></span>
         </div>
         <div className="relative w-full sm:w-72">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
@@ -137,10 +114,10 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {[
-          { label: "Təsdiqlənmiş bronlar", value: loading ? "..." : confirmed, sub: "Bu ay", up: true },
-          { label: "Boş otaqlar", value: loading ? "..." : rooms.filter((r) => r.status === "Boş").length, sub: `${rooms.length} otaqdan`, up: false },
-          { label: "Dövriyyə", value: loading ? "..." : `${revenue} AZN`, sub: "Təsdiqlənmişlər", up: true },
-          { label: "Oxunmamış", value: loading ? "..." : messages.filter((m) => m.unread).length, sub: "Mesajlar", up: false, danger: true },
+          { label: "Təsdiqlənmiş bronlar", value: loading ? "..." : stats?.confirmedBookings ?? 0, sub: "Ümumi", up: true },
+          { label: "Gözləyən bronlar", value: loading ? "..." : stats?.pendingBookings ?? 0, sub: "Təsdiq gözləyən", up: false, danger: (stats?.pendingBookings ?? 0) > 0 },
+          { label: "Otaq Doluluğu", value: loading ? "..." : `${stats?.occupancyRate ?? 0}%`, sub: `${stats?.totalRooms ?? 0} otaqdan`, up: true },
+          { label: "Dövriyyə", value: loading ? "..." : `${stats?.totalRevenue ?? 0} AZN`, sub: "Təsdiqlənmişlər", up: true },
         ].map((card) => (
           <div key={card.label} className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
             <p className="text-xs font-semibold text-stone-400 mb-1">{card.label}</p>
@@ -158,14 +135,12 @@ export default function DashboardPage() {
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <h3 className="font-bold text-[#1e325c]">Son bronlar</h3>
-              <div className="flex gap-1.5 bg-stone-50 p-1 rounded-xl">
+              <div className="flex gap-1.5 bg-stone-50 p-1 rounded-xl overflow-x-auto whitespace-nowrap">
                 {["Hamısı", "Gözləyir", "Təsdiqlənib", "Ləğv edilib"].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveFilter(tab)}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                      activeFilter === tab ? "text-white" : "text-stone-500"
-                    }`}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeFilter === tab ? "text-white" : "text-stone-500"}`}
                     style={activeFilter === tab ? { background: "var(--color-hotel-blue)" } : undefined}
                   >
                     {tab}
@@ -185,7 +160,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
+                <table className="w-full text-left text-sm min-w-[500px]">
                   <thead>
                     <tr className="border-b border-stone-100 text-xs text-stone-400 uppercase">
                       <th className="pb-3">Qonaq</th>
@@ -195,99 +170,83 @@ export default function DashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-stone-50">
-                    {filteredBookings.map((b) => (
-                      <tr key={b.id} className="hover:bg-stone-50/50">
-                        <td className="py-3 flex items-center gap-2">
-                          <User className="w-3.5 h-3.5 text-stone-400" />
-                          {b.guest}
-                        </td>
-                        <td className="py-3 text-stone-500">{b.room}</td>
-                        <td className="py-3 text-stone-500 text-xs">{b.date}</td>
-                        <td className="py-3 text-right">
-                          <button
-                            onClick={() => toggleBookingStatus(b.id, b.status)}
-                            className={`px-2.5 py-1 rounded-full text-xs font-semibold cursor-pointer ${
-                              b.status === "Təsdiqlənib"
-                                ? "bg-emerald-50 text-emerald-600"
-                                : b.status === "Gözləyir"
-                                ? "bg-amber-50 text-amber-600"
-                                : "bg-rose-50 text-rose-600"
-                            }`}
-                          >
-                            {b.status}
-                          </button>
-                        </td>
+                    {filteredBookings.length > 0 ? (
+                      filteredBookings.map((b) => (
+                        <tr key={b._id} className="hover:bg-stone-50/50">
+                          <td className="py-3 flex items-center gap-2">
+                            <User className="w-3.5 h-3.5 text-stone-400" />
+                            {b.guestName}
+                          </td>
+                          <td className="py-3 text-stone-500">{b.room?.name || "Bilinmir"}</td>
+                          <td className="py-3 text-stone-500 text-xs">
+                            {new Date(b.checkIn).toLocaleDateString("az-AZ")} → {new Date(b.checkOut).toLocaleDateString("az-AZ")}
+                          </td>
+                          <td className="py-3 text-right">
+                            <button
+                              onClick={() => toggleBookingStatus(b._id, b.status)}
+                              className={`px-2.5 py-1 rounded-full text-xs font-semibold cursor-pointer ${
+                                b.status === "confirmed" ? "bg-emerald-50 text-emerald-600" :
+                                b.status === "pending" ? "bg-amber-50 text-amber-600" :
+                                "bg-rose-50 text-rose-600"
+                              }`}
+                            >
+                              {getStatusLabel(b.status)}
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} className="py-6 text-center text-stone-400 text-sm">Bron tapılmadı</td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
             )}
           </div>
-
-          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
-            <h3 className="font-bold text-[#1e325c] mb-4">Son mesajlar</h3>
-            <div className="space-y-3">
-              {messages.map((m) => (
-                <div
-                  key={m.id}
-                  onClick={() => m.unread && readMessage(m.id)}
-                  className={`flex gap-3 p-3 rounded-xl cursor-pointer ${
-                    m.unread ? "bg-blue-50/60 border border-blue-100" : "hover:bg-stone-50"
-                  }`}
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
-                    style={{ background: m.unread ? "var(--color-hotel-blue)" : "#a8a29e" }}
-                  >
-                    {m.initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#1e325c]">{m.name}</p>
-                    <p className="text-xs text-stone-500 truncate">{m.text}</p>
-                  </div>
-                  <span className="text-xs text-stone-400 shrink-0">{m.time}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
-            <h3 className="font-bold text-[#1e325c] mb-4">Otaqlar</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {rooms.map((r) => (
-                <div key={r.id} className="p-3 bg-stone-50 rounded-xl border border-stone-100">
-                  <h4 className="font-bold text-xs text-[#1e325c]">{r.name}</h4>
-                  <p className="text-[10px] text-stone-400">{r.type}</p>
-                  <span
-                    className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      r.status === "Boş" ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
-                    }`}
-                  >
-                    {r.status}
-                  </span>
-                </div>
-              ))}
+            <h3 className="font-bold text-[#1e325c] mb-4">Ən Populyar Otaqlar</h3>
+            <div className="space-y-3">
+              {stats?.topRooms && stats.topRooms.length > 0 ? (
+                stats.topRooms.map((r, idx) => (
+                  <div key={idx} className="flex justify-between items-center p-3 bg-stone-50 rounded-xl border border-stone-100">
+                    <div>
+                      <h4 className="font-bold text-xs text-[#1e325c]">{r.name}</h4>
+                      <p className="text-[10px] text-stone-400">{r.type}</p>
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">
+                      {r.count} bron
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-stone-400 text-center py-4">Kifayət qədər məlumat yoxdur</p>
+              )}
             </div>
           </div>
 
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-[#1e325c]">Həftəlik bronlar</h3>
+              <h3 className="font-bold text-[#1e325c]">Statistika Xülasəsi</h3>
               <Sparkles className="w-4 h-4 text-emerald-500" />
             </div>
-            <div className="flex items-end justify-between h-24 gap-1">
-              {[40, 70, 30, 85, 55].map((h, i) => (
-                <div key={i} className="flex flex-col items-center gap-1 flex-1">
-                  <div
-                    className="w-full rounded-md transition-all"
-                    style={{ height: `${h}%`, background: i === 4 ? "var(--color-hotel-blue)" : "rgba(0,70,147,0.25)" }}
-                  />
-                  <span className="text-[9px] text-stone-400">{["B", "Ç", "C", "C.a", "C"][i]}</span>
-                </div>
-              ))}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center border-b border-stone-50 pb-2">
+                <span className="text-sm text-stone-500">Ümumi Rəylər</span>
+                <span className="font-bold text-[#1e325c]">{stats?.totalReviews ?? 0}</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-stone-50 pb-2">
+                <span className="text-sm text-stone-500">Bu Ay Bronlar</span>
+                <span className="font-bold text-[#1e325c]">{stats?.monthlyBookings ?? 0}</span>
+              </div>
+              <div className="flex justify-between items-center pb-2">
+                <span className="text-sm text-stone-500">Ləğv Edilmişlər</span>
+                <span className="font-bold text-[#1e325c]">{stats?.cancelledBookings ?? 0}</span>
+              </div>
             </div>
           </div>
         </div>

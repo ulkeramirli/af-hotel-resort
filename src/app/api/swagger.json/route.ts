@@ -195,6 +195,65 @@ export async function GET() {
             updatedAt: { type: "string", format: "date-time" },
           },
         },
+        ActivityCategory: {
+          type: "object",
+          properties: {
+            _id: { type: "string", example: "64f1a2b3c4d5e6f7a8b9c0d6" },
+            name: { type: "string", example: "Su Fəaliyyətləri" },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+          },
+        },
+        RoomType: {
+          type: "object",
+          properties: {
+            _id: { type: "string", example: "64f1a2b3c4d5e6f7a8b9c0d7" },
+            name: { type: "string", example: "Deluxe Süit" },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+          },
+        },
+        Settings: {
+          type: "object",
+          properties: {
+            _id: { type: "string" },
+            hotelName: { type: "string", example: "AF Hotel & Resort" },
+            phone: { type: "string", example: "+994501234567" },
+            email: { type: "string", example: "info@afhotel.az" },
+            address: { type: "string", example: "Bakı, Azərbaycan" },
+            instagram: { type: "string", example: "https://instagram.com/afhotel" },
+            facebook: { type: "string", example: "https://facebook.com/afhotel" },
+            tiktok: { type: "string", example: "https://tiktok.com/@afhotel" },
+            googleMapsLink: { type: "string", example: "https://maps.google.com/..." },
+            reception: { type: "string", example: "+994121234567" },
+            aquapark: { type: "string", example: "+994121234568" },
+            dining: { type: "string", example: "+994121234569" },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+          },
+        },
+        DashboardStats: {
+          type: "object",
+          properties: {
+            success: { type: "boolean" },
+            stats: {
+              type: "object",
+              properties: {
+                totalRooms: { type: "number", example: 48 },
+                totalBookings: { type: "number", example: 312 },
+                pendingBookings: { type: "number", example: 15 },
+                confirmedBookings: { type: "number", example: 280 },
+                cancelledBookings: { type: "number", example: 17 },
+                occupancyRate: { type: "number", example: 90 },
+                totalRevenue: { type: "number", example: 45600 },
+                totalReviews: { type: "number", example: 94 },
+                monthlyBookings: { type: "number", example: 42 },
+              },
+            },
+            recentBookings: { type: "array", items: { $ref: "#/components/schemas/Booking" } },
+            topRooms: { type: "array", items: { type: "object" } },
+          },
+        },
       },
     },
     paths: {
@@ -322,6 +381,85 @@ export async function GET() {
             },
           },
         },
+      },
+
+      "/auth/verify-otp": {
+        post: {
+          tags: ["Authentication"],
+          summary: "OTP Təsdiqi",
+          description: "İstifadəçinin emailinə göndərilən OTP kodunu yoxlayır.",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: { type: "object", required: ["email", "otp"], properties: { email: { type: "string", format: "email", example: "ali@example.com" }, otp: { type: "string", example: "123456" } } }
+              }
+            }
+          },
+          responses: {
+            "200": { description: "Uğurlu", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, data: { type: "object" } } } } } },
+            "400": { description: "Xəta (OTP yanlışdır və s.)", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        }
+      },
+      "/auth/forgot-password": {
+        post: {
+          tags: ["Authentication"],
+          summary: "Şifrənin Bərpası",
+          description: "İstifadəçinin emailinə şifrə sıfırlama üçün OTP kodu göndərir.",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: { type: "object", required: ["email"], properties: { email: { type: "string", format: "email", example: "ali@example.com" } } }
+              }
+            }
+          },
+          responses: {
+            "200": { description: "Uğurlu", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, data: { type: "object" } } } } } },
+            "400": { description: "İstifadəçi tapılmadı", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        }
+      },
+      "/auth/reset-password": {
+        post: {
+          tags: ["Authentication"],
+          summary: "Şifrəni Sıfırla",
+          description: "Doğru OTP kodu ilə istifadəçinin yeni şifrəsini təyin edir.",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: { type: "object", required: ["email", "otp", "newPassword"], properties: { email: { type: "string", format: "email", example: "ali@example.com" }, otp: { type: "string", example: "123456" }, newPassword: { type: "string", example: "yeniSifre123" } } }
+              }
+            }
+          },
+          responses: {
+            "200": { description: "Şifrə uğurla yeniləndi", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, data: { type: "object" } } } } } },
+            "400": { description: "OTP yanlışdır", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        }
+      },
+      "/auth/change-password": {
+        patch: {
+          tags: ["Authentication"],
+          summary: "Şifrəni Dəyiş",
+          description: "Daxil olmuş istifadəçinin mövcud şifrəsini yenisi ilə əvəz edir.",
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: { type: "object", required: ["currentPassword", "newPassword"], properties: { currentPassword: { type: "string", example: "kohneSifre123" }, newPassword: { type: "string", example: "yeniSifre123" } } }
+              }
+            }
+          },
+          responses: {
+            "200": { description: "Şifrə uğurla dəyişdirildi", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, data: { type: "object" } } } } } },
+            "400": { description: "Cari şifrə yanlışdır", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } },
+            "401": { description: "Token yoxdur və ya etibarsızdır", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        }
       },
 
       // ─── User Profile ─────────────────────────────────────────────────
@@ -1231,8 +1369,178 @@ export async function GET() {
         get: {
           tags: ["Dashboard"],
           summary: "Dashboard statistikası (Yalnız Admin)",
+          description: "Otaq sayı, rezervasiyalar, gəlir, son rezervasiyalar və ən çox bron edilən otaqlar daxil olmaqla idarəetmə paneli statistikasını qaytarır.",
           security: [{ bearerAuth: [] }],
-          responses: { "200": { description: "Uğurlu" } }
+          responses: {
+            "200": {
+              description: "Uğurlu",
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/DashboardStats" }
+                }
+              }
+            },
+            "401": { description: "Token tapılmadı və ya etibarsızdır", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } },
+            "403": { description: "Yalnız admin icra edə bilər", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        }
+      },
+
+      // ─── Activity Categories ───────────────────────────────────────────
+      "/activity-categories": {
+        get: {
+          tags: ["Activity Categories"],
+          summary: "Bütün fəaliyyət kateqoriyalarını gətir",
+          responses: {
+            "200": {
+              description: "Uğurlu",
+              content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, categories: { type: "array", items: { $ref: "#/components/schemas/ActivityCategory" } } } } } }
+            }
+          }
+        },
+        post: {
+          tags: ["Activity Categories"],
+          summary: "Yeni fəaliyyət kateqoriyası yarat (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: { "application/json": { schema: { type: "object", required: ["name"], properties: { name: { type: "string", example: "Su Fəaliyyətləri" } } } } }
+          },
+          responses: {
+            "201": { description: "Yaradıldı", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, category: { $ref: "#/components/schemas/ActivityCategory" } } } } } },
+            "403": { description: "Yalnız admin icra edə bilər", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        }
+      },
+      "/activity-categories/{id}": {
+        get: {
+          tags: ["Activity Categories"],
+          summary: "Fəaliyyət kateqoriyasını ID-yə görə gətir",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Uğurlu", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, category: { $ref: "#/components/schemas/ActivityCategory" } } } } } } }
+        },
+        put: {
+          tags: ["Activity Categories"],
+          summary: "Fəaliyyət kateqoriyasını yenilə (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { name: { type: "string" } } } } } },
+          responses: {
+            "200": { description: "Yeniləndi", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, category: { $ref: "#/components/schemas/ActivityCategory" } } } } } },
+            "403": { description: "Yalnız admin icra edə bilər", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        },
+        delete: {
+          tags: ["Activity Categories"],
+          summary: "Fəaliyyət kateqoriyasını sil (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: {
+            "200": { description: "Silindi" },
+            "403": { description: "Yalnız admin icra edə bilər", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        }
+      },
+
+      // ─── Room Types ───────────────────────────────────────────────────
+      "/room-types": {
+        get: {
+          tags: ["Room Types"],
+          summary: "Bütün otaq tiplərini gətir",
+          responses: {
+            "200": {
+              description: "Uğurlu",
+              content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, roomTypes: { type: "array", items: { $ref: "#/components/schemas/RoomType" } } } } } }
+            }
+          }
+        },
+        post: {
+          tags: ["Room Types"],
+          summary: "Yeni otaq tipi yarat (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: { "application/json": { schema: { type: "object", required: ["name"], properties: { name: { type: "string", example: "Deluxe Süit" } } } } }
+          },
+          responses: {
+            "201": { description: "Yaradıldı", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, roomType: { $ref: "#/components/schemas/RoomType" } } } } } },
+            "403": { description: "Yalnız admin icra edə bilər", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        }
+      },
+      "/room-types/{id}": {
+        get: {
+          tags: ["Room Types"],
+          summary: "Otaq tipini ID-yə görə gətir",
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Uğurlu", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, roomType: { $ref: "#/components/schemas/RoomType" } } } } } } }
+        },
+        put: {
+          tags: ["Room Types"],
+          summary: "Otaq tipini yenilə (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { name: { type: "string" } } } } } },
+          responses: {
+            "200": { description: "Yeniləndi", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, roomType: { $ref: "#/components/schemas/RoomType" } } } } } },
+            "403": { description: "Yalnız admin icra edə bilər", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        },
+        delete: {
+          tags: ["Room Types"],
+          summary: "Otaq tipini sil (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: {
+            "200": { description: "Silindi" },
+            "403": { description: "Yalnız admin icra edə bilər", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
+        }
+      },
+
+      // ─── Settings ─────────────────────────────────────────────────────
+      "/settings": {
+        get: {
+          tags: ["Settings"],
+          summary: "Otel tənzimləmələrini gətir",
+          description: "Otel adı, telefon, email, ünvan, sosial şəbəkə bağlantıları və digər tənzimləmələri qaytarır.",
+          responses: {
+            "200": {
+              description: "Uğurlu",
+              content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, settings: { $ref: "#/components/schemas/Settings" } } } } }
+            }
+          }
+        },
+        patch: {
+          tags: ["Settings"],
+          summary: "Otel tənzimləmələrini yenilə (Yalnız Admin)",
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    hotelName: { type: "string" },
+                    phone: { type: "string" },
+                    email: { type: "string" },
+                    address: { type: "string" },
+                    instagram: { type: "string" },
+                    facebook: { type: "string" },
+                    tiktok: { type: "string" },
+                    googleMapsLink: { type: "string" },
+                    reception: { type: "string" },
+                    aquapark: { type: "string" },
+                    dining: { type: "string" }
+                  }
+                }
+              }
+            }
+          },
+          responses: {
+            "200": { description: "Yeniləndi", content: { "application/json": { schema: { type: "object", properties: { success: { type: "boolean" }, settings: { $ref: "#/components/schemas/Settings" } } } } } },
+            "403": { description: "Yalnız admin icra edə bilər", content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } } }
+          }
         }
       },
 

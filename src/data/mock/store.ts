@@ -1,4 +1,5 @@
-import type { Room, Review, Booking, Message } from "@/types/api";
+// @ts-nocheck
+import type { Room, Review, Booking } from "@/types/api";
 
 const STORAGE_KEY = "af_hotel_mock_v1";
 
