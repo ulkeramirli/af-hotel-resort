@@ -125,7 +125,7 @@ export class BookingController {
   static async updateStatus(id: string, req: Request) {
     const body = await req.json();
 
-    const { status } = body;
+    const { status, notes } = body;
 
     if (!["pending", "confirmed", "cancelled"].includes(status)) {
       throw new Error("Invalid status");
@@ -136,10 +136,14 @@ export class BookingController {
     if (!booking) {
       throw new Error("Booking not found");
     }
-
+    console.log("BODY:", body);
+    console.log("NOTES:", notes);
     booking.status = status;
+    if (notes !== undefined) {
+      booking.notes = notes;
+    }
     await booking.save();
-
+    console.log("BOOKING AFTER SAVE:", booking);
     if (status === "confirmed") {
       const mail = bookingConfirmedEmail(
         booking.guestName,
@@ -159,6 +163,7 @@ export class BookingController {
       );
       await sendMail(booking.email, mail.subject, mail.html);
     }
+
     return NextResponse.json({
       success: true,
       message: "Booking status updated",
