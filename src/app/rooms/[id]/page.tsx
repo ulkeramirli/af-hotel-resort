@@ -94,6 +94,8 @@ const content = {
   },
 };
 
+type LanguageKey = keyof typeof content;
+
 export default function RoomDetailPage({
   params,
 }: {
@@ -101,7 +103,9 @@ export default function RoomDetailPage({
 }) {
   const { id } = use(params);
   const { language } = useLanguage();
-  const l = (language as "az" | "en" | "ru") || "az";
+  
+  // Bezopasnaya proverka, chtoby yazyk podkhodil pod nashi klyuchi (az, en, ru)
+  const l: LanguageKey = (language && language in content) ? (language as LanguageKey) : "az";
   const c = content[l];
   const router = useRouter();
 
@@ -162,6 +166,12 @@ export default function RoomDetailPage({
     );
   }
 
+  // Poluchaem lokalizovannye dannye iz samogo ob"yekta room s fallback na angliyskiy ili azerebaydzhanskiy
+  const roomTitle = room.title[l] || room.title["az"] || room.title["en"] || "";
+  const roomDesc = room.desc[l] || room.desc["az"] || room.desc["en"] || "";
+  const roomCapacity = room.capacity[l] || room.capacity["az"] || room.capacity["en"] || `2 ${c.guests}`;
+  const roomIncludes = room.includes[l] || room.includes["az"] || room.includes["en"] || [];
+
   return (
     <div className="min-h-screen bg-stone-50/40 text-stone-800 antialiased font-sans selection:bg-stone-100 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -221,7 +231,7 @@ export default function RoomDetailPage({
               >
                 <Image
                   src={room.images[activeImg] ?? room.images[0]}
-                  alt={room.title[l]}
+                  alt={roomTitle}
                   fill
                   sizes="(max-width: 1024px) 100vw, 75vw"
                   className="object-cover"
@@ -280,7 +290,7 @@ export default function RoomDetailPage({
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-xl md:text-3xl font-bold text-stone-900 tracking-tight">
-                    {room.title[l]}
+                    {roomTitle}
                   </h1>
                   <span className="bg-stone-900 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">
                     {c.luxuryBadge}
@@ -312,7 +322,7 @@ export default function RoomDetailPage({
               </div>
               <div className="flex flex-col items-center gap-1">
                 <Users className="w-4 h-4 text-stone-400" />
-                <span>{room.capacity[l] || `2 ${c.guests}`}</span>
+                <span>{roomCapacity}</span>
               </div>
             </div>
 
@@ -348,7 +358,7 @@ export default function RoomDetailPage({
               {c.overview}
             </h3>
             <p className="text-xs md:text-sm text-stone-600 leading-relaxed font-light text-justify">
-              {room.desc[l]}
+              {roomDesc}
             </p>
           </div>
 
@@ -358,7 +368,7 @@ export default function RoomDetailPage({
               {c.amenities}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {room.includes[l].map((item) => (
+              {roomIncludes.map((item) => (
                 <div
                   key={item}
                   className="flex items-center gap-3 border border-stone-200/40 rounded-xl p-3 bg-white text-xs text-stone-600 font-medium"

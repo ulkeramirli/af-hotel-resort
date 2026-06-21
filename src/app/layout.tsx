@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Providers from "@/components/Providers"; // <-- Импортируем нашу новую обертку
+import Providers from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* Оборачиваем в клиентский Providers, теперь контекст не будет ругаться на сервер */}
+        {/* 
+          Оборачиваем всё приложение в единый клиентский компонент Providers.
+          Внутри него уже должны лежать LanguageProvider и AuthProvider, 
+          чтобы контексты работали на всех страницах без ошибок.
+        */}
         <Providers>
           {children}
         </Providers>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState,  } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -27,7 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   
   // Переносим пользователя в стейт, чтобы избежать рассинхронизации SSR/CSR
- const [user, setUser] = useState<User | null>(() => {
+ const [user,] = useState<User | null>(() => {
   if (typeof window !== "undefined") {
     return getCurrentUser();
   }

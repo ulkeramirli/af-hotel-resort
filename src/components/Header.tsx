@@ -4,7 +4,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
-import { User, LogOut, Menu, X, Phone } from "lucide-react";
+import { User, LogOut, Menu, X, Phone, Heart, BookOpen } from "lucide-react";
+import { getFavorites } from "@/lib/favorites";
 
 type LangType = "az" | "en" | "ru";
 
@@ -67,6 +68,7 @@ export default function Header() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [activeNav, setActiveNav] = useState("home");
   const [scrolled, setScrolled] = useState(false);
+  const [favCount, setFavCount] = useState(0);
 
   const { user, signOut } = useAuth();
   const currentUser = user as AuthUser | null;
@@ -82,6 +84,25 @@ export default function Header() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  
+  useEffect(() => {
+    
+    const updateCount = () => {
+      if (typeof window !== "undefined") {
+        setFavCount(getFavorites().length);
+      }
+    };
+
+    updateCount();
+
+    window.addEventListener("storage", updateCount);
+    window.addEventListener("favoritesChanged", updateCount);
+    return () => {
+      window.removeEventListener("storage", updateCount);
+      window.removeEventListener("favoritesChanged", updateCount);
+    };
   }, []);
 
   useEffect(() => {
@@ -118,9 +139,12 @@ export default function Header() {
     restoran: { az: "RESTORAN", en: "RESTORAN", ru: "РЕСТОРАН" }[currentLang],
     book: { az: "REZERV ET", en: "BOOK NOW", ru: "БРОНЬ" }[currentLang],
     login: { az: "Daxil ol", en: "Sign in", ru: "Войти" }[currentLang],
-    myAccount: { az: "Mənim hesabım", en: "Manage account", ru: "Мой аккаунт" }[
+    myAccount: { az: "Mənim hesabım", en: "My Account", ru: "Мой аккаунт" }[
       currentLang
     ],
+    myBookings: { az: "Bronlarım", en: "My Bookings", ru: "Мои брони" }[currentLang],
+    favorites: { az: "Sevimlilər", en: "Favorites", ru: "Избранное" }[currentLang],
+    contacts: { az: "ƏLAQƏ", en: "CONTACTS", ru: "КОНТАКТЫ" }[currentLang],
     logout: { az: "Çıxış", en: "Sign out", ru: "Выйти" }[currentLang],
   };
 
@@ -131,6 +155,7 @@ export default function Header() {
     { id: "aquapark", href: "#aquapark", label: texts.aquapark },
     { id: "wonderland", href: "#wonderland", label: texts.wonderland },
     { id: "restoran", href: "#restoran", label: texts.restoran },
+    { id: "contacts", href: "#contacts", label: texts.contacts },
   ];
 
   return (
@@ -153,7 +178,7 @@ export default function Header() {
           />
         </div>
 
-        <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7 text-[11px] font-bold uppercase tracking-widest text-slate-700">
+        <nav className="hidden lg:flex items-center space-x-3 xl:space-x-5 text-[11px] font-bold uppercase tracking-widest text-slate-700">
           {navLinks.map((item) => (
             <div key={item.id} className="relative py-2 group">
               <a
@@ -176,7 +201,6 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center space-x-2 md:space-x-4">
-          {/* Контактный номер телефона */}
           <a
             href="tel:+994124480000"
             className="hidden xl:flex items-center gap-1.5 text-[11px] font-bold text-slate-600 hover:text-[#00b5d5] transition-colors border border-stone-200/80 px-3 py-2 rounded-xl bg-stone-50/40"
@@ -228,25 +252,62 @@ export default function Header() {
                   className="flex items-center gap-2 px-3 py-2 bg-white border border-stone-200 rounded-xl hover:bg-stone-50 transition-all duration-300 cursor-pointer"
                 >
                   <User className="w-3.5 h-3.5 text-slate-600" />
-                  <span className="hidden md:inline text-[11px] font-bold uppercase tracking-wider text-slate-700">
+                  
+                  <span className="hidden md:inline text-[11px] font-bold uppercase tracking-wider text-slate-700 max-w-25 truncate">
                     {currentUser?.name || currentUser?.email}
                   </span>
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-stone-200/80 shadow-xl py-1 z-50">
-                    <button className="w-full flex items-center gap-2 px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors font-medium border-none bg-transparent text-left cursor-pointer">
-                      {texts.myAccount}
-                    </button>
-                    <button
-                      onClick={() => {
-                        signOut();
-                        setMenuOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-4 py-2.5 text-xs text-red-600 hover:bg-red-50 border-t border-stone-100 font-medium border-none bg-transparent text-left cursor-pointer"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      {texts.logout}
-                    </button>
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-stone-200/80 shadow-xl py-1 z-50 overflow-hidden">
+                    <div className="px-4 py-2.5 bg-stone-50 border-b border-stone-100">
+                      <p className="text-xs font-bold text-stone-800 truncate">{currentUser?.name}</p>
+                      <p className="text-[10px] text-stone-500 truncate">{currentUser?.email}</p>
+                    </div>
+
+                    <div className="py-1">
+                      <Link
+                        href="/account"
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors font-medium"
+                      >
+                        <User className="w-3.5 h-3.5 text-stone-400" />
+                        {texts.myAccount}
+                      </Link>
+
+                      <Link
+                        href="/account?tab=bookings"
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors font-medium"
+                      >
+                        <BookOpen className="w-3.5 h-3.5 text-stone-400" />
+                        {texts.myBookings}
+                      </Link>
+
+                      <Link
+                        href="/account?tab=favorites"
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors font-medium"
+                      >
+                        <Heart className="w-3.5 h-3.5 text-stone-400" />
+                        <span>{texts.favorites}</span>
+                        {favCount > 0 && (
+                          <span className="ml-auto text-[10px] bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded-full font-bold">
+                            {favCount}
+                          </span>
+                        )}
+                      </Link>
+
+                      <button
+                        onClick={() => {
+                          signOut();
+                          setMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs text-red-600 hover:bg-red-50 border-t border-stone-100 font-medium border-none bg-transparent text-left cursor-pointer"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        {texts.logout}
+                      </button>
+                    </div>
                   </div>
                 )}
               </>

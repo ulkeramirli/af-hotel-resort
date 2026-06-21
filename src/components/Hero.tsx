@@ -1,11 +1,15 @@
 'use client';
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Image from 'next/image';
+import { ChevronDown } from 'lucide-react';
 
 export default function Hero() {
   const { language } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const router = useRouter();
   
   const [guestOpen, setGuestOpen] = useState(false);
   
@@ -18,14 +22,7 @@ export default function Hero() {
   const guestRef = useRef<HTMLDivElement>(null);
   const today = new Date().toISOString().split('T')[0];
 
-  // Следим за изменениями полей в Hero и мгновенно отправляем их в Booking
-  useEffect(() => {
-    const bookingEvent = new CustomEvent('heroBookingData', {
-      detail: { checkIn, checkOut, adults, kids }
-    });
-    window.dispatchEvent(bookingEvent);
-  }, [checkIn, checkOut, adults, kids]);
-
+  // Закрытие дропдауна при клике вне его области
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (guestRef.current && !guestRef.current.contains(event.target as Node)) setGuestOpen(false);
@@ -52,13 +49,17 @@ export default function Hero() {
 
   const handleBook = (e: FormEvent) => {
     e.preventDefault();
-    // Скроллим к секции #booking
-    const bookingSection = document.getElementById('booking');
-    if (bookingSection) {
-      bookingSection.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      window.location.href = '#booking';
-    }
+    
+    // Формируем параметры строки запроса для передачи на страницу бронирования
+    const queryParams = new URLSearchParams({
+      checkIn: checkIn,
+      checkOut: checkOut,
+      adults: adults.toString(),
+      kids: kids.toString()
+    });
+
+    // Перенаправляем пользователя на /booking с сохранением выбранных данных
+    router.push(`/booking?${queryParams.toString()}`);
   };
 
   const animationStyles = `
@@ -102,15 +103,13 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         
+        {/* Левая часть: Текст и карточки преимуществ */}
         <div className="lg:col-span-7 space-y-6 lg:space-y-8 text-left anim-text-motion">
           <div className="space-y-1 md:space-y-2">
             <h2 className="text-2xl sm:text-3xl md:text-[42px] font-bold text-[#3f6593] tracking-wide uppercase leading-tight">
               {texts.line1}
             </h2>
-            <h1 
-              className="text-4xl sm:text-5xl md:text-[56px] font-black text-[#539bc5] tracking-tight uppercase leading-none"
-              // style={{ textShadow: `1px -1px 0 #007a91, 0px 3px 6px rgba(0, 122, 145, 0.2)` }}
-            >
+            <h1 className="text-4xl sm:text-5xl md:text-[56px] font-black text-[#539bc5] tracking-tight uppercase leading-none">
               {texts.line2}
             </h1>
             <p className="text-xl sm:text-2xl md:text-[28px] font-bold text-[#1e325c] tracking-wide pt-1">
@@ -149,13 +148,13 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Правая часть с формой */}
+        {/* Правая часть: Идеальная Форма Бронирования */}
         <div className="lg:col-span-5 w-full flex justify-center lg:justify-end mt-4 lg:mt-0 anim-form-motion">
           <form 
             onSubmit={handleBook}
             className="bg-white/95 backdrop-blur-lg rounded-3xl p-5 sm:p-6 lg:p-8 w-full max-w-md shadow-[0_20px_50px_rgba(30,50,92,0.12)] border border-white transition-all duration-300 hover:shadow-[0_25px_60px_rgba(30,50,92,0.18)]"
           >
-            {/* РАЗДЕЛЬНЫЕ ДАТЫ: ЗАЕЗД И ВЫЕЗД */}
+            {/* Выбор дат: заезд и выезд */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
               <div className="space-y-1">
                 <label className="text-[9px] font-extrabold text-[#00b5d5] uppercase tracking-wider pl-1">{texts.checkIn}</label>
@@ -184,21 +183,23 @@ export default function Hero() {
               </div>
             </div>
 
+            {/* Выбор гостей */}
             <div className="space-y-1 mb-6 relative" ref={guestRef}>
               <label className="text-[9px] font-extrabold text-[#00b5d5] uppercase tracking-wider pl-1">{texts.guests}</label>
               <button 
                 type="button"
                 onClick={() => setGuestOpen(!guestOpen)}
-                className="w-full border border-stone-200 text-slate-800 rounded-xl px-4 py-3.5 text-[13px] font-semibold outline-none flex justify-between items-center bg-white hover:border-[#00b5d5] transition-colors cursor-pointer"
+                className={`w-full border text-slate-800 rounded-xl px-4 py-3.5 text-[13px] font-semibold outline-none flex justify-between items-center bg-white transition-colors cursor-pointer ${guestOpen ? 'border-[#00b5d5]' : 'border-stone-200 hover:border-[#00b5d5]'}`}
               >
                 <span>
                   {`${adults} ${texts.adultsLabel}, ${kids} ${texts.kidsLabel}`}
                 </span>
-                <svg className={`w-4 h-4 text-stone-400 transition-transform ${guestOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M19 9l-7 7-7-7" /></svg>
+                <ChevronDown className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${guestOpen ? 'rotate-180 text-[#00b5d5]' : ''}`} />
               </button>
 
+              {/* Выпадающее окно гостей */}
               {guestOpen && (
-                <div className="absolute top-full left-0 w-full mt-2 bg-white border border-stone-100 rounded-xl shadow-2xl p-4 z-30 space-y-4 transition-all duration-200">
+                <div className="absolute top-full left-0 w-full mt-2 bg-white border border-stone-100 rounded-xl shadow-2xl p-4 z-30 space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] font-bold text-slate-700">{texts.adultsLabel}</span>
                     <div className="flex items-center space-x-3">
@@ -219,12 +220,13 @@ export default function Hero() {
               )}
             </div>
 
-            <button 
-              type="submit"
-              className="w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-bold uppercase tracking-wider py-4 rounded-xl transition-all shadow-md shadow-[#ff6c02]/20 text-center cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
-            >
-              {texts.btnBook}
-            </button>
+            {/* Кнопка отправки на Booking */}
+            <Link 
+               href="#booking"
+               className="block w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-bold uppercase tracking-wider py-4 rounded-xl transition-all shadow-md shadow-[#ff6c02]/20 text-center cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+             >
+               {texts.btnBook}
+             </Link>
           </form>
         </div>
 

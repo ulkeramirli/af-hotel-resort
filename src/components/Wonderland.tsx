@@ -117,7 +117,7 @@ const content = {
   ru: {
     tag: "WONDERLAND THEME PARK",
     title: "Волшебный Мир",
-    subtitle: "Грандиозный развлекательный中心 для детей и молодежи — бесконечные приключения и яркие воспоминания.",
+    subtitle: "Грандиозный развлекательный центр для детей и молодежи — бесконечные приключения и яркие воспоминания.",
     hours: "10:00 – 21:00",
     season: "Открыт круглый год",
     priceAdult: "20 AZN",
@@ -146,7 +146,7 @@ const content = {
           { name: "Тир и Аттракционы", img: "https://images.unsplash.com/photo-1569701813229-33284b643e3c?w=800&q=80", desc: "Порази цели точными выстрелами и выиграй суперпризы" },
           { name: "Mini-железная дорога", img: "https://images.unsplash.com/photo-1544298998-35ee3b6bfb5b?w=800&q=80", desc: "Сказочное путешествие на поезде по территории парка" },
           { name: "Кукольный театр", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&q=80", desc: "Ежедневные живые представления с любимыми персонажами" },
-          { name: "Баatuтный городок", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80", desc: "Безопасная и веселая прыжковая зона для самых маленьких" },
+          { name: "Батутный городок", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80", desc: "Безопасная и веселая прыжковая зона для самых маленьких" },
         ],
       },
       {
@@ -188,7 +188,6 @@ export default function Wonderland() {
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
 
-  // Заменили explicit any на строгий тип EmblaCarouselType
   const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
     setPrevBtnEnabled(emblaApi.canScrollPrev());
     setNextBtnEnabled(emblaApi.canScrollNext());
@@ -197,25 +196,23 @@ export default function Wonderland() {
   useEffect(() => {
     if (!emblaApi) return;
     
-    // Подписываемся на события карусели
     emblaApi.on("reInit", onSelect);
     emblaApi.on("select", onSelect);
     
-    // Синхронизируем начальное состояние кнопок управления безопасным способом
-   requestAnimationFrame(() => {
-  if (emblaApi) onSelect(emblaApi);
-});
+    requestAnimationFrame(() => {
+      if (emblaApi) onSelect(emblaApi);
+    });
 
     return () => {
       emblaApi.off("reInit", onSelect);
       emblaApi.off("select", onSelect);
     };
-  }, [emblaApi, onSelect, activeTab]); // Безопасный перезапуск при изменении активного таба
+  }, [emblaApi, onSelect, activeTab]);
 
   const active = c.tabs[activeTab];
 
   return (
-    <section id="wonderland" className="py-24 bg-[#fdfbf7] scroll-mt-20">
+    <section id="wonderland" className="py-24 bg-[#faf9f6] scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-20">
         
         {/* Header */}
@@ -226,7 +223,6 @@ export default function Wonderland() {
           <h2 className="text-4xl md:text-6xl font-light text-[#1e325c] font-serif tracking-tight">
             {c.title}
           </h2>
-          {/* Исправлено под Tailwind v4: h-[1px] изменено на h-px */}
           <div className="w-16 h-px bg-[#c5a880] mx-auto my-4"></div>
           <p className="text-sm md:text-base text-stone-500 max-w-2xl mx-auto font-light leading-relaxed">
             {c.subtitle}
@@ -265,7 +261,7 @@ export default function Wonderland() {
                   key={i}
                   onClick={() => {
                     setActiveTab(i);
-                    emblaApi?.scrollTo(0); // сброс слайдера к началу при смене таба
+                    emblaApi?.scrollTo(0);
                   }}
                   className={`px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
                     activeTab === i
@@ -311,7 +307,7 @@ export default function Wonderland() {
               {active?.items.map((item, i) => (
                 <div
                   key={i}
-                  className="flex-none w-[85vw] sm:w-[45vw] md:w-[30vw] group bg-[#fdfbf7] rounded-2xl overflow-hidden border border-stone-100 hover:shadow-2xl transition-all duration-500"
+                  className="flex-none w-[85vw] sm:w-[45vw] md:w-[30vw] group bg-white rounded-2xl overflow-hidden border border-stone-100 hover:shadow-2xl transition-all duration-500"
                 >
                   <div className="relative h-56 overflow-hidden bg-stone-100">
                     <Image
@@ -322,7 +318,6 @@ export default function Wonderland() {
                       className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                       priority={i < 3}
                     />
-                    {/* Исправлено под Tailwind v4: bg-gradient-to-t изменено на bg-linear-to-t */}
                     <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                   <div className="p-6 space-y-2">
@@ -359,7 +354,7 @@ export default function Wonderland() {
               ].map((t) => (
                 <div
                   key={t.label}
-                  className="flex justify-between items-center bg-[#fdfbf7] px-6 py-4 rounded-xl border border-stone-100 hover:border-[#c5a880]/30 transition-colors"
+                  className="flex justify-between items-center bg-[#faf9f6] px-6 py-4 rounded-xl border border-stone-100 hover:border-[#c5a880]/30 transition-colors"
                 >
                   <span className="text-sm font-medium text-stone-600">{t.label}</span>
                   <span className="text-lg font-bold text-[#1e325c]">
@@ -394,7 +389,6 @@ export default function Wonderland() {
             </div>
 
             {/* Special Discount Card */}
-            {/* Исправлено под Tailwind v4: bg-gradient-to-br изменено на bg-linear-to-br */}
             <div className="rounded-2xl p-6 text-white bg-linear-to-br from-[#1e325c] to-[#0f1b35] relative overflow-hidden shadow-inner">
               <div className="absolute -right-8 -bottom-8 text-white/5 pointer-events-none">
                 <Sparkles className="w-36 h-36" />

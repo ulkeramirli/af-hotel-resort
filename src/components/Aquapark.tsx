@@ -1,17 +1,14 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { Waves, Clock, Users, Star, ChevronDown, ChevronUp } from "lucide-react";
+import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, Palmtree, Tv, Compass, MapPin, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const content = {
   az: {
-    tag: "AKVAPARK",
-    title: "Su Əyləncəsinin Dünyası",
-    subtitle: "Bölgənin ən böyük su əyləncə kompleksi — hər yaş üçün",
-    children: "Uşaqlar üçün",
-    extreme: "Ekstremal",
-    family: "Ailə",
+    tag: "AQUA & BEACH RESORT",
+    title: "Eksklüziv Su Dünyası",
+    subtitle: "Xəzər sahilində bölgənin ən böyük əyləncə, hovuz və özəl çimərlik kompleksi",
     openHours: "10:00 – 20:00",
     season: "Yay mövsümü: May – Oktyabr",
     tickets: "Bilet qiymətləri",
@@ -22,102 +19,134 @@ const content = {
     adultPrice: "25 AZN",
     childPrice: "15 AZN",
     infantPrice: "Pulsuz",
-    attractions: [
+    orderTicket: "Bilet Sifariş Et",
+    soonTag: "Tezliklə",
+    zones: [
       {
-        tab: "Uşaqlar üçün",
-        key: "children",
+        id: "aquapark",
+        name: "Akvapark",
+        desc: "Ekstremal sürüşmələr və uşaq su dünyası",
+        icon: Waves,
         items: [
-          { name: "Mini Dalğa Hovuzu", icon: "🌊", desc: "Kiçik dalğaları olan güvənli hovuz, 0–6 yaş üçün", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
-          { name: "Sürüşmə Əyləncəsi", icon: "🎪", desc: "Rəngli sürüşmələr, körpə akvaparkı", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80" },
-          { name: "Su Oyun Meydanı", icon: "🎠", desc: "Fıskiyə, çiləmə, mini körpü", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
-        ],
+          { name: "Kamikaze Sürüşməsi", icon: "⚡", desc: "80 km/s-ə çatan sürüşmə, adrenalin sevənlər üçün (14+ yaş)", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
+          { name: "Tornado", icon: "🌀", desc: "Dövrəvi sürüşmə tüneli, 4 nəfər eyni anda eniş", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
+          { name: "Uşaq Su Meydançası", icon: "🎠", desc: "Fıskiyələr, rəngli mini sürüşmələr və təhlükəsiz su oyunları", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+        ]
       },
       {
-        tab: "Ekstremal",
-        key: "extreme",
+        id: "pools",
+        name: "Hovuzlar",
+        desc: "Sakit istirahət və üzgüçülük zonaları",
+        icon: Compass,
         items: [
-          { name: "Kamikaze Sürüşməsi", icon: "⚡", desc: "80 km/s-ə çatan sürüşmə, 14+ yaş", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
-          { name: "Tornado", icon: "🌀", desc: "Dövrəvi sürüşmə tüneli, 4 nəfər eyni anda", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
-          { name: "Dalğa Hovuzu", icon: "🏄", desc: "2 metrlik süni dalğalar, sörf həvəskarları üçün", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
-        ],
+          { name: "Olimpik Hovuz", icon: "🏊", desc: "Professional və həvəskar üzgüçülük üçün 25 metrlik böyük hovuz", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "Dalğa Hovuzu", icon: "🏄", desc: "Okean atmosferini hiss etdirən 2 metrlik süni dalğalar", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
+          { name: "Jacuzzi & Relaks", icon: "♨️", desc: "Bədəni rahatladan hidromasajlı fərdi jakuzilər", img: "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?w=600&q=80" },
+        ]
       },
       {
-        tab: "Ailə",
-        key: "family",
+        id: "beach",
+        name: "Özəl Çimərlik",
+        desc: "Qızılı qum və dəniz kənarında lüks",
+        icon: Palmtree,
         items: [
-          { name: "Tənbəl Çay", icon: "🛶", desc: "Sakitləşdirici axın kanalı, 500m uzunluğunda", img: "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?w=600&q=80" },
-          { name: "Olimpik Hovuz", icon: "🏊", desc: "25m olimpik üzmə hovuzu, ayrı bölmə", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
-          { name: "Jacuzzi & Relaks", icon: "♨️", desc: "6 fərdi jakuzi, istirahət zonası", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
-        ],
+          { name: "Premium Sahil Zonası", icon: "🏖️", desc: "Rahat şezlonqlar, VIP növ çadırlar və təmiz dəniz sahili", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "Beach Bar & Lounge", icon: "🍹", desc: "Sərinləşdirici kokteyllər, tropik içkilər və canlı musiqi", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
+          { name: "Su İdman Əyləncələri", icon: "🛥️", desc: "Jet-ski, skuter və dəniz kənarında aktiv əyləncə növləri", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=600&q=80" },
+        ]
       },
+      {
+        id: "cinema",
+        name: "Açıq Səma Altında Kino",
+        desc: "Dəniz kənarında proyektorla film gecələri",
+        icon: Tv,
+        isSoon: true,
+        items: [
+          { name: "Dəniz Kənarında Proyektor", icon: "🎬", desc: "Dalğaların sədası altında, böyük ekranda dünya şedevrlərinin nümayişi", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&q=80" },
+          { name: "Pled və Puf Oturacaqlar", icon: "🍿", desc: "Ulduzlar altında maksimum rahatlıq, popcorn və isti içkilər", img: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600&q=80" },
+        ]
+      }
     ],
     faqs: [
-      { q: "Bilet nə vaxt alına bilər?", a: "Kassadan yerindən, yaxud saytdan onlayn sifariş etmək mümkündür." },
-      { q: "Hamam paltarı icarəyə verilirmi?", a: "Bəli, hamam paltarı, dəsmal və locker icarəsi mövcuddur." },
-      { q: "Uşaqlar üçün minimum yaş varmı?", a: "Bütün uşaqlar qəbul edilir. Ekstremal atraksionlar 14+ yaş üçün nəzərdə tutulub." },
-      { q: "Qida içəri gətirmək olurmu?", a: "Xaricdən qida gətirilməsi qadağandır. Restoran və snack barımız xidmətinizdədir." },
+      { q: "Biletləri onlayn almaq mütləqdir?", a: "Xeyr, həm kassadan yerində, həm də saytdan onlayn növbəsiz sifariş edə bilərsiniz." },
+      { q: "Qiymətə çimərlik və hovuzlar daxildir?", a: "Bəli, vahid biletlə həm akvapark, həm bütün hovuzlar, həm də çimərlik zonasına giriş daxildir." },
+      { q: "Kino nümayişləri ödənişli olacaq?", a: "Otel qonaqları və Aqua Park biletini əldə etmiş şəxslər üçün film gecələri tamamilə pulsuz təşkil olunacaqdır." },
+      { q: "Çimərlikdə dəsmal verilir?", a: "Bəli, ərazidə locker, hamam paltarı və dəsmal icarəsi mövcuddur." },
     ],
   },
   en: {
-    tag: "AQUA PARK",
-    title: "World of Water Fun",
-    subtitle: "The region's largest water entertainment complex — for all ages",
-    children: "For Children",
-    extreme: "Extreme",
-    family: "Family",
+    tag: "AQUA & BEACH RESORT",
+    title: "Exclusive Water World",
+    subtitle: "The region's largest entertainment, pool, and private beach complex on the Caspian coast",
     openHours: "10:00 – 20:00",
     season: "Summer season: May – October",
     tickets: "Ticket prices",
     faq: "FAQ",
     adult: "Adult",
-    child: "Child (5-12)",
-    infant: "Infant (0-4)",
+    child: "Child (5-12 yo)",
+    infant: "Infant (0-4 yo)",
     adultPrice: "25 AZN",
     childPrice: "15 AZN",
     infantPrice: "Free",
-    attractions: [
+    orderTicket: "Book Tickets",
+    soonTag: "Soon",
+    zones: [
       {
-        tab: "For Children",
-        key: "children",
+        id: "aquapark",
+        name: "Aqua Park",
+        desc: "Extreme slides and kids water world",
+        icon: Waves,
         items: [
-          { name: "Mini Wave Pool", icon: "🌊", desc: "Safe pool with small waves, ages 0–6", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
-          { name: "Slide Fun Zone", icon: "🎪", desc: "Colorful slides, toddler aqua park", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80" },
-          { name: "Water Playground", icon: "🎠", desc: "Fountains, sprinklers, mini bridge", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
-        ],
+          { name: "Kamikaze Slide", icon: "⚡", desc: "Adrenaline-pumping slide up to 80 km/h (Ages 14+)", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
+          { name: "Tornado", icon: "🌀", desc: "Circular tunnel slide for 4 people simultaneously", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
+          { name: "Kids Water Playground", icon: "🎠", desc: "Fountains, colorful mini slides, and safe water games", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+        ]
       },
       {
-        tab: "Extreme",
-        key: "extreme",
+        id: "pools",
+        name: "Swimming Pools",
+        desc: "Relaxing stay and swimming areas",
+        icon: Compass,
         items: [
-          { name: "Kamikaze Slide", icon: "⚡", desc: "Up to 80 km/h, ages 14+", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
-          { name: "Tornado", icon: "🌀", desc: "Circular tunnel slide, 4 people at once", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
-          { name: "Wave Pool", icon: "🏄", desc: "2-meter artificial waves for surfers", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
-        ],
+          { name: "Olympic Pool", icon: "🏊", desc: "25-meter large pool for professional and amateur swimming", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "Wave Pool", icon: "🏄", desc: "2-meter artificial waves creating an ocean atmosphere", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
+          { name: "Jacuzzi & Relax", icon: "♨️", desc: "Private hydro-massage jacuzzis for ultimate relaxation", img: "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?w=600&q=80" },
+        ]
       },
       {
-        tab: "Family",
-        key: "family",
+        id: "beach",
+        name: "Private Beach",
+        desc: "Golden sand and seaside luxury",
+        icon: Palmtree,
         items: [
-          { name: "Lazy River", icon: "🛶", desc: "Relaxing 500m flow channel", img: "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?w=600&q=80" },
-          { name: "Olympic Pool", icon: "🏊", desc: "25m Olympic swimming pool", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
-          { name: "Jacuzzi & Relax", icon: "♨️", desc: "6 private jacuzzis, relaxation zone", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
-        ],
+          { name: "Premium Coast Zone", icon: "🏖️", desc: "Comfortable sunbeds, VIP bungalows, and a clean coast", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "Beach Bar & Lounge", icon: "🍹", desc: "Refreshing cocktails, tropical drinks, and live music", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
+          { name: "Water Sports", icon: "🛥️", desc: "Jet-skiing, scooters, and active seaside entertainment", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=600&q=80" },
+        ]
       },
+      {
+        id: "cinema",
+        name: "Open-Air Cinema",
+        desc: "Projector movie nights right by the sea",
+        icon: Tv,
+        isSoon: true,
+        items: [
+          { name: "Seaside Projector", icon: "🎬", desc: "Screening world masterpieces on a huge screen under the sound of waves", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&q=80" },
+          { name: "Blankets & Beanbags", icon: "🍿", desc: "Maximum comfort under the stars with popcorn and hot drinks", img: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600&q=80" },
+        ]
+      }
     ],
     faqs: [
-      { q: "When can tickets be purchased?", a: "At the box office on site or online booking on the website." },
-      { q: "Are swimwear available for rent?", a: "Yes, swimwear, towel and locker rental available." },
-      { q: "Is there a minimum age for children?", a: "All children are welcome. Extreme attractions are for ages 14+." },
-      { q: "Can I bring food inside?", a: "Outside food is not permitted. Our restaurant and snack bar are at your service." },
+      { q: "Is online booking required?", a: "No, you can purchase tickets at the box office on-site or skip the lines by booking online." },
+      { q: "Does the ticket include beach and pool access?", a: "Yes, a single ticket grants access to the water park, all pools, and the private beach area." },
+      { q: "Will the movie nights require a separate ticket?", a: "Movie nights will be completely free for hotel residents and Aqua Park ticket holders." },
+      { q: "Are towels provided at the beach?", a: "Yes, locker, swimwear, and towel rentals are available on-site." },
     ],
   },
   ru: {
-    tag: "АКВАПАРК",
-    title: "Мир Водных Развлечений",
-    subtitle: "Крупнейший аквапарк региона — для всех возрастов",
-    children: "Для детей",
-    extreme: "Экстрим",
-    family: "Семейный",
+    tag: "AQUA & BEACH RESORT",
+    title: "Эксклюзивный Водный Мир",
+    subtitle: "Крупнейший комплекс развлечений, бассейнов и частного пляжа на побережье Каспия",
     openHours: "10:00 – 20:00",
     season: "Летний сезон: Май – Октябрь",
     tickets: "Стоимость билетов",
@@ -128,40 +157,59 @@ const content = {
     adultPrice: "25 AZN",
     childPrice: "15 AZN",
     infantPrice: "Бесплатно",
-    attractions: [
+    orderTicket: "Купить Билет",
+    soonTag: "Скоро",
+    zones: [
       {
-        tab: "Для детей",
-        key: "children",
+        id: "aquapark",
+        name: "Аквапарк",
+        desc: "Экстремальные горки и детский водный городок",
+        icon: Waves,
         items: [
-          { name: "Мини бассейн с волнами", icon: "🌊", desc: "Безопасный бассейн, 0–6 лет", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
-          { name: "Горки для малышей", icon: "🎪", desc: "Цветные горки, детский аквапарк", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80" },
-          { name: "Водная площадка", icon: "🎠", desc: "Фонтаны, брызгалки, мини-мост", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
-        ],
+          { name: "Горка Камикадзе", icon: "⚡", desc: "Захватывающий спуск на скорости до 80 км/ч (14+ лет)", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
+          { name: "Торнадо", icon: "🌀", desc: "Круговой закрытый туннель для 4 человек одновременно", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
+          { name: "Детская аква-площадка", icon: "🎠", desc: "Фонтаны, брызгалки, безопасные мини-горки и аттракционы", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+        ]
       },
       {
-        tab: "Экстрим",
-        key: "extreme",
+        id: "pools",
+        name: "Бассейны",
+        desc: "Зоны для спортивного плавания и релаксации",
+        icon: Compass,
         items: [
-          { name: "Горка Камикадзе", icon: "⚡", desc: "До 80 км/ч, 14+ лет", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
-          { name: "Торнадо", icon: "🌀", desc: "Круговой тоннель, 4 человека сразу", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
-          { name: "Бассейн с волнами", icon: "🏄", desc: "2-метровые волны для сёрфинга", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
-        ],
+          { name: "Олимпийский Бассейн", icon: "🏊", desc: "Большой 25-метровый бассейн для плавания и тренировок", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "Бассейн с Волнами", icon: "🏄", desc: "2-метровые искусственные волны, создающие эффект бушующего океана", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
+          { name: "Джакузи и Релакс", icon: "♨️", desc: "Гидромассажные ванны для полного снятия стресса", img: "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?w=600&q=80" },
+        ]
       },
       {
-        tab: "Семейный",
-        key: "family",
+        id: "beach",
+        name: "Частный Пляж",
+        desc: "Золотой песок и роскошный отдых у моря",
+        icon: Palmtree,
         items: [
-          { name: "Ленивая река", icon: "🛶", desc: "Расслабляющий 500м канал", img: "https://images.unsplash.com/photo-1563911302283-d2bc129e7570?w=600&q=80" },
-          { name: "Олимпийский бассейн", icon: "🏊", desc: "25м олимпийский бассейн", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
-          { name: "Джакузи и релакс", icon: "♨️", desc: "6 джакузи, зона отдыха", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
-        ],
+          { name: "Премиум Пляжная Зона", icon: "🏖️", desc: "Комфортные шезлонги, приватные VIP-шатры и чистый берег", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "Beach Bar & Lounge", icon: "🍹", desc: "Прохладительные коктейли, тропические миксы и живая музыка", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
+          { name: "Водный спорт", icon: "🛥️", desc: "Прокат гидроциклов, катамаранов и активные развлечения", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=600&q=80" },
+        ]
       },
+      {
+        id: "cinema",
+        name: "Кино под звездами",
+        desc: "Показы шедевров кино на проекторе прямо у моря",
+        icon: Tv,
+        isSoon: true,
+        items: [
+          { name: "Большой Проектор у Моря", icon: "🎬", desc: "Просмотр легендарных фильмов на огромном экране под шум прибоя", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&q=80" },
+          { name: "Пуфы и Тёплые Пледы", icon: "🍿", desc: "Атмосфера абсолютного уюта под звездным небом, попкорн и напитки", img: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600&q=80" },
+        ]
+      }
     ],
     faqs: [
-      { q: "Когда можно купить билеты?", a: "В кассе на месте или онлайн на сайте." },
-      { q: "Можно арендовать купальник?", a: "Да, аренда купальника, полотенца и шкафчика доступна." },
-      { q: "Есть ли минимальный возраст?", a: "Приглашаются все дети. Экстрим аттракционы — 14+ лет." },
-      { q: "Можно приносить еду?", a: "Еда снаружи запрещена. К вашим услугам наш ресторан и снэк-бар." },
+      { q: "Обязательно бронировать билеты онлайн?", a: "Нет, билеты можно приобрести как на кассе при входе, так и быстро оформить онлайн на сайте." },
+      { q: "Пляж и бассейны входят в стоимость?", a: "Да, единый билет дает полный доступ к аквапарку, всем бассейнам и пляжной зоне." },
+      { q: "Кинопоказы будут платными?", a: "Для постояльцев отеля и обладателей дневного билета в Аквапарк вечерние кинопоказы будут абсолютно бесплатными." },
+      { q: "Выдаются ли полотенца на пляже?", a: "Да, на территории работает аренда шкафчиков, купальных костюмов и мягких полотенец." },
     ],
   },
 };
@@ -173,86 +221,112 @@ export default function Aquapark() {
   const [activeTab, setActiveTab] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const active = c.attractions[activeTab];
+  const activeZone = c.zones[activeTab];
 
   return (
     <section id="aquapark" className="py-32 bg-white scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-16">
         {/* Header */}
-        <div className="text-center">
-          <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block mb-3">
+        <div className="text-center space-y-3">
+          <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
             {c.tag}
           </span>
-          <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif mb-4">
+          <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
             {c.title}
           </h2>
-          <p className="text-sm text-stone-400 max-w-lg mx-auto">{c.subtitle}</p>
+          <p className="text-sm text-stone-400 max-w-xl mx-auto leading-relaxed">{c.subtitle}</p>
         </div>
 
         {/* Stats bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { icon: Waves, label: "15+", sub: "Atraksion" },
-            { icon: Users, label: "2000+", sub: "Gün Qonaqları" },
+            { icon: Waves, label: "25+", sub: l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов" },
+            { icon: Users, label: "2500+", sub: l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день" },
             { icon: Clock, label: c.openHours, sub: c.season },
-            { icon: Star, label: "4.9", sub: "Google Rating" },
+            { icon: Star, label: "5.0", sub: l === "az" ? "Lüks Premium Xidmət" : l === "en" ? "Luxury Premium Service" : "Люкс Премиум Сервис" },
           ].map((s, i) => (
             <div
               key={i}
-              className="bg-[#f9f8f4] rounded-2xl p-5 flex flex-col items-center text-center gap-2"
+              className="bg-[#f9f8f4] border border-stone-100/50 rounded-2xl p-6 flex flex-col items-center text-center gap-2 hover:scale-[1.02] transition-transform"
             >
               <s.icon className="w-5 h-5" style={{ color: "#00b5d5" }} />
               <span className="text-xl font-bold text-[#1e325c]">{s.label}</span>
-              <span className="text-[10px] text-stone-400">{s.sub}</span>
+              <span className="text-[10px] text-stone-400 font-medium tracking-wide uppercase">{s.sub}</span>
             </div>
           ))}
         </div>
 
-        {/* Attractions */}
-        <div>
-          {/* Tab buttons */}
-          <div className="flex gap-2 mb-8 flex-wrap">
-            {c.attractions.map((a, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveTab(i)}
-                className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all ${
-                  activeTab === i
-                    ? "text-white shadow-md"
-                    : "bg-stone-100 text-stone-500 hover:bg-stone-200"
-                }`}
-                style={
-                  activeTab === i ? { background: "var(--color-hotel-blue)" } : undefined
-                }
-              >
-                {a.tab}
-              </button>
-            ))}
+        {/* Dynamic Resort Zones (Ideal UI) */}
+        <div className="space-y-10">
+          {/* Custom Luxury Navigation Tab Buttons */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-stone-50 p-2 rounded-2xl border border-stone-100">
+            {c.zones.map((zone, i) => {
+              const IconComponent = zone.icon;
+              return (
+                <button
+                  key={zone.id}
+                  onClick={() => setActiveTab(i)}
+                  className={`relative p-4 rounded-xl flex flex-col items-center md:items-start text-center md:text-left gap-1.5 transition-all cursor-pointer ${
+                    activeTab === i
+                      ? "bg-white shadow-md border border-stone-100"
+                      : "hover:bg-white/50"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <IconComponent className={`w-4 h-4 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
+                    <span className={`text-xs font-bold ${activeTab === i ? "text-[#1e325c]" : "text-stone-500"}`}>
+                      {zone.name}
+                    </span>
+                    {zone.isSoon && (
+                      <span className="text-[8px] bg-amber-500 text-white font-extrabold px-1.5 py-0.5 rounded-md uppercase tracking-wider animate-pulse flex items-center gap-0.5">
+                        <Sparkles className="w-2 h-2" /> {c.soonTag}
+                      </span>
+                    )}
+                  </div>
+                  <span className="hidden md:block text-[10px] text-stone-400 font-medium line-clamp-1">
+                    {zone.desc}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Cards */}
+          {/* Attractions / Items Cards Dynamic Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {active?.items.map((item, i) => (
+            {activeZone?.items.map((item, i) => (
               <div
                 key={i}
-                className="group rounded-3xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-lg transition-all"
+                className="group rounded-3xl overflow-hidden border border-stone-100 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
               >
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-56 overflow-hidden bg-stone-100">
                   <Image
                     src={item.img}
                     alt={item.name}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/70 to-transparent" />
-                  <div className="absolute bottom-4 left-4">
-                    <span className="text-2xl">{item.icon}</span>
-                    <h3 className="text-white font-bold text-sm mt-1">{item.name}</h3>
+                  <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/80 via-[#1e325c]/10 to-transparent opacity-90" />
+                  
+                  {/* Floating badge info */}
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-xs font-bold text-[#1e325c] shadow-xs flex items-center gap-1">
+                    <span>{item.icon}</span>
+                    <span>{item.name}</span>
                   </div>
                 </div>
-                <div className="bg-white p-4">
-                  <p className="text-xs text-stone-500">{item.desc}</p>
+                <div className="p-5 grow flex flex-col justify-between space-y-2">
+                  <div>
+                    <h4 className="text-sm font-bold text-[#1e325c] mb-1 group-hover:text-[#00b5d5] transition-colors">
+                      {item.name}
+                    </h4>
+                    <p className="text-xs text-stone-400 leading-relaxed font-medium">{item.desc}</p>
+                  </div>
+                  
+                  {/* Location Tag */}
+                  <div className="pt-3 border-t border-stone-50 flex items-center gap-1 text-stone-400">
+                    <MapPin className="w-3 h-3 text-[#00b5d5]" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{activeZone.name}</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -260,49 +334,52 @@ export default function Aquapark() {
         </div>
 
         {/* Tickets + FAQ */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Tickets */}
-          <div className="bg-[#f9f8f4] rounded-3xl p-8 space-y-4">
-            <h3 className="font-bold text-xl text-[#1e325c] font-serif flex items-center gap-2">
-              🎟️ {c.tickets}
-            </h3>
-            {[
-              { label: c.adult, price: c.adultPrice },
-              { label: c.child, price: c.childPrice },
-              { label: c.infant, price: c.infantPrice },
-            ].map((t) => (
-              <div
-                key={t.label}
-                className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100"
-              >
-                <span className="text-sm font-semibold text-stone-600">{t.label}</span>
-                <span className="text-lg font-bold" style={{ color: "var(--color-hotel-blue)" }}>
-                  {t.price}
-                </span>
-              </div>
-            ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 pt-6">
+          {/* Tickets Card Container */}
+          <div className="bg-[#f9f8f4] rounded-3xl p-8 space-y-5 flex flex-col justify-between border border-stone-100">
+            <div className="space-y-4">
+              <h3 className="font-bold text-xl text-[#1e325c] font-serif flex items-center gap-2">
+                🎟️ {c.tickets}
+              </h3>
+              {[
+                { label: c.adult, price: c.adultPrice },
+                { label: c.child, price: c.childPrice },
+                { label: c.infant, price: c.infantPrice },
+              ].map((t) => (
+                <div
+                  key={t.label}
+                  className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100 hover:border-stone-200 transition-colors"
+                >
+                  <span className="text-sm font-semibold text-stone-600">{t.label}</span>
+                  <span className="text-lg font-bold" style={{ color: "var(--color-hotel-blue)" }}>
+                    {t.price}
+                  </span>
+                </div>
+              ))}
+            </div>
+            
             <a
               href="tel:+994123456789"
-              className="flex items-center justify-center gap-2 w-full py-3 text-white text-sm font-bold rounded-2xl mt-4 transition-opacity hover:opacity-90"
+              className="flex items-center justify-center gap-2 w-full py-3.5 text-white text-sm font-bold rounded-2xl transition-all hover:opacity-95 active:scale-[0.99] shadow-md shadow-[#00406a]/10"
               style={{ background: "var(--color-hotel-blue)" }}
             >
-              Bilet Sifariş Et
+              {c.orderTicket}
             </a>
           </div>
 
-          {/* FAQ */}
+          {/* FAQ Accordion container */}
           <div className="space-y-3">
-            <h3 className="font-bold text-xl text-[#1e325c] font-serif">{c.faq}</h3>
+            <h3 className="font-bold text-xl text-[#1e325c] font-serif pl-1">{c.faq}</h3>
             {c.faqs.map((faq, i) => (
               <div
                 key={i}
-                className="bg-[#f9f8f4] rounded-2xl border border-stone-100 overflow-hidden"
+                className="bg-[#f9f8f4] rounded-2xl border border-stone-100 overflow-hidden transition-all"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex justify-between items-center p-4 text-left"
+                  className="w-full flex justify-between items-center p-4 text-left cursor-pointer"
                 >
-                  <span className="text-sm font-bold text-[#1e325c]">{faq.q}</span>
+                  <span className="text-sm font-bold text-[#1e325c] pr-4">{faq.q}</span>
                   {openFaq === i ? (
                     <ChevronUp className="w-4 h-4 text-stone-400 shrink-0" />
                   ) : (
@@ -310,8 +387,8 @@ export default function Aquapark() {
                   )}
                 </button>
                 {openFaq === i && (
-                  <div className="px-4 pb-4">
-                    <p className="text-xs text-stone-500 leading-relaxed">{faq.a}</p>
+                  <div className="px-4 pb-4 bg-white/50">
+                    <p className="text-xs text-stone-500 leading-relaxed font-medium">{faq.a}</p>
                   </div>
                 )}
               </div>
