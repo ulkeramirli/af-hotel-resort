@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -16,10 +16,23 @@ import {
 } from "lucide-react";
 import { logout, getCurrentUser } from "@/services/api";
 
+// Предполагаем интерфейс пользователя, адаптируйте под вашу схему типов
+interface User {
+  name: string;
+  email: string;
+}
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const user = getCurrentUser();
+  
+  // Переносим пользователя в стейт, чтобы избежать рассинхронизации SSR/CSR
+ const [user, setUser] = useState<User | null>(() => {
+  if (typeof window !== "undefined") {
+    return getCurrentUser();
+  }
+  return null;
+});
 
   const menuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },

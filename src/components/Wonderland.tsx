@@ -1,17 +1,17 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Sparkles, Star, Clock, Ticket } from "lucide-react";
+import { Sparkles, Star, Clock, Ticket, Compass, ArrowRight, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import useEmblaCarousel from "embla-carousel-react";
+import { EmblaCarouselType } from "embla-carousel";
 
 const content = {
   az: {
-    tag: "WONDERLAND",
+    tag: "WONDERLAND THEME PARK",
     title: "Sehrli Dünya",
-    subtitle: "Uşaqlar üçün ayrıca mövzu parkı — sonsuz əyləncə və macəra",
-    children: "Uşaqlar",
-    extreme: "Gənclər",
-    family: "Ailə",
+    subtitle: "Uşaqlar və gənclər üçün möhtəşəm əyləncə məkanı — sonsuz macəra və unudulmaz xatirələr.",
     hours: "10:00 – 21:00",
     season: "İl boyu açıqdır",
     priceAdult: "20 AZN",
@@ -21,48 +21,50 @@ const content = {
     labelChild: "Uşaq (4-12)",
     labelInfant: "Körpə (0-3)",
     tickets: "Bilet Qiymətləri",
+    specialOfferTitle: "AF Hotel Qonaqları",
+    specialOfferDesc: "Hotel qonaqlarına Wonderland-da xüsusi 30% endirim tətbiq olunur.",
+    discount: "30% Endirim",
+    highlightsTitle: "Parkın Möhtəşəm Attrksionları",
     highlights: [
-      { emoji: "🎡", title: "Böyük Dönən Çarx", desc: "Şəhər panoraması ilə zövqlü uçuş" },
-      { emoji: "🎢", title: "Mini Rusiya Dağları", desc: "Uşaqlar üçün həyəcanlı sürüş" },
-      { emoji: "🎠", title: "Atlı Karusel", desc: "Klassik mövzu atlı karusel" },
-      { emoji: "🏰", title: "Sehrli Qala", desc: "Labirint, gizli keçidlər, xəzinə" },
-      { emoji: "🎯", title: "Oyun Arenaları", desc: "10+ interaktiv oyun stansiyası" },
-      { emoji: "🍭", title: "Şirniyyat Küçəsi", desc: "Pambıq şəkər, dondurma, qəlyanaltı" },
+      { emoji: "🎡", title: "Böyük Dönən Çarx", desc: "Xəzər dənizi və şəhər panoraması ilə zövqlü uçuş" },
+      { emoji: "🎢", title: "Mini Rusiya Dağları", desc: "Balaca qəhrəmanlar üçün həyəcanlı və təhlükəsiz sürüş" },
+      { emoji: "🎠", title: "Atlı Karusel", desc: "Nağıllar aləmini xatırladan klassik musiqili karusel" },
+      { emoji: "🏰", title: "Sehrli Qala", desc: "Gizli keçidlər, labirintlər və interaktiv xəzinə ovu" },
+      { emoji: "🎯", title: "Oyun Arenaları", desc: "Müasir texnologiyalarla təchiz olunmuş 10+ oyun stansiyası" },
+      { emoji: "🍭", title: "Şirniyyat Küçəsi", desc: "Rəngarəng pambıq şəkər, dondurma və dadlı qəlyanaltılar" },
     ],
     tabs: [
       {
-        label: "Uşaqlar",
+        label: "Uşaqlar Zonu",
         items: [
-          { name: "Atıcılıq Oyunu", img: "https://images.unsplash.com/photo-1569701813229-33284b643e3c?w=600&q=80", desc: "Hədəf at, mükafat qazan" },
-          { name: "Mini Dəmir Yolu", img: "https://images.unsplash.com/photo-1544298998-35ee3b6bfb5b?w=600&q=80", desc: "Parkın ətrafında mini qatar gəzintisi" },
-          { name: "Kukla Teatrı", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80", desc: "Gündəlik tamaşalar, uşaqlar üçün" },
+          { name: "Atıcılıq Oyunu", img: "https://images.unsplash.com/photo-1569701813229-33284b643e3c?w=800&q=80", desc: "Hədəfi dəqiq vur, xüsusi mükafatlar qazan" },
+          { name: "Mini Dəmir Yolu", img: "https://images.unsplash.com/photo-1544298998-35ee3b6bfb5b?w=800&q=80", desc: "Sehrli parkın ətrafında nağılvari qatar gəzintisi" },
+          { name: "Kukla Teatrı", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&q=80", desc: "Hər gün uşaqların sevimli personajları ilə canlı tamaşalar" },
+          { name: "Batut Dünyası", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80", desc: "Uşaqlar üçün təhlükəsiz və əyləncəli tullanma zonası" },
         ],
       },
       {
-        label: "Gənclər",
+        label: "Gənclər & Adrenalin",
         items: [
-          { name: "VR Arena", img: "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=600&q=80", desc: "Virtual reallıq oyunları, 10+ yaş" },
-          { name: "Lazer Oyunu", img: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=80", desc: "Lazer tag arena, komanda oyunu" },
-          { name: "Trampolin Park", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80", desc: "Trampolinlər, akrobatika zonası" },
+          { name: "VR Arena", img: "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=800&q=80", desc: "Virtual reallıq dünyasında komanda oyunları (10+ yaş)" },
+          { name: "Lazer Oyunu", img: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&q=80", desc: "Xüsusi effektli qaranlıq arenada lazer tag döyüşü" },
+          { name: "Trampolin Park", img: "https://images.unsplash.com/photo-1551632867-c58444c19343?w=800&q=80", desc: "Böyük akrobatika zonası və sərbəst tullanma sahəsi" },
         ],
       },
       {
-        label: "Ailə",
+        label: "Ailəvi Əyləncə",
         items: [
-          { name: "Ailə Pikniyi", img: "https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=600&q=80", desc: "Xüsusi piknik zonaları, barbecue" },
-          { name: "4D Kino", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=600&q=80", desc: "Hiss edilən effektlərlə 4D kino" },
-          { name: "Fotozona", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80", desc: "Peşəkar foto burchaqları, yaddaşlar" },
+          { name: "Ailə Pikniyi", img: "https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=800&q=80", desc: "Yaşıllıqlar qoynunda xüsusi istirahət və barbecue zonaları" },
+          { name: "4D Kino", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=800&q=80", desc: "Külək, su və hərəkət effektləri ilə tam immersion kino" },
+          { name: "Fotozona", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80", desc: "Peşəkar dekorasiyalarla bəzədilmiş xatirə guşələri" },
         ],
       },
     ],
   },
   en: {
-    tag: "WONDERLAND",
+    tag: "WONDERLAND THEME PARK",
     title: "Magical World",
-    subtitle: "A dedicated theme park for children — endless fun and adventure",
-    children: "Children",
-    extreme: "Youth",
-    family: "Family",
+    subtitle: "A magnificent entertainment center for children and youth — endless adventure and unforgettable memories.",
     hours: "10:00 – 21:00",
     season: "Open year-round",
     priceAdult: "20 AZN",
@@ -72,48 +74,50 @@ const content = {
     labelChild: "Child (4-12)",
     labelInfant: "Infant (0-3)",
     tickets: "Ticket Prices",
+    specialOfferTitle: "AF Hotel Guests",
+    specialOfferDesc: "A special 30% discount applies to Wonderland for hotel guests.",
+    discount: "30% Discount",
+    highlightsTitle: "Grand Attractions of the Park",
     highlights: [
-      { emoji: "🎡", title: "Big Ferris Wheel", desc: "Enjoyable flight with city panorama" },
-      { emoji: "🎢", title: "Mini Roller Coaster", desc: "Exciting ride for children" },
-      { emoji: "🎠", title: "Classic Carousel", desc: "Classic themed horse carousel" },
-      { emoji: "🏰", title: "Magic Castle", desc: "Maze, hidden passages, treasure" },
-      { emoji: "🎯", title: "Game Arenas", desc: "10+ interactive game stations" },
-      { emoji: "🍭", title: "Candy Street", desc: "Cotton candy, ice cream, snacks" },
+      { emoji: "🎡", title: "Big Ferris Wheel", desc: "Enjoyable flight with Caspian Sea and city panorama" },
+      { emoji: "🎢", title: "Mini Roller Coaster", desc: "Exciting and safe ride for little heroes" },
+      { emoji: "🎠", title: "Classic Carousel", desc: "Classic themed musical horse carousel from fairy tales" },
+      { emoji: "🏰", title: "Magic Castle", desc: "Hidden passages, mazes, and interactive treasure hunts" },
+      { emoji: "🎯", title: "Game Arenas", desc: "10+ interactive game stations equipped with modern tech" },
+      { emoji: "🍭", title: "Candy Street", desc: "Colorful cotton candy, premium ice cream, and tasty snacks" },
     ],
     tabs: [
       {
-        label: "Children",
+        label: "Kids Zone",
         items: [
-          { name: "Shooting Game", img: "https://images.unsplash.com/photo-1569701813229-33284b643e3c?w=600&q=80", desc: "Hit targets, win prizes" },
-          { name: "Mini Railroad", img: "https://images.unsplash.com/photo-1544298998-35ee3b6bfb5b?w=600&q=80", desc: "Mini train ride around the park" },
-          { name: "Puppet Theatre", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80", desc: "Daily shows for children" },
+          { name: "Shooting Game", img: "https://images.unsplash.com/photo-1569701813229-33284b643e3c?w=800&q=80", desc: "Hit targets accurately and win special prizes" },
+          { name: "Mini Railroad", img: "https://images.unsplash.com/photo-1544298998-35ee3b6bfb5b?w=800&q=80", desc: "A fairytale train ride around the magical park" },
+          { name: "Puppet Theatre", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&q=80", desc: "Daily live performances featuring children's favorite characters" },
+          { name: "Trampoline World", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80", desc: "Safe and fun jumping area for children" },
         ],
       },
       {
-        label: "Youth",
+        label: "Youth & Adrenaline",
         items: [
-          { name: "VR Arena", img: "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=600&q=80", desc: "Virtual reality games, ages 10+" },
-          { name: "Laser Game", img: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=80", desc: "Laser tag arena, team game" },
-          { name: "Trampoline Park", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80", desc: "Trampolines, acrobatics zone" },
+          { name: "VR Arena", img: "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=800&q=80", desc: "Team games in the world of virtual reality (ages 10+)" },
+          { name: "Laser Game", img: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&q=80", desc: "Laser tag battle in a neon arena with special effects" },
+          { name: "Trampolines", img: "https://images.unsplash.com/photo-1551632867-c58444c19343?w=800&q=80", desc: "Large acrobatics zone and free-jumping area" },
         ],
       },
       {
-        label: "Family",
+        label: "Family Fun",
         items: [
-          { name: "Family Picnic", img: "https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=600&q=80", desc: "Special picnic areas, barbecue" },
-          { name: "4D Cinema", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=600&q=80", desc: "4D cinema with felt effects" },
-          { name: "Photo Zone", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80", desc: "Professional photo corners, memories" },
+          { name: "Family Picnic", img: "https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=800&q=80", desc: "Special relaxation and barbecue zones surrounded by nature" },
+          { name: "4D Cinema", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=800&q=80", desc: "Full immersion cinema with wind, water, and motion effects" },
+          { name: "Photo Zone", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80", desc: "Beautifully decorated corners for perfect family memories" },
         ],
       },
     ],
   },
   ru: {
-    tag: "WONDERLAND",
+    tag: "WONDERLAND THEME PARK",
     title: "Волшебный Мир",
-    subtitle: "Отдельный тематический парк для детей — бесконечные развлечения",
-    children: "Дети",
-    extreme: "Молодёжь",
-    family: "Семья",
+    subtitle: "Грандиозный развлекательный中心 для детей и молодежи — бесконечные приключения и яркие воспоминания.",
     hours: "10:00 – 21:00",
     season: "Открыт круглый год",
     priceAdult: "20 AZN",
@@ -123,37 +127,42 @@ const content = {
     labelChild: "Ребёнок (4-12)",
     labelInfant: "Малыш (0-3)",
     tickets: "Стоимость билетов",
+    specialOfferTitle: "Гости AF Hotel",
+    specialOfferDesc: "Для проживающих в отеле гостей действует эксклюзивная скидка 30% на все аттракционы.",
+    discount: "Скидка 30%",
+    highlightsTitle: "Главные достопримечательности парка",
     highlights: [
-      { emoji: "🎡", title: "Большое колесо", desc: "Приятный полёт с видом на город" },
-      { emoji: "🎢", title: "Мини американские горки", desc: "Захватывающая поездка для детей" },
-      { emoji: "🎠", title: "Карусель", desc: "Классическая тематическая карусель" },
-      { emoji: "🏰", title: "Волшебный замок", desc: "Лабиринт, тайные ходы, клад" },
-      { emoji: "🎯", title: "Игровые арены", desc: "10+ интерактивных игровых станций" },
-      { emoji: "🍭", title: "Улица сладостей", desc: "Сладкая вата, мороженое, снеки" },
+      { emoji: "🎡", title: "Колесо обозрения", desc: "Завораживающий полет с панорамой Каспийского моря и города" },
+      { emoji: "🎢", title: "Американские горки", desc: "Захватывающая и безопасная поездка для маленьких героев" },
+      { emoji: "🎠", title: "Карусель", desc: "Классическая музыкальная карусель с лошадками из сказок" },
+      { emoji: "🏰", title: "Волшебный замок", desc: "Потайные ходы, лабиринты и интерактивные поиски сокровищ" },
+      { emoji: "🎯", title: "Игровые арены", desc: "10+ интерактивных игровых станций с новейшими технологиями" },
+      { emoji: "🍭", title: "Улица сладостей", desc: "Яркая сладкая вата, премиальное мороженое и вкусные закуски" },
     ],
     tabs: [
       {
-        label: "Дети",
+        label: "Детская Зона",
         items: [
-          { name: "Стрелковая игра", img: "https://images.unsplash.com/photo-1569701813229-33284b643e3c?w=600&q=80", desc: "Попади в цель, выиграй приз" },
-          { name: "Мини железная дорога", img: "https://images.unsplash.com/photo-1544298998-35ee3b6bfb5b?w=600&q=80", desc: "Поездка на мини-поезде по парку" },
-          { name: "Кукольный театр", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80", desc: "Ежедневные представления для детей" },
+          { name: "Тир и Аттракционы", img: "https://images.unsplash.com/photo-1569701813229-33284b643e3c?w=800&q=80", desc: "Порази цели точными выстрелами и выиграй суперпризы" },
+          { name: "Mini-железная дорога", img: "https://images.unsplash.com/photo-1544298998-35ee3b6bfb5b?w=800&q=80", desc: "Сказочное путешествие на поезде по территории парка" },
+          { name: "Кукольный театр", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&q=80", desc: "Ежедневные живые представления с любимыми персонажами" },
+          { name: "Баatuтный городок", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80", desc: "Безопасная и веселая прыжковая зона для самых маленьких" },
         ],
       },
       {
-        label: "Молодёжь",
+        label: "Молодежь & Адреналин",
         items: [
-          { name: "VR Арена", img: "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=600&q=80", desc: "Игры в виртуальной реальности, 10+" },
-          { name: "Лазертаг", img: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=80", desc: "Лазертаг арена, командная игра" },
-          { name: "Батутный парк", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80", desc: "Батуты, зона акробатики" },
+          { name: "VR Арена", img: "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?w=800&q=80", desc: "Командные тактические игры в виртуальной реальности (10+)" },
+          { name: "Лазертаг", img: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&q=80", desc: "Динамичные бои в неоновой арене со спецэффектами" },
+          { name: "Батутный комплекс", img: "https://images.unsplash.com/photo-1551632867-c58444c19343?w=800&q=80", desc: "Огромная зона для акробатики и свободных прыжков" },
         ],
       },
       {
-        label: "Семья",
+        label: "Семейный Отдых",
         items: [
-          { name: "Семейный пикник", img: "https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=600&q=80", desc: "Специальные пикник-зоны, барбекю" },
-          { name: "4D Кинотеатр", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=600&q=80", desc: "4D кино с эффектами погружения" },
-          { name: "Фотозона", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80", desc: "Профессиональные фото-уголки" },
+          { name: "Семейный пикник", img: "https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=800&q=80", desc: "Уютные беседки и оборурованные BBQ-зоны среди зелени" },
+          { name: "4D Кинотеатр", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=800&q=80", desc: "Кино с эффектами ветра, брызг воды и симуляцией движения" },
+          { name: "Фотозоны", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80", desc: "Красиво декорированные локации для идеальных семейных фото" },
         ],
       },
     ],
@@ -166,136 +175,244 @@ export default function Wonderland() {
   const c = content[l];
   const [activeTab, setActiveTab] = useState(0);
 
+  // Инициализация Embla Carousel
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: true,
+  });
+
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
+
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+
+  // Заменили explicit any на строгий тип EmblaCarouselType
+  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
+    setPrevBtnEnabled(emblaApi.canScrollPrev());
+    setNextBtnEnabled(emblaApi.canScrollNext());
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    
+    // Подписываемся на события карусели
+    emblaApi.on("reInit", onSelect);
+    emblaApi.on("select", onSelect);
+    
+    // Синхронизируем начальное состояние кнопок управления безопасным способом
+   requestAnimationFrame(() => {
+  if (emblaApi) onSelect(emblaApi);
+});
+
+    return () => {
+      emblaApi.off("reInit", onSelect);
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, onSelect, activeTab]); // Безопасный перезапуск при изменении активного таба
+
   const active = c.tabs[activeTab];
 
   return (
-    <section id="wonderland" className="py-32 bg-[#f9f8f4] scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-16">
+    <section id="wonderland" className="py-24 bg-[#fdfbf7] scroll-mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-20">
+        
         {/* Header */}
-        <div className="text-center">
-          <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block mb-3">
+        <div className="text-center space-y-4">
+          <span className="text-[#c5a880] text-xs font-semibold tracking-[0.3em] uppercase block">
             {c.tag}
           </span>
-          <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif mb-4">
+          <h2 className="text-4xl md:text-6xl font-light text-[#1e325c] font-serif tracking-tight">
             {c.title}
           </h2>
-          <p className="text-sm text-stone-400 max-w-lg mx-auto">{c.subtitle}</p>
+          {/* Исправлено под Tailwind v4: h-[1px] изменено на h-px */}
+          <div className="w-16 h-px bg-[#c5a880] mx-auto my-4"></div>
+          <p className="text-sm md:text-base text-stone-500 max-w-2xl mx-auto font-light leading-relaxed">
+            {c.subtitle}
+          </p>
         </div>
 
-        {/* Highlights grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {c.highlights.map((h, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-2xl p-4 flex flex-col items-center text-center gap-2 border border-stone-100 hover:shadow-md transition-shadow"
-            >
-              <span className="text-3xl">{h.emoji}</span>
-              <h4 className="text-xs font-bold text-[#1e325c]">{h.title}</h4>
-              <p className="text-[10px] text-stone-400">{h.desc}</p>
+        {/* Attractions Grid / Highlights */}
+        <div className="space-y-8">
+          <h3 className="text-xs uppercase font-bold tracking-widest text-stone-400 text-center">
+            {c.highlightsTitle}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+            {c.highlights.map((h, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl p-6 flex flex-col items-center text-center gap-3 border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+              >
+                <div className="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                  {h.emoji}
+                </div>
+                <h4 className="text-sm font-semibold text-[#1e325c] mt-2">{h.title}</h4>
+                <p className="text-xs text-stone-400 font-light leading-normal">{h.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Interactive Slider Section */}
+        <div className="space-y-10 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm">
+          
+          {/* Tabs + Navigation Buttons Row */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-stone-100 pb-6">
+            <div className="flex gap-3 flex-wrap">
+              {c.tabs.map((t, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setActiveTab(i);
+                    emblaApi?.scrollTo(0); // сброс слайдера к началу при смене таба
+                  }}
+                  className={`px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                    activeTab === i
+                      ? "text-white bg-[#1e325c] shadow-lg shadow-blue-900/10"
+                      : "bg-[#faf8f5] text-stone-500 hover:bg-stone-100 border border-stone-200/60"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Tabs */}
-        <div>
-          <div className="flex gap-2 mb-8 flex-wrap">
-            {c.tabs.map((t, i) => (
+            {/* Slider Controls */}
+            <div className="flex gap-2 self-end sm:self-auto">
               <button
-                key={i}
-                onClick={() => setActiveTab(i)}
-                className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all ${
-                  activeTab === i
-                    ? "text-white shadow-md"
-                    : "bg-white text-stone-500 hover:bg-stone-100 border border-stone-100"
+                onClick={scrollPrev}
+                disabled={!prevBtnEnabled}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all ${
+                  prevBtnEnabled
+                    ? "border-stone-200 text-[#1e325c] bg-[#faf8f5] hover:bg-stone-100"
+                    : "border-stone-100 text-stone-300 cursor-not-allowed"
                 }`}
-                style={
-                  activeTab === i ? { background: "var(--color-hotel-blue)" } : undefined
-                }
               >
-                {t.label}
+                <ArrowLeft className="w-4 h-4" />
               </button>
-            ))}
+              <button
+                onClick={scrollNext}
+                disabled={!nextBtnEnabled}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all ${
+                  nextBtnEnabled
+                    ? "border-stone-200 text-[#1e325c] bg-[#faf8f5] hover:bg-stone-100"
+                    : "border-stone-100 text-stone-300 cursor-not-allowed"
+                }`}
+              >
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {active?.items.map((item, i) => (
-              <div
-                key={i}
-                className="group bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-lg transition-all"
-              >
-                <div className="relative h-44 overflow-hidden">
-                  <Image
-                    src={item.img}
-                    alt={item.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+          {/* Embla Slider Window */}
+          <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+            <div className="flex gap-6 pl-1">
+              {active?.items.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex-none w-[85vw] sm:w-[45vw] md:w-[30vw] group bg-[#fdfbf7] rounded-2xl overflow-hidden border border-stone-100 hover:shadow-2xl transition-all duration-500"
+                >
+                  <div className="relative h-56 overflow-hidden bg-stone-100">
+                    <Image
+                      src={item.img}
+                      alt={item.name}
+                      fill
+                      sizes="(max-width: 640px) 85vw, (max-width: 768px) 45vw, 30vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      priority={i < 3}
+                    />
+                    {/* Исправлено под Tailwind v4: bg-gradient-to-t изменено на bg-linear-to-t */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  <div className="p-6 space-y-2">
+                    <h3 className="font-bold text-base text-[#1e325c] flex items-center justify-between">
+                      {item.name}
+                      <ArrowRight className="w-4 h-4 text-[#c5a880] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                    </h3>
+                    <p className="text-xs text-stone-500 font-light leading-relaxed">{item.desc}</p>
+                  </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-sm text-[#1e325c] mb-1">{item.name}</h3>
-                  <p className="text-xs text-stone-400">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Bottom: tickets + info */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Tickets */}
-          <div className="bg-white rounded-3xl p-8 space-y-4 border border-stone-100">
-            <h3 className="font-bold text-xl text-[#1e325c] font-serif flex items-center gap-2">
-              <Ticket className="w-5 h-5" style={{ color: "var(--color-hotel-gold)" }} />
-              {c.tickets}
-            </h3>
-            {[
-              { label: c.labelAdult, price: c.priceAdult },
-              { label: c.labelChild, price: c.priceChild },
-              { label: c.labelInfant, price: c.priceInfant },
-            ].map((t) => (
-              <div
-                key={t.label}
-                className="flex justify-between items-center bg-[#f9f8f4] p-4 rounded-2xl"
-              >
-                <span className="text-sm font-semibold text-stone-600">{t.label}</span>
-                <span className="text-lg font-bold" style={{ color: "var(--color-hotel-blue)" }}>
-                  {t.price}
+        {/* Bottom: Tickets + Special Offers */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* Tickets Pricing */}
+          <div className="bg-white rounded-3xl p-8 lg:p-10 border border-stone-100 shadow-sm lg:col-span-7 space-y-6 flex flex-col justify-between">
+            <div className="space-y-2">
+              <h3 className="font-serif text-2xl text-[#1e325c] flex items-center gap-3">
+                <Ticket className="w-6 h-6 text-[#c5a880]" />
+                {c.tickets}
+              </h3>
+              <p className="text-xs text-stone-400 font-light">Parka giriş biletləri və yaş kateqoriyaları</p>
+            </div>
+            
+            <div className="space-y-3 my-4">
+              {[
+                { label: c.labelAdult, price: c.priceAdult },
+                { label: c.labelChild, price: c.priceChild },
+                { label: c.labelInfant, price: c.priceInfant },
+              ].map((t) => (
+                <div
+                  key={t.label}
+                  className="flex justify-between items-center bg-[#fdfbf7] px-6 py-4 rounded-xl border border-stone-100 hover:border-[#c5a880]/30 transition-colors"
+                >
+                  <span className="text-sm font-medium text-stone-600">{t.label}</span>
+                  <span className="text-lg font-bold text-[#1e325c]">
+                    {t.price}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Info & Special Offer Banner */}
+          <div className="bg-white rounded-3xl p-8 lg:p-10 border border-stone-100 shadow-sm lg:col-span-5 flex flex-col justify-between space-y-8">
+            <div className="space-y-6">
+              <h3 className="font-serif text-2xl text-[#1e325c] flex items-center gap-3">
+                <Compass className="w-6 h-6 text-[#c5a880]" />
+                Wonderland Info
+              </h3>
+              <div className="space-y-4 border-b border-stone-100 pb-6">
+                <div className="flex items-center gap-4 text-sm text-stone-600">
+                  <div className="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center text-[#00b5d5]">
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  <span className="font-medium">{c.hours}</span>
+                </div>
+                <div className="flex items-center gap-4 text-sm text-stone-600">
+                  <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-500">
+                    <Star className="w-4 h-4" />
+                  </div>
+                  <span className="font-medium">{c.season}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Special Discount Card */}
+            {/* Исправлено под Tailwind v4: bg-gradient-to-br изменено на bg-linear-to-br */}
+            <div className="rounded-2xl p-6 text-white bg-linear-to-br from-[#1e325c] to-[#0f1b35] relative overflow-hidden shadow-inner">
+              <div className="absolute -right-8 -bottom-8 text-white/5 pointer-events-none">
+                <Sparkles className="w-36 h-36" />
+              </div>
+              <div className="relative space-y-2">
+                <span className="text-[10px] font-bold opacity-70 uppercase tracking-widest block">
+                  {c.specialOfferTitle}
                 </span>
+                <p className="text-3xl font-black text-[#c5a880] tracking-tight">{c.discount}</p>
+                <p className="text-xs opacity-80 font-light leading-relaxed pt-1">
+                  {c.specialOfferDesc}
+                </p>
               </div>
-            ))}
-          </div>
+            </div>
 
-          {/* Info */}
-          <div className="bg-white rounded-3xl p-8 border border-stone-100 space-y-6">
-            <h3 className="font-bold text-xl text-[#1e325c] font-serif flex items-center gap-2">
-              <Sparkles className="w-5 h-5" style={{ color: "var(--color-hotel-gold)" }} />
-              Wonderland
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-sm text-stone-600">
-                <Clock className="w-4 h-4 shrink-0" style={{ color: "#00b5d5" }} />
-                <span>{c.hours}</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-stone-600">
-                <Star className="w-4 h-4 shrink-0" style={{ color: "#00b5d5" }} />
-                <span>{c.season}</span>
-              </div>
-            </div>
-            <div
-              className="rounded-2xl p-5 text-white"
-              style={{
-                background: "linear-gradient(135deg, var(--color-hotel-blue), #1e325c)",
-              }}
-            >
-              <p className="text-xs font-bold opacity-80 mb-1 uppercase tracking-widest">
-                AF Hotel Qonaqları
-              </p>
-              <p className="text-2xl font-bold mb-1">30% Endirim</p>
-              <p className="text-xs opacity-70">Hotel qonaqlarına Wonderland-da xüsusi qiymət</p>
-            </div>
           </div>
         </div>
+
       </div>
     </section>
   );

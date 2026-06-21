@@ -7,13 +7,14 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Rooms from "@/components/Rooms";
 import Aquapark from "@/components/Aquapark";
-import Dining from "@/components/Restoran";
+import Restoran from "@/components/Restoran";
 // import Gallery from "@/components/Gallery";
 import Reviews from "@/components/Reviews";
 import Booking from "@/components/Booking";
 import Contacts from "@/components/Contacts";
 import Footer from "@/components/Footer";
 import FloatingActions from "@/components/FloatingActions";
+import Wonderland from "@/components/Wonderland";
 
 export default function Home() {
   return (
@@ -26,7 +27,8 @@ export default function Home() {
           <Rooms />
           {/* <Gallery /> */}
           <Aquapark />
-          <Dining />
+          <Wonderland />
+          <Restoran />
           <Reviews />
           <Booking />
           <Contacts />

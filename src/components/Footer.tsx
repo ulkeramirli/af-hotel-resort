@@ -64,7 +64,7 @@ export default function Footer() {
               <a href="#about" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Haqqımızda', en: 'About Us', ru: 'О нас' }[currentLang] }</a>
               <a href="#rooms" className="hover:text-[#00b5d5] transition-colors">{t.nav.rooms}</a>
               <a href="#aquapark" className="hover:text-[#00b5d5] transition-colors">{t.nav.aquapark}</a>
-              <a href="#dining" className="hover:text-[#00b5d5] transition-colors">{t.nav.dining}</a>
+              <a href="#restoran" className="hover:text-[#00b5d5] transition-colors">{t.nav.restoran}</a>
             </div>
           </div>
 
@@ -72,7 +72,7 @@ export default function Footer() {
             <h4 className="text-[9px] font-bold uppercase tracking-widest text-stone-400">Experience</h4>
             <div className="flex flex-col space-y-2 font-light text-stone-600">
               <a href="#aquapark" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Su Atvasiya', en: 'Water Slides', ru: 'Водные Горки' }[currentLang] }</a>
-              <a href="#dining" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Hovuz barları', en: 'Poolside Bars', ru: 'Бары у Бассейна' }[currentLang] }</a>
+              <a href="#restoran" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Hovuz barları', en: 'Poolside Bars', ru: 'Бары у Бассейна' }[currentLang] }</a>
               <a href="#contacts" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Şəxsi Çimərlik', en: 'Private Beach', ru: 'Частный Пляж' }[currentLang] }</a>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function Footer() {
             <div className="space-y-1.5 font-light text-stone-500">
               <p><span className="text-stone-700 font-normal">Reception:</span> 24 / 7</p>
               <p><span className="text-stone-700 font-normal">Aqua Park:</span> 09:00 – 20:00</p>
-              <p><span className="text-stone-700 font-normal">Dining:</span> 08:00 – 23:00</p>
+              <p><span className="text-stone-700 font-normal">Restoran:</span> 08:00 – 23:00</p>
             </div>
           </div>
 

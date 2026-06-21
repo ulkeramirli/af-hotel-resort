@@ -19,9 +19,9 @@ export interface TranslationSchema {
   };
 
   features: {
-    diningTag: string;
-    diningTitle: string;
-    diningItems: Array<{ title: string; desc: string }>;
+    restoranTag: string;
+    restoranTitle: string;
+    restoranItems: Array<{ title: string; desc: string }>;
     aquaTag: string;
     aquaTitle: string;
     aquaItems: Array<{ title: string; desc: string }>;
@@ -30,7 +30,7 @@ export interface TranslationSchema {
   nav: {
     home: string;
     rooms: string;
-    dining: string;
+    restoran: string;
     aquapark: string;
     contacts: string;
   };
@@ -53,14 +53,14 @@ const defaultTranslations: TranslationSchema = {
   },
   rooms: { moreInfo: "Ətraflı məlumat" },
   features: {
-    diningTag: "RESTORAN VƏ UTAM",
-    diningTitle: "UNUDULMAZ DAT TƏCRÜBƏSİ.",
-    diningItems: [],
+    restoranTag: "RESTORAN VƏ UTAM",
+    restoranTitle: "UNUDULMAZ DAT TƏCRÜBƏSİ.",
+    restoranItems: [],
     aquaTag: "ƏYLƏNCƏ VƏ ADRENALİN",
     aquaTitle: "XƏZƏRİN ƏN BÖYÜK AQUAPARKI.",
     aquaItems: []
   },
-  nav: { home: "Ana Səhifə", rooms: "Otaqlar", dining: "Restoran", aquapark: "Akvapark", contacts: "Əlaqə" }
+  nav: { home: "Ana Səhifə", rooms: "Otaqlar", restoran: "Restoran", aquapark: "Akvapark", contacts: "Əlaqə" }
 };
 
 const LanguageContext = createContext<LanguageContextType>({
@@ -80,9 +80,9 @@ const translations: Record<Lang, TranslationSchema> = {
     },
     rooms: { moreInfo: "Ətraflı məlumat" },
     features: {
-      diningTag: "RESTORAN VƏ UTAM",
-      diningTitle: "UNUDULMAZ DAT TƏCRÜBƏSİ.",
-      diningItems: [
+      restoranTag: "RESTORAN VƏ UTAM",
+      restoranTitle: "UNUDULMAZ DAT TƏCRÜBƏSİ.",
+      restoranItems: [
         { title: "A la Carte Restoran", desc: "Zərif dadlar və beynəlxalq mətbəx." },
         { title: "Dəniz Kənarı Bar", desc: "Sərinləşdirici içkilər və dəniz mənzərəsi." }
       ],
@@ -94,7 +94,7 @@ const translations: Record<Lang, TranslationSchema> = {
         { title: "Uşaq Dünyası", desc: "Balacalar üçün xüsusi su oyun xidmətləri." }
       ]
     },
-    nav: { home: "Ana Səhifə", rooms: "Otaqlar", dining: "Restoran", aquapark: "AquaPark", contacts: "Əlaqə" }
+    nav: { home: "Ana Səhifə", rooms: "Otaqlar", restoran: "Restoran", aquapark: "AquaPark", contacts: "Əlaqə" }
   },
   ru: {
     about: {
@@ -106,9 +106,9 @@ const translations: Record<Lang, TranslationSchema> = {
     },
     rooms: { moreInfo: "Подробнее" },
     features: {
-      diningTag: "РЕСТОРАНЫ И ГАСТРОНОМИЯ",
-      diningTitle: "НЕЗАБЫВАЕМЫЙ ВКУСОВОЙ ОПЫТ.",
-      diningItems: [
+      restoranTag: "РЕСТОРАНЫ И ГАСТРОНОМИЯ",
+      restoranTitle: "НЕЗАБЫВАЕМЫЙ ВКУСОВОЙ ОПЫТ.",
+      restoranItems: [
         { title: "Ресторан A la Carte", desc: "Изысканные вкусы и международная кухня." },
         { title: "Бар у моря", desc: "Прохладительные напитки и вид на море." }
       ],
@@ -120,7 +120,7 @@ const translations: Record<Lang, TranslationSchema> = {
         { title: "Детский мир", desc: "Специальные водные аттракционы для малышей." }
       ]
     },
-    nav: { home: "Главная", rooms: "Номера", dining: "Ресторан", aquapark: "Aквапарк", contacts: "Контакты" }
+    nav: { home: "Главная", rooms: "Номера", restoran: "Ресторан", aquapark: "Aквапарк", contacts: "Контакты" }
   },
   en: {
     about: {
@@ -132,9 +132,9 @@ const translations: Record<Lang, TranslationSchema> = {
     },
     rooms: { moreInfo: "More Info" },
     features: {
-      diningTag: "DINING & GASTRONOMY",
-      diningTitle: "AN UNFORGETTABLE CULINARY JOURNEY.",
-      diningItems: [
+      restoranTag: "RESTORAN & GASTRONOMY",
+      restoranTitle: "AN UNFORGETTABLE CULINARY JOURNEY.",
+      restoranItems: [
         { title: "A la Carte Restaurant", desc: "Exquisite flavors and international cuisine." },
         { title: "Seaside Bar", desc: "Refreshing drinks with a stunning sea view." }
       ],
@@ -146,7 +146,7 @@ const translations: Record<Lang, TranslationSchema> = {
         { title: "Kids World", desc: "Special water attractions designed for the little ones." }
       ]
     },
-    nav: { home: "Home", rooms: "Rooms", dining: "Dining", aquapark: "Aquapark", contacts: "Contacts" }
+    nav: { home: "Home", rooms: "Rooms", restoran: "Restoran", aquapark: "Aquapark", contacts: "Contacts" }
   }
 };
 
