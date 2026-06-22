@@ -9,6 +9,7 @@ import type { PublicRoom } from "@/services/api";
 import { toggleFavorite, isFavorite } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+
 const content = {
   az: {
     tag: "OTAQLAR & KOTECLƏR",
@@ -49,6 +50,7 @@ const content = {
     perNight: "/ ночь",
     empty: "В этой категории номеров нет.",
   },
+
 };
 
 type Category = "all" | "Single" | "Standard Double" | "Standard Twin" | "Apartments for 4";
@@ -63,12 +65,14 @@ export default function Rooms() {
   const [category, setCategory] = useState<Category>("all");
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
+
   useEffect(() => {
     let cancelled = false;
     getPublicRooms()
       .then((data) => { if (!cancelled) setRooms(data); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
+
   }, []);
 
   const buildFavSet = useCallback(
@@ -131,30 +135,30 @@ export default function Rooms() {
           <p className="text-xs text-stone-400 font-light max-w-md mx-auto">{c.subtitle}</p>
         </motion.div>
 
-        {/* Скролл-кнопки фильтров (Адаптивные, скроллятся на мобилках) */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="flex gap-2 justify-start md:justify-center mb-12 overflow-x-auto pb-2 snap-x scrollbar-none -mx-4 px-4 md:mx-0 md:px-0"
-        >
-          {categories.map(({ key, label }) => {
-            const isActive = category === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setCategory(key)}
-                className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all cursor-pointer snap-center shrink-0 border ${
-                  isActive 
-                    ? "bg-[#00b5d5] text-white border-gray-400 shadow-sm" 
-                    : "text-stone-500 bg-stone-50 border-stone-200/50 hover:bg-stone-100"
-                }`}
-              >
-                {label}
-              </button>
-            );  
-          })}
-        </motion.div>
+
+
+        {/* Filter tabs */}
+        <div className="flex gap-2 justify-center mb-10 flex-wrap">
+          {categories.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setCategory(key)}
+              className={`px-5 py-2 rounded-full text-xs font-bold transition-all ${
+                category === key
+                  ? "text-white shadow-md"
+                  : "text-stone-500 bg-stone-100 hover:bg-stone-200"
+              }`}
+              style={
+                category === key
+                  ? { background: "var(--color-hotel-blue)" }
+                  : undefined
+              }
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
 
         {/* Контентная сетка */}
         {loading ? (
@@ -198,9 +202,45 @@ export default function Rooms() {
                     <span className="absolute top-4 left-4 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-xs text-stone-800 rounded-md shadow-xs border border-stone-100">
                       {room.category}
                     </span>
+
+                    <span className="flex items-center gap-1">
+                      <Maximize2 className="w-3.5 h-3.5" />
+                      {room.size}
+                    </span>
+                  </div>
+
+                  {/* Amenities */}
+                  <div className="flex flex-wrap gap-1">
+                    {room.includes[l].slice(0, 3).map((item) => (
+                      <span
+                        key={item}
+                        className="text-[10px] px-2 py-0.5 bg-stone-50 border border-stone-100 rounded-full text-stone-500"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                    {room.includes[l].length > 3 && (
+                      <span className="text-[10px] px-2 py-0.5 text-stone-400">
+                        +{room.includes[l].length - 3}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex justify-between items-center pt-2 border-t border-stone-50">
+                    <div>
+                      <span
+                        className="text-xl font-bold"
+                        style={{ color: "var(--color-hotel-blue)" }}
+                      >
+                        {room.price}
+                      </span>
+                      <span className="text-xs text-stone-400 ml-1">{c.perNight}</span>
+                    </div>
                     <button
-                      onClick={() => handleFavorite(room.id)}
-                      className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-sm hover:scale-105 transition-transform cursor-pointer"
+                      onClick={(e) => { e.preventDefault(); handleFavorite(room.id); }}
+                      className="px-4 py-2 text-white text-xs font-bold rounded-xl transition-opacity hover:opacity-90"
+                      style={{ background: "var(--color-hotel-blue)" }}
                     >
                       <Heart
                         className="w-3.5 h-3.5 transition-colors"

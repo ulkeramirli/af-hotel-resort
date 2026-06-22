@@ -1,8 +1,9 @@
+ 
 'use client';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Loader2, Calendar, Users, CheckCircle, CreditCard, ShieldCheck } from 'lucide-react';
+import { Loader2, CheckCircle, CreditCard, ShieldCheck } from 'lucide-react';
 
 interface AuthUser {
   id: string;
@@ -14,6 +15,9 @@ export default function Booking() {
   const { user } = useAuth() as { user: AuthUser | null };
   const { language } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+
 
   const [step, setStep] = useState<1 | 2>(1);
   const [checkIn, setCheckIn] = useState('');
@@ -28,8 +32,6 @@ export default function Booking() {
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvc, setCardCvc] = useState('');
 
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   // Мультиязычные тексты для самого модуля бронирования
   const dict = {

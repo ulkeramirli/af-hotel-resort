@@ -112,9 +112,9 @@ export default function SignUpPage() {
     try {
       const res = await signUp(name, email, password);
       if (res && res.ok) {
-        router.push("/");
+        router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}`);
       } else {
-        setError(t.errorGeneral);
+        setError(res?.message || t.errorGeneral);
         setLoading(false);
       }
     } catch {

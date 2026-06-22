@@ -1,11 +1,21 @@
-import type { Room, Review, Booking, Message } from "@/types/api";
+import type { Room, Booking } from "@/types/api";
 
 const STORAGE_KEY = "af_hotel_mock_v1";
 
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  text: string;
+  time: string;
+  initials: string;
+  unread: boolean;
+}
+
 interface MockStore {
   rooms: Room[];
-  reviews: Review[];
-  bookings: Booking[];
+  reviews: any[];
+  bookings: any[];
   messages: Message[];
 }
 
@@ -27,6 +37,7 @@ const defaultStore: MockStore = {
       price: 120,
       capacity: 2,
       amenities: ["Wi-Fi", "Kondisioner", "Mini bar"],
+      images: [],
       isAvailable: true,
       createdBy: { ...ADMIN_USER, email: "admin@afhotel.az" },
       createdAt: now(),
@@ -40,6 +51,7 @@ const defaultStore: MockStore = {
       price: 220,
       capacity: 3,
       amenities: ["Wi-Fi", "Jakuzi", "Balkon", "Smart TV"],
+      images: [],
       isAvailable: true,
       createdBy: { ...ADMIN_USER, email: "admin@afhotel.az" },
       createdAt: now(),
@@ -53,6 +65,7 @@ const defaultStore: MockStore = {
       price: 350,
       capacity: 6,
       amenities: ["Mətbəx", "Terras", "Parking", "Wi-Fi"],
+      images: [],
       isAvailable: false,
       createdBy: { ...ADMIN_USER, email: "admin@afhotel.az" },
       createdAt: now(),

@@ -1,24 +1,28 @@
 import { RoomController } from "@/controllers/room.controller";
 import { connectDB } from "@/lib/db";
 import { authMiddleware } from "@/middleware/auth.middleware";
-import type { JwtPayload } from "jsonwebtoken";
 
-interface AuthUser extends JwtPayload {
-  id: string;
-  role: string;
-}
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   await connectDB();
   try {
-    const decoded = authMiddleware(req) as AuthUser;
-    if (decoded.role !== "admin") {
+    const user = authMiddleware(req) as any;
+
+    if (user.role !== "admin") {
       throw new Error("Only admin can create rooms");
     }
-    return RoomController.create(req, decoded);
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Unauthorized";
-    return Response.json({ success: false, message }, { status: 401 });
+    return RoomController.create(req, user);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: error.message,
+      },
+      {
+        status: 401,
+      },
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 'use client';
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';

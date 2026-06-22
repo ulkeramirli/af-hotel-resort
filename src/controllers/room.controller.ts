@@ -1,5 +1,7 @@
+import Booking from "@/models/Booking";
 import Room from "@/models/Room";
 import "@/models/User";
+import "@/models/RoomType";
 import { NextResponse } from "next/server";
 
 interface UserPayload {
@@ -32,9 +34,9 @@ export class RoomController {
         },
         {
           status: 201,
-        }
+        },
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
@@ -43,14 +45,16 @@ export class RoomController {
         },
         {
           status: 400,
-        }
+        },
       );
     }
   }
 
   static async getAllRooms() {
     try {
-      const rooms = await Room.find().populate("createdBy", "name email");
+      const rooms = await Room.find()
+        .populate("createdBy", "name email")
+        .populate("type");
 
       return NextResponse.json(
         {
@@ -59,9 +63,9 @@ export class RoomController {
         },
         {
           status: 200,
-        }
+        },
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
@@ -70,14 +74,16 @@ export class RoomController {
         },
         {
           status: 400,
-        }
+        },
       );
     }
   }
 
   static async getById(id: string) {
     try {
-      const room = await Room.findById(id).populate("createdBy", "name email");
+      const room = await Room.findById(id)
+        .populate("createdBy", "name email")
+        .populate("type");
       if (!room) {
         return NextResponse.json(
           {
@@ -86,7 +92,7 @@ export class RoomController {
           },
           {
             status: 404,
-          }
+          },
         );
       }
       return NextResponse.json(
@@ -96,9 +102,9 @@ export class RoomController {
         },
         {
           status: 200,
-        }
+        },
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
@@ -107,7 +113,7 @@ export class RoomController {
         },
         {
           status: 400,
-        }
+        },
       );
     }
   }
@@ -126,14 +132,14 @@ export class RoomController {
           },
           {
             status: 404,
-          }
+          },
         );
       }
       return NextResponse.json({
         success: true,
         room,
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
@@ -142,7 +148,7 @@ export class RoomController {
         },
         {
           status: 400,
-        }
+        },
       );
     }
   }
@@ -158,7 +164,7 @@ export class RoomController {
           },
           {
             status: 404,
-          }
+          },
         );
       }
       return NextResponse.json(
@@ -168,9 +174,9 @@ export class RoomController {
         },
         {
           status: 200,
-        }
+        },
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : "Unknown error";
       return NextResponse.json(
         {
@@ -179,8 +185,31 @@ export class RoomController {
         },
         {
           status: 400,
-        }
+        },
       );
     }
+  }
+
+  static async getAvailability(roomId: string) {
+    const room = await Room.findById(roomId);
+
+    if (!room) {
+      throw new Error("Room not found");
+    }
+    const bookings = await Booking.find({
+      room: roomId,
+      status: {
+        $ne: "cancelled",
+      },
+    }).select("checkIn checkOut");
+
+    return NextResponse.json({
+      success: true,
+      room: {
+        id: room._id,
+        name: room.name,
+      },
+      unavailableDates: bookings,
+    });
   }
 }

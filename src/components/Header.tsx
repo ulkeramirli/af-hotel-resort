@@ -72,7 +72,7 @@ export default function Header() {
 
   const { user, signOut } = useAuth();
   const currentUser = user as AuthUser | null;
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const currentLang = (language as LangType) || "az";
 
   const langRef = useRef<HTMLDivElement>(null);
@@ -99,9 +99,11 @@ export default function Header() {
 
     window.addEventListener("storage", updateCount);
     window.addEventListener("favoritesChanged", updateCount);
+    window.addEventListener("favoritesUpdated", updateCount);
     return () => {
       window.removeEventListener("storage", updateCount);
       window.removeEventListener("favoritesChanged", updateCount);
+      window.removeEventListener("favoritesUpdated", updateCount);
     };
   }, []);
 
@@ -128,34 +130,14 @@ export default function Header() {
     setMobileNavOpen(false);
   };
 
-  const texts = {
-    home: { az: "ANA SƏHİFƏ", en: "HOME", ru: "ГЛАВНАЯ" }[currentLang],
-    about: { az: "HAQQIMIZDA", en: "ABOUT", ru: "О НАС" }[currentLang],
-    rooms: { az: "OTAQLAR", en: "ROOMS", ru: "НОМЕРА" }[currentLang],
-    aquapark: { az: "AQUA PARK", en: "AQUA PARK", ru: "АКВАПАРК" }[currentLang],
-    wonderland: { az: "WONDERLAND", en: "WONDERLAND", ru: "СТРАНА ЧУДЕС" }[
-      currentLang
-    ],
-    restoran: { az: "RESTORAN", en: "RESTORAN", ru: "РЕСТОРАН" }[currentLang],
-    book: { az: "REZERV ET", en: "BOOK NOW", ru: "БРОНЬ" }[currentLang],
-    login: { az: "Daxil ol", en: "Sign in", ru: "Войти" }[currentLang],
-    myAccount: { az: "Mənim hesabım", en: "My Account", ru: "Мой аккаунт" }[
-      currentLang
-    ],
-    myBookings: { az: "Bronlarım", en: "My Bookings", ru: "Мои брони" }[currentLang],
-    favorites: { az: "Sevimlilər", en: "Favorites", ru: "Избранное" }[currentLang],
-    contacts: { az: "ƏLAQƏ", en: "CONTACTS", ru: "КОНТАКТЫ" }[currentLang],
-    logout: { az: "Çıxış", en: "Sign out", ru: "Выйти" }[currentLang],
-  };
-
   const navLinks = [
-    { id: "home", href: "#", label: texts.home },
-    { id: "about", href: "#about", label: texts.about },
-    { id: "rooms", href: "#rooms", label: texts.rooms },
-    { id: "aquapark", href: "#aquapark", label: texts.aquapark },
-    { id: "wonderland", href: "#wonderland", label: texts.wonderland },
-    { id: "restoran", href: "#restoran", label: texts.restoran },
-    { id: "contacts", href: "#contacts", label: texts.contacts },
+    { id: "home", href: "#", label: t.nav.home },
+    { id: "about", href: "#about", label: t.nav.about },
+    { id: "rooms", href: "#rooms", label: t.nav.rooms },
+    { id: "aquapark", href: "#aquapark", label: t.nav.aquapark },
+    { id: "wonderland", href: "#wonderland", label: t.nav.wonderland },
+    { id: "restoran", href: "#restoran", label: t.nav.restoran },
+    { id: "contacts", href: "#contacts", label: t.nav.contacts },
   ];
 
   return (
@@ -241,7 +223,7 @@ export default function Header() {
             href="#booking"
             className="hidden sm:flex items-center text-[11px] font-bold uppercase tracking-widest px-4.5 py-2.5 bg-[#ff6c02] text-white hover:bg-[#e55f00] rounded-xl shadow-xs transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
           >
-            {texts.book}
+            {t.nav.book}
           </a>
 
           <div className="relative" ref={menuRef}>
@@ -271,7 +253,7 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors font-medium"
                       >
                         <User className="w-3.5 h-3.5 text-stone-400" />
-                        {texts.myAccount}
+                        {t.nav.myAccount}
                       </Link>
 
                       <Link
@@ -280,7 +262,7 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors font-medium"
                       >
                         <BookOpen className="w-3.5 h-3.5 text-stone-400" />
-                        {texts.myBookings}
+                        {t.nav.myBookings}
                       </Link>
 
                       <Link
@@ -289,7 +271,7 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors font-medium"
                       >
                         <Heart className="w-3.5 h-3.5 text-stone-400" />
-                        <span>{texts.favorites}</span>
+                        <span>{t.nav.favorites}</span>
                         {favCount > 0 && (
                           <span className="ml-auto text-[10px] bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded-full font-bold">
                             {favCount}
@@ -305,7 +287,7 @@ export default function Header() {
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-xs text-red-600 hover:bg-red-50 border-t border-stone-100 font-medium border-none bg-transparent text-left cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
-                        {texts.logout}
+                        {t.nav.logout}
                       </button>
                     </div>
                   </div>
@@ -318,7 +300,7 @@ export default function Header() {
               >
                 <User className="w-3.5 h-3.5 shrink-0" />
                 <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider text-slate-700">
-                  {texts.login}
+                  {t.nav.login}
                 </span>
               </Link>
             )}
@@ -363,7 +345,7 @@ export default function Header() {
               onClick={() => setMobileNavOpen(false)}
               className="flex justify-center items-center text-xs font-bold uppercase tracking-widest w-full py-4 bg-[#ff6c02] text-white rounded-xl shadow-md"
             >
-              {texts.book}
+              {t.nav.book}
             </a>
           </div>
         </div>

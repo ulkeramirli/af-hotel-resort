@@ -1,18 +1,20 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
-
-import React, { useState,  } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   CalendarCheck,
   BedDouble,
-  MessageSquare,
   Star,
-  BarChart3,
   Settings,
   LogOut,
   Hotel,
+  HelpCircle,
+  Ticket as TicketIcon,
+  Palmtree,
+  Info,
 } from "lucide-react";
 import { logout, getCurrentUser } from "@/services/api";
 
@@ -25,22 +27,22 @@ interface User {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  
-  // Переносим пользователя в стейт, чтобы избежать рассинхронизации SSR/CSR
- const [user,] = useState<User | null>(() => {
-  if (typeof window !== "undefined") {
-    return getCurrentUser();
-  }
-  return null;
-});
+  const [user, setUser] = React.useState<User | null>(null);
+
+  React.useEffect(() => {
+    setUser(getCurrentUser());
+  }, []);
+
 
   const menuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Otaqlar", href: "/admin/otaqlar", icon: BedDouble },
     { name: "Bronlar", href: "/admin/bronlar", icon: CalendarCheck },
+    { name: "Fəaliyyətlər", href: "/admin/activities", icon: Palmtree },
+    { name: "Biletlər", href: "/admin/tickets", icon: TicketIcon },
     { name: "Rəylər", href: "/admin/reviews", icon: Star },
-    { name: "Mesajlar", href: "/admin/mesajlar", icon: MessageSquare },
-    { name: "Statistika", href: "/admin/statistika", icon: BarChart3 },
+    { name: "Haqqımızda", href: "/admin/about", icon: Info },
+    { name: "FAQ", href: "/admin/faqs", icon: HelpCircle },
     { name: "Tənzimləmələr", href: "/admin/settings", icon: Settings },
   ];
 

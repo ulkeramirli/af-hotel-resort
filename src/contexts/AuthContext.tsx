@@ -63,8 +63,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = useCallback(async (name: string, email: string, password: string) => {
     const res = await register(name, email, password);
-    if (res.success && res.data) {
-      setUser(res.data.user as User);
+    if (res.success) {
+      // User is not logged in yet, need to verify OTP
       return { ok: true };
     }
     return { ok: false, message: res.message ?? "Xəta baş verdi" };

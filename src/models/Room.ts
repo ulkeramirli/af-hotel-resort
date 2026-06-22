@@ -4,13 +4,14 @@ const roomSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     type: {
-      type: String,
-      enum: ["standard", "deluxe", "cottage"],
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "RoomType",
       required: true,
     },
     description: { type: String, required: true },
     price: { type: Number, required: true },
     capacity: { type: Number, required: true },
+    images: { type: [String], default: [] },
     amenities: [
       {
         type: String,
