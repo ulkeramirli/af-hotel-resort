@@ -5,8 +5,8 @@ import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, Palmtree, Tv, Compas
 import { useLanguage } from "@/contexts/LanguageContext";
 import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence } from "framer-motion";
-import { getActivities, getActivityCategories, getActivitySettings } from "@/services/api";
-import type { Activity, ActivityCategory, ActivitySettings } from "@/types/api";
+import { getActivities, getActivityCategories, getActivitySettings, getTickets, getFaqs } from "@/services/api";
+import type { Activity, ActivityCategory, ActivitySettings, Ticket, Faq } from "@/types/api";
 
 const content = {
   az: {
@@ -227,12 +227,22 @@ export default function Aquapark() {
 
   const [dbZones, setDbZones] = useState<any[]>([]);
   const [settings, setSettings] = useState<ActivitySettings | null>(null);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [faqs, setFaqs] = useState<Faq[]>([]);
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const [acts, cats, sets] = await Promise.all([getActivities(), getActivityCategories(), getActivitySettings()]);
+        const [acts, cats, sets, dbTickets, dbFaqs] = await Promise.all([
+          getActivities(), 
+          getActivityCategories(), 
+          getActivitySettings(),
+          getTickets(),
+          getFaqs()
+        ]);
         setSettings(sets);
+        setTickets(dbTickets);
+        setFaqs(dbFaqs);
         if (cats.length > 0) {
           const mappedZones = cats.map(cat => ({
             id: cat._id,
@@ -396,7 +406,17 @@ export default function Aquapark() {
               <h3 className="font-bold text-xl text-[#1e325c] font-serif flex items-center gap-2">
                 🎟️ {c.tickets}
               </h3>
-              {[
+              {tickets.length > 0 ? tickets.map((t) => (
+                <div
+                  key={t._id}
+                  className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100 hover:border-stone-200 transition-colors"
+                >
+                  <span className="text-sm font-semibold text-stone-600">{t.name}</span>
+                  <span className="text-lg font-bold" style={{ color: "var(--color-hotel-blue)" }}>
+                    {t.price} ₼
+                  </span>
+                </div>
+              )) : [
                 { label: c.adult, price: c.adultPrice },
                 { label: c.child, price: c.childPrice },
                 { label: c.infant, price: c.infantPrice },
@@ -425,7 +445,7 @@ export default function Aquapark() {
           {/* FAQ Accordion container */}
           <div className="space-y-3">
             <h3 className="font-bold text-xl text-[#1e325c] font-serif pl-1">{c.faq}</h3>
-            {c.faqs.map((faq, i) => (
+            {(faqs.length > 0 ? faqs : c.faqs).map((faq: any, i) => (
               <div
                 key={i}
                 className="bg-[#f9f8f4] rounded-2xl border border-stone-100 overflow-hidden transition-all"
@@ -434,7 +454,7 @@ export default function Aquapark() {
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full flex justify-between items-center p-4 text-left cursor-pointer"
                 >
-                  <span className="text-sm font-bold text-[#1e325c] pr-4">{faq.q}</span>
+                  <span className="text-sm font-bold text-[#1e325c] pr-4">{faq.question || faq.q}</span>
                   {openFaq === i ? (
                     <ChevronUp className="w-4 h-4 text-stone-400 shrink-0" />
                   ) : (
@@ -443,7 +463,7 @@ export default function Aquapark() {
                 </button>
                 {openFaq === i && (
                   <div className="px-4 pb-4 bg-white/50">
-                    <p className="text-xs text-stone-500 leading-relaxed font-medium">{faq.a}</p>
+                    <p className="text-xs text-stone-500 leading-relaxed font-medium whitespace-pre-wrap">{faq.answer || faq.a}</p>
                   </div>
                 )}
               </div>

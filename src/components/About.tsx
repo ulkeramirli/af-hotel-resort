@@ -3,6 +3,9 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
 import { motion, Variants } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { getAbout } from '@/services/api';
+import type { About as AboutType } from '@/types/api';
 
 export default function About() {
   const { language } = useLanguage();
@@ -70,6 +73,24 @@ export default function About() {
     }
   };
 
+  const [dbAbout, setDbAbout] = useState<AboutType | null>(null);
+
+  useEffect(() => {
+    const fetchAbout = async () => {
+      try {
+        const data = await getAbout();
+        setDbAbout(data);
+      } catch (error) {
+        console.error("Failed to fetch about:", error);
+      }
+    };
+    fetchAbout();
+  }, []);
+
+  const displayTitle = dbAbout?.title || about.title;
+  const image1 = dbAbout?.images?.[0] || "/AF-aqua.jpg";
+  const image2 = dbAbout?.images?.[1] || "/AF-aqua2.jpg";
+
   return (
     <section id="about" className="py-32 bg-white scroll-mt-20 select-none overflow-hidden font-sans">
 
@@ -86,7 +107,7 @@ export default function About() {
             className="absolute left-0 top-4 w-[90%] h-[68%] overflow-hidden shadow-2xl rounded-2xl"
           >
             <Image
-              src="/AF-aqua.jpg"
+              src={image1}
               alt="AF Hotel"
               fill
               sizes="(max-width: 768px) 90vw, 60vw"
@@ -103,7 +124,7 @@ export default function About() {
             className="absolute right-0 bottom-4 w-[80%] h-[50%] overflow-hidden shadow-2xl border-8 border-[#fdfbf7] rounded-2xl"
           >
             <Image
-              src="/AF-aqua2.jpg"
+              src={image2}
               alt="AF Hotel Resort"
               fill
               sizes="(max-width: 768px) 80vw, 50vw"
@@ -129,15 +150,21 @@ export default function About() {
             </span>
 
             <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-[1.2]">
-              {about.title}
+              {displayTitle}
             </h2>
           </div>
 
           <div className="space-y-4 text-xs md:text-sm text-stone-500 font-light leading-relaxed max-w-xl">
-            <p>{about.p1}</p>
-            <p>{about.p2}</p>
-            <p>{about.p3}</p>
-            <p>{about.p4}</p>
+            {dbAbout?.description ? (
+              <p className="whitespace-pre-wrap">{dbAbout.description}</p>
+            ) : (
+              <>
+                <p>{about.p1}</p>
+                <p>{about.p2}</p>
+                <p>{about.p3}</p>
+                <p>{about.p4}</p>
+              </>
+            )}
           </div>
 
           <div className="pt-4 border-t border-stone-200/60 max-w-xs">
