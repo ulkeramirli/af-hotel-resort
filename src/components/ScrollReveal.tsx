@@ -1,46 +1,48 @@
 'use client';
-import { useEffect, useRef, useState, ReactNode } from 'react';
+import { motion } from 'framer-motion';
+import { ReactNode } from 'react';
 
 interface ScrollRevealProps {
   children: ReactNode;
   className?: string;
+  direction?: 'up' | 'down' | 'left' | 'right' | 'none';
+  delay?: number;
 }
 
-export default function ScrollReveal({ children, className = '' }: ScrollRevealProps) {
-  const [isVisible, setIsVisible] = useState(false);
-  const domRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // otkluchayem slejku posle pervogo pokaza, chtoby ne nagruzhat prosmotr
-          if (domRef.current) observer.unobserve(domRef.current);
-        }
-      });
-    }, {
-      threshold: 0.1, //animaciya nachinayetsya, kogda 10% elementa viden
-    });
-
-    const currentRef = domRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
+export default function ScrollReveal({ 
+  children, 
+  className = '', 
+  direction = 'up',
+  delay = 0
+}: ScrollRevealProps) {
+  
+  const variants = {
+    hidden: { 
+      opacity: 0, 
+      y: direction === 'up' ? 40 : direction === 'down' ? -40 : 0,
+      x: direction === 'left' ? 40 : direction === 'right' ? -40 : 0,
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      x: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1], // Smooth custom easing
+        delay: delay
+      }
     }
-
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
-  }, []);
+  };
 
   return (
-    <div
-      ref={domRef}
-      className={`transition-all duration-1000 ease-out transform ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-      } ${className}`}
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+      variants={variants}
+      className={className}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }

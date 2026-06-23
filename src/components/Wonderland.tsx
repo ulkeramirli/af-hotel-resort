@@ -6,6 +6,7 @@ import { Sparkles, Star, Clock, Ticket, Compass, ArrowRight, ArrowLeft } from "l
 import { useLanguage } from "@/contexts/LanguageContext";
 import useEmblaCarousel from "embla-carousel-react";
 import { EmblaCarouselType } from "embla-carousel";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const content = {
   az: {
@@ -216,7 +217,7 @@ export default function Wonderland() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-20">
         
         {/* Header */}
-        <div className="text-center space-y-4">
+        <ScrollReveal direction="up" delay={0.1} className="text-center space-y-4">
           <span className="text-[#c5a880] text-xs font-semibold tracking-[0.3em] uppercase block">
             {c.tag}
           </span>
@@ -227,10 +228,10 @@ export default function Wonderland() {
           <p className="text-sm md:text-base text-stone-500 max-w-2xl mx-auto font-light leading-relaxed">
             {c.subtitle}
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Attractions Grid / Highlights */}
-        <div className="space-y-8">
+        <ScrollReveal direction="up" delay={0.2} className="space-y-8">
           <h3 className="text-xs uppercase font-bold tracking-widest text-stone-400 text-center">
             {c.highlightsTitle}
           </h3>
@@ -248,10 +249,10 @@ export default function Wonderland() {
               </div>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Interactive Slider Section */}
-        <div className="space-y-10 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm">
+        <ScrollReveal direction="up" delay={0.3} className="space-y-10 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm">
           
           {/* Tabs + Navigation Buttons Row */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-stone-100 pb-6">
@@ -331,10 +332,10 @@ export default function Wonderland() {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Bottom: Tickets + Special Offers */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <ScrollReveal direction="up" delay={0.4} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           {/* Tickets Pricing */}
           <div className="bg-white rounded-3xl p-8 lg:p-10 border border-stone-100 shadow-sm lg:col-span-7 space-y-6 flex flex-col justify-between">
@@ -405,7 +406,7 @@ export default function Wonderland() {
             </div>
 
           </div>
-        </div>
+        </ScrollReveal>
 
       </div>
     </section>

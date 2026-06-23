@@ -2,6 +2,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { CalendarCheck, BedDouble, Waves, Star, ArrowRight } from 'lucide-react';
 
 export default function Hero() {
@@ -24,35 +25,28 @@ export default function Hero() {
     statRating: { az: 'Reytinq', en: 'Rating', ru: 'Рейтинг' }[currentLang],
   };
 
-  const animationStyles = `
-    @keyframes fadeInUpMotion {
-      0% { opacity: 0; transform: translateY(20px) scale(0.98); }
-      80% { transform: translateY(-1px) scale(1.01); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.1 }
     }
-    @keyframes fadeInRightMotion {
-      0% { opacity: 0; transform: translateX(30px); }
-      100% { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes fadeInMotion {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    .anim-fade-in { animation: fadeInMotion 1s ease-out forwards; }
-    .anim-text-motion { animation: fadeInUpMotion 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .motion-card-1 { animation: fadeInUpMotion 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards; opacity: 0; }
-    .motion-card-2 { animation: fadeInUpMotion 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.45s forwards; opacity: 0; }
-    .motion-card-3 { animation: fadeInUpMotion 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards; opacity: 0; }
-    .motion-card-4 { animation: fadeInUpMotion 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s forwards; opacity: 0; }
-    .anim-panel-motion { animation: fadeInRightMotion 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; opacity: 0; }
-  `;
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } }
+  };
 
   return (
     <section className="relative min-h-[95vh] lg:min-h-screen pt-28 pb-12 flex items-center bg-stone-50 overflow-hidden select-none">
-      <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
-
       {/* Background image */}
-      <div className="absolute inset-0 z-0 anim-fade-in w-full h-full">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="absolute inset-0 z-0 w-full h-full"
+      >
         <Image
           src="/AF-aqua.jpg"
           alt="AF Hotel Grand Aquapark"
@@ -63,13 +57,18 @@ export default function Hero() {
         />
         <div className="absolute inset-0 bg-black/20 lg:bg-none" />
         <div className="absolute inset-0 hidden lg:block" style={{background: 'linear-gradient(105deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.70) 40%, rgba(0,0,0,0.05) 100%)'}} />
-      </div>
+      </motion.div>
 
       <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
 
         {/* Left: Text + feature cards */}
-        <div className="lg:col-span-7 space-y-6 lg:space-y-8 text-left anim-text-motion">
-          <div className="space-y-1 md:space-y-2 drop-shadow-md">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="lg:col-span-7 space-y-6 lg:space-y-8 text-left"
+        >
+          <motion.div variants={itemVariants} className="space-y-1 md:space-y-2 drop-shadow-md">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-wider uppercase leading-tight drop-shadow-md">
               {texts.line1}
             </h2>
@@ -79,39 +78,44 @@ export default function Hero() {
             <p className="text-base sm:text-lg md:text-xl font-semibold text-white/90 tracking-widest pt-1 drop-shadow-md uppercase">
               {texts.sub}
             </p>
-          </div>
+          </motion.div>
 
           {/* Feature cards */}
-          <div className="grid grid-cols-2 gap-2.5 pt-4 lg:pt-6 max-w-xl md:max-w-2xl">
-            <div className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm motion-card-1">
+          <motion.div variants={itemVariants} className="grid grid-cols-2 gap-2.5 pt-4 lg:pt-6 max-w-xl md:max-w-2xl">
+            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm">
               <div className="w-11 h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
                 <Image src="/bed.png" alt="Rooms" width={36} height={36} className="w-9 h-9 object-contain" />
               </div>
               <p className="text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f1}</p>
-            </div>
-            <div className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm motion-card-2">
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm">
               <div className="w-11 h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
                 <Image src="/aqua-park1.png" alt="Aquapark" width={36} height={36} className="w-9 h-9 object-contain" />
               </div>
               <p className="text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f2}</p>
-            </div>
-            <div className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm motion-card-3">
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm">
               <div className="w-11 h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
                 <Image src="/carousel.png" alt="Lunapark" width={36} height={36} className="w-9 h-9 object-contain" />
               </div>
               <p className="text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f4}</p>
-            </div>
-            <div className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm motion-card-4">
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm">
               <div className="w-11 h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
                 <Image src="/spoon.png" alt="Restaurant" width={36} height={36} className="w-9 h-9 object-contain" />
               </div>
               <p className="text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f3}</p>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
 
         {/* Right: Premium Stats + CTA Panel */}
-        <div className="lg:col-span-5 w-full flex justify-center lg:justify-end mt-4 lg:mt-0 anim-panel-motion">
+        <motion.div 
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
+          className="lg:col-span-5 w-full flex justify-center lg:justify-end mt-4 lg:mt-0"
+        >
           <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-[0_20px_50px_rgba(30,50,92,0.12)] border border-white/80 space-y-6">
 
             {/* Stats row */}
@@ -191,7 +195,7 @@ export default function Hero() {
               📍 Novxanı, Bakı · Xəzər sahili
             </p>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

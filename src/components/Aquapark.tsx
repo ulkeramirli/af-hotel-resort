@@ -3,6 +3,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, Palmtree, Tv, Compass, MapPin, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import ScrollReveal from "@/components/ScrollReveal";
+import { motion, AnimatePresence } from "framer-motion";
 
 const content = {
   az: {
@@ -227,7 +229,7 @@ export default function Aquapark() {
     <section id="aquapark" className="py-32 bg-white scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-16">
         {/* Header */}
-        <div className="text-center space-y-3">
+        <ScrollReveal direction="up" delay={0.1} className="text-center space-y-3">
           <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
             {c.tag}
           </span>
@@ -235,10 +237,10 @@ export default function Aquapark() {
             {c.title}
           </h2>
           <p className="text-sm text-stone-400 max-w-xl mx-auto leading-relaxed">{c.subtitle}</p>
-        </div>
+        </ScrollReveal>
 
         {/* Stats bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <ScrollReveal direction="up" delay={0.2} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { icon: Waves, label: "25+", sub: l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов" },
             { icon: Users, label: "2500+", sub: l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день" },
@@ -254,7 +256,7 @@ export default function Aquapark() {
               <span className="text-[10px] text-stone-400 font-medium tracking-wide uppercase">{s.sub}</span>
             </div>
           ))}
-        </div>
+        </ScrollReveal>
 
         {/* Dynamic Resort Zones (Ideal UI) */}
         <div className="space-y-10">
@@ -292,12 +294,17 @@ export default function Aquapark() {
           </div>
 
           {/* Attractions / Items Cards Dynamic Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {activeZone?.items.map((item, i) => (
-              <div
-                key={i}
-                className="group rounded-3xl overflow-hidden border border-stone-100 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
-              >
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <AnimatePresence mode="popLayout">
+              {activeZone?.items.map((item, i) => (
+                <motion.div
+                  key={item.name}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: i * 0.1 }}
+                  className="group rounded-3xl overflow-hidden border border-stone-100 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
+                >
                 <div className="relative h-56 overflow-hidden bg-stone-100">
                   <Image
                     src={item.img}
@@ -328,9 +335,10 @@ export default function Aquapark() {
                     <span className="text-[10px] font-bold uppercase tracking-wider">{activeZone.name}</span>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         </div>
 
         {/* Tickets + FAQ */}

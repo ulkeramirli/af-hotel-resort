@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { Clock, Phone, ChefHat, Utensils, Coffee, Wine, Calendar, Search, LucideIcon } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import ScrollReveal from "@/components/ScrollReveal";
+import { motion, AnimatePresence } from "framer-motion";
 
 type LangType = "az" | "en" | "ru";
 
@@ -374,7 +376,7 @@ export default function Restoran() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-12 md:space-y-16">
         
         {/* Заголовок */}
-        <div className="text-center space-y-3">
+        <ScrollReveal direction="up" delay={0.1} className="text-center space-y-3">
           <span className="text-[#00b5d5] text-[11px] font-bold tracking-[0.35em] uppercase block">
             {c.tag}
           </span>
@@ -384,10 +386,10 @@ export default function Restoran() {
           <p className="text-sm text-stone-500 max-w-xl mx-auto leading-relaxed">
             {c.subtitle}
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Навигация по ресторанам */}
-        <div className="flex flex-wrap justify-center gap-2 p-1.5 bg-stone-100 max-w-2xl mx-auto rounded-2xl border border-stone-200/40">
+        <ScrollReveal direction="up" delay={0.2} className="flex flex-wrap justify-center gap-2 p-1.5 bg-stone-100 max-w-2xl mx-auto rounded-2xl border border-stone-200/40">
           {c.restaurants.map((rest: RestaurantData, idx: number) => (
             <button
               key={rest.id}
@@ -399,13 +401,13 @@ export default function Restoran() {
               {rest.name}
             </button>
           ))}
-        </div>
+        </ScrollReveal>
 
         {/* Главная Сетка */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* Левая инфо-панель */}
-          <div className="lg:col-span-5 space-y-6">
+          <ScrollReveal direction="left" delay={0.3} className="lg:col-span-5 space-y-6">
             <div className="relative h-64 sm:h-80 w-full rounded-3xl overflow-hidden shadow-md group">
               <Image
                 src={currentRestaurant.image}
@@ -452,10 +454,10 @@ export default function Restoran() {
                 </a>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Правая часть: Меню */}
-          <div className="lg:col-span-7 space-y-6">
+          <ScrollReveal direction="right" delay={0.4} className="lg:col-span-7 space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center border-b border-stone-200/60 pb-3">
               <h3 className="text-lg font-serif font-bold text-[#1e325c] tracking-wide flex items-center gap-2">
                 <Utensils className="w-4 h-4 text-[#00b5d5]" />
@@ -497,12 +499,18 @@ export default function Restoran() {
             {/* Контейнер для блюд */}
             <div className="max-h-145 overflow-y-auto pr-2 space-y-3.5 scrollbar-thin scrollbar-thumb-stone-200/80">
               {filteredItems.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {filteredItems.map((item: MenuItem, i: number) => (
-                    <div
-                      key={i}
-                      className="bg-white p-3.5 rounded-2xl border border-stone-100/80 shadow-2xs hover:shadow-md hover:border-stone-200/60 transition-all duration-300 flex justify-between items-center gap-4 min-h-27.5 animate-in fade-in"
-                    >
+                <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <AnimatePresence mode="popLayout">
+                    {filteredItems.map((item: MenuItem, i: number) => (
+                      <motion.div
+                        layout
+                        key={item.name}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.25, delay: i * 0.05 }}
+                        className="bg-white p-3.5 rounded-2xl border border-stone-100/80 shadow-2xs hover:shadow-md hover:border-stone-200/60 transition-all duration-300 flex justify-between items-center gap-4 min-h-27.5"
+                      >
                       <div className="space-y-1.5 flex-1">
                         <div className="flex flex-col gap-0.5">
                           <h4 className="font-bold text-xs md:text-sm text-[#1e325c] leading-snug">
@@ -528,16 +536,17 @@ export default function Restoran() {
                           />
                         </div>
                       )}
-                    </div>
-                  ))}
-                </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
               ) : (
                 <div className="text-center py-16 text-stone-400 text-xs font-medium">
                   {c.noResults}
                 </div>
               )}
             </div>
-          </div>
+          </ScrollReveal>
 
         </div>
       </div>

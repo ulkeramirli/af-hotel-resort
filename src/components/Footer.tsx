@@ -2,6 +2,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useState } from 'react';
 import Image from 'next/image';
+import ScrollReveal from '@/components/ScrollReveal';
 
 export default function Footer() {
   const { language, t } = useLanguage();
@@ -39,7 +40,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-12 relative z-10">
         
         {/* qlavnaya panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-8 border-b border-cyan-100/60 items-start">
+        <ScrollReveal direction="up" delay={0.1} className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-8 border-b border-cyan-100/60 items-start">
           
           <div className="lg:col-span-6 space-y-4">
            {/* loqotip iz headera */}
@@ -73,10 +74,10 @@ export default function Footer() {
             </form>
           </div>
 
-        </div>
+        </ScrollReveal>
 
         {/* naviqacionniye ssilki */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs">
+        <ScrollReveal direction="up" delay={0.2} className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs">
           <div className="space-y-3">
             <h4 className="text-[9px] font-bold uppercase tracking-widest text-stone-400">The Resort</h4>
             <div className="flex flex-col space-y-2 font-light text-stone-600">
@@ -112,16 +113,16 @@ export default function Footer() {
               Baku, Azerbaijan
             </p>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* kopirayder */}
-        <div className="pt-6 border-t border-cyan-100/60 flex flex-col md:flex-row justify-between items-center gap-3 text-[9px] text-stone-400 font-mono tracking-wider">
+        <ScrollReveal direction="up" delay={0.3} className="pt-6 border-t border-cyan-100/60 flex flex-col md:flex-row justify-between items-center gap-3 text-[9px] text-stone-400 font-mono tracking-wider">
           <p>© {new Date().getFullYear()} AF HOTEL & AQUA PARK. All rights reserved.</p>
           <div className="flex space-x-4 uppercase font-bold">
             <a href="#privacy" className="hover:text-[#00b5d5] transition-colors">Privacy</a>
             <a href="#terms" className="hover:text-[#00b5d5] transition-colors">Terms</a>
           </div>
-        </div>
+        </ScrollReveal>
 
       </div>
     </footer>

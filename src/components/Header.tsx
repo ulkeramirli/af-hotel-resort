@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
@@ -142,7 +143,10 @@ export default function Header() {
 
   return (
     <>
-      <header
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className={`fixed top-0 left-0 w-full z-50 px-4 lg:px-12 py-1.5 flex justify-between items-center transition-all duration-500 ${
           scrolled
             ? "bg-white/95 backdrop-blur-md border-b border-stone-200/60 shadow-sm"
@@ -318,11 +322,18 @@ export default function Header() {
             )}
           </button>
         </div>
-      </header>
+      </motion.header>
 
-      {mobileNavOpen && (
-        <div className="fixed inset-0 top-13.75 bg-white z-40 lg:hidden flex flex-col justify-between p-6 border-t border-stone-100 animate-in fade-in slide-in-from-right duration-300">
-          <nav className="flex flex-col space-y-5 text-sm font-bold tracking-widest text-slate-800">
+      <AnimatePresence>
+        {mobileNavOpen && (
+          <motion.div 
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+            className="fixed inset-0 top-13.75 bg-white z-40 lg:hidden flex flex-col justify-between p-6 border-t border-stone-100"
+          >
+            <nav className="flex flex-col space-y-5 text-sm font-bold tracking-widest text-slate-800">
             {navLinks.map((item) => (
               <a
                 key={item.id}
@@ -349,8 +360,9 @@ export default function Header() {
               {t.nav.book}
             </a>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </>
   );
 }
