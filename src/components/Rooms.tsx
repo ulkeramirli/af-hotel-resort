@@ -21,7 +21,7 @@ function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
 
   if (!isValid || err) {
     return (
-      <div className="w-full h-full bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center">
+      <div className="w-full h-full bg-linear-to-br from-stone-100 to-stone-200 flex items-center justify-center">
         <BedDouble className="w-12 h-12 text-stone-300" />
       </div>
     );
@@ -118,7 +118,7 @@ function RoomCard({
   return (
     <div className={`group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full ${compact ? "" : ""}`}>
       {/* Image */}
-      <div className={`relative overflow-hidden bg-stone-100 border-b border-stone-100 ${compact ? "aspect-[4/3]" : "aspect-[16/11]"}`}>
+      <div className={`relative overflow-hidden bg-stone-100 border-b border-stone-100 ${compact ? "aspect-4/3" : "aspect-16/11"}`}>
         <RoomCarousel images={room.images} alt={room.title[l]} />
         <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-sm text-stone-800 rounded-md shadow-sm border border-stone-100 z-10">
           {room.category}

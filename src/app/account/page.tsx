@@ -217,6 +217,7 @@ function AccountContent() {
   useEffect(() => {
     if (!user) return;
     // Load bookings immediately so count shows correctly in sidebar
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoadingBookings(true);
     getBookings()
       .then((data) => setBookings(data))
@@ -232,6 +233,7 @@ function AccountContent() {
 
   // Load favorites from localStorage on mount and listen for updates
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFavorites(getFavorites());
     const onUpdate = () => setFavorites(getFavorites());
     window.addEventListener("favoritesUpdated", onUpdate);
