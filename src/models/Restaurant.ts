@@ -1,15 +1,21 @@
 import mongoose from "mongoose";
 
+const localizedString = {
+  az: { type: String, required: true },
+  en: { type: String, required: true },
+  ru: { type: String, required: true },
+};
+
+const localizedStringOptional = {
+  az: { type: String, default: "" },
+  en: { type: String, default: "" },
+  ru: { type: String, default: "" },
+};
+
 // ─── Menu Item (each dish/product) ───
 const menuItemSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    default: "",
-  },
+  name: localizedString,
+  description: localizedStringOptional,
   price: {
     type: Number,
     required: true,
@@ -22,10 +28,7 @@ const menuItemSchema = new mongoose.Schema({
 
 // ─── Menu Category (groups menu items) ───
 const menuCategorySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
+  name: localizedString,
   items: [menuItemSchema],
 });
 
@@ -51,18 +54,12 @@ const workingHoursSchema = new mongoose.Schema(
 // ─── Restaurant ───
 const restaurantSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
+    name: localizedString,
     image: {
       type: String,
       default: "",
     },
-    description: {
-      type: String,
-      default: "",
-    },
+    description: localizedStringOptional,
     workingHours: {
       type: workingHoursSchema,
       default: () => ({ breakfast: "", lunch: "", dinner: "" }),
@@ -78,5 +75,5 @@ const restaurantSchema = new mongoose.Schema(
   },
 );
 
-export default mongoose.models.Restaurant ||
-  mongoose.model("Restaurant", restaurantSchema);
+delete mongoose.models.Restaurant;
+export default mongoose.model("Restaurant", restaurantSchema);

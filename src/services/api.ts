@@ -163,10 +163,12 @@ export async function loginWithGoogle(name?: string, email?: string): Promise<an
 // ─── PUBLIC ROOM TYPES (for frontend pages) ───
 export interface PublicRoom {
   id: string;
-  category: string;
+  category: string; // The ID of the category
+  categoryName: { az: string; en: string; ru: string };
   title: { az: string; en: string; ru: string };
   desc: { az: string; en: string; ru: string };
   capacity: { az: string; en: string; ru: string };
+  rawCapacity: number;
   size: string;
   price: number;
   images: string[];
@@ -207,26 +209,28 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
     const rooms: Room[] = data.rooms ?? [];
     return rooms.map((r): PublicRoom => ({
       id: r._id,
-      category: typeof r.type === "object" && r.type !== null ? (r.type as any).name ?? "Standard" : String(r.type),
-      title: { az: r.name, en: r.name, ru: r.name },
-      desc: { az: r.description, en: r.description, ru: r.description },
+      category: typeof r.type === "object" && r.type !== null ? (r.type as any)._id : String(r.type),
+      categoryName: typeof r.type === "object" && r.type !== null ? (r.type as any).name : { az: "Otaq", en: "Room", ru: "Номер" },
+      title: (r.name as any) || { az: "", en: "", ru: "" },
+      desc: (r.description as any) || { az: "", en: "", ru: "" },
       capacity: {
         az: `${r.capacity} nəfər`,
         en: `${r.capacity} persons`,
         ru: `${r.capacity} человек`,
       },
+      rawCapacity: r.capacity || 2,
       size: r.sqft ? `${r.sqft} sqft` : "350 sqft",
       price: r.price,
       images: sanitizeImages(r.images),
       includes: {
-        az: r.amenities ?? [],
-        en: r.amenities ?? [],
-        ru: r.amenities ?? [],
+        az: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.az : a) || [],
+        en: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.en : a) || [],
+        ru: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.ru : a) || [],
       },
       beds: r.beds,
       baths: r.baths,
-      rulesCheckIn: r.rulesCheckIn,
-      rulesCheckOut: r.rulesCheckOut,
+      rulesCheckIn: r.rulesCheckIn as any,
+      rulesCheckOut: r.rulesCheckOut as any,
     }));
   } catch {
     return [];
@@ -261,26 +265,28 @@ export async function getPublicRoomById(id: string): Promise<PublicRoom | null> 
     const r: Room = data.room;
     return {
       id: r._id,
-      category: typeof r.type === "object" && r.type !== null ? (r.type as any).name ?? "Standard" : String(r.type),
-      title: { az: r.name, en: r.name, ru: r.name },
-      desc: { az: r.description, en: r.description, ru: r.description },
+      category: typeof r.type === "object" && r.type !== null ? (r.type as any)._id : String(r.type),
+      categoryName: typeof r.type === "object" && r.type !== null ? (r.type as any).name : { az: "Otaq", en: "Room", ru: "Номер" },
+      title: (r.name as any) || { az: "", en: "", ru: "" },
+      desc: (r.description as any) || { az: "", en: "", ru: "" },
       capacity: {
         az: `${r.capacity} nəfər`,
         en: `${r.capacity} persons`,
         ru: `${r.capacity} человек`,
       },
+      rawCapacity: r.capacity || 2,
       size: r.sqft ? `${r.sqft} sqft` : "350 sqft",
       price: r.price,
       images: sanitizeImages(r.images),
       includes: {
-        az: r.amenities ?? [],
-        en: r.amenities ?? [],
-        ru: r.amenities ?? [],
+        az: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.az : a) || [],
+        en: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.en : a) || [],
+        ru: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.ru : a) || [],
       },
       beds: r.beds,
       baths: r.baths,
-      rulesCheckIn: r.rulesCheckIn,
-      rulesCheckOut: r.rulesCheckOut,
+      rulesCheckIn: r.rulesCheckIn as any,
+      rulesCheckOut: r.rulesCheckOut as any,
     };
   } catch {
     return null;
@@ -341,7 +347,7 @@ export async function getRoomTypes(): Promise<RoomType[]> {
 }
 
 // POST /api/room-types → { success, roomType }
-export async function createRoomType(name: string) {
+export async function createRoomType(name: any) {
   const res = await fetch(`${BASE}/room-types`, {
     method: "POST",
     headers: authHeaders(),
@@ -353,7 +359,7 @@ export async function createRoomType(name: string) {
 }
 
 // PUT /api/room-types/[id] → { success, roomType }
-export async function updateRoomType(id: string, name: string) {
+export async function updateRoomType(id: string, name: any) {
   const res = await fetch(`${BASE}/room-types/${id}`, {
     method: "PUT",
     headers: authHeaders(),

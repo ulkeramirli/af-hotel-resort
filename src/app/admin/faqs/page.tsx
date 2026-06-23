@@ -1,22 +1,41 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import React, { useState, useEffect } from "react";
-import { Plus, Trash2, Loader2, Pencil, HelpCircle } from "lucide-react";
+import { Plus, Trash2, Loader2, Pencil, HelpCircle, Globe } from "lucide-react";
 import { getFaqs, createFaq, updateFaq, deleteFaq } from "@/services/api";
-import type { Faq } from "@/types/api";
 
 const emptyFaqForm = {
-  question: "",
-  answer: "",
+  question: { az: "", en: "", ru: "" },
+  answer: { az: "", en: "", ru: "" },
 };
 
+const LangSwitcher = ({ lang, setLang }: { lang: "az" | "en" | "ru"; setLang: (l: "az" | "en" | "ru") => void }) => (
+  <div className="flex gap-1 bg-stone-100 p-1 rounded-lg w-max mb-4">
+    {(["az", "en", "ru"] as const).map((l) => (
+      <button
+        key={l}
+        type="button"
+        onClick={() => setLang(l)}
+        className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-colors flex items-center gap-1 ${
+          lang === l ? "bg-white text-[#1e325c] shadow-sm" : "text-stone-400 hover:text-stone-600"
+        }`}
+      >
+        <Globe className="w-3 h-3" /> {l}
+      </button>
+    ))}
+  </div>
+);
+
 export default function AdminFaqsPage() {
-  const [faqs, setFaqs] = useState<Faq[]>([]);
+  const [faqs, setFaqs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [formLang, setFormLang] = useState<"az" | "en" | "ru">("az");
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyFaqForm);
+
+  const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
 
   const loadData = async () => {
     try {
@@ -36,8 +55,8 @@ export default function AdminFaqsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.question || !form.answer) {
-      alert("Sual və cavab doldurulmalıdır!");
+    if (!form.question.az || !form.answer.az) {
+      alert("Sual və cavab AZ dilində mütləq doldurulmalıdır!");
       return;
     }
     
@@ -55,12 +74,13 @@ export default function AdminFaqsPage() {
     }
   };
 
-  const startEdit = (faq: Faq) => {
+  const startEdit = (faq: any) => {
     setEditId(faq._id);
     setForm({
-      question: faq.question,
-      answer: faq.answer,
+      question: parseLoc(faq.question),
+      answer: parseLoc(faq.answer),
     });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDelete = async (id: string) => {
@@ -98,26 +118,30 @@ export default function AdminFaqsPage() {
         {/* FORM */}
         <div className="lg:col-span-1">
           <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-            <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
-              <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-              {editId ? "Sualı Redaktə Et" : "Yeni Sual Əlavə Et"}
-            </h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+                <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
+                {editId ? "Sualı Redaktə Et" : "Yeni Sual Əlavə Et"}
+              </h3>
+              <LangSwitcher lang={formLang} setLang={setFormLang} />
+            </div>
+            
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-stone-500 mb-1 block">Sual</label>
+                <label className="text-xs font-semibold text-stone-500 mb-1 block">Sual [{formLang.toUpperCase()}]</label>
                 <textarea
                   placeholder="Məs: Otelə giriş saat neçədədir?"
-                  value={form.question}
-                  onChange={(e) => setForm({ ...form, question: e.target.value })}
+                  value={form.question[formLang]}
+                  onChange={(e) => setForm({ ...form, question: { ...form.question, [formLang]: e.target.value } })}
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5] h-20 resize-none"
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-stone-500 mb-1 block">Cavab</label>
+                <label className="text-xs font-semibold text-stone-500 mb-1 block">Cavab [{formLang.toUpperCase()}]</label>
                 <textarea
                   placeholder="Məs: Giriş (Check-in) 14:00, çıxış (Check-out) 12:00-dadır."
-                  value={form.answer}
-                  onChange={(e) => setForm({ ...form, answer: e.target.value })}
+                  value={form.answer[formLang]}
+                  onChange={(e) => setForm({ ...form, answer: { ...form.answer, [formLang]: e.target.value } })}
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5] h-24 resize-none"
                 />
               </div>
@@ -157,8 +181,8 @@ export default function AdminFaqsPage() {
                     <HelpCircle className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1e325c] mb-1">{faq.question}</h4>
-                    <p className="text-xs text-stone-500">{faq.answer}</p>
+                    <h4 className="font-bold text-sm text-[#1e325c] mb-1">{(faq.question as any)?.az || faq.question}</h4>
+                    <p className="text-xs text-stone-500 line-clamp-3">{(faq.answer as any)?.az || faq.answer}</p>
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">

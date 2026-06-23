@@ -3,13 +3,14 @@ import mongoose from "mongoose";
 const activityCategorySchema = new mongoose.Schema(
   {
     name: {
-      type: String,
-      required: true,
-      unique: true,
+      az: { type: String, required: true },
+      en: { type: String, required: true },
+      ru: { type: String, required: true },
     },
     description: {
-      type: String,
-      default: "",
+      az: { type: String, default: "" },
+      en: { type: String, default: "" },
+      ru: { type: String, default: "" },
     },
     emoji: {
       type: String,
@@ -21,5 +22,5 @@ const activityCategorySchema = new mongoose.Schema(
   },
 );
 
-export default mongoose.models.ActivityCategory ||
-  mongoose.model("ActivityCategory", activityCategorySchema);
+delete mongoose.models.ActivityCategory;
+export default mongoose.model("ActivityCategory", activityCategorySchema);

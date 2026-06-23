@@ -172,7 +172,24 @@ function BookingContent() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setBookedDates([]);
     }
-  }, [selectedRoomId]);
+    
+    // Adjust capacity
+    const match = rooms.find((r) => r.id === selectedRoomId);
+    if (match) {
+      const cap = match.rawCapacity || 4;
+      if (adults > cap) {
+        setAdults(cap);
+        setKids(0);
+      } else if (adults + kids > cap) {
+        setKids(cap - adults);
+      }
+    }
+  }, [selectedRoomId, rooms, adults, kids]);
+
+  const selectedRoom = rooms.find((r) => r.id === selectedRoomId);
+  const maxCapacity = selectedRoom?.rawCapacity || 4;
+  const adultsOptions = Array.from({ length: maxCapacity }, (_, i) => i + 1);
+  const kidsOptions = Array.from({ length: Math.max(1, maxCapacity - adults + 1) }, (_, i) => i);
 
   const dict = {
     title1: { az: "Otaq və Tarix Seçimi", en: "Room & Date Selection", ru: "Выбор номера и дат" }[currentLang],
@@ -282,14 +299,20 @@ function BookingContent() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.adultsLabel}</label>
-                <select value={adults} onChange={(e) => setAdults(Number(e.target.value))} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-800 outline-none">
-                  {[1, 2, 3, 4].map((n) => <option key={n} value={n}>{n}</option>)}
+                <select value={adults} onChange={(e) => {
+                  const val = Number(e.target.value);
+                  setAdults(val);
+                  if (val + kids > maxCapacity) {
+                    setKids(maxCapacity - val);
+                  }
+                }} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-800 outline-none">
+                  {adultsOptions.map((n) => <option key={`adult-${n}`} value={n}>{n}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.kidsLabel}</label>
                 <select value={kids} onChange={(e) => setKids(Number(e.target.value))} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-800 outline-none">
-                  {[0, 1, 2, 3].map((n) => <option key={n} value={n}>{n}</option>)}
+                  {kidsOptions.map((n) => <option key={`kid-${n}`} value={n}>{n}</option>)}
                 </select>
               </div>
             </div>

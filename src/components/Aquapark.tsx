@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, Palmtree, Tv, Compass, MapPin, Sparkles } from "lucide-react";
+import { Sparkles, ArrowRight, Waves, Ticket as TicketIcon, Clock, Users, Star, ChevronDown, ChevronUp, Compass, MapPin, Palmtree, Tv } from "lucide-react";
+import CategoryTabs from "./CategoryTabs";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence } from "framer-motion";
@@ -246,16 +247,16 @@ export default function Aquapark() {
         if (cats.length > 0) {
           const mappedZones = cats.map(cat => ({
             id: cat._id,
-            name: cat.name,
-            desc: cat.description || "",
+            name: (cat.name as any)?.[l] || (cat.name as any)?.az || cat.name || "",
+            desc: (cat.description as any)?.[l] || (cat.description as any)?.az || cat.description || "",
             emoji: cat.emoji || "",
             icon: Waves, // fallback icon
             items: acts
               .filter(a => (typeof a.category === 'object' ? (a.category as any)._id : a.category) === cat._id)
               .map(a => ({
-                name: a.title,
+                name: (a.title as any)?.[l] || (a.title as any)?.az || a.title || "",
                 icon: "✨",
-                desc: a.description,
+                desc: (a.description as any)?.[l] || (a.description as any)?.az || a.description || "",
                 img: a.image || "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80",
               })),
           }));
@@ -285,16 +286,31 @@ export default function Aquapark() {
   return (
     <section id="aquapark" className="py-32 bg-white scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-16">
-        {/* Header */}
-        <ScrollReveal direction="up" delay={0.1} className="text-center space-y-3">
-          <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
-            {displayTag}
-          </span>
-          <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
-            {displayTitle}
-          </h2>
-          <p className="text-sm text-stone-400 max-w-xl mx-auto leading-relaxed">{displaySubtitle}</p>
-        </ScrollReveal>
+        {/* Header & Tabs Container */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <ScrollReveal direction="up" delay={0.1} className="space-y-3 text-left">
+            <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
+              {displayTag}
+            </span>
+            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
+              {displayTitle}
+            </h2>
+            <p className="text-sm text-stone-400 max-w-xl leading-relaxed">{displaySubtitle}</p>
+          </ScrollReveal>
+
+          <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
+            <CategoryTabs
+              categories={activeZones.map((z, i) => ({ 
+                id: String(i), 
+                label: (z.name as any)[l] || (z as any).name || z.name,
+                icon: z.emoji ? <span>{z.emoji}</span> : <z.icon className="w-3.5 h-3.5" />
+              }))}
+              activeId={String(activeTab)}
+              onSelect={(id) => setActiveTab(Number(id))}
+              className="justify-start md:justify-end"
+            />
+          </ScrollReveal>
+        </div>
 
         {/* Stats bar */}
         <ScrollReveal direction="up" delay={0.2} className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -313,42 +329,6 @@ export default function Aquapark() {
 
         {/* Dynamic Resort Zones (Ideal UI) */}
         <div className="space-y-10">
-          {/* Custom Luxury Navigation Tab Buttons */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-stone-50 p-2 rounded-2xl border border-stone-100">
-            {activeZones.map((zone, i) => {
-              const IconComponent = zone.icon;
-              return (
-                <button
-                  key={zone.id}
-                  onClick={() => setActiveTab(i)}
-                  className={`relative p-4 rounded-xl flex flex-col items-center md:items-start text-center md:text-left gap-1.5 transition-all cursor-pointer ${
-                    activeTab === i
-                      ? "bg-white shadow-md border border-stone-100"
-                      : "hover:bg-white/50"
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {zone.emoji ? (
-                      <span className="text-sm">{zone.emoji}</span>
-                    ) : (
-                      <IconComponent className={`w-4 h-4 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
-                    )}
-                    <span className={`text-xs font-bold ${activeTab === i ? "text-[#1e325c]" : "text-stone-500"}`}>
-                      {zone.name}
-                    </span>
-                    {zone.isSoon && (
-                      <span className="text-[8px] bg-amber-500 text-white font-extrabold px-1.5 py-0.5 rounded-md uppercase tracking-wider animate-pulse flex items-center gap-0.5">
-                        <Sparkles className="w-2 h-2" /> {c.soonTag}
-                      </span>
-                    )}
-                  </div>
-                  <span className="hidden md:block text-[10px] text-stone-400 font-medium line-clamp-1">
-                    {zone.desc}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
 
           {/* Attractions / Items Cards Dynamic Grid */}
           <motion.div layout className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -363,33 +343,29 @@ export default function Aquapark() {
                   className="group rounded-3xl overflow-hidden border border-stone-100 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
                 >
                 <div className="relative h-56 overflow-hidden bg-stone-100">
-                  <Image
-                    src={item.img}
-                    alt={item.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
+                  <Image src={item.img} alt={(item.name as any)[l] || (item as any).name || item.name} fill sizes="400px" className="object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/80 via-[#1e325c]/10 to-transparent opacity-90" />
                   
                   {/* Floating badge info */}
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-xs font-bold text-[#1e325c] shadow-xs flex items-center gap-1">
                     <span>{item.icon}</span>
-                    <span>{item.name}</span>
+                    <span>{(item.name as any)[l] || (item as any).name || item.name}</span>
                   </div>
                 </div>
                 <div className="p-5 grow flex flex-col justify-between space-y-2">
                   <div>
-                    <h4 className="text-sm font-bold text-[#1e325c] mb-1 group-hover:text-[#00b5d5] transition-colors">
-                      {item.name}
+                    <h4 className="font-bold text-[#1e325c] text-sm md:text-base leading-snug">
+                      {(item.name as any)[l] || (item as any).name || item.name}
                     </h4>
-                    <p className="text-xs text-stone-400 leading-relaxed font-medium">{item.desc}</p>
+                    <p className="text-xs text-stone-500 leading-relaxed max-w-[90%]">
+                      {(item.desc as any)[l] || (item as any).desc || item.desc}
+                    </p>
                   </div>
                   
                   {/* Location Tag */}
                   <div className="pt-3 border-t border-stone-50 flex items-center gap-1 text-stone-400">
                     <MapPin className="w-3 h-3 text-[#00b5d5]" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">{activeZone.name}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{(activeZone.name as any)[l] || (activeZone as any).name || activeZone.name}</span>
                   </div>
                 </div>
                 </motion.div>
@@ -411,7 +387,7 @@ export default function Aquapark() {
                   key={t._id}
                   className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100 hover:border-stone-200 transition-colors"
                 >
-                  <span className="text-sm font-semibold text-stone-600">{t.name}</span>
+                  <span className="text-sm font-semibold text-stone-600">{(t.name as any)?.[l] || (t.name as any)?.az || t.name}</span>
                   <span className="text-lg font-bold" style={{ color: "var(--color-hotel-blue)" }}>
                     {t.price} ₼
                   </span>

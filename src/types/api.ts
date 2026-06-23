@@ -9,14 +9,14 @@ export interface User {
 
 export interface About {
   _id?: string;
-  title: string;
-  description: string;
+  title: any;
+  description: any;
   images: string[];
 }
 
 export interface RoomType {
   _id: string;
-  name: string;
+  name: any;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -29,18 +29,18 @@ export interface RoomSettings {
 
 export interface Room {
   _id: string;
-  name: string;
-  type: string;
-  description: string;
+  name: any;
+  type: string | any;
+  description: any;
   price: number;
   capacity: number;
-  amenities: string[];
+  amenities: any[];
   images: string[];
   beds?: number;
   baths?: number;
   sqft?: number;
-  rulesCheckIn?: string;
-  rulesCheckOut?: string;
+  rulesCheckIn?: any;
+  rulesCheckOut?: any;
   isAvailable: boolean;
   createdBy?: { _id: string; name: string; email: string };
   createdAt?: string;
@@ -77,15 +77,15 @@ export interface Review {
 
 export interface Faq {
   _id: string;
-  question: string;
-  answer: string;
+  question: any;
+  answer: any;
   createdAt?: string;
   updatedAt?: string;
 }
 
 export interface Ticket {
   _id: string;
-  name: string;
+  name: any;
   price: number;
   createdAt?: string;
   updatedAt?: string;
@@ -106,8 +106,8 @@ export interface ActivitySettings {
 
 export interface ActivityCategory {
   _id: string;
-  name: string;
-  description?: string;
+  name: any;
+  description?: any;
   emoji?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -115,8 +115,8 @@ export interface ActivityCategory {
 
 export interface Activity {
   _id: string;
-  title: string;
-  description: string;
+  title: any;
+  description: any;
   image: string;
   category: string;
   createdAt?: string;
@@ -125,10 +125,10 @@ export interface Activity {
 
 export interface Settings {
   _id?: string;
-  hotelName: string;
+  hotelName: any;
   phone: string;
   email: string;
-  address: string;
+  address: any;
   instagram: string;
   facebook: string;
   tiktok: string;
@@ -140,15 +140,15 @@ export interface Settings {
 
 export interface MenuItem {
   _id?: string;
-  name: string;
-  description: string;
+  name: any;
+  description: any;
   price: number;
   image: string;
 }
 
 export interface MenuCategory {
   _id?: string;
-  name: string;
+  name: any;
   items: MenuItem[];
 }
 
@@ -160,9 +160,9 @@ export interface RestaurantWorkingHours {
 
 export interface Restaurant {
   _id: string;
-  name: string;
+  name: any;
   image: string;
-  description: string;
+  description: any;
   workingHours: RestaurantWorkingHours;
   phone: string;
   menu: MenuCategory[];
@@ -178,36 +178,36 @@ export interface RestaurantSettings {
 
 export interface WonderlandGame {
   _id?: string;
-  name: string;
+  name: any;
   image: string;
-  description: string;
+  description: any;
 }
 
 export interface WonderlandBigAttraction {
   _id?: string;
-  title: string;
+  title: any;
   games: WonderlandGame[];
 }
 
 export interface WonderlandSmallAttraction {
   _id?: string;
-  name: string;
-  description: string;
+  name: any;
+  description: any;
   icon?: string;
 }
 
 export interface WonderlandTicket {
   _id?: string;
-  name: string;
+  name: any;
   price: string;
 }
 
 export interface Wonderland {
   _id?: string;
-  title: string;
-  tag: string;
+  title: any;
+  tag: any;
   workingHours: string;
-  description: string;
+  description: any;
   discount: {
     enabled: boolean;
     percentage: number;

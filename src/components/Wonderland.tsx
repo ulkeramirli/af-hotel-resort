@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Sparkles, Star, Clock, Ticket, Compass, ArrowRight, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import useEmblaCarousel from "embla-carousel-react";
+import CategoryTabs from "./CategoryTabs";
 import { EmblaCarouselType } from "embla-carousel";
 import ScrollReveal from "@/components/ScrollReveal";
 
@@ -231,26 +232,39 @@ useEffect(() => {
     <section id="wonderland" className="py-24 bg-[#faf9f6] scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-20">
         
-        {/* Header */}
-       <ScrollReveal
-  direction="up"
-  delay={0.1}
-  className="text-center space-y-4"
->
-  <span className="text-[#c5a880] text-xs font-semibold tracking-[0.3em] uppercase block">
-  {wonderland?.tag}
-  </span>
+        {/* Header & Tabs Container */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <ScrollReveal direction="up" delay={0.1} className="space-y-4 text-left">
+            <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
+              {(wonderland?.tag as any)?.[l] || (wonderland?.tag as any)?.name || wonderland?.tag || "WONDERLAND"}
+            </span>
 
-  <h2 className="text-4xl md:text-6xl font-light text-[#1e325c] font-serif tracking-tight">
-    {wonderland?.title}
-  </h2>
+            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
+              {(wonderland?.title as any)?.[l] || (wonderland?.title as any)?.name || wonderland?.title || "Əyləncə Mərkəzi"}
+            </h2>
 
-  <div className="w-16 h-px bg-[#c5a880] mx-auto my-4"></div>
+            <p className="text-sm md:text-base text-stone-500 max-w-2xl font-light leading-relaxed">
+              {(wonderland?.description as any)?.[l] || (wonderland?.description as any)?.name || wonderland?.description || "Description"}
+            </p>
+          </ScrollReveal>
 
-  <p className="text-sm md:text-base text-stone-500 max-w-2xl mx-auto font-light leading-relaxed">
-    {wonderland?.description}
-  </p>
-</ScrollReveal>
+          {wonderland?.bigAttractions?.length > 0 && (
+            <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
+              <CategoryTabs
+                categories={wonderland.bigAttractions.map((t:any, i:any) => ({
+                  id: String(i),
+                  label: (t.title as any)?.[l] || (t as any).title || "Tab"
+                }))}
+                activeId={String(activeTab)}
+                onSelect={(id) => {
+                  setActiveTab(Number(id));
+                  emblaApi?.scrollTo(0);
+                }}
+                className="justify-start md:justify-end"
+              />
+            </ScrollReveal>
+          )}
+        </div>
 
         {/* Attractions Grid / Highlights */}
         <ScrollReveal direction="up" delay={0.2} className="space-y-8">
@@ -266,8 +280,8 @@ useEffect(() => {
                 <div className="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
                  {h?.icon}
                 </div>
-                <h4 className="text-sm font-semibold text-[#1e325c] mt-2">{h?.name}</h4>
-                <p className="text-xs text-stone-400 font-light leading-normal">{h?.description}</p>
+                <h4 className="text-sm font-semibold text-[#1e325c] mt-2">{(h?.name as any)?.[l] || (h?.name as any)?.az || "Name"}</h4>
+                <p className="text-xs text-stone-400 font-light leading-normal">{(h?.description as any)?.[l] || (h?.description as any)?.az || "Desc"}</p>
               </div>
             ))}
           </div>
@@ -276,26 +290,8 @@ useEffect(() => {
         {/* Interactive Slider Section */}
         <ScrollReveal direction="up" delay={0.3} className="space-y-10 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm">
           
-          {/* Tabs + Navigation Buttons Row */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-stone-100 pb-6">
-            <div className="flex gap-3 flex-wrap">
-              {wonderland?.bigAttractions?.map((t:any, i:any) => (
-                <button
-                  key={i}
-                  onClick={() => {
-                    setActiveTab(i);
-                    emblaApi?.scrollTo(0);
-                  }}
-                  className={`px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-                    activeTab === i
-                      ? "text-white bg-[#1e325c] shadow-lg shadow-blue-900/10"
-                      : "bg-[#faf8f5] text-stone-500 hover:bg-stone-100 border border-stone-200/60"
-                  }`}
-                >
-                  {t.title}
-                </button>
-              ))}
-            </div>
+          {/* Slider Navigation Row (Buttons only, since Tabs are above) */}
+          <div className="flex justify-end items-center gap-6 border-b border-stone-100 pb-6">
 
             {/* Slider Controls */}
             <div className="flex gap-2 self-end sm:self-auto">
@@ -336,7 +332,7 @@ useEffect(() => {
       <div className="relative h-56 overflow-hidden bg-stone-100">
         <Image
           src={game.image}
-          alt={game.name}
+          alt={(game.name as any)?.[l] || (game.name as any)?.az || "Game"}
           fill
           sizes="(max-width: 640px) 85vw, (max-width: 768px) 45vw, 30vw"
           className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -347,13 +343,13 @@ useEffect(() => {
 
       <div className="p-6 space-y-2">
         <h3 className="font-bold text-base text-[#1e325c] flex items-center justify-between">
-          {game.name}
+          {(game.name as any)?.[l] || (game.name as any)?.az || "Game"}
 
           <ArrowRight className="w-4 h-4 text-[#c5a880] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
         </h3>
 
         <p className="text-xs text-stone-500 font-light leading-relaxed">
-          {game.description}
+          {(game.description as any)?.[l] || (game as any)?.description || "Desc"}
         </p>
       </div>
     </div>
@@ -384,7 +380,7 @@ useEffect(() => {
         className="flex justify-between items-center bg-[#faf9f6] px-6 py-4 rounded-xl border border-stone-100 hover:border-[#c5a880]/30 transition-colors"
       >
         <span className="text-sm font-medium text-stone-600">
-          {ticket.name}
+          {(ticket.name as any)?.[l] || (ticket.name as any)?.az || ticket.name || "Ticket"}
         </span>
 
         <span className="text-lg font-bold text-[#1e325c]">

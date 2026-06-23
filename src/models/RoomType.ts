@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 const roomTypeSchema = new mongoose.Schema(
   {
     name: {
-      type: String,
-      required: true,
-      unique: true,
+      az: { type: String, required: true },
+      en: { type: String, required: true },
+      ru: { type: String, required: true },
     },
   },
   {
@@ -13,5 +13,5 @@ const roomTypeSchema = new mongoose.Schema(
   },
 );
 
-export default mongoose.models.RoomType ||
-  mongoose.model("RoomType", roomTypeSchema);
+delete mongoose.models.RoomType;
+export default mongoose.model("RoomType", roomTypeSchema);

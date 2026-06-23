@@ -391,8 +391,8 @@ export default function RoomDetailPage({
                   {c.checkIn}
                 </span>
                 <div className="space-y-2">
-                  {room.rulesCheckIn ? (
-                    room.rulesCheckIn.split('\n').filter(Boolean).map((line, i) => (
+                  {room.rulesCheckIn && (room.rulesCheckIn as any)[l] ? (
+                    ((room.rulesCheckIn as any)[l] as string).split('\n').filter(Boolean).map((line, i) => (
                       <p key={i} className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-stone-300 shrink-0" /> {line.trim()}
                       </p>
@@ -414,8 +414,8 @@ export default function RoomDetailPage({
                   {c.checkOut}
                 </span>
                 <div className="space-y-2">
-                  {room.rulesCheckOut ? (
-                    room.rulesCheckOut.split('\n').filter(Boolean).map((line, i) => (
+                  {room.rulesCheckOut && (room.rulesCheckOut as any)[l] ? (
+                    ((room.rulesCheckOut as any)[l] as string).split('\n').filter(Boolean).map((line, i) => (
                       <p key={i} className="flex items-center gap-2">
                         <Check className="w-4 h-4 text-stone-300 shrink-0" /> {line.trim()}
                       </p>

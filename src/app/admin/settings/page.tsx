@@ -1,14 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Save, Loader2, CheckCircle2, Phone, Mail, MapPin, Link as LinkIcon } from "lucide-react";
+import { Save, Loader2, CheckCircle2, Phone, Mail, MapPin, Link as LinkIcon, Globe } from "lucide-react";
 import { getSettings, updateSettings } from "@/services/api";
-import type { Settings } from "@/types/api";
 
-const defaultSettings: Settings = {
-  hotelName: "",
+const defaultSettings: any = {
+  hotelName: { az: "", en: "", ru: "" },
   phone: "",
   email: "",
-  address: "",
+  address: { az: "", en: "", ru: "" },
   instagram: "",
   facebook: "",
   tiktok: "",
@@ -18,17 +17,44 @@ const defaultSettings: Settings = {
   dining: ""
 };
 
+const LangSwitcher = ({ lang, setLang }: { lang: "az" | "en" | "ru"; setLang: (l: "az" | "en" | "ru") => void }) => (
+  <div className="flex gap-1 bg-stone-100 p-1 rounded-lg w-max mb-4">
+    {(["az", "en", "ru"] as const).map((l) => (
+      <button
+        key={l}
+        type="button"
+        onClick={() => setLang(l)}
+        className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-colors flex items-center gap-1 ${
+          lang === l ? "bg-white text-[#1e325c] shadow-sm" : "text-stone-400 hover:text-stone-600"
+        }`}
+      >
+        <Globe className="w-3 h-3" /> {l}
+      </button>
+    ))}
+  </div>
+);
+
 export default function AdminSettingsPage() {
-  const [form, setForm] = useState<Settings>(defaultSettings);
+  const [form, setForm] = useState<any>(defaultSettings);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [formLang, setFormLang] = useState<"az" | "en" | "ru">("az");
+
+  const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
+
   useEffect(() => {
     getSettings()
       .then(data => {
-        if (data) setForm(data);
+        if (data) {
+          setForm({
+            ...data,
+            hotelName: parseLoc(data.hotelName),
+            address: parseLoc(data.address),
+          });
+        }
       })
       .catch(err => setError(err.message || "Tənzimləmələr yüklənərkən xəta baş verdi"))
       .finally(() => setLoading(false));
@@ -64,9 +90,12 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      <div>
-        <h2 className="text-xl font-bold text-[#1e325c]">Tənzimləmələr</h2>
-        <p className="text-xs text-stone-400 mt-1">Otel məlumatları, əlaqə və sosial şəbəkələr</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-[#1e325c]">Tənzimləmələr</h2>
+          <p className="text-xs text-stone-400 mt-1">Otel məlumatları, əlaqə və sosial şəbəkələr</p>
+        </div>
+        <LangSwitcher lang={formLang} setLang={setFormLang} />
       </div>
 
       {success && (
@@ -88,8 +117,13 @@ export default function AdminSettingsPage() {
           <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">Ümumi Məlumatlar</h3>
           
           <div className="space-y-1">
-            <label className="text-xs font-bold text-stone-500">Otel Adı</label>
-            <input type="text" name="hotelName" value={form.hotelName} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
+            <label className="text-xs font-bold text-stone-500">Otel Adı [{formLang.toUpperCase()}]</label>
+            <input 
+              type="text" 
+              value={form.hotelName[formLang]} 
+              onChange={(e) => setForm({ ...form, hotelName: { ...form.hotelName, [formLang]: e.target.value } })} 
+              className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" 
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs font-bold text-stone-500 flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" /> Əsas Telefon</label>
@@ -100,8 +134,13 @@ export default function AdminSettingsPage() {
             <input type="email" name="email" value={form.email} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-bold text-stone-500 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> Ünvan</label>
-            <input type="text" name="address" value={form.address} onChange={handleChange} className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" />
+            <label className="text-xs font-bold text-stone-500 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> Ünvan [{formLang.toUpperCase()}]</label>
+            <input 
+              type="text" 
+              value={form.address[formLang]} 
+              onChange={(e) => setForm({ ...form, address: { ...form.address, [formLang]: e.target.value } })} 
+              className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]" 
+            />
           </div>
           <div className="space-y-1">
             <label className="text-xs font-bold text-stone-500">Google Maps Linki</label>

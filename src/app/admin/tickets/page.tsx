@@ -1,22 +1,41 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import React, { useState, useEffect } from "react";
-import { Plus, Trash2, Loader2, Pencil, Ticket as TicketIcon } from "lucide-react";
+import { Plus, Trash2, Loader2, Pencil, Ticket as TicketIcon, Globe } from "lucide-react";
 import { getTickets, createTicket, updateTicket, deleteTicket } from "@/services/api";
-import type { Ticket } from "@/types/api";
 
 const emptyTicketForm = {
-  name: "",
+  name: { az: "", en: "", ru: "" },
   price: 0,
 };
 
+const LangSwitcher = ({ lang, setLang }: { lang: "az" | "en" | "ru"; setLang: (l: "az" | "en" | "ru") => void }) => (
+  <div className="flex gap-1 bg-stone-100 p-1 rounded-lg w-max mb-4">
+    {(["az", "en", "ru"] as const).map((l) => (
+      <button
+        key={l}
+        type="button"
+        onClick={() => setLang(l)}
+        className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-colors flex items-center gap-1 ${
+          lang === l ? "bg-white text-[#1e325c] shadow-sm" : "text-stone-400 hover:text-stone-600"
+        }`}
+      >
+        <Globe className="w-3 h-3" /> {l}
+      </button>
+    ))}
+  </div>
+);
+
 export default function AdminTicketsPage() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [formLang, setFormLang] = useState<"az" | "en" | "ru">("az");
   const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState(emptyTicketForm);
+  const [form, setForm] = useState<any>(emptyTicketForm);
+
+  const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
 
   const loadData = async () => {
     try {
@@ -36,8 +55,8 @@ export default function AdminTicketsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || form.price < 0) {
-      alert("Ad və qiymət düzgün qeyd olunmalıdır!");
+    if (!form.name.az || form.price < 0) {
+      alert("Ad (AZ) və qiymət düzgün qeyd olunmalıdır!");
       return;
     }
     
@@ -55,12 +74,13 @@ export default function AdminTicketsPage() {
     }
   };
 
-  const startEdit = (ticket: Ticket) => {
+  const startEdit = (ticket: any) => {
     setEditId(ticket._id);
     setForm({
-      name: ticket.name,
+      name: parseLoc(ticket.name),
       price: ticket.price,
     });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDelete = async (id: string) => {
@@ -98,17 +118,20 @@ export default function AdminTicketsPage() {
         {/* FORM */}
         <div className="lg:col-span-1">
           <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-            <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
-              <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-              {editId ? "Bileti Redaktə Et" : "Yeni Bilet Əlavə Et"}
-            </h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+                <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
+                {editId ? "Bileti Redaktə Et" : "Yeni Bilet Əlavə Et"}
+              </h3>
+              <LangSwitcher lang={formLang} setLang={setFormLang} />
+            </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-stone-500 mb-1 block">Biletin Adı</label>
+                <label className="text-xs font-semibold text-stone-500 mb-1 block">Biletin Adı [{formLang.toUpperCase()}]</label>
                 <input
                   placeholder="Məs: Aquapark (Böyüklər üçün)"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  value={form.name[formLang]}
+                  onChange={(e) => setForm({ ...form, name: { ...form.name, [formLang]: e.target.value } })}
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 />
               </div>
@@ -153,11 +176,11 @@ export default function AdminTicketsPage() {
           ) : tickets.map((ticket) => (
             <div key={ticket._id} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white" style={{ background: "var(--color-hotel-blue)" }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0" style={{ background: "var(--color-hotel-blue)" }}>
                   <TicketIcon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-[#1e325c]">{ticket.name}</h4>
+                  <h4 className="font-bold text-sm text-[#1e325c]">{(ticket.name as any)?.az || ticket.name}</h4>
                   <p className="text-xs font-semibold text-stone-500 mt-1">
                     <span className="text-[#00b5d5]">{ticket.price} AZN</span>
                   </p>

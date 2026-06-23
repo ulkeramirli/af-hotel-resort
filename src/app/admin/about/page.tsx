@@ -2,21 +2,41 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Loader2, Check, AlertCircle, Info, Plus, X } from "lucide-react";
+import { Loader2, Check, AlertCircle, Info, Plus, X, Globe } from "lucide-react";
 import { getAbout, updateAbout, uploadImage } from "@/services/api";
-import type { About } from "@/types/api";
 
-const emptyAboutForm: About = {
-  title: "",
-  description: "",
+const emptyAboutForm: any = {
+  title: { az: "", en: "", ru: "" },
+  description: { az: "", en: "", ru: "" },
   images: [],
 };
 
+const LangSwitcher = ({ lang, setLang }: { lang: "az" | "en" | "ru"; setLang: (l: "az" | "en" | "ru") => void }) => (
+  <div className="flex gap-1 bg-stone-100 p-1 rounded-lg w-max mb-4">
+    {(["az", "en", "ru"] as const).map((l) => (
+      <button
+        key={l}
+        type="button"
+        onClick={() => setLang(l)}
+        className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-colors flex items-center gap-1 ${
+          lang === l ? "bg-white text-[#1e325c] shadow-sm" : "text-stone-400 hover:text-stone-600"
+        }`}
+      >
+        <Globe className="w-3 h-3" /> {l}
+      </button>
+    ))}
+  </div>
+);
+
 export default function AdminAboutPage() {
-  const [form, setForm] = useState<About>(emptyAboutForm);
+  const [form, setForm] = useState<any>(emptyAboutForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [formLang, setFormLang] = useState<"az" | "en" | "ru">("az");
+
+  const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
 
   const loadData = async () => {
     try {
@@ -24,8 +44,8 @@ export default function AdminAboutPage() {
       const data = await getAbout();
       if (data) {
         setForm({
-          title: data.title || "",
-          description: data.description || "",
+          title: parseLoc(data.title),
+          description: parseLoc(data.description),
           images: data.images || [],
         });
       }
@@ -77,28 +97,31 @@ export default function AdminAboutPage() {
       )}
 
       <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-        <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
-          <Info className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-          Məlumatları Redaktə Et
-        </h3>
+        <div className="flex justify-between items-center">
+          <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
+            <Info className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
+            Məlumatları Redaktə Et
+          </h3>
+          <LangSwitcher lang={formLang} setLang={setFormLang} />
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-bold text-stone-600 mb-1">Başlıq</label>
+            <label className="block text-xs font-bold text-stone-600 mb-1">Başlıq [{formLang.toUpperCase()}]</label>
             <input
               placeholder="Məsələn: AF Hotel Resort haqqında"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              value={form.title[formLang]}
+              onChange={(e) => setForm({ ...form, title: { ...form.title, [formLang]: e.target.value } })}
               className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-stone-600 mb-1">Təsvir (Mətn)</label>
+            <label className="block text-xs font-bold text-stone-600 mb-1">Təsvir (Mətn) [{formLang.toUpperCase()}]</label>
             <textarea
               placeholder="Geniş mətn daxil edin..."
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              value={form.description[formLang]}
+              onChange={(e) => setForm({ ...form, description: { ...form.description, [formLang]: e.target.value } })}
               className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs h-40 resize-none focus:outline-none focus:border-[#00b5d5]"
             />
           </div>
@@ -106,12 +129,12 @@ export default function AdminAboutPage() {
           <div>
             <label className="block text-xs font-bold text-stone-600 mb-2">Qalereya Şəkilləri</label>
             <div className="flex flex-wrap gap-3">
-              {form.images.map((img, idx) => (
+              {form.images.map((img: string, idx: number) => (
                 <div key={idx} className="relative w-24 h-24 group rounded-xl overflow-hidden border border-stone-200 shadow-sm">
                   <img src={img} alt="" className="w-full h-full object-cover" />
                   <button 
                     type="button" 
-                    onClick={() => setForm(prev => ({...prev, images: prev.images.filter((_, i) => i !== idx)}))}
+                    onClick={() => setForm((prev: any) => ({...prev, images: prev.images.filter((_: any, i: number) => i !== idx)}))}
                     className="absolute inset-0 bg-black/50 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
                   >
                     <X className="w-6 h-6" />
@@ -130,7 +153,7 @@ export default function AdminAboutPage() {
                     try {
                       const data = await uploadImage(file);
                       if (data.success) {
-                        setForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
+                        setForm((prev: any) => ({ ...prev, images: [...prev.images, data.url] }));
                       } else {
                         alert(data.message || "Xəta baş verdi");
                       }

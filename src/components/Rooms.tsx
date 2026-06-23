@@ -9,6 +9,7 @@ import type { PublicRoom } from "@/services/api";
 import type { RoomType, RoomSettings } from "@/types/api";
 import { toggleFavorite, isFavorite, syncFavorites } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
+import CategoryTabs from "./CategoryTabs";
 
 function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0);
@@ -122,7 +123,7 @@ function RoomCard({
       <div className={`relative overflow-hidden bg-stone-100 border-b border-stone-100 ${compact ? "aspect-4/3" : "aspect-16/11"}`}>
         <RoomCarousel images={room.images} alt={room.title[l]} />
         <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-sm text-stone-800 rounded-md shadow-sm border border-stone-100 z-10">
-          {room.category}
+          {(room.categoryName as any)?.[l] || (room.categoryName as any)?.az || "Otaq"}
         </span>
         <button
           onClick={(e) => { e.preventDefault(); onFavorite(room.id); }}
@@ -138,11 +139,11 @@ function RoomCard({
       {/* Content */}
       <div className="p-4 space-y-3 flex flex-col flex-1 justify-between">
         <div className="space-y-1.5">
-          <h3 className="font-bold text-stone-900 text-base tracking-tight transition-colors group-hover:text-stone-700 line-clamp-1">
-            {room.title[l]}
+          <h3 className="text-xl font-serif text-stone-800 leading-tight">
+            {(room.title as any)?.[l] || (room.title as any)?.az || room.title || ""}
           </h3>
-          <p className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2">
-            {room.desc[l]}
+          <p className="text-xs text-stone-500 line-clamp-2 mt-1.5 leading-relaxed">
+            {(room.desc as any)?.[l] || (room.desc as any)?.az || room.desc || ""}
           </p>
           <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
             <span className="flex items-center gap-1">
@@ -246,9 +247,12 @@ export default function Rooms() {
 
   const filtered = category === "all" ? rooms : rooms.filter((r) => r.category === category);
 
-  const categories: { key: Category; label: string }[] = [
-    { key: "all", label: c.all },
-    ...types.map(t => ({ key: t.name, label: t.name }))
+  const categories = [
+    { id: "all", label: c.all },
+    ...types.map(t => ({ 
+      id: t._id, 
+      label: (t.name as any)?.[l] || (t.name as any)?.az || t.name || "" 
+    }))
   ];
 
   const scrollSlider = (dir: "left" | "right") => {
@@ -261,38 +265,31 @@ export default function Rooms() {
     <section id="rooms" className="py-20 md:py-32 scroll-mt-20 bg-white text-stone-800 antialiased selection:bg-stone-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="mb-10 text-center space-y-2"
-        >
-          <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#00b5d5]">
-            {settings?.tag || c.tag}
-          </span>
-          <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-tight">
-            {settings?.title || c.title}
-          </h2>
-          <p className="text-sm font-medium text-stone-400">
-            {settings?.subtitle || c.subtitle}
-          </p>
-        </motion.div>
+        {/* Header & Tabs Container */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="space-y-2 text-left"
+          >
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5]">
+              {settings?.tag || c.tag}
+            </span>
+            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-tight">
+              {settings?.title || c.title}
+            </h2>
+            <p className="text-sm font-medium text-stone-400">
+              {settings?.subtitle || c.subtitle}
+            </p>
+          </motion.div>
 
-        {/* Filter tabs */}
-        <div className="flex gap-2 justify-center mb-8 flex-wrap">
-          {categories.map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => setCategory(key)}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                category === key ? "text-white shadow-md" : "text-stone-500 bg-stone-100 hover:bg-stone-200"
-              }`}
-              style={category === key ? { background: "var(--color-hotel-blue, #00b5d5)" } : undefined}
-            >
-              {label}
-            </button>
-          ))}
+          <CategoryTabs 
+            categories={categories}
+            activeId={category}
+            onSelect={(id) => setCategory(id)}
+            className="justify-start md:justify-end"
+          />
         </div>
 
         {/* Content */}

@@ -3,33 +3,12 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Loader2,
-  Check,
-  AlertCircle,
-  Castle,
-  Plus,
-  Trash2,
-  Pencil,
-  X,
-  Ticket,
-  Sparkles,
-  Star,
-  Gamepad2,
-  ChevronDown,
-  ChevronUp,
-  Percent,
-  Clock,
-  Tag,
-  ImagePlus,
+  Loader2, Check, AlertCircle, Castle, Plus, Trash2, Pencil, X,
+  Ticket, Sparkles, Star, Gamepad2, ChevronDown, ChevronUp, Percent,
+  Clock, Tag, ImagePlus, Globe
 } from "lucide-react";
 import { getWonderland, updateWonderland, uploadImage } from "@/services/api";
-import type {
-  Wonderland,
-  WonderlandTicket,
-  WonderlandSmallAttraction,
-  WonderlandBigAttraction,
-  WonderlandGame,
-} from "@/types/api";
+import type { Wonderland } from "@/types/api";
 
 type TabKey = "general" | "tickets" | "small" | "big";
 
@@ -40,41 +19,62 @@ const tabs: { key: TabKey; label: string; icon: React.ElementType }[] = [
   { key: "big", label: "Böyük Attraksionlar", icon: Gamepad2 },
 ];
 
-const emptyForm: Wonderland = {
-  title: "",
-  tag: "",
+const emptyForm: any = {
+  title: { az: "", en: "", ru: "" },
+  tag: { az: "", en: "", ru: "" },
   workingHours: "",
-  description: "",
+  description: { az: "", en: "", ru: "" },
   discount: { enabled: false, percentage: 0 },
   tickets: [],
   smallAttractions: [],
   bigAttractions: [],
 };
 
+const LangSwitcher = ({ lang, setLang }: { lang: "az" | "en" | "ru"; setLang: (l: "az" | "en" | "ru") => void }) => (
+  <div className="flex gap-1 bg-stone-100 p-1 rounded-lg w-max mb-4">
+    {(["az", "en", "ru"] as const).map((l) => (
+      <button
+        key={l}
+        type="button"
+        onClick={() => setLang(l)}
+        className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-colors flex items-center gap-1 ${
+          lang === l ? "bg-white text-[#1e325c] shadow-sm" : "text-stone-400 hover:text-stone-600"
+        }`}
+      >
+        <Globe className="w-3 h-3" /> {l}
+      </button>
+    ))}
+  </div>
+);
+
 export default function AdminWonderlandPage() {
-  const [form, setForm] = useState<Wonderland>(emptyForm);
+  const [form, setForm] = useState<any>(emptyForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabKey>("general");
+  
+  const [formLang, setFormLang] = useState<"az" | "en" | "ru">("az");
 
   // Ticket editing
-  const [ticketForm, setTicketForm] = useState<{ name: string; price: string }>({ name: "", price: "" });
+  const [ticketForm, setTicketForm] = useState<{ name: any; price: string }>({ name: { az: "", en: "", ru: "" }, price: "" });
   const [editTicketIdx, setEditTicketIdx] = useState<number | null>(null);
 
   // Small attraction editing
-  const [smallForm, setSmallForm] = useState<{ name: string; description: string; icon: string }>({ name: "", description: "", icon: "" });
+  const [smallForm, setSmallForm] = useState<{ name: any; description: any; icon: string }>({ name: { az: "", en: "", ru: "" }, description: { az: "", en: "", ru: "" }, icon: "" });
   const [editSmallIdx, setEditSmallIdx] = useState<number | null>(null);
 
   // Big attraction editing
-  const [bigForm, setBigForm] = useState<{ title: string }>({ title: "" });
+  const [bigForm, setBigForm] = useState<{ title: any }>({ title: { az: "", en: "", ru: "" } });
   const [editBigIdx, setEditBigIdx] = useState<number | null>(null);
   const [expandedBig, setExpandedBig] = useState<number | null>(null);
 
   // Game editing (within big attraction)
-  const [gameForm, setGameForm] = useState<{ name: string; image: string; description: string }>({ name: "", image: "", description: "" });
+  const [gameForm, setGameForm] = useState<{ name: any; image: string; description: any }>({ name: { az: "", en: "", ru: "" }, image: "", description: { az: "", en: "", ru: "" } });
   const [editGameIdx, setEditGameIdx] = useState<number | null>(null);
   const [activeGameBigIdx, setActiveGameBigIdx] = useState<number | null>(null);
+
+  const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
 
   const loadData = async () => {
     try {
@@ -83,14 +83,25 @@ export default function AdminWonderlandPage() {
       const data = await getWonderland();
       if (data) {
         setForm({
-          title: data.title || "",
-          tag: data.tag || "",
+          title: parseLoc(data.title),
+          tag: parseLoc(data.tag),
           workingHours: data.workingHours || "",
-          description: data.description || "",
+          description: parseLoc(data.description),
           discount: data.discount || { enabled: false, percentage: 0 },
-          tickets: data.tickets || [],
-          smallAttractions: data.smallAttractions || [],
-          bigAttractions: data.bigAttractions || [],
+          tickets: (data.tickets || []).map(t => ({ name: parseLoc(t.name), price: t.price })),
+          smallAttractions: (data.smallAttractions || []).map(s => ({
+            name: parseLoc(s.name),
+            description: parseLoc(s.description),
+            icon: s.icon
+          })),
+          bigAttractions: (data.bigAttractions || []).map(b => ({
+            title: parseLoc(b.title),
+            games: (b.games || []).map(g => ({
+              name: parseLoc(g.name),
+              description: parseLoc(g.description),
+              image: g.image
+            }))
+          })),
         });
       }
     } catch (err: any) {
@@ -119,8 +130,8 @@ export default function AdminWonderlandPage() {
 
   // ─── TICKET HELPERS ───
   const addOrUpdateTicket = () => {
-    if (!ticketForm.name || !ticketForm.price) {
-      alert("Biletin adı və qiyməti daxil edilməlidir!");
+    if (!ticketForm.name.az || !ticketForm.price) {
+      alert("Biletin adı AZ dilində və qiyməti daxil edilməlidir!");
       return;
     }
     const updated = [...form.tickets];
@@ -131,24 +142,24 @@ export default function AdminWonderlandPage() {
       updated.push(ticketForm);
     }
     setForm({ ...form, tickets: updated });
-    setTicketForm({ name: "", price: "" });
+    setTicketForm({ name: { az: "", en: "", ru: "" }, price: "" });
   };
 
   const deleteTicket = (idx: number) => {
-    const updated = form.tickets.filter((_, i) => i !== idx);
+    const updated = form.tickets.filter((_: any, i: number) => i !== idx);
     setForm({ ...form, tickets: updated });
   };
 
   const startEditTicket = (idx: number) => {
     const t = form.tickets[idx];
-    setTicketForm({ name: t.name, price: t.price });
+    setTicketForm({ name: parseLoc(t.name), price: t.price });
     setEditTicketIdx(idx);
   };
 
   // ─── SMALL ATTRACTION HELPERS ───
   const addOrUpdateSmall = () => {
-    if (!smallForm.name || !smallForm.description) {
-      alert("Ad və təsvir daxil edilməlidir!");
+    if (!smallForm.name.az || !smallForm.description.az) {
+      alert("Ad və təsvir AZ dilində daxil edilməlidir!");
       return;
     }
     const updated = [...form.smallAttractions];
@@ -159,24 +170,24 @@ export default function AdminWonderlandPage() {
       updated.push(smallForm);
     }
     setForm({ ...form, smallAttractions: updated });
-    setSmallForm({ name: "", description: "", icon: "" });
+    setSmallForm({ name: { az: "", en: "", ru: "" }, description: { az: "", en: "", ru: "" }, icon: "" });
   };
 
   const deleteSmall = (idx: number) => {
-    const updated = form.smallAttractions.filter((_, i) => i !== idx);
+    const updated = form.smallAttractions.filter((_: any, i: number) => i !== idx);
     setForm({ ...form, smallAttractions: updated });
   };
 
   const startEditSmall = (idx: number) => {
     const s = form.smallAttractions[idx];
-    setSmallForm({ name: s.name, description: s.description, icon: s.icon || "" });
+    setSmallForm({ name: parseLoc(s.name), description: parseLoc(s.description), icon: s.icon || "" });
     setEditSmallIdx(idx);
   };
 
   // ─── BIG ATTRACTION HELPERS ───
   const addOrUpdateBig = () => {
-    if (!bigForm.title) {
-      alert("Attraksion başlığı daxil edilməlidir!");
+    if (!bigForm.title.az) {
+      alert("Attraksion başlığı AZ dilində daxil edilməlidir!");
       return;
     }
     const updated = [...form.bigAttractions];
@@ -187,25 +198,25 @@ export default function AdminWonderlandPage() {
       updated.push({ title: bigForm.title, games: [] });
     }
     setForm({ ...form, bigAttractions: updated });
-    setBigForm({ title: "" });
+    setBigForm({ title: { az: "", en: "", ru: "" } });
   };
 
   const deleteBig = (idx: number) => {
-    const updated = form.bigAttractions.filter((_, i) => i !== idx);
+    const updated = form.bigAttractions.filter((_: any, i: number) => i !== idx);
     setForm({ ...form, bigAttractions: updated });
     if (expandedBig === idx) setExpandedBig(null);
   };
 
   const startEditBig = (idx: number) => {
     const b = form.bigAttractions[idx];
-    setBigForm({ title: b.title });
+    setBigForm({ title: parseLoc(b.title) });
     setEditBigIdx(idx);
   };
 
   // ─── GAME HELPERS (within big attraction) ───
   const addOrUpdateGame = (bigIdx: number) => {
-    if (!gameForm.name || !gameForm.description) {
-      alert("Oyun adı və təsviri daxil edilməlidir!");
+    if (!gameForm.name.az || !gameForm.description.az) {
+      alert("Oyun adı və təsviri AZ dilində daxil edilməlidir!");
       return;
     }
     const updatedBig = [...form.bigAttractions];
@@ -218,20 +229,20 @@ export default function AdminWonderlandPage() {
     }
     updatedBig[bigIdx] = { ...updatedBig[bigIdx], games };
     setForm({ ...form, bigAttractions: updatedBig });
-    setGameForm({ name: "", image: "", description: "" });
+    setGameForm({ name: { az: "", en: "", ru: "" }, image: "", description: { az: "", en: "", ru: "" } });
     setActiveGameBigIdx(null);
   };
 
   const deleteGame = (bigIdx: number, gameIdx: number) => {
     const updatedBig = [...form.bigAttractions];
-    const games = updatedBig[bigIdx].games.filter((_, i) => i !== gameIdx);
+    const games = updatedBig[bigIdx].games.filter((_: any, i: number) => i !== gameIdx);
     updatedBig[bigIdx] = { ...updatedBig[bigIdx], games };
     setForm({ ...form, bigAttractions: updatedBig });
   };
 
   const startEditGame = (bigIdx: number, gameIdx: number) => {
     const g = form.bigAttractions[bigIdx].games[gameIdx];
-    setGameForm({ name: g.name, image: g.image, description: g.description });
+    setGameForm({ name: parseLoc(g.name), image: g.image || "", description: parseLoc(g.description) });
     setEditGameIdx(gameIdx);
     setActiveGameBigIdx(bigIdx);
   };
@@ -297,29 +308,32 @@ export default function AdminWonderlandPage() {
       {/* ═══════ GENERAL TAB ═══════ */}
       {activeTab === "general" && (
         <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm space-y-5">
-          <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
-            <Castle className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-            Ümumi Məlumat
-          </h3>
+          <div className="flex justify-between items-center">
+            <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+              <Castle className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
+              Ümumi Məlumat
+            </h3>
+            <LangSwitcher lang={formLang} setLang={setFormLang} />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-bold text-stone-600 mb-1">Başlıq</label>
+              <label className="block text-xs font-bold text-stone-600 mb-1">Başlıq [{formLang.toUpperCase()}]</label>
               <input
                 placeholder="Wonderland Aqua Park"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                value={form.title[formLang]}
+                onChange={(e) => setForm({ ...form, title: { ...form.title, [formLang]: e.target.value } })}
                 className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-stone-600 mb-1 flex items-center gap-1">
-                <Tag className="w-3 h-3" /> Teq
+                <Tag className="w-3 h-3" /> Teq [{formLang.toUpperCase()}]
               </label>
               <input
                 placeholder="aquapark"
-                value={form.tag}
-                onChange={(e) => setForm({ ...form, tag: e.target.value })}
+                value={form.tag[formLang]}
+                onChange={(e) => setForm({ ...form, tag: { ...form.tag, [formLang]: e.target.value } })}
                 className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
               />
             </div>
@@ -327,7 +341,7 @@ export default function AdminWonderlandPage() {
 
           <div>
             <label className="block text-xs font-bold text-stone-600 mb-1 flex items-center gap-1">
-              <Clock className="w-3 h-3" /> İş Saatları
+              <Clock className="w-3 h-3" /> İş Saatları (Ümumi)
             </label>
             <input
               placeholder="09:00 - 21:00"
@@ -338,11 +352,11 @@ export default function AdminWonderlandPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-stone-600 mb-1">Təsvir</label>
+            <label className="block text-xs font-bold text-stone-600 mb-1">Təsvir [{formLang.toUpperCase()}]</label>
             <textarea
               placeholder="Wonderland haqqında geniş məlumat daxil edin..."
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              value={form.description[formLang]}
+              onChange={(e) => setForm({ ...form, description: { ...form.description, [formLang]: e.target.value } })}
               className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs h-32 resize-none focus:outline-none focus:border-[#00b5d5]"
             />
           </div>
@@ -394,17 +408,20 @@ export default function AdminWonderlandPage() {
           {/* FORM */}
           <div className="lg:col-span-1">
             <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-              <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
-                <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-                {editTicketIdx !== null ? "Bileti Redaktə Et" : "Yeni Bilet Əlavə Et"}
-              </h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+                  <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
+                  {editTicketIdx !== null ? "Bileti Redaktə Et" : "Yeni Bilet Əlavə Et"}
+                </h3>
+                <LangSwitcher lang={formLang} setLang={setFormLang} />
+              </div>
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-semibold text-stone-500 mb-1 block">Biletin Adı</label>
+                  <label className="text-xs font-semibold text-stone-500 mb-1 block">Biletin Adı [{formLang}]</label>
                   <input
                     placeholder="Məs: Böyüklər üçün bilet"
-                    value={ticketForm.name}
-                    onChange={(e) => setTicketForm({ ...ticketForm, name: e.target.value })}
+                    value={ticketForm.name[formLang]}
+                    onChange={(e) => setTicketForm({ ...ticketForm, name: { ...ticketForm.name, [formLang]: e.target.value } })}
                     className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                   />
                 </div>
@@ -427,7 +444,7 @@ export default function AdminWonderlandPage() {
                   </button>
                   {editTicketIdx !== null && (
                     <button
-                      onClick={() => { setEditTicketIdx(null); setTicketForm({ name: "", price: "" }); }}
+                      onClick={() => { setEditTicketIdx(null); setTicketForm({ name: {az:"", en:"", ru:""}, price: "" }); }}
                       className="px-4 py-2 bg-stone-100 text-stone-600 text-xs font-bold rounded-xl"
                     >
                       Ləğv
@@ -444,14 +461,14 @@ export default function AdminWonderlandPage() {
               <div className="bg-white py-10 rounded-2xl border border-stone-100 shadow-sm text-center text-stone-400 text-sm">
                 Bilet tapılmadı. Sol tərəfdən yeni bilet əlavə edin.
               </div>
-            ) : form.tickets.map((ticket, idx) => (
+            ) : form.tickets.map((ticket: any, idx: number) => (
               <div key={idx} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white" style={{ background: "var(--color-hotel-blue)" }}>
                     <Ticket className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1e325c]">{ticket.name}</h4>
+                    <h4 className="font-bold text-sm text-[#1e325c]">{(ticket.name as any)?.az || ticket.name}</h4>
                     <p className="text-xs font-semibold text-stone-500 mt-0.5">
                       <span className="text-[#00b5d5]">{ticket.price}</span>
                     </p>
@@ -477,26 +494,29 @@ export default function AdminWonderlandPage() {
           {/* FORM */}
           <div className="lg:col-span-1">
             <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-              <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
-                <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-                {editSmallIdx !== null ? "Attraksiyonu Redaktə Et" : "Yeni Kiçik Attraksion"}
-              </h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+                  <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
+                  {editSmallIdx !== null ? "Redaktə Et" : "Yeni Əlavə Et"}
+                </h3>
+                <LangSwitcher lang={formLang} setLang={setFormLang} />
+              </div>
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-semibold text-stone-500 mb-1 block">Ad</label>
+                  <label className="text-xs font-semibold text-stone-500 mb-1 block">Ad [{formLang}]</label>
                   <input
                     placeholder="Məs: Mini Golf"
-                    value={smallForm.name}
-                    onChange={(e) => setSmallForm({ ...smallForm, name: e.target.value })}
+                    value={smallForm.name[formLang]}
+                    onChange={(e) => setSmallForm({ ...smallForm, name: { ...smallForm.name, [formLang]: e.target.value } })}
                     className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-stone-500 mb-1 block">Təsvir</label>
+                  <label className="text-xs font-semibold text-stone-500 mb-1 block">Təsvir [{formLang}]</label>
                   <textarea
                     placeholder="Attraksion haqqında qısa məlumat..."
-                    value={smallForm.description}
-                    onChange={(e) => setSmallForm({ ...smallForm, description: e.target.value })}
+                    value={smallForm.description[formLang]}
+                    onChange={(e) => setSmallForm({ ...smallForm, description: { ...smallForm.description, [formLang]: e.target.value } })}
                     className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs h-20 resize-none focus:outline-none focus:border-[#00b5d5]"
                   />
                 </div>
@@ -519,7 +539,7 @@ export default function AdminWonderlandPage() {
                   </button>
                   {editSmallIdx !== null && (
                     <button
-                      onClick={() => { setEditSmallIdx(null); setSmallForm({ name: "", description: "", icon: "" }); }}
+                      onClick={() => { setEditSmallIdx(null); setSmallForm({ name: {az:"", en:"", ru:""}, description: {az:"", en:"", ru:""}, icon: "" }); }}
                       className="px-4 py-2 bg-stone-100 text-stone-600 text-xs font-bold rounded-xl"
                     >
                       Ləğv
@@ -536,15 +556,15 @@ export default function AdminWonderlandPage() {
               <div className="bg-white py-10 rounded-2xl border border-stone-100 shadow-sm text-center text-stone-400 text-sm">
                 Kiçik attraksion tapılmadı.
               </div>
-            ) : form.smallAttractions.map((sa, idx) => (
+            ) : form.smallAttractions.map((sa: any, idx: number) => (
               <div key={idx} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg, #00b5d5, #1e325c)" }}>
                     {sa.icon ? <span className="text-lg">{sa.icon}</span> : <Star className="w-5 h-5" />}
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1e325c]">{sa.name}</h4>
-                    <p className="text-xs text-stone-400 mt-0.5 line-clamp-1">{sa.description}</p>
+                    <h4 className="font-bold text-sm text-[#1e325c]">{(sa.name as any)?.az || sa.name}</h4>
+                    <p className="text-xs text-stone-400 mt-0.5 line-clamp-1">{(sa.description as any)?.az || sa.description}</p>
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">
@@ -566,15 +586,18 @@ export default function AdminWonderlandPage() {
         <div className="space-y-6">
           {/* Add Big Attraction Form */}
           <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-            <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
-              <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-              {editBigIdx !== null ? "Attraksiyonu Redaktə Et" : "Yeni Böyük Attraksion"}
-            </h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+                <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
+                {editBigIdx !== null ? "Attraksiyonu Redaktə Et" : "Yeni Böyük Attraksion"}
+              </h3>
+              <LangSwitcher lang={formLang} setLang={setFormLang} />
+            </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
-                placeholder="Məs: Su sürüşmələri"
-                value={bigForm.title}
-                onChange={(e) => setBigForm({ title: e.target.value })}
+                placeholder={`Məs: Su sürüşmələri (${formLang})`}
+                value={bigForm.title[formLang]}
+                onChange={(e) => setBigForm({ title: { ...bigForm.title, [formLang]: e.target.value } })}
                 className="flex-1 px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
               />
               <div className="flex gap-2">
@@ -587,7 +610,7 @@ export default function AdminWonderlandPage() {
                 </button>
                 {editBigIdx !== null && (
                   <button
-                    onClick={() => { setEditBigIdx(null); setBigForm({ title: "" }); }}
+                    onClick={() => { setEditBigIdx(null); setBigForm({ title: {az:"", en:"", ru:""} }); }}
                     className="px-4 py-2.5 bg-stone-100 text-stone-600 text-xs font-bold rounded-xl"
                   >
                     Ləğv
@@ -602,7 +625,7 @@ export default function AdminWonderlandPage() {
             <div className="bg-white py-10 rounded-2xl border border-stone-100 shadow-sm text-center text-stone-400 text-sm">
               Böyük attraksion tapılmadı.
             </div>
-          ) : form.bigAttractions.map((ba, bigIdx) => (
+          ) : form.bigAttractions.map((ba: any, bigIdx: number) => (
             <div key={bigIdx} className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
               {/* Big Attraction Header */}
               <div
@@ -614,7 +637,7 @@ export default function AdminWonderlandPage() {
                     <Gamepad2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1e325c]">{ba.title}</h4>
+                    <h4 className="font-bold text-sm text-[#1e325c]">{(ba.title as any)?.az || ba.title}</h4>
                     <p className="text-[10px] text-stone-400 mt-0.5">{ba.games.length} oyun</p>
                   </div>
                 </div>
@@ -644,28 +667,32 @@ export default function AdminWonderlandPage() {
                 <div className="border-t border-stone-100 p-5 space-y-4 bg-stone-50/30">
                   {/* Add Game Form */}
                   <div className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm">
-                    <h5 className="text-xs font-bold text-[#1e325c] mb-3 flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                      {editGameIdx !== null && activeGameBigIdx === bigIdx ? "Oyunu Redaktə Et" : "Yeni Oyun Əlavə Et"}
-                    </h5>
+                    <div className="flex justify-between items-center mb-3">
+                      <h5 className="text-xs font-bold text-[#1e325c] flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                        {editGameIdx !== null && activeGameBigIdx === bigIdx ? "Oyunu Redaktə Et" : "Yeni Oyun Əlavə Et"}
+                      </h5>
+                      <LangSwitcher lang={formLang} setLang={setFormLang} />
+                    </div>
+                    
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[10px] font-semibold text-stone-500 mb-1 block">Oyun Adı</label>
+                        <label className="text-[10px] font-semibold text-stone-500 mb-1 block">Oyun Adı [{formLang}]</label>
                         <input
                           placeholder="Məs: Tornado"
-                          value={activeGameBigIdx === bigIdx || editGameIdx === null ? gameForm.name : ""}
-                          onChange={(e) => { setActiveGameBigIdx(bigIdx); setGameForm({ ...gameForm, name: e.target.value }); }}
-                          onFocus={() => { if (activeGameBigIdx !== bigIdx) { setGameForm({ name: "", image: "", description: "" }); setEditGameIdx(null); setActiveGameBigIdx(bigIdx); } }}
+                          value={activeGameBigIdx === bigIdx || editGameIdx === null ? gameForm.name[formLang] : ""}
+                          onChange={(e) => { setActiveGameBigIdx(bigIdx); setGameForm({ ...gameForm, name: { ...gameForm.name, [formLang]: e.target.value } }); }}
+                          onFocus={() => { if (activeGameBigIdx !== bigIdx) { setGameForm({ name: {az:"",en:"",ru:""}, image: "", description: {az:"",en:"",ru:""} }); setEditGameIdx(null); setActiveGameBigIdx(bigIdx); } }}
                           className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-[#00b5d5]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-stone-500 mb-1 block">Təsvir</label>
+                        <label className="text-[10px] font-semibold text-stone-500 mb-1 block">Təsvir [{formLang}]</label>
                         <input
                           placeholder="Qısa təsvir..."
-                          value={activeGameBigIdx === bigIdx || editGameIdx === null ? gameForm.description : ""}
-                          onChange={(e) => { setActiveGameBigIdx(bigIdx); setGameForm({ ...gameForm, description: e.target.value }); }}
-                          onFocus={() => { if (activeGameBigIdx !== bigIdx) { setGameForm({ name: "", image: "", description: "" }); setEditGameIdx(null); setActiveGameBigIdx(bigIdx); } }}
+                          value={activeGameBigIdx === bigIdx || editGameIdx === null ? gameForm.description[formLang] : ""}
+                          onChange={(e) => { setActiveGameBigIdx(bigIdx); setGameForm({ ...gameForm, description: { ...gameForm.description, [formLang]: e.target.value } }); }}
+                          onFocus={() => { if (activeGameBigIdx !== bigIdx) { setGameForm({ name: {az:"",en:"",ru:""}, image: "", description: {az:"",en:"",ru:""} }); setEditGameIdx(null); setActiveGameBigIdx(bigIdx); } }}
                           className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-[#00b5d5]"
                         />
                       </div>
@@ -722,7 +749,7 @@ export default function AdminWonderlandPage() {
                       </button>
                       {editGameIdx !== null && activeGameBigIdx === bigIdx && (
                         <button
-                          onClick={() => { setEditGameIdx(null); setGameForm({ name: "", image: "", description: "" }); setActiveGameBigIdx(null); }}
+                          onClick={() => { setEditGameIdx(null); setGameForm({ name: {az:"",en:"",ru:""}, image: "", description: {az:"",en:"",ru:""} }); setActiveGameBigIdx(null); }}
                           className="px-4 py-2 bg-stone-100 text-stone-600 text-xs font-bold rounded-lg"
                         >
                           Ləğv
@@ -736,18 +763,18 @@ export default function AdminWonderlandPage() {
                     <p className="text-xs text-stone-400 text-center py-4">Bu attraksiyonda hələ oyun yoxdur</p>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {ba.games.map((game, gameIdx) => (
+                      {ba.games.map((game: any, gameIdx: number) => (
                         <div key={gameIdx} className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
                           {game.image && (
                             <div className="h-32 overflow-hidden">
-                              <img src={game.image} alt={game.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                              <img src={game.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                             </div>
                           )}
                           <div className="p-3">
                             <div className="flex justify-between items-start">
                               <div className="flex-1 min-w-0">
-                                <h5 className="font-bold text-xs text-[#1e325c] truncate">{game.name}</h5>
-                                <p className="text-[10px] text-stone-400 mt-0.5 line-clamp-2">{game.description}</p>
+                                <h5 className="font-bold text-xs text-[#1e325c] truncate">{(game.name as any)?.az || game.name}</h5>
+                                <p className="text-[10px] text-stone-400 mt-0.5 line-clamp-2">{(game.description as any)?.az || game.description}</p>
                               </div>
                               <div className="flex gap-1 ml-2 shrink-0">
                                 <button

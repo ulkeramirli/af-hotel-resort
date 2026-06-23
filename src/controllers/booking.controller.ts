@@ -11,7 +11,7 @@ export class BookingController {
   static async create(req: Request) {
     const body = await req.json();
 
-    const { room, guestName, email, phone, checkIn, checkOut } = body;
+    const { room, guestName, email, phone, checkIn, checkOut, notes } = body;
 
     const existingRoom = await Room.findById(room);
 
@@ -58,10 +58,11 @@ export class BookingController {
       phone,
       checkIn,
       checkOut,
+      notes,
     });
     const mail = bookingCreatedEmail(
       guestName,
-      existingRoom.name,
+      (existingRoom.name as any)?.az || "Otaq",
       checkIn,
       checkOut,
     );
@@ -75,7 +76,7 @@ export class BookingController {
       guestName,
       email,
       phone,
-      existingRoom.name,
+      (existingRoom.name as any)?.az || "Otaq",
       checkIn,
       checkOut,
     );

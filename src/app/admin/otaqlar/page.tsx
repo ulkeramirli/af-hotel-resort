@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { Plus, Trash2, BedDouble, Loader2, Pencil, X, Check, Tags } from "lucide-react";
+import { Plus, Trash2, BedDouble, Loader2, Pencil, X, Check, Tags, Globe } from "lucide-react";
 import { 
   getRooms, createRoom, updateRoom, deleteRoom,
   getRoomTypes, createRoomType, updateRoomType, deleteRoomType,
@@ -14,23 +14,40 @@ import {
 import type { Room, RoomType, RoomSettings } from "@/types/api";
 
 const emptyRoomForm = {
-  name: "",
+  name: { az: "", en: "", ru: "" },
   type: "",
-  description: "",
+  description: { az: "", en: "", ru: "" },
   price: 0,
   capacity: 2,
-  amenities: "",
+  amenities: { az: "", en: "", ru: "" },
   beds: 1,
   baths: 1,
   sqft: 350,
   address: "AF Hotel & Aqua Park, Novkhani, Azerbaijan",
   rating: 4.9,
   reviewsCount: 245,
-  rulesCheckIn: "",
-  rulesCheckOut: "",
+  rulesCheckIn: { az: "", en: "", ru: "" },
+  rulesCheckOut: { az: "", en: "", ru: "" },
   isAvailable: true,
   images: [] as string[],
 };
+
+const LangSwitcher = ({ lang, setLang }: { lang: "az" | "en" | "ru"; setLang: (l: "az" | "en" | "ru") => void }) => (
+  <div className="flex gap-1 bg-stone-100 p-1 rounded-lg w-max mb-4">
+    {(["az", "en", "ru"] as const).map((l) => (
+      <button
+        key={l}
+        type="button"
+        onClick={() => setLang(l)}
+        className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-colors flex items-center gap-1 ${
+          lang === l ? "bg-white text-[#1e325c] shadow-sm" : "text-stone-400 hover:text-stone-600"
+        }`}
+      >
+        <Globe className="w-3 h-3" /> {l}
+      </button>
+    ))}
+  </div>
+);
 
 export default function AdminRoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -41,12 +58,18 @@ export default function AdminRoomsPage() {
   const [roomForm, setRoomForm] = useState({ ...emptyRoomForm });
   const [activeTab, setActiveTab] = useState<"rooms" | "types" | "settings">("rooms");
 
+  const [formLang, setFormLang] = useState<"az" | "en" | "ru">("az");
+
   // Room Type State
   const [editTypeId, setEditTypeId] = useState<string | null>(null);
-  const [typeFormName, setTypeFormName] = useState("");
+  const [typeFormName, setTypeFormName] = useState({ az: "", en: "", ru: "" });
 
   // Room Settings State
-  const [settingsForm, setSettingsForm] = useState<RoomSettings>({ tag: "", title: "", subtitle: "" });
+  const [settingsForm, setSettingsForm] = useState<any>({ 
+    tag: { az: "", en: "", ru: "" }, 
+    title: { az: "", en: "", ru: "" }, 
+    subtitle: { az: "", en: "", ru: "" } 
+  });
   const [savingSettings, setSavingSettings] = useState(false);
 
   const loadData = async () => {
@@ -55,7 +78,13 @@ export default function AdminRoomsPage() {
       const [rData, tData, sData] = await Promise.all([getRooms(), getRoomTypes(), getRoomSettings()]);
       setRooms(rData);
       setRoomTypes(tData);
-      if (sData) setSettingsForm(sData);
+      if (sData) {
+        setSettingsForm({
+          tag: typeof sData.tag === 'object' ? sData.tag : { az: sData.tag, en: sData.tag, ru: sData.tag },
+          title: typeof sData.title === 'object' ? sData.title : { az: sData.title, en: sData.title, ru: sData.title },
+          subtitle: typeof sData.subtitle === 'object' ? sData.subtitle : { az: sData.subtitle, en: sData.subtitle, ru: sData.subtitle }
+        });
+      }
       if (tData.length > 0) {
         setRoomForm(prev => prev.type ? prev : ({ ...prev, type: tData[0]._id }));
       }
@@ -73,18 +102,30 @@ export default function AdminRoomsPage() {
   // ─── ROOM ACTIONS ───
   const handleRoomSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!roomForm.name || !roomForm.description || !roomForm.price || !roomForm.type) {
-      alert("Bütün xanaları doldurun!");
+    if (!roomForm.name.az || !roomForm.description.az || !roomForm.price || !roomForm.type) {
+      alert("Ən azı AZ dilində məlumatları və qiyməti daxil edin!");
       return;
     }
     
+    const splitAmenities = (str: string) => (str||"").split(",").map((a) => a.trim()).filter(Boolean);
+    const azArr = splitAmenities(roomForm.amenities.az);
+    const enArr = splitAmenities(roomForm.amenities.en);
+    const ruArr = splitAmenities(roomForm.amenities.ru);
+    const maxLen = Math.max(azArr.length, enArr.length, ruArr.length);
+    const mappedAmenities = [];
+    for(let i=0; i<maxLen; i++) {
+        if(azArr[i] || enArr[i] || ruArr[i]) {
+            mappedAmenities.push({ az: azArr[i]||"", en: enArr[i]||"", ru: ruArr[i]||"" });
+        }
+    }
+
     const payload = {
       name: roomForm.name,
       type: roomForm.type,
       description: roomForm.description,
       price: Number(roomForm.price),
       capacity: Number(roomForm.capacity),
-      amenities: roomForm.amenities.split(",").map((a) => a.trim()).filter(Boolean),
+      amenities: mappedAmenities,
       isAvailable: roomForm.isAvailable,
       images: roomForm.images || [],
       beds: Number(roomForm.beds) || 1,
@@ -110,41 +151,45 @@ export default function AdminRoomsPage() {
 
   const startEditRoom = (room: Room) => {
     setEditRoomId(room._id);
+    let amAz = "", amEn = "", amRu = "";
+    if (Array.isArray(room.amenities)) {
+      amAz = room.amenities.map((a:any) => typeof a === 'object' ? a.az : a).filter(Boolean).join(", ");
+      amEn = room.amenities.map((a:any) => typeof a === 'object' ? a.en : a).filter(Boolean).join(", ");
+      amRu = room.amenities.map((a:any) => typeof a === 'object' ? a.ru : a).filter(Boolean).join(", ");
+    }
     setRoomForm({
       ...emptyRoomForm,
-      name: room.name,
+      name: typeof room.name === 'object' ? room.name : { az: room.name, en: room.name, ru: room.name },
       type: room.type ? (typeof room.type === 'object' ? (room.type as any)._id : room.type) : "",
-      description: room.description,
+      description: typeof room.description === 'object' ? room.description : { az: room.description, en: room.description, ru: room.description },
       price: room.price,
       capacity: room.capacity,
-      amenities: Array.isArray(room.amenities) ? room.amenities.join(", ") : "",
+      amenities: { az: amAz, en: amEn, ru: amRu },
       isAvailable: room.isAvailable,
       images: room.images || [],
       beds: room.beds || 1,
       baths: room.baths || 1,
       sqft: room.sqft || 350,
-      rulesCheckIn: room.rulesCheckIn || "",
-      rulesCheckOut: room.rulesCheckOut || "",
+      rulesCheckIn: typeof room.rulesCheckIn === 'object' ? room.rulesCheckIn : { az: room.rulesCheckIn||"", en: room.rulesCheckIn||"", ru: room.rulesCheckIn||"" },
+      rulesCheckOut: typeof room.rulesCheckOut === 'object' ? room.rulesCheckOut : { az: room.rulesCheckOut||"", en: room.rulesCheckOut||"", ru: room.rulesCheckOut||"" },
     });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDeleteRoom = async (id: string) => {
     if (!confirm("Bu otağı silmək istədiyinizə əminsiniz?")) return;
     try {
       await deleteRoom(id);
-
       loadData();
     } catch (err: any) {
       alert(err.message || "Silərkən xəta baş verdi");
-
     }
   };
 
   // ─── ROOM TYPE ACTIONS ───
   const handleTypeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!typeFormName) return;
-    
+    if (!typeFormName.az) return;
     try {
       if (editTypeId) {
         await updateRoomType(editTypeId, typeFormName);
@@ -152,7 +197,7 @@ export default function AdminRoomsPage() {
         await createRoomType(typeFormName);
       }
       setEditTypeId(null);
-      setTypeFormName("");
+      setTypeFormName({ az: "", en: "", ru: "" });
       loadData();
     } catch (err: any) {
       alert(err.message || "Kateqoriya yadda saxlanılarkən xəta baş verdi");
@@ -161,7 +206,7 @@ export default function AdminRoomsPage() {
 
   const startEditType = (type: RoomType) => {
     setEditTypeId(type._id);
-    setTypeFormName(type.name);
+    setTypeFormName(typeof type.name === 'object' ? type.name : { az: type.name, en: type.name, ru: type.name } as any);
   };
 
   const handleDeleteType = async (id: string) => {
@@ -192,9 +237,7 @@ export default function AdminRoomsPage() {
   if (loading && rooms.length === 0) {
     return (
       <div className="flex justify-center items-center py-20">
-
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: "var(--color-hotel-blue)" }} />
-
       </div>
     );
   }
@@ -248,10 +291,14 @@ export default function AdminRoomsPage() {
         <div className="space-y-6">
           {/* ROOM FORM */}
           <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-            <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
-              <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-              {editRoomId ? "Otağı Redaktə Et" : "Yeni Otaq Əlavə Et"}
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+                <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
+                {editRoomId ? "Otağı Redaktə Et" : "Yeni Otaq Əlavə Et"}
+              </h3>
+              <LangSwitcher lang={formLang} setLang={setFormLang} />
+            </div>
+            
             {roomTypes.length === 0 ? (
               <p className="text-sm text-rose-500 bg-rose-50 p-3 rounded-lg border border-rose-100">
                 Əvvəlcə ən azı 1 "Kateqoriya" yaratmalısınız.
@@ -259,9 +306,9 @@ export default function AdminRoomsPage() {
             ) : (
               <form onSubmit={handleRoomSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <input
-                  placeholder="Otaq adı"
-                  value={roomForm.name}
-                  onChange={(e) => setRoomForm({ ...roomForm, name: e.target.value })}
+                  placeholder={`Otaq adı (${formLang.toUpperCase()})`}
+                  value={roomForm.name[formLang]}
+                  onChange={(e) => setRoomForm({ ...roomForm, name: { ...roomForm.name, [formLang]: e.target.value } })}
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 />
                 <select
@@ -270,7 +317,7 @@ export default function AdminRoomsPage() {
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 >
                   {roomTypes.map((t) => (
-                    <option key={t._id} value={t._id}>{t.name}</option>
+                    <option key={t._id} value={t._id}>{(t.name as any)?.az || t.name}</option>
                   ))}
                 </select>
                 <input
@@ -288,15 +335,15 @@ export default function AdminRoomsPage() {
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 />
                 <input
-                  placeholder="Xidmətlər (vergüllə: Wi-Fi, Jakuzi)"
-                  value={roomForm.amenities}
-                  onChange={(e) => setRoomForm({ ...roomForm, amenities: e.target.value })}
+                  placeholder={`Xidmətlər (vergüllə: Wi-Fi, Jakuzi) (${formLang.toUpperCase()})`}
+                  value={roomForm.amenities[formLang]}
+                  onChange={(e) => setRoomForm({ ...roomForm, amenities: { ...roomForm.amenities, [formLang]: e.target.value } })}
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-2 focus:outline-none focus:border-[#00b5d5]"
                 />
                 <textarea
-                  placeholder="Təsvir"
-                  value={roomForm.description}
-                  onChange={(e) => setRoomForm({ ...roomForm, description: e.target.value })}
+                  placeholder={`Təsvir (${formLang.toUpperCase()})`}
+                  value={roomForm.description[formLang]}
+                  onChange={(e) => setRoomForm({ ...roomForm, description: { ...roomForm.description, [formLang]: e.target.value } })}
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-3 h-20 resize-none focus:outline-none focus:border-[#00b5d5]"
                 />
                 <input
@@ -321,15 +368,15 @@ export default function AdminRoomsPage() {
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 />
                 <textarea
-                  placeholder="Bron Qaydaları (Giriş) - məs: Standart giriş vaxtı 14:00..."
-                  value={roomForm.rulesCheckIn}
-                  onChange={(e) => setRoomForm({ ...roomForm, rulesCheckIn: e.target.value })}
+                  placeholder={`Bron Qaydaları (Giriş) (${formLang.toUpperCase()})`}
+                  value={roomForm.rulesCheckIn[formLang]}
+                  onChange={(e) => setRoomForm({ ...roomForm, rulesCheckIn: { ...roomForm.rulesCheckIn, [formLang]: e.target.value } })}
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-3 h-16 resize-none focus:outline-none focus:border-[#00b5d5]"
                 />
                 <textarea
-                  placeholder="Bron Qaydaları (Çıxış) - məs: Otaq açarları 12:00-a qədər..."
-                  value={roomForm.rulesCheckOut}
-                  onChange={(e) => setRoomForm({ ...roomForm, rulesCheckOut: e.target.value })}
+                  placeholder={`Bron Qaydaları (Çıxış) (${formLang.toUpperCase()})`}
+                  value={roomForm.rulesCheckOut[formLang]}
+                  onChange={(e) => setRoomForm({ ...roomForm, rulesCheckOut: { ...roomForm.rulesCheckOut, [formLang]: e.target.value } })}
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-3 h-16 resize-none focus:outline-none focus:border-[#00b5d5]"
                 />
                 {editRoomId && (
@@ -342,38 +389,12 @@ export default function AdminRoomsPage() {
                     Mövcuddur (Müştərilər bron edə bilər)
                   </label>
                 )}
+                
+                {/* Images remain the same */}
                 <div className="md:col-span-3 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-bold text-[#1e325c]">Otaq Şəkilləri <span className="text-stone-400 font-normal">({roomForm.images.length} şəkil)</span></p>
-                    <label className="flex items-center gap-1.5 text-[11px] font-bold text-[#00b5d5] cursor-pointer hover:underline">
-                      <Plus className="w-3.5 h-3.5" />
-                      Şəkil yüklə
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        className="hidden"
-                        onChange={async (e) => {
-                          const files = Array.from(e.target.files || []);
-                          for (const file of files) {
-                            try {
-                              const data = await uploadImage(file);
-                              if (data.success) {
-                                setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
-                              } else {
-                                alert(data.message || "Xəta baş verdi");
-                              }
-                            } catch (err: any) {
-                              alert("Şəkil yüklənərkən xəta: " + err.message);
-                            }
-                          }
-                          e.target.value = "";
-                        }}
-                      />
-                    </label>
                   </div>
-
-                  {/* Image grid */}
                   {roomForm.images.length > 0 && (
                     <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                       {roomForm.images.map((img, idx) => (
@@ -386,63 +407,33 @@ export default function AdminRoomsPage() {
                           >
                             <X className="w-5 h-5" />
                           </button>
-                          {idx === 0 && (
-                            <span className="absolute top-1 left-1 bg-[#00b5d5] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">Ana</span>
-                          )}
                         </div>
                       ))}
-                      {/* Add more button */}
-                      <label className="aspect-square border-2 border-dashed border-stone-300 rounded-xl flex flex-col items-center justify-center text-stone-400 hover:text-[#00b5d5] hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 transition-all cursor-pointer bg-stone-50">
-                        <Plus className="w-5 h-5 mb-0.5" />
-                        <span className="text-[9px] font-semibold">Əlavə et</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          className="hidden"
-                          onChange={async (e) => {
-                            const files = Array.from(e.target.files || []);
-                            for (const file of files) {
-                              try {
-                                const data = await uploadImage(file);
-                                if (data.success) {
-                                  setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
-                                }
-                              } catch {}
-                            }
-                            e.target.value = "";
-                          }}
-                        />
-                      </label>
                     </div>
                   )}
-
-                  {roomForm.images.length === 0 && (
-                    <label className="border-2 border-dashed border-stone-300 rounded-xl flex flex-col items-center justify-center py-8 text-stone-400 hover:text-[#00b5d5] hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 transition-all cursor-pointer bg-stone-50">
-                      <Plus className="w-8 h-8 mb-2" />
-                      <span className="text-xs font-semibold">Şəkil seçin (birdən çox ola bilər)</span>
-                      <span className="text-[10px] mt-1">PNG, JPG, WEBP</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        className="hidden"
-                        onChange={async (e) => {
-                          const files = Array.from(e.target.files || []);
-                          for (const file of files) {
-                            try {
-                              const data = await uploadImage(file);
-                              if (data.success) {
-                                setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
-                              }
-                            } catch {}
-                          }
-                          e.target.value = "";
-                        }}
-                      />
-                    </label>
-                  )}
+                  <label className="border-2 border-dashed border-stone-300 rounded-xl flex flex-col items-center justify-center py-4 text-stone-400 hover:text-[#00b5d5] hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 transition-all cursor-pointer bg-stone-50">
+                    <span className="text-xs font-semibold">Şəkil seçin (birdən çox ola bilər)</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={async (e) => {
+                        const files = Array.from(e.target.files || []);
+                        for (const file of files) {
+                          try {
+                            const data = await uploadImage(file);
+                            if (data.success) {
+                              setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
+                            }
+                          } catch {}
+                        }
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
                 </div>
+                
                 <div className="flex gap-2 md:col-span-3 mt-2">
                   <button
                     type="submit"
@@ -466,10 +457,8 @@ export default function AdminRoomsPage() {
                   )}
                 </div>
               </form>
-
             )}
           </div>
-
 
           {/* ROOMS LIST */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -477,22 +466,16 @@ export default function AdminRoomsPage() {
                <div className="col-span-full py-10 text-center text-stone-400 text-sm">Otaq tapılmadı</div>
             ) : rooms.map((room) => (
               <div key={room._id} className="bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-                {/* Room image thumbnail */}
                 {room.images && room.images.length > 0 && (
                   <div className="relative h-36 w-full bg-stone-100">
-                    <img src={room.images[0]} alt={room.name} className="w-full h-full object-cover" />
-                    {room.images.length > 1 && (
-                      <span className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                        +{room.images.length - 1} foto
-                      </span>
-                    )}
+                    <img src={room.images[0]} alt="" className="w-full h-full object-cover" />
                   </div>
                 )}
                 <div className="p-5">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-2">
                     <BedDouble className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-                    <h4 className="font-bold text-sm text-[#1e325c]">{room.name}</h4>
+                    <h4 className="font-bold text-sm text-[#1e325c]">{(room.name as any)?.az || room.name}</h4>
                   </div>
                   <div className="flex gap-1">
                     <button onClick={() => startEditRoom(room)} className="p-1.5 text-stone-400 hover:text-[#1e325c] rounded-lg hover:bg-stone-50">
@@ -504,22 +487,9 @@ export default function AdminRoomsPage() {
                   </div>
                 </div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5] mb-1">
-                  {room.type ? (typeof room.type === 'object' ? (room.type as any).name : room.type) : "Kateqoriya silinib"}
+                  {room.type ? (typeof room.type === 'object' ? (room.type as any).name?.az || (room.type as any).name : room.type) : "Kateqoriya silinib"}
                 </p>
-                <p className="text-xs text-stone-500 line-clamp-2 mb-3">{room.description}</p>
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {Array.isArray(room.amenities) && room.amenities.map((a, i) => (
-                    <span key={i} className="text-[10px] px-2 py-0.5 bg-stone-50 border border-stone-100 rounded-full text-stone-500">
-                      {a}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-bold" style={{ color: "var(--color-hotel-blue)" }}>{room.price} AZN / gecə</span>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${room.isAvailable ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"}`}>
-                    {room.isAvailable ? "Mövcud" : "Dolu"}
-                  </span>
-                </div>
+                <p className="text-xs text-stone-500 line-clamp-2 mb-3">{(room.description as any)?.az || room.description}</p>
                 </div>
               </div>
             ))}
@@ -531,14 +501,18 @@ export default function AdminRoomsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
             <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
-              <h3 className="font-bold text-[#1e325c] text-sm mb-4">
-                {editTypeId ? "Kateqoriyanı Redaktə Et" : "Yeni Kateqoriya"}
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-[#1e325c] text-sm">
+                  {editTypeId ? "Kateqoriyanı Redaktə Et" : "Yeni Kateqoriya"}
+                </h3>
+                <LangSwitcher lang={formLang} setLang={setFormLang} />
+              </div>
+              
               <form onSubmit={handleTypeSubmit} className="space-y-4">
                 <input
-                  placeholder="Kateqoriya adı (məs: Deluxe)"
-                  value={typeFormName}
-                  onChange={(e) => setTypeFormName(e.target.value)}
+                  placeholder={`Kateqoriya adı (${formLang.toUpperCase()})`}
+                  value={(typeFormName as any)[formLang]}
+                  onChange={(e) => setTypeFormName({ ...typeFormName, [formLang]: e.target.value })}
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 />
                 <div className="flex gap-2">
@@ -546,31 +520,25 @@ export default function AdminRoomsPage() {
                     {editTypeId ? "Yadda Saxla" : "Əlavə Et"}
                   </button>
                   {editTypeId && (
-                    <button type="button" onClick={() => { setEditTypeId(null); setTypeFormName(""); }} className="px-4 py-2 bg-stone-100 text-stone-600 text-xs font-bold rounded-xl">
+                    <button type="button" onClick={() => { setEditTypeId(null); setTypeFormName({az:"", en:"", ru:""}); }} className="px-4 py-2 bg-stone-100 text-stone-600 text-xs font-bold rounded-xl">
                       Ləğv
                     </button>
                   )}
                 </div>
               </form>
-
             </div>
           </div>
           <div className="lg:col-span-2 space-y-3">
-             {roomTypes.length === 0 ? (
-               <div className="bg-white py-10 rounded-2xl border border-stone-100 shadow-sm text-center text-stone-400 text-sm">Kateqoriya tapılmadı</div>
-             ) : roomTypes.map((type) => (
+             {roomTypes.map((type) => (
                 <div key={type._id} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-[#00b5d5]">
-                      <Tags className="w-4 h-4" />
-                    </div>
-                    <span className="font-bold text-sm text-[#1e325c]">{type.name}</span>
+                    <span className="font-bold text-sm text-[#1e325c]">{(type.name as any)?.az || type.name}</span>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => startEditType(type)} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <button onClick={() => startEditType(type)} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-blue-50">
                       <Pencil className="w-4 h-4" />
                     </button>
-                    <button onClick={() => handleDeleteType(type._id)} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-rose-50 hover:text-rose-600 transition-colors">
+                    <button onClick={() => handleDeleteType(type._id)} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-rose-50 hover:text-rose-600">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -580,43 +548,43 @@ export default function AdminRoomsPage() {
         </div>
       )}
 
-      {/* ─── SETTINGS TAB ─── */}
       {activeTab === "settings" && (
         <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 max-w-2xl">
-          <h3 className="text-lg font-bold text-[#1e325c] mb-4">Səhifə Başlıqları</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold text-[#1e325c]">Səhifə Başlıqları</h3>
+            <LangSwitcher lang={formLang} setLang={setFormLang} />
+          </div>
+          
           <form onSubmit={handleSettingsSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-stone-600 mb-1">Tag (Üst Başlıq)</label>
+              <label className="block text-xs font-bold text-stone-600 mb-1">Tag (Üst Başlıq) [{formLang.toUpperCase()}]</label>
               <input
-                value={settingsForm.tag}
-                onChange={(e) => setSettingsForm({ ...settingsForm, tag: e.target.value })}
+                value={settingsForm.tag[formLang]}
+                onChange={(e) => setSettingsForm({ ...settingsForm, tag: { ...settingsForm.tag, [formLang]: e.target.value } })}
                 className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
-                placeholder="Məs: OTAQLAR & KOTECLƏR"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-stone-600 mb-1">Əsas Başlıq</label>
+              <label className="block text-xs font-bold text-stone-600 mb-1">Əsas Başlıq [{formLang.toUpperCase()}]</label>
               <input
-                value={settingsForm.title}
-                onChange={(e) => setSettingsForm({ ...settingsForm, title: e.target.value })}
+                value={settingsForm.title[formLang]}
+                onChange={(e) => setSettingsForm({ ...settingsForm, title: { ...settingsForm.title, [formLang]: e.target.value } })}
                 className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
-                placeholder="Məs: Rahatlığın Yeni Səviyyəsi"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-stone-600 mb-1">Alt Başlıq (Açıqlama)</label>
+              <label className="block text-xs font-bold text-stone-600 mb-1">Alt Başlıq [{formLang.toUpperCase()}]</label>
               <textarea
-                value={settingsForm.subtitle}
-                onChange={(e) => setSettingsForm({ ...settingsForm, subtitle: e.target.value })}
+                value={settingsForm.subtitle[formLang]}
+                onChange={(e) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: e.target.value } })}
                 className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs h-24 resize-none focus:outline-none focus:border-[#00b5d5]"
-                placeholder="Məs: Hər zövqə uyğun lüks otaqlar"
               />
             </div>
             <div className="pt-4 flex justify-end">
               <button
                 type="submit"
                 disabled={savingSettings}
-                className="px-6 py-2.5 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-50"
+                className="px-6 py-2.5 text-white text-xs font-bold rounded-xl flex items-center gap-2"
                 style={{ background: "var(--color-hotel-blue)" }}
               >
                 {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}

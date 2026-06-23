@@ -1,5 +1,6 @@
 'use client';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import { useState } from 'react';
 import Image from 'next/image';
 import ScrollReveal from '@/components/ScrollReveal';
@@ -7,6 +8,7 @@ import ScrollReveal from '@/components/ScrollReveal';
 export default function Footer() {
   const { language, t } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const { settings } = useSettings();
 
   const content = {
     desc: {
@@ -100,27 +102,59 @@ export default function Footer() {
           <div className="space-y-3">
             <h4 className="text-[9px] font-bold uppercase tracking-widest text-stone-400">Hours</h4>
             <div className="space-y-1.5 font-light text-stone-500">
-              <p><span className="text-stone-700 font-normal">Reception:</span> 24 / 7</p>
-              <p><span className="text-stone-700 font-normal">Aqua Park:</span> 09:00 – 20:00</p>
-              <p><span className="text-stone-700 font-normal">Restoran:</span> 08:00 – 23:00</p>
+              <p><span className="text-stone-700 font-normal">Reception:</span> {settings?.reception || "24 / 7"}</p>
+              <p><span className="text-stone-700 font-normal">Aqua Park:</span> {settings?.aquapark || "09:00 – 20:00"}</p>
+              <p><span className="text-stone-700 font-normal">Restoran:</span> {settings?.dining || "08:00 – 23:00"}</p>
             </div>
           </div>
 
           <div className="space-y-3">
             <h4 className="text-[9px] font-bold uppercase tracking-widest text-stone-400">Destination</h4>
-            <p className="font-light text-stone-500 leading-relaxed">
-              Novkhani Beach Road,<br />
-              Baku, Azerbaijan
-            </p>
+            <div className="font-light text-stone-500 leading-relaxed space-y-2">
+              <p>
+                {(settings?.address as any)?.[currentLang] ? (
+                  (settings?.address as any)[currentLang].split('\n').map((line: string, i: number) => <span key={i}>{line}<br /></span>)
+                ) : (
+                  <>Novkhani Beach Road,<br />Baku, Azerbaijan</>
+                )}
+              </p>
+              {settings?.email && (
+                <a href={`mailto:${settings.email}`} className="hover:text-[#00b5d5] transition-colors block">{settings.email}</a>
+              )}
+            </div>
           </div>
         </ScrollReveal>
 
-        {/* kopirayder */}
-        <ScrollReveal direction="up" delay={0.3} className="pt-6 border-t border-cyan-100/60 flex flex-col md:flex-row justify-between items-center gap-3 text-[9px] text-stone-400 font-mono tracking-wider">
-          <p>© {new Date().getFullYear()} AF HOTEL & AQUA PARK. All rights reserved.</p>
-          <div className="flex space-x-4 uppercase font-bold">
-            <a href="#privacy" className="hover:text-[#00b5d5] transition-colors">Privacy</a>
-            <a href="#terms" className="hover:text-[#00b5d5] transition-colors">Terms</a>
+        <ScrollReveal direction="up" delay={0.3} className="pt-6 border-t border-cyan-100/60 flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] text-stone-400 font-mono tracking-wider">
+          <p>© {new Date().getFullYear()} {((settings?.hotelName as any)?.[currentLang] || "AF HOTEL & AQUA PARK").toUpperCase()}. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <div className="flex space-x-3">
+              {settings?.instagram && (
+                <a href={settings.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-[#00b5d5] transition-colors">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                  </svg>
+                </a>
+              )}
+              {settings?.facebook && (
+                <a href={settings.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-[#00b5d5] transition-colors">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                  </svg>
+                </a>
+              )}
+              {settings?.tiktok && (
+                <a href={settings.tiktok} target="_blank" rel="noopener noreferrer" className="hover:text-[#00b5d5] transition-colors font-sans text-xs font-bold">
+                  TikTok
+                </a>
+              )}
+            </div>
+            <div className="flex space-x-4 uppercase font-bold border-l border-stone-200/40 pl-6">
+              <a href="#privacy" className="hover:text-[#00b5d5] transition-colors">Privacy</a>
+              <a href="#terms" className="hover:text-[#00b5d5] transition-colors">Terms</a>
+            </div>
           </div>
         </ScrollReveal>
 

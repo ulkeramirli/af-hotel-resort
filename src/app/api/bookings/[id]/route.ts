@@ -9,6 +9,10 @@ export async function GET(
 ) {
   await connectDB();
   try {
+    const user = authMiddleware(req) as any;
+    if (user.role !== "admin") {
+      throw new Error("Only admin can view booking details");
+    }
     const { id } = await params;
     return await BookingController.getById(id);
   } catch (error: any) {

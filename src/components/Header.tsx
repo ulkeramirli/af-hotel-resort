@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { User, LogOut, Menu, X, Phone, Heart, BookOpen } from "lucide-react";
 import { getFavorites } from "@/lib/favorites";
+import { useSettings } from "@/contexts/SettingsContext";
 
 type LangType = "az" | "en" | "ru";
 
@@ -75,6 +76,7 @@ export default function Header() {
   const currentUser = user as AuthUser | null;
   const { language, setLanguage, t } = useLanguage();
   const currentLang = (language as LangType) || "az";
+  const { settings } = useSettings();
 
   const langRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -189,11 +191,11 @@ export default function Header() {
 
         <div className="flex items-center space-x-2 md:space-x-4">
           <a
-            href="tel:+994124480000"
+            href={`tel:${settings?.phone || "+994124480000"}`}
             className="hidden xl:flex items-center gap-1.5 text-[11px] font-bold text-slate-600 hover:text-[#00b5d5] transition-colors border border-stone-200/80 px-3 py-2 rounded-xl bg-stone-50/40"
           >
             <Phone className="w-3.5 h-3.5 text-[#00b5d5]" />
-            <span>+994 (12) 448-00-00</span>
+            <span>{settings?.phone || "+994 (12) 448-00-00"}</span>
           </a>
 
           <div className="relative" ref={langRef}>
@@ -360,10 +362,10 @@ export default function Header() {
           </nav>
           <div className="space-y-4">
             <a
-              href="tel:+994124480000"
+              href={`tel:${settings?.phone || "+994124480000"}`}
               className="flex items-center justify-center gap-2 text-xs font-bold text-slate-700 py-3.5 border border-stone-200 rounded-xl"
             >
-              <Phone className="w-4 h-4 text-[#00b5d5]" /> +994 (12) 448-00-00
+              <Phone className="w-4 h-4 text-[#00b5d5]" /> {settings?.phone || "+994 (12) 448-00-00"}
             </a>
             <a
               href="#booking"

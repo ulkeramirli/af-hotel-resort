@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Clock, Phone, ChefHat, Utensils, Coffee, Wine, Calendar, Search, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import CategoryTabs from "./CategoryTabs";
 import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence } from "framer-motion";
 import { getRestaurants, getRestaurantSettings } from "@/services/api";
@@ -169,33 +170,29 @@ export default function Restoran() {
     <section id="restoran" className="py-24 md:py-32 bg-[#fdfcf7] scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-12 md:space-y-16">
         
-        {/* Başlıq */}
-        <ScrollReveal direction="up" delay={0.1} className="text-center space-y-3">
-          <span className="text-[#00b5d5] text-[11px] font-bold tracking-[0.35em] uppercase block">
-            {settings?.tag || c.tag}
-          </span>
-          <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
-            {settings?.title || c.title}
-          </h2>
-          <p className="text-sm text-stone-500 max-w-xl mx-auto leading-relaxed">
-            {settings?.subtitle || c.subtitle}
-          </p>
-        </ScrollReveal>
+        {/* Header & Tabs Container */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
+          <ScrollReveal direction="up" delay={0.1} className="space-y-3 text-left">
+            <span className="text-[#00b5d5] text-[11px] font-bold tracking-[0.35em] uppercase block">
+              {settings?.tag || c.tag}
+            </span>
+            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
+              {settings?.title || c.title}
+            </h2>
+            <p className="text-sm text-stone-500 max-w-xl leading-relaxed">
+              {settings?.subtitle || c.subtitle}
+            </p>
+          </ScrollReveal>
 
-        {/* Restoran naviqasiyası */}
-        <ScrollReveal direction="up" delay={0.2} className="flex flex-wrap justify-center gap-2 p-1.5 bg-stone-100 max-w-2xl mx-auto rounded-2xl border border-stone-200/40">
-          {restaurants.map((rest: Restaurant, idx: number) => (
-            <button
-              key={rest._id}
-              onClick={() => handleRestaurantChange(idx)}
-              className={`flex-1 min-w-35 text-center px-4 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer border-none bg-transparent ${
-                activeRest === idx ? "bg-white text-[#1e325c] shadow-xs" : "text-stone-500 hover:text-stone-800"
-              }`}
-            >
-              {rest.name}
-            </button>
-          ))}
-        </ScrollReveal>
+          <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
+            <CategoryTabs
+              categories={restaurants.map((r, i) => ({ id: String(i), label: (r.name as any)?.[l] || (r.name as any)?.az || r.name || "" }))}
+              activeId={String(activeRest)}
+              onSelect={(id) => handleRestaurantChange(Number(id))}
+              className="justify-start md:justify-end"
+            />
+          </ScrollReveal>
+        </div>
 
         {/* Əsas Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
@@ -206,7 +203,7 @@ export default function Restoran() {
               {currentRestaurant.image ? (
                 <Image
                   src={currentRestaurant.image}
-                  alt={currentRestaurant.name}
+                  alt={(currentRestaurant.name as any)?.[l] || (currentRestaurant.name as any)?.az || currentRestaurant.name || ""}
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   priority
@@ -220,13 +217,13 @@ export default function Restoran() {
                 <span className="text-[10px] uppercase tracking-widest font-bold bg-[#00b5d5] px-2.5 py-1 rounded-md">
                   Hotel Concept
                 </span>
-                <h3 className="text-xl md:text-2xl font-serif font-light mt-2">{currentRestaurant.name}</h3>
+                <h3 className="text-xl md:text-2xl font-serif font-light mt-2">{(currentRestaurant.name as any)?.[l] || (currentRestaurant.name as any)?.az || currentRestaurant.name || ""}</h3>
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-2xl border border-stone-200/50 shadow-xs space-y-4">
               <p className="text-stone-600 text-sm leading-relaxed">
-                {currentRestaurant.description}
+                {(currentRestaurant.description as any)?.[l] || (currentRestaurant.description as any)?.az || currentRestaurant.description || ""}
               </p>
               <hr className="border-stone-100" />
               
@@ -273,7 +270,8 @@ export default function Restoran() {
                   <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
                     <div className="flex gap-1 flex-wrap">
                       {currentRestaurant.menu.map((cat: ApiMenuCategory, idx: number) => {
-                        const Icon = getCategoryIcon(cat.name);
+                        const catName = (cat.name as any)?.[l] || (cat.name as any)?.az || cat.name || "";
+                        const Icon = getCategoryIcon(typeof cat.name === 'string' ? cat.name : catName);
                         return (
                           <button
                             key={cat._id || idx}
@@ -283,7 +281,7 @@ export default function Restoran() {
                             }`}
                           >
                             <Icon className="w-3.5 h-3.5 shrink-0" />
-                            <span>{cat.name}</span>
+                            <span>{catName}</span>
                           </button>
                         );
                       })}
@@ -320,14 +318,14 @@ export default function Restoran() {
                           <div className="space-y-1.5 flex-1">
                             <div className="flex flex-col gap-0.5">
                               <h4 className="font-bold text-xs md:text-sm text-[#1e325c] leading-snug">
-                                {item.name}
+                                {(item.name as any)?.[l] || (item.name as any)?.az || item.name || ""}
                               </h4>
                               <span className="text-xs font-bold text-[#00b5d5] font-mono mt-0.5">
                                 {item.price} AZN
                               </span>
                             </div>
                             <p className="text-[11px] text-stone-400 font-medium leading-normal line-clamp-2 md:line-clamp-3">
-                              {item.description}
+                              {(item.description as any)[l] || item.description}
                             </p>
                           </div>
 
@@ -335,7 +333,7 @@ export default function Restoran() {
                             <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 shadow-2xs bg-stone-50">
                               <Image
                                 src={item.image}
-                                alt={item.name}
+                                alt={(item.name as any)[l] || (item as any).name}
                                 fill
                                 sizes="(max-width: 640px) 80px, 96px"
                                 className="object-cover transition-transform duration-500 hover:scale-105"

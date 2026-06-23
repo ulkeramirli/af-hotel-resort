@@ -23,7 +23,7 @@ export class ReviewController {
   static async getAproved() {
     const review = await Review.find({
       status: "approved",
-    }).sort({
+    }).select("-emailOrPhone").sort({
       createdAt: -1,
     });
     const totalReviews = await Review.countDocuments({

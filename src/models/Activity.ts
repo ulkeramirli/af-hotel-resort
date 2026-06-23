@@ -3,12 +3,14 @@ import mongoose from "mongoose";
 const activitySchema = new mongoose.Schema(
   {
     title: {
-      type: String,
-      required: true,
+      az: { type: String, required: true },
+      en: { type: String, required: true },
+      ru: { type: String, required: true },
     },
     description: {
-      type: String,
-      required: true,
+      az: { type: String, required: true },
+      en: { type: String, required: true },
+      ru: { type: String, required: true },
     },
     image: {
       type: String,
@@ -24,5 +26,5 @@ const activitySchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-export default mongoose.models.Activity ||
-  mongoose.model("Activity", activitySchema);
+delete mongoose.models.Activity;
+export default mongoose.model("Activity", activitySchema);

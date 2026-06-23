@@ -20,7 +20,20 @@ export async function POST(req: Request) {
   }
 }
 
+import { authMiddleware } from "@/middleware/auth.middleware";
+
 export async function GET(req: Request) {
   await connectDB();
-  return BookingController.getAll(req);
+  try {
+    const user = authMiddleware(req) as any;
+    if (user.role !== "admin") {
+      throw new Error("Only admin can view all bookings");
+    }
+    return BookingController.getAll(req);
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: 403 }
+    );
+  }
 }

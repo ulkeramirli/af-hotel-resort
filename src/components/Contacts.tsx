@@ -1,12 +1,14 @@
 'use client';
 import { useState, FormEvent } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import { createReview } from '@/services/api';
 import { Loader2 } from 'lucide-react';
 
 export default function Contacts() {
   const { language } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const { settings } = useSettings();
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -140,21 +142,31 @@ export default function Contacts() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left text-xs">
             <div className="p-4 bg-white/40 border border-white/60 rounded-xl md:col-span-2 space-y-1 backdrop-blur-xs">
               <span className="block text-[9px] text-stone-400 font-bold uppercase tracking-widest">{content.loc}</span>
-              <p className="text-stone-800 font-light text-sm leading-snug">{content.address}</p>
+              <p className="text-stone-800 font-light text-sm leading-snug whitespace-pre-line">{settings?.address || content.address}</p>
             </div>
 
             <div className="p-4 bg-white/40 border border-white/60 rounded-xl space-y-1 backdrop-blur-xs">
               <span className="block text-[9px] text-stone-400 font-bold uppercase tracking-widest">{content.reception}</span>
               <div className="flex flex-col space-y-0.5">
-                <a href="tel:+994124483030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 12 448 3030</a>
-                <a href="tel:+994502253030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 50 225 3030</a>
+                {settings?.reception ? (
+                  settings.reception.split('\n').map((phone, i) => (
+                    <a key={i} href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">{phone}</a>
+                  ))
+                ) : (
+                  <>
+                    <a href="tel:+994124483030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 12 448 3030</a>
+                    <a href="tel:+994502253030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 50 225 3030</a>
+                  </>
+                )}
               </div>
             </div>
 
             <div className="p-4 bg-white/40 border border-white/60 rounded-xl space-y-1 backdrop-blur-xs flex flex-col justify-between">
               <div>
                 <span className="block text-[9px] text-stone-400 font-bold uppercase tracking-widest">Digital Concierge</span>
-                <a href="mailto:info@afhotel.az" className="inline-block mt-0.5 text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm underline decoration-[#00b5d5]/30 underline-offset-4">info@afhotel.az</a>
+                <a href={`mailto:${settings?.email || 'info@afhotel.az'}`} className="inline-block mt-0.5 text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm underline decoration-[#00b5d5]/30 underline-offset-4">
+                  {settings?.email || 'info@afhotel.az'}
+                </a>
               </div>
             </div>
           </div>

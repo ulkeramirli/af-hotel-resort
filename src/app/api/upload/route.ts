@@ -31,6 +31,18 @@ export async function POST(req: Request) {
       throw new Error("File is required");
     }
 
+    // Validate file type (only allow images)
+    const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/svg+xml", "image/gif"];
+    if (!allowedMimeTypes.includes(file.type)) {
+      throw new Error("Təhlükəsizlik xətası: Yalnız şəkil formatlarına (JPG, PNG, WEBP, SVG, GIF) icazə verilir.");
+    }
+    
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    const allowedExtensions = ["jpg", "jpeg", "png", "webp", "svg", "gif"];
+    if (!extension || !allowedExtensions.includes(extension)) {
+      throw new Error("Təhlükəsizlik xətası: Yalnız şəkil genişlənmələrinə icazə verilir.");
+    }
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 

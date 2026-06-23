@@ -8,8 +8,19 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   await connectDB();
-  const { id } = await params;
-  return ReviewController.getById(id);
+  try {
+    const user = authMiddleware(req) as any;
+    if (user.role !== "admin") {
+      throw new Error("Only admin can view individual reviews");
+    }
+    const { id } = await params;
+    return await ReviewController.getById(id);
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: 403 }
+    );
+  }
 }
 
 export async function PUT(

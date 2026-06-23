@@ -1,70 +1,54 @@
 import mongoose from "mongoose";
 
+const localizedString = {
+  az: { type: String, required: true },
+  en: { type: String, required: true },
+  ru: { type: String, required: true },
+};
+
+const localizedStringOptional = {
+  az: { type: String, default: "" },
+  en: { type: String, default: "" },
+  ru: { type: String, default: "" },
+};
+
 const gameShcema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
+  name: localizedString,
   image: {
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-    required: true,
-  },
+  description: localizedString,
 });
+
 const bigAttractionSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
+  title: localizedString,
   games: [gameShcema],
 });
 
 const smallAttractionSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-
-  description: {
-    type: String,
-    required: true,
-  },
+  name: localizedString,
+  description: localizedString,
   icon: String,
 });
 
 const ticketSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-
+  name: localizedString,
   price: {
     type: String,
     required: true,
   },
 });
+
 const wonderlandSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    tag: {
-      type: String,
-      required: true,
-    },
+    title: localizedString,
+    tag: localizedStringOptional,
     workingHours: {
       type: String,
       default: "",
     },
-
-    description: {
-      type: String,
-      required: true,
-    },
+    description: localizedString,
     discount: {
       enabled: {
         type: Boolean,
@@ -87,5 +71,5 @@ const wonderlandSchema = new mongoose.Schema(
   },
 );
 
-export default mongoose.models.Wonderland ||
-  mongoose.model("Wonderland", wonderlandSchema);
+delete mongoose.models.Wonderland;
+export default mongoose.model("Wonderland", wonderlandSchema);

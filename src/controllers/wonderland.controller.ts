@@ -7,9 +7,9 @@ export class WonderlandController {
 
     if (!wonderland) {
       wonderland = await Wonderland.create({
-        title: "",
-        description: "",
-        tag: "",
+        title: { az: "", en: "", ru: "" },
+        description: { az: "", en: "", ru: "" },
+        tag: { az: "", en: "", ru: "" },
         tickets: [],
         discount: {
           enabled: false,
