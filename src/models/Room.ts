@@ -20,6 +20,8 @@ const roomSchema = new mongoose.Schema(
     beds: { type: Number, default: 1 },
     baths: { type: Number, default: 1 },
     sqft: { type: Number, default: 350 },
+    rulesCheckIn: { type: String, default: "" },
+    rulesCheckOut: { type: String, default: "" },
     isAvailable: { type: Boolean, default: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },

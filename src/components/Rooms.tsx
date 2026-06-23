@@ -4,8 +4,9 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Users, Maximize2, Loader2, BedDouble, ArrowRight, CalendarCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getPublicRooms } from "@/services/api";
+import { getPublicRooms, getRoomTypes, getRoomSettings } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
+import type { RoomType, RoomSettings } from "@/types/api";
 import { toggleFavorite, isFavorite, syncFavorites } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -95,7 +96,7 @@ const content = {
   },
 };
 
-type Category = "all" | "Single" | "Standard Double" | "Standard Twin" | "Apartments for 4";
+type Category = string;
 
 // Single room card component
 function RoomCard({
@@ -191,14 +192,26 @@ export default function Rooms() {
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const [rooms, setRooms] = useState<PublicRoom[]>([]);
+  const [types, setTypes] = useState<RoomType[]>([]);
+  const [settings, setSettings] = useState<RoomSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState<Category>("all");
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     let cancelled = false;
-    getPublicRooms()
-      .then((data) => { if (!cancelled) setRooms(data); })
+    Promise.all([
+      getPublicRooms(),
+      getRoomTypes(),
+      getRoomSettings().catch(() => null)
+    ])
+      .then(([rData, tData, sData]) => { 
+        if (!cancelled) {
+          setRooms(rData);
+          setTypes(tData);
+          setSettings(sData);
+        }
+      })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, []);
@@ -235,10 +248,7 @@ export default function Rooms() {
 
   const categories: { key: Category; label: string }[] = [
     { key: "all", label: c.all },
-    { key: "Single", label: c.single },
-    { key: "Standard Double", label: c.double },
-    { key: "Standard Twin", label: c.twin },
-    { key: "Apartments for 4", label: c.apartment },
+    ...types.map(t => ({ key: t.name, label: t.name }))
   ];
 
   const scrollSlider = (dir: "left" | "right") => {
@@ -258,9 +268,15 @@ export default function Rooms() {
           viewport={{ once: true, margin: "-100px" }}
           className="mb-10 text-center space-y-2"
         >
-          <span className="text-stone-400 text-[10px] font-bold tracking-[0.3em] uppercase block">{c.tag}</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-stone-900 tracking-tight">{c.title}</h2>
-          <p className="text-xs text-stone-400 font-light max-w-md mx-auto">{c.subtitle}</p>
+          <span className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#00b5d5]">
+            {settings?.tag || c.tag}
+          </span>
+          <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-tight">
+            {settings?.title || c.title}
+          </h2>
+          <p className="text-sm font-medium text-stone-400">
+            {settings?.subtitle || c.subtitle}
+          </p>
         </motion.div>
 
         {/* Filter tabs */}

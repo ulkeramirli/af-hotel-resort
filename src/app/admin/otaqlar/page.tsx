@@ -7,10 +7,11 @@ import { Plus, Trash2, BedDouble, Loader2, Pencil, X, Check, Tags } from "lucide
 import { 
   getRooms, createRoom, updateRoom, deleteRoom,
   getRoomTypes, createRoomType, updateRoomType, deleteRoomType,
-  uploadImage
+  uploadImage,
+  getRoomSettings, updateRoomSettings
 } from "@/services/api";
 
-import type { Room, RoomType } from "@/types/api";
+import type { Room, RoomType, RoomSettings } from "@/types/api";
 
 const emptyRoomForm = {
   name: "",
@@ -38,18 +39,23 @@ export default function AdminRoomsPage() {
   const [error, setError] = useState<string | null>(null);
   const [editRoomId, setEditRoomId] = useState<string | null>(null);
   const [roomForm, setRoomForm] = useState({ ...emptyRoomForm });
-  const [activeTab, setActiveTab] = useState<"rooms" | "types">("rooms");
+  const [activeTab, setActiveTab] = useState<"rooms" | "types" | "settings">("rooms");
 
   // Room Type State
   const [editTypeId, setEditTypeId] = useState<string | null>(null);
   const [typeFormName, setTypeFormName] = useState("");
 
+  // Room Settings State
+  const [settingsForm, setSettingsForm] = useState<RoomSettings>({ tag: "", title: "", subtitle: "" });
+  const [savingSettings, setSavingSettings] = useState(false);
+
   const loadData = async () => {
     try {
       setLoading(true);
-      const [rData, tData] = await Promise.all([getRooms(), getRoomTypes()]);
+      const [rData, tData, sData] = await Promise.all([getRooms(), getRoomTypes(), getRoomSettings()]);
       setRooms(rData);
       setRoomTypes(tData);
+      if (sData) setSettingsForm(sData);
       if (tData.length > 0) {
         setRoomForm(prev => prev.type ? prev : ({ ...prev, type: tData[0]._id }));
       }
@@ -84,6 +90,8 @@ export default function AdminRoomsPage() {
       beds: Number(roomForm.beds) || 1,
       baths: Number(roomForm.baths) || 1,
       sqft: Number(roomForm.sqft) || 350,
+      rulesCheckIn: roomForm.rulesCheckIn,
+      rulesCheckOut: roomForm.rulesCheckOut,
     };
 
     try {
@@ -112,6 +120,11 @@ export default function AdminRoomsPage() {
       amenities: Array.isArray(room.amenities) ? room.amenities.join(", ") : "",
       isAvailable: room.isAvailable,
       images: room.images || [],
+      beds: room.beds || 1,
+      baths: room.baths || 1,
+      sqft: room.sqft || 350,
+      rulesCheckIn: room.rulesCheckIn || "",
+      rulesCheckOut: room.rulesCheckOut || "",
     });
   };
 
@@ -161,6 +174,21 @@ export default function AdminRoomsPage() {
     }
   };
 
+  // ─── SETTINGS ACTIONS ───
+  const handleSettingsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setSavingSettings(true);
+      await updateRoomSettings(settingsForm);
+      alert("Tənzimləmələr uğurla yeniləndi");
+      loadData();
+    } catch (err: any) {
+      alert(err.message || "Yadda saxlanılarkən xəta baş verdi");
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
   if (loading && rooms.length === 0) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -197,6 +225,15 @@ export default function AdminRoomsPage() {
             style={activeTab === "types" ? { background: "var(--color-hotel-blue)" } : undefined}
           >
             <Tags className="w-4 h-4 inline-block mr-2" /> Kateqoriyalar
+          </button>
+          <button
+            onClick={() => setActiveTab("settings")}
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+              activeTab === "settings" ? "text-white" : "text-stone-500 hover:bg-stone-50"
+            }`}
+            style={activeTab === "settings" ? { background: "var(--color-hotel-blue)" } : undefined}
+          >
+            <Check className="w-4 h-4 inline-block mr-2" /> Başlıqlar
           </button>
         </div>
       </div>
@@ -261,6 +298,39 @@ export default function AdminRoomsPage() {
                   value={roomForm.description}
                   onChange={(e) => setRoomForm({ ...roomForm, description: e.target.value })}
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-3 h-20 resize-none focus:outline-none focus:border-[#00b5d5]"
+                />
+                <input
+                  type="number"
+                  placeholder="Yataq sayı"
+                  value={roomForm.beds || ""}
+                  onChange={(e) => setRoomForm({ ...roomForm, beds: Number(e.target.value) })}
+                  className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                />
+                <input
+                  type="number"
+                  placeholder="Hamam sayı"
+                  value={roomForm.baths || ""}
+                  onChange={(e) => setRoomForm({ ...roomForm, baths: Number(e.target.value) })}
+                  className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                />
+                <input
+                  type="number"
+                  placeholder="Sahə (sqft)"
+                  value={roomForm.sqft || ""}
+                  onChange={(e) => setRoomForm({ ...roomForm, sqft: Number(e.target.value) })}
+                  className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                />
+                <textarea
+                  placeholder="Bron Qaydaları (Giriş) - məs: Standart giriş vaxtı 14:00..."
+                  value={roomForm.rulesCheckIn}
+                  onChange={(e) => setRoomForm({ ...roomForm, rulesCheckIn: e.target.value })}
+                  className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-3 h-16 resize-none focus:outline-none focus:border-[#00b5d5]"
+                />
+                <textarea
+                  placeholder="Bron Qaydaları (Çıxış) - məs: Otaq açarları 12:00-a qədər..."
+                  value={roomForm.rulesCheckOut}
+                  onChange={(e) => setRoomForm({ ...roomForm, rulesCheckOut: e.target.value })}
+                  className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-3 h-16 resize-none focus:outline-none focus:border-[#00b5d5]"
                 />
                 {editRoomId && (
                   <label className="flex items-center gap-2 text-xs font-semibold text-stone-600 md:col-span-3">
@@ -507,6 +577,53 @@ export default function AdminRoomsPage() {
                 </div>
              ))}
           </div>
+        </div>
+      )}
+
+      {/* ─── SETTINGS TAB ─── */}
+      {activeTab === "settings" && (
+        <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 max-w-2xl">
+          <h3 className="text-lg font-bold text-[#1e325c] mb-4">Səhifə Başlıqları</h3>
+          <form onSubmit={handleSettingsSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-stone-600 mb-1">Tag (Üst Başlıq)</label>
+              <input
+                value={settingsForm.tag}
+                onChange={(e) => setSettingsForm({ ...settingsForm, tag: e.target.value })}
+                className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                placeholder="Məs: OTAQLAR & KOTECLƏR"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-stone-600 mb-1">Əsas Başlıq</label>
+              <input
+                value={settingsForm.title}
+                onChange={(e) => setSettingsForm({ ...settingsForm, title: e.target.value })}
+                className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                placeholder="Məs: Rahatlığın Yeni Səviyyəsi"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-stone-600 mb-1">Alt Başlıq (Açıqlama)</label>
+              <textarea
+                value={settingsForm.subtitle}
+                onChange={(e) => setSettingsForm({ ...settingsForm, subtitle: e.target.value })}
+                className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs h-24 resize-none focus:outline-none focus:border-[#00b5d5]"
+                placeholder="Məs: Hər zövqə uyğun lüks otaqlar"
+              />
+            </div>
+            <div className="pt-4 flex justify-end">
+              <button
+                type="submit"
+                disabled={savingSettings}
+                className="px-6 py-2.5 text-white text-xs font-bold rounded-xl flex items-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-50"
+                style={{ background: "var(--color-hotel-blue)" }}
+              >
+                {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                {savingSettings ? "Yadda saxlanılır..." : "Yadda Saxla"}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>

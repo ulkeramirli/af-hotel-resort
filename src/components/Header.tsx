@@ -224,6 +224,19 @@ export default function Header() {
             )}
           </div>
 
+          <Link
+            href="/account?tab=favorites"
+            className="flex items-center justify-center p-2 text-slate-700 hover:bg-stone-50 rounded-xl transition-colors relative"
+            title={t.nav.favorites}
+          >
+            <Heart className="w-4.5 h-4.5" />
+            {favCount > 0 && (
+              <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-[#ff6c02] text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {favCount}
+              </span>
+            )}
+          </Link>
+
           <a
             href="#booking"
             className="hidden sm:flex items-center text-[11px] font-bold uppercase tracking-widest px-4.5 py-2.5 bg-[#ff6c02] text-white hover:bg-[#e55f00] rounded-xl shadow-xs transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"

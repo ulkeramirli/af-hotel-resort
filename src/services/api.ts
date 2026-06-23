@@ -2,6 +2,7 @@
 import type {
   Room,
   RoomType,
+  RoomSettings,
   Review,
   Booking,
   User,
@@ -172,6 +173,8 @@ export interface PublicRoom {
   includes: { az: string[]; en: string[]; ru: string[] };
   beds?: number;
   baths?: number;
+  rulesCheckIn?: string;
+  rulesCheckOut?: string;
 }
 
 
@@ -222,10 +225,32 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
       },
       beds: r.beds,
       baths: r.baths,
+      rulesCheckIn: r.rulesCheckIn,
+      rulesCheckOut: r.rulesCheckOut,
     }));
   } catch {
     return [];
   }
+}
+
+// GET /api/room-settings → { success, settings }
+export async function getRoomSettings(): Promise<RoomSettings> {
+  const res = await fetch(`${BASE}/room-settings`);
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Tənzimləmələr yüklənmədi");
+  return data.settings;
+}
+
+// PATCH /api/room-settings → { success, settings }
+export async function updateRoomSettings(payload: Partial<RoomSettings>): Promise<RoomSettings> {
+  const res = await fetch(`${BASE}/room-settings`, {
+    method: "PATCH",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Tənzimləmələr yenilənmədi");
+  return data.settings;
 }
 
 export async function getPublicRoomById(id: string): Promise<PublicRoom | null> {
@@ -254,6 +279,8 @@ export async function getPublicRoomById(id: string): Promise<PublicRoom | null> 
       },
       beds: r.beds,
       baths: r.baths,
+      rulesCheckIn: r.rulesCheckIn,
+      rulesCheckOut: r.rulesCheckOut,
     };
   } catch {
     return null;

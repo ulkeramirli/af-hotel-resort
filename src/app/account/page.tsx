@@ -255,7 +255,7 @@ function AccountContent() {
     }).catch(() => {});
   }, []);
 
-  if (!user) {
+  if (!user && tab !== "favorites") {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4">
         <div className="bg-white rounded-3xl shadow-xl p-10 max-w-sm w-full text-center space-y-5">
@@ -280,15 +280,16 @@ function AccountContent() {
 
   const activeCount = bookings.filter((b) => b.status === "confirmed").length;
   const memberDate = new Date().toLocaleDateString("az-AZ", { month: "long", year: "numeric" });
-  // Only count favorites that actually exist in the API (roomsMap)
   const validFavoritesCount = Object.keys(roomsMap).length > 0
     ? favorites.filter(id => !!roomsMap[id]).length
     : favorites.length; // fallback while loading
 
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
-    { key: "profile", label: tx.profile, icon: <User className="w-4 h-4" /> },
-    { key: "bookings", label: tx.bookings, icon: <BookOpen className="w-4 h-4" /> },
-    { key: "favorites", label: tx.favorites, icon: <Heart className="w-4 h-4" /> },
+    ...(user ? [
+      { key: "profile" as Tab, label: tx.profile, icon: <User className="w-4 h-4" /> },
+      { key: "bookings" as Tab, label: tx.bookings, icon: <BookOpen className="w-4 h-4" /> },
+    ] : []),
+    { key: "favorites" as Tab, label: tx.favorites, icon: <Heart className="w-4 h-4" /> },
   ];
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -323,34 +324,38 @@ function AccountContent() {
             </button>
 
             {/* User card */}
-            <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
-              <div className="h-16 w-full" style={{ background: "linear-gradient(135deg, #00b5d5, #00406a)" }} />
-              <div className="px-6 pb-6 -mt-8">
-                <div className="w-16 h-16 rounded-xl bg-white border-2 border-white shadow-md flex items-center justify-center text-[#00406a] font-bold text-2xl mb-3">
-                  {user.name?.charAt(0)?.toUpperCase() || "?"}
+            {user && (
+              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
+                <div className="h-16 w-full" style={{ background: "linear-gradient(135deg, #00b5d5, #00406a)" }} />
+                <div className="px-6 pb-6 -mt-8">
+                  <div className="w-16 h-16 rounded-xl bg-white border-2 border-white shadow-md flex items-center justify-center text-[#00406a] font-bold text-2xl mb-3">
+                    {user.name?.charAt(0)?.toUpperCase() || "?"}
+                  </div>
+                  <p className="font-bold text-stone-900 text-base">{user.name}</p>
+                  <p className="text-xs text-stone-400 mt-0.5 break-all">{user.email}</p>
+                  <span className={`mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${user.role === "admin" ? "bg-violet-50 text-violet-700 border-violet-200" : "bg-sky-50 text-sky-700 border-sky-200"}`}>
+                    <Shield className="w-3 h-3" />
+                    {user.role === "admin" ? tx.admin : tx.user}
+                  </span>
                 </div>
-                <p className="font-bold text-stone-900 text-base">{user.name}</p>
-                <p className="text-xs text-stone-400 mt-0.5 break-all">{user.email}</p>
-                <span className={`mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${user.role === "admin" ? "bg-violet-50 text-violet-700 border-violet-200" : "bg-sky-50 text-sky-700 border-sky-200"}`}>
-                  <Shield className="w-3 h-3" />
-                  {user.role === "admin" ? tx.admin : tx.user}
-                </span>
               </div>
-            </div>
+            )}
 
             {/* Stats */}
-            <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 grid grid-cols-3 gap-3 text-center">
-              {[
-                { label: tx.totalBookings, value: bookings.length || "—" },
-                { label: tx.activeBookings, value: activeCount || "—" },
-                { label: tx.favoriteRooms, value: validFavoritesCount || "—" },
-              ].map((s) => (
-                <div key={s.label}>
-                  <div className="text-xl font-bold text-[#00406a]">{s.value}</div>
-                  <div className="text-[9px] text-stone-400 font-medium uppercase tracking-wide mt-0.5">{s.label}</div>
-                </div>
-              ))}
-            </div>
+            {user && (
+              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 grid grid-cols-3 gap-3 text-center">
+                {[
+                  { label: tx.totalBookings, value: bookings.length || "—" },
+                  { label: tx.activeBookings, value: activeCount || "—" },
+                  { label: tx.favoriteRooms, value: validFavoritesCount || "—" },
+                ].map((s) => (
+                  <div key={s.label}>
+                    <div className="text-xl font-bold text-[#00406a]">{s.value}</div>
+                    <div className="text-[9px] text-stone-400 font-medium uppercase tracking-wide mt-0.5">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Nav tabs */}
             <nav className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
@@ -375,15 +380,17 @@ function AccountContent() {
                   <ChevronRight className={`w-4 h-4 ml-auto text-stone-300 ${tab === key ? "text-[#00b5d5]" : ""}`} />
                 </button>
               ))}
-              <div className="border-t border-stone-100">
-                <button
-                  onClick={() => { signOut(); router.push("/"); }}
-                  className="w-full flex items-center gap-3 px-5 py-3.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-all text-left border-none bg-transparent cursor-pointer"
-                >
-                  <LogOut className="w-4 h-4" />
-                  {tx.logout}
-                </button>
-              </div>
+              {user && (
+                <div className="border-t border-stone-100">
+                  <button
+                    onClick={() => { signOut(); router.push("/"); }}
+                    className="w-full flex items-center gap-3 px-5 py-3.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-all text-left border-none bg-transparent cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    {tx.logout}
+                  </button>
+                </div>
+              )}
             </nav>
           </aside>
 
@@ -454,7 +461,7 @@ function AccountContent() {
                         {tx.save}
                       </button>
                       <button
-                        type="button" onClick={() => { setIsEditing(false); setEditName(user.name); setEditEmail(user.email); }}
+                        type="button" onClick={() => { setIsEditing(false); setEditName(user?.name || ""); setEditEmail(user?.email || ""); }}
                         className="px-6 py-2 bg-stone-100 text-stone-600 font-bold rounded-xl hover:bg-stone-200 transition-colors"
                       >
                         {tx.cancel}
@@ -465,9 +472,9 @@ function AccountContent() {
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       {[
-                        { label: tx.name, value: user.name, icon: <User className="w-4 h-4 text-stone-300" /> },
-                        { label: tx.email, value: user.email, icon: <Mail className="w-4 h-4 text-stone-300" /> },
-                        { label: tx.role, value: user.role === "admin" ? tx.admin : tx.user, icon: <Shield className="w-4 h-4 text-stone-300" /> },
+                        { label: tx.name, value: user?.name, icon: <User className="w-4 h-4 text-[#00b5d5]" /> },
+                        { label: tx.email, value: user?.email, icon: <Mail className="w-4 h-4 text-[#00b5d5]" /> },
+                        { label: tx.role, value: user?.role === "admin" ? tx.admin : tx.user, icon: <Shield className="w-4 h-4 text-[#00b5d5]" /> },
                         { label: tx.memberSince, value: memberDate, icon: <Calendar className="w-4 h-4 text-stone-300" /> },
                       ].map(({ label, value, icon }) => (
                         <div key={label} className="flex items-start gap-3 p-4 bg-stone-50 rounded-xl border border-stone-100">

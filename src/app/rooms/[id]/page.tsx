@@ -391,12 +391,22 @@ export default function RoomDetailPage({
                   {c.checkIn}
                 </span>
                 <div className="space-y-2">
-                  <p className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-stone-300" /> {c.checkInTime}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-stone-300" /> {c.checkInId}
-                  </p>
+                  {room.rulesCheckIn ? (
+                    room.rulesCheckIn.split('\n').filter(Boolean).map((line, i) => (
+                      <p key={i} className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-stone-300 shrink-0" /> {line.trim()}
+                      </p>
+                    ))
+                  ) : (
+                    <>
+                      <p className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-stone-300 shrink-0" /> {c.checkInTime}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-stone-300 shrink-0" /> {c.checkInId}
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="space-y-2.5">
@@ -404,12 +414,22 @@ export default function RoomDetailPage({
                   {c.checkOut}
                 </span>
                 <div className="space-y-2">
-                  <p className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-stone-300" /> {c.checkOutLate}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-stone-300" /> {c.checkOutTime}
-                  </p>
+                  {room.rulesCheckOut ? (
+                    room.rulesCheckOut.split('\n').filter(Boolean).map((line, i) => (
+                      <p key={i} className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-stone-300 shrink-0" /> {line.trim()}
+                      </p>
+                    ))
+                  ) : (
+                    <>
+                      <p className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-stone-300 shrink-0" /> {c.checkOutLate}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-stone-300 shrink-0" /> {c.checkOutTime}
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

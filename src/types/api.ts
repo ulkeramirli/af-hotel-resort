@@ -21,6 +21,12 @@ export interface RoomType {
   updatedAt?: string;
 }
 
+export interface RoomSettings {
+  tag: string;
+  title: string;
+  subtitle: string;
+}
+
 export interface Room {
   _id: string;
   name: string;
@@ -33,6 +39,8 @@ export interface Room {
   beds?: number;
   baths?: number;
   sqft?: number;
+  rulesCheckIn?: string;
+  rulesCheckOut?: string;
   isAvailable: boolean;
   createdBy?: { _id: string; name: string; email: string };
   createdAt?: string;
