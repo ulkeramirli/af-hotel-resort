@@ -82,30 +82,30 @@ export default function Hero() {
           </div>
 
           {/* Feature cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-4 lg:pt-6 max-w-xl md:max-w-2xl">
-            <div className="flex items-center space-x-3 bg-black/30 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/20 shadow-xs motion-card-1">
-              <div className="w-13 h-13 rounded-lg bg-[#00b5d5]/20 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
-                <Image src="/bed.png" alt="Rooms" width={40} height={40} className="w-10 h-10 object-contain" />
+          <div className="grid grid-cols-2 gap-2.5 pt-4 lg:pt-6 max-w-xl md:max-w-2xl">
+            <div className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm motion-card-1">
+              <div className="w-11 h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
+                <Image src="/bed.png" alt="Rooms" width={36} height={36} className="w-9 h-9 object-contain" />
               </div>
-              <p className="text-[12px] lg:text-[12.5px] text-white lg:text-slate-800 font-bold leading-tight tracking-wide">{texts.f1}</p>
+              <p className="text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f1}</p>
             </div>
-            <div className="flex items-center space-x-3 bg-black/30 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/20 shadow-xs motion-card-2">
-              <div className="w-13 h-13 rounded-lg bg-[#00b5d5]/20 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
-                <Image src="/aqua-park1.png" alt="Aquapark" width={40} height={40} className="w-10 h-10 object-contain" />
+            <div className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm motion-card-2">
+              <div className="w-11 h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
+                <Image src="/aqua-park1.png" alt="Aquapark" width={36} height={36} className="w-9 h-9 object-contain" />
               </div>
-              <p className="text-[12px] lg:text-[12.5px] text-white lg:text-slate-800 font-bold leading-tight tracking-wide">{texts.f2}</p>
+              <p className="text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f2}</p>
             </div>
-            <div className="flex items-center space-x-3 bg-black/30 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/20 shadow-xs motion-card-3">
-              <div className="w-13 h-13 rounded-lg bg-[#00b5d5]/20 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
-                <Image src="/carousel.png" alt="Lunapark" width={40} height={40} className="w-10 h-10 object-contain" />
+            <div className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm motion-card-3">
+              <div className="w-11 h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
+                <Image src="/carousel.png" alt="Lunapark" width={36} height={36} className="w-9 h-9 object-contain" />
               </div>
-              <p className="text-[12px] lg:text-[12.5px] text-white lg:text-slate-800 font-bold leading-tight tracking-wide">{texts.f4}</p>
+              <p className="text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f4}</p>
             </div>
-            <div className="flex items-center space-x-3 bg-black/30 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/20 shadow-xs motion-card-4">
-              <div className="w-13 h-13 rounded-lg bg-[#00b5d5]/20 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
-                <Image src="/spoon.png" alt="Restaurant" width={40} height={40} className="w-10 h-10 object-contain" />
+            <div className="flex items-center space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2.5 rounded-xl border border-white/60 shadow-sm motion-card-4">
+              <div className="w-11 h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
+                <Image src="/spoon.png" alt="Restaurant" width={36} height={36} className="w-9 h-9 object-contain" />
               </div>
-              <p className="text-[12px] lg:text-[12.5px] text-white lg:text-slate-800 font-bold leading-tight tracking-wide">{texts.f3}</p>
+              <p className="text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f3}</p>
             </div>
           </div>
         </div>

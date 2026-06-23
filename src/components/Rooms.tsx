@@ -230,7 +230,7 @@ export default function Rooms() {
         ) : (
           <motion.div 
             layout 
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5"
           >
             <AnimatePresence mode="popLayout">
               {filtered.map((room) => (
@@ -264,17 +264,17 @@ export default function Rooms() {
                   </div>
 
                   {/* Контент карточки */}
-                  <div className="p-4 space-y-3 flex flex-col flex-1 justify-between">
-                    <div className="space-y-1.5">
-                      <h3 className="font-bold text-stone-900 text-base md:text-lg tracking-tight transition-colors group-hover:text-stone-700">
+                  <div className="p-3 md:p-4 space-y-2 md:space-y-3 flex flex-col flex-1 justify-between">
+                    <div className="space-y-1">
+                      <h3 className="font-bold text-stone-900 text-sm md:text-base tracking-tight transition-colors group-hover:text-stone-700 line-clamp-1">
                         {room.title[l]}
                       </h3>
-                      <p className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2">
+                      <p className="text-[11px] md:text-xs text-stone-500 font-light leading-relaxed line-clamp-2 hidden sm:block">
                         {room.desc[l]}
                       </p>
 
-                      {/* Тонкие аккуратные параметры */}
-                      <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
+                      {/* Параметры */}
+                      <div className="hidden sm:flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
                         <span className="flex items-center gap-1">
                           <Users className="w-3.5 h-3.5 text-stone-300" />
                           {room.capacity[l]}
@@ -287,25 +287,25 @@ export default function Rooms() {
                     </div>
 
                     {/* Bottom: price + buttons */}
-                    <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
+                    <div className="flex flex-col gap-1.5 md:gap-2 pt-2 md:pt-3 border-t border-stone-100 mt-auto">
                       <div className="flex justify-between items-center">
                         <div>
-                          <span className="text-lg md:text-xl font-bold text-stone-900">
+                          <span className="text-sm md:text-lg font-bold text-stone-900">
                             ${room.price}
                           </span>
-                          <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
+                          <span className="text-[10px] md:text-[11px] text-stone-400 font-light ml-1 hidden sm:inline">{c.perNight}</span>
                         </div>
                         <Link
                           href={`/rooms/${room.id}`}
-                          className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-semibold rounded-xl transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 md:px-3.5 py-1.5 md:py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-[10px] md:text-xs font-semibold rounded-lg md:rounded-xl transition-colors"
                         >
                           <span>{c.details}</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5" />
                         </Link>
                       </div>
                       <button
                         onClick={() => router.push(`/?roomId=${room.id}#booking`)}
-                        className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-[#ff6c02] hover:bg-[#e55f00] text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer"
+                        className="hidden sm:flex w-full items-center justify-center gap-1.5 px-3.5 py-2.5 bg-[#ff6c02] hover:bg-[#e55f00] text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer"
                       >
                         <CalendarCheck className="w-3.5 h-3.5" />
                         <span>{ l === "az" ? "İndi Rezerv Et" : l === "ru" ? "Забронировать" : "Book Now" }</span>

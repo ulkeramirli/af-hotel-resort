@@ -231,23 +231,22 @@ function AccountContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, user]);
 
+  // Load favorites from localStorage on mount and listen for updates
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFavorites(getFavorites());
     const onUpdate = () => setFavorites(getFavorites());
     window.addEventListener("favoritesUpdated", onUpdate);
     return () => window.removeEventListener("favoritesUpdated", onUpdate);
   }, []);
 
+  // Load rooms map always (needed for count + favorites tab)
   useEffect(() => {
-    if (tab === "favorites") {
-      getPublicRooms().then(rooms => {
-        const map: Record<string, PublicRoom> = {};
-        rooms.forEach(r => { map[r.id] = r; });
-        setRoomsMap(map);
-      }).catch(() => {});
-    }
-  }, [tab]);
+    getPublicRooms().then(rooms => {
+      const map: Record<string, PublicRoom> = {};
+      rooms.forEach(r => { map[r.id] = r; });
+      setRoomsMap(map);
+    }).catch(() => {});
+  }, []);
 
   if (!user) {
     return (
@@ -274,7 +273,8 @@ function AccountContent() {
 
   const activeCount = bookings.filter((b) => b.status === "confirmed").length;
   const memberDate = new Date().toLocaleDateString("az-AZ", { month: "long", year: "numeric" });
-  const validFavoritesCount = favorites.filter(id => roomsMap[id]).length;
+  // Count all saved favorites (roomsMap may not be fully loaded yet so use raw list)
+  const validFavoritesCount = favorites.length;
 
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
     { key: "profile", label: tx.profile, icon: <User className="w-4 h-4" /> },
