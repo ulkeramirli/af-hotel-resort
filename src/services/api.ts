@@ -13,6 +13,9 @@ import type {
   Settings,
   DashboardStats,
   Wonderland,
+  Restaurant,
+  MenuCategory,
+  RestaurantSettings,
 } from "@/types/api";
 
 const BASE = "/api";
@@ -700,6 +703,88 @@ export async function updateWonderland(payload: Partial<Wonderland>) {
   if (!data.success) throw new Error(data.message || "Wonderland yadda saxlanılmadı");
   return data;
 }
+
+// ─── RESTAURANTS ───
+// GET /api/restaurants → { success, restaurants[] }
+export async function getRestaurants(search?: string): Promise<Restaurant[]> {
+  const query = search ? `?search=${encodeURIComponent(search)}` : "";
+  const res = await fetch(`${BASE}/restaurants${query}`, { headers: authHeaders() });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Restoranlar yüklənmədi");
+  return data.restaurants ?? [];
+}
+
+// GET /api/restaurants/[id] → { success, restaurant }
+export async function getRestaurantById(id: string): Promise<Restaurant | null> {
+  const res = await fetch(`${BASE}/restaurants/${id}`, { headers: authHeaders() });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Restoran tapılmadı");
+  return data.restaurant ?? null;
+}
+
+// POST /api/restaurants → { success, restaurant }
+export async function createRestaurant(payload: Partial<Restaurant>) {
+  const res = await fetch(`${BASE}/restaurants`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Restoran yaradılmadı");
+  return data;
+}
+
+// PUT /api/restaurants/[id] → { success, restaurant }
+export async function updateRestaurant(id: string, payload: Partial<Restaurant>) {
+  const res = await fetch(`${BASE}/restaurants/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Restoran yenilənmədi");
+  return data;
+}
+
+// DELETE /api/restaurants/[id]
+export async function deleteRestaurant(id: string) {
+  const res = await fetch(`${BASE}/restaurants/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Restoran silinmədi");
+  return data;
+}
+
+// GET /api/restaurants/[id]/menu-search?q=query → { success, menu[] }
+export async function searchRestaurantMenu(id: string, query: string): Promise<MenuCategory[]> {
+  const res = await fetch(`${BASE}/restaurants/${id}/menu-search?q=${encodeURIComponent(query)}`);
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Menyü axtarışı uğursuz oldu");
+  return data.menu ?? [];
+}
+
+// GET /api/restaurant-settings → { success, settings }
+export async function getRestaurantSettings(): Promise<RestaurantSettings> {
+  const res = await fetch(`${BASE}/restaurant-settings`);
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Tənzimləmələr yüklənmədi");
+  return data.settings;
+}
+
+// PATCH /api/restaurant-settings → { success, settings }
+export async function updateRestaurantSettings(payload: Partial<RestaurantSettings>): Promise<RestaurantSettings> {
+  const res = await fetch(`${BASE}/restaurant-settings`, {
+    method: "PATCH",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Tənzimləmələr yenilənmədi");
+  return data.settings;
+}
+
 
 // ─── UPLOAD ───
 export async function uploadImage(file: File) {

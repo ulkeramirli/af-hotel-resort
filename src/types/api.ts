@@ -115,6 +115,44 @@ export interface Settings {
   dining: string;
 }
 
+export interface MenuItem {
+  _id?: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+}
+
+export interface MenuCategory {
+  _id?: string;
+  name: string;
+  items: MenuItem[];
+}
+
+export interface RestaurantWorkingHours {
+  breakfast: string;
+  lunch: string;
+  dinner: string;
+}
+
+export interface Restaurant {
+  _id: string;
+  name: string;
+  image: string;
+  description: string;
+  workingHours: RestaurantWorkingHours;
+  phone: string;
+  menu: MenuCategory[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface RestaurantSettings {
+  tag: string;
+  title: string;
+  subtitle: string;
+}
+
 export interface WonderlandGame {
   _id?: string;
   name: string;

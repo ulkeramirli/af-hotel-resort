@@ -16,6 +16,7 @@ import {
   Palmtree,
   Info,
   Castle,
+  UtensilsCrossed,
 } from "lucide-react";
 import { logout, getCurrentUser } from "@/services/api";
 
@@ -47,6 +48,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Bronlar", href: "/admin/bronlar", icon: CalendarCheck },
     { name: "Fəaliyyətlər", href: "/admin/activities", icon: Palmtree },
     { name: "Wonderland", href: "/admin/wonderland", icon: Castle },
+    { name: "Restoranlar", href: "/admin/restaurants", icon: UtensilsCrossed },
     { name: "Biletlər", href: "/admin/tickets", icon: TicketIcon },
     { name: "Rəylər", href: "/admin/reviews", icon: Star },
     { name: "Haqqımızda", href: "/admin/about", icon: Info },
