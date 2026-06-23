@@ -215,21 +215,20 @@ function AccountContent() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (tab === "bookings" && user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLoadingBookings(true);
-      getBookings()
-        .then((data) => setBookings(data))
-        .catch(() => setBookings([]))
-        .finally(() => setLoadingBookings(false));
-    }
+    if (!user) return;
+    // Load bookings immediately so count shows correctly in sidebar
+    setLoadingBookings(true);
+    getBookings()
+      .then((data) => setBookings(data))
+      .catch(() => setBookings([]))
+      .finally(() => setLoadingBookings(false));
     
-    if (user && !editName && !editEmail) {
+    if (!editName && !editEmail) {
       setEditName(user.name);
       setEditEmail(user.email);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, user]);
+  }, [user]);
 
   // Load favorites from localStorage on mount and listen for updates
   useEffect(() => {
@@ -273,8 +272,10 @@ function AccountContent() {
 
   const activeCount = bookings.filter((b) => b.status === "confirmed").length;
   const memberDate = new Date().toLocaleDateString("az-AZ", { month: "long", year: "numeric" });
-  // Count all saved favorites (roomsMap may not be fully loaded yet so use raw list)
-  const validFavoritesCount = favorites.length;
+  // Only count favorites that actually exist in the API (roomsMap)
+  const validFavoritesCount = Object.keys(roomsMap).length > 0
+    ? favorites.filter(id => !!roomsMap[id]).length
+    : favorites.length; // fallback while loading
 
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
     { key: "profile", label: tx.profile, icon: <User className="w-4 h-4" /> },
@@ -304,10 +305,10 @@ function AccountContent() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <aside className={`lg:w-72 shrink-0 space-y-4 ${showMobileMenu ? 'block' : 'hidden lg:block'}`}>
-            {/* Кнопка Назад для мобильного меню */}
+            {/* Back button - mobile: go to menu, desktop: go to home */}
             <button 
               onClick={() => router.push("/")} 
-              className="lg:hidden flex items-center gap-2 text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-full font-medium text-sm transition-colors mb-4 w-fit"
+              className="flex items-center gap-2 text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-full font-medium text-sm transition-colors w-fit"
             >
               <ArrowLeft className="w-4 h-4" />
               Geri
@@ -550,7 +551,7 @@ function AccountContent() {
                 </button>
                 <h2 className="text-lg font-bold text-stone-900">{tx.favorites}</h2>
 
-                {validFavoritesCount === 0 ? (
+                {(validFavoritesCount === 0 && Object.keys(roomsMap).length > 0) ? (
                   <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
                     <div className="w-14 h-14 bg-stone-100 rounded-xl flex items-center justify-center">
                       <Heart className="w-7 h-7 text-stone-300" />
@@ -564,70 +565,94 @@ function AccountContent() {
                     </button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {favorites.map((id) => {
-                      const room = roomsMap[id];
-                      if (!room) return null;
-                      return (
-                        <div key={id} className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col">
-                          {/* Image */}
-                          <div className="relative aspect-16/11 overflow-hidden bg-stone-100 border-b border-stone-100 block">
-                            {room.images?.[0] ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={room.images[0]} alt={room.title[l]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center"><Heart className="w-6 h-6 text-stone-300" /></div>
-                            )}
-                            <span className="absolute top-4 left-4 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-xs text-stone-800 rounded-md shadow-xs border border-stone-100 z-10">
-                              {room.category}
-                            </span>
-                            <button
-                              onClick={(e) => { 
-                                e.preventDefault(); 
-                                const currentFavs = getFavorites();
-                                const newFavs = currentFavs.filter(fid => fid !== id);
-                                localStorage.setItem("af_favorites", JSON.stringify(newFavs));
-                                window.dispatchEvent(new Event("favoritesUpdated"));
-                              }}
-                              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-105 transition-transform cursor-pointer z-20"
-                            >
-                              <Heart className="w-4.5 h-4.5 transition-colors" style={{ fill: "#e11d48", color: "#e11d48" }} />
-                            </button>
-                          </div>
-                          
-                          {/* Card Content */}
-                          <div className="p-5 space-y-4 flex flex-col flex-1 justify-between">
-                            <div className="space-y-2">
-                              <h3 className="font-bold text-stone-900 text-base tracking-tight transition-colors group-hover:text-stone-700">
-                                {room.title[l]}
-                              </h3>
-                              <p className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2">
-                                {room.desc[l]}
-                              </p>
-                              
-                              <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
-                                <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5 text-stone-300" />{room.capacity[l]}</span>
-                                <span className="flex items-center gap-1"><Maximize2 className="w-3.5 h-3.5 text-stone-300" />{room.size || "350 sqft"}</span>
-                              </div>
-                            </div>
-                            
-                            {/* Bottom */}
-                            <div className="flex flex-col gap-2 pt-4 border-t border-stone-100 mt-auto">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <span className="text-lg font-bold text-stone-900">${room.price}</span>
-                                  <span className="text-[11px] text-stone-400 font-light ml-1">/ {l==='az'?'gecə':l==='ru'?'ночь':'night'}</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {favorites
+                      .filter(id => !!roomsMap[id])
+                      .map((id) => {
+                        const room = roomsMap[id];
+                        return (
+                          <div key={id} className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+                            {/* Image */}
+                            <div className="relative aspect-[16/11] overflow-hidden bg-stone-100 border-b border-stone-100">
+                              {room.images?.[0] ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={room.images[0]}
+                                  alt={room.title[l]}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-stone-100">
+                                  <BedDouble className="w-8 h-8 text-stone-300" />
                                 </div>
-                                <a href={`/rooms/${room.id}`} className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-semibold rounded-xl transition-colors">
-                                  <span>{l === "az" ? "Ətraflı bax" : l === "ru" ? "Подробнее" : "Details"}</span>
-                                  <ArrowRight className="w-3.5 h-3.5" />
-                                </a>
+                              )}
+                              <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-sm text-stone-800 rounded-md shadow-sm border border-stone-100 z-10">
+                                {room.category}
+                              </span>
+                              <button
+                                onClick={() => {
+                                  const newFavs = getFavorites().filter(fid => fid !== id);
+                                  localStorage.setItem("af_favorites", JSON.stringify(newFavs));
+                                  window.dispatchEvent(new Event("favoritesUpdated"));
+                                }}
+                                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-transform cursor-pointer z-20"
+                                title="Remove from favorites"
+                              >
+                                <Heart className="w-4 h-4" style={{ fill: "#e11d48", color: "#e11d48" }} />
+                              </button>
+                            </div>
+
+                            {/* Card Content */}
+                            <div className="p-4 space-y-3 flex flex-col flex-1 justify-between">
+                              <div className="space-y-1.5">
+                                <h3 className="font-bold text-stone-900 text-base tracking-tight group-hover:text-stone-700 transition-colors">
+                                  {room.title[l]}
+                                </h3>
+                                <p className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2">
+                                  {room.desc[l]}
+                                </p>
+                                <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
+                                  <span className="flex items-center gap-1">
+                                    <Users className="w-3.5 h-3.5 text-stone-300" />
+                                    {room.capacity[l]}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Maximize2 className="w-3.5 h-3.5 text-stone-300" />
+                                    {room.size || "350 sqft"}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Bottom: price + buttons */}
+                              <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <span className="text-lg font-bold text-stone-900">${room.price}</span>
+                                    <span className="text-[11px] text-stone-400 font-light ml-1">
+                                      / {l === "az" ? "gecə" : l === "ru" ? "ночь" : "night"}
+                                    </span>
+                                  </div>
+                                  <a
+                                    href={`/rooms/${room.id}`}
+                                    className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-semibold rounded-xl transition-colors"
+                                  >
+                                    <span>{l === "az" ? "Ətraflı" : l === "ru" ? "Подробнее" : "Details"}</span>
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                  </a>
+                                </div>
+                                <button
+                                  onClick={() => router.push(`/?roomId=${room.id}#booking`)}
+                                  className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer"
+                                  style={{ background: "linear-gradient(135deg, #ff8c00, #ff5f00)" }}
+                                >
+                                  <Calendar className="w-3.5 h-3.5" />
+                                  <span>{l === "az" ? "İndi Rezerv Et" : l === "ru" ? "Забронировать" : "Book Now"}</span>
+                                </button>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 )}
               </motion.div>
