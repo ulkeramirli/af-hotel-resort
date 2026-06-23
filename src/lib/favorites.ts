@@ -21,3 +21,13 @@ export function toggleFavorite(roomId: string): boolean {
 export function isFavorite(roomId: string): boolean {
   return getFavorites().includes(roomId);
 }
+
+export function syncFavorites(validIds: string[]): void {
+  if (typeof window === "undefined") return;
+  const favs = getFavorites();
+  const validFavs = favs.filter(id => validIds.includes(id));
+  if (validFavs.length !== favs.length) {
+    localStorage.setItem("af_favorites", JSON.stringify(validFavs));
+    window.dispatchEvent(new Event("favoritesUpdated"));
+  }
+}

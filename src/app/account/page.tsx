@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getBookings, updateProfile, getPublicRooms } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
-import { getFavorites } from "@/lib/favorites";
+import { getFavorites, syncFavorites } from "@/lib/favorites";
 import type { Booking } from "@/types/api";
 import {
   User,
@@ -244,8 +244,14 @@ function AccountContent() {
   useEffect(() => {
     getPublicRooms().then(rooms => {
       const map: Record<string, PublicRoom> = {};
-      rooms.forEach(r => { map[r.id] = r; });
+      const allIds: string[] = [];
+      rooms.forEach(r => { 
+        map[r.id] = r; 
+        allIds.push(r.id);
+      });
       setRoomsMap(map);
+      syncFavorites(allIds);
+      setFavorites(getFavorites());
     }).catch(() => {});
   }, []);
 

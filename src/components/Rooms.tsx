@@ -6,7 +6,7 @@ import { Heart, Users, Maximize2, Loader2, BedDouble, ArrowRight, CalendarCheck,
 import { useRouter } from "next/navigation";
 import { getPublicRooms } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
-import { toggleFavorite, isFavorite } from "@/lib/favorites";
+import { toggleFavorite, isFavorite, syncFavorites } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
@@ -210,7 +210,10 @@ export default function Rooms() {
 
   useEffect(() => {
     if (rooms.length === 0) return;
-    Promise.resolve().then(() => setFavorites(buildFavSet(rooms)));
+    Promise.resolve().then(() => {
+      syncFavorites(rooms.map(r => r.id));
+      setFavorites(buildFavSet(rooms));
+    });
   }, [rooms, buildFavSet]);
 
   useEffect(() => {
