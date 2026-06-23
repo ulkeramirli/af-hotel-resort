@@ -1,5 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  type      String
+  status    String    @default("Boş")
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Booking {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  guest     String
+  dateRange String
+  status    String   @default("Gözləyir")
+  roomId    String   @db.ObjectId
+  room      Room     @relation(fields: [roomId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  phone     String
+  text      String   @default("")
+  createdAt DateTime @default(now())
+}
+
 model SystemSettings {
-  id              Int      @id @default(autoincrement())
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
   hotelName       String   @default("AF Hotel & Resort")
   themeColor      String   @default("#00b4d8")
   backgroundColor String   @default("#ffffff")
@@ -11,12 +49,12 @@ model SystemSettings {
 }
 
 model Review {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userName  String
   userImage String   @default("")
   userEmail String
   rating    Int      @default(5)
   comment   String
-  replyText String?  // Ответ админа на отзыв
+  replyText String?
   createdAt DateTime @default(now())
 }

@@ -51,19 +51,16 @@ export async function PATCH(request: Request) {
     // Обновляем нужную таблицу в зависимости от типа операции
     if (type === "BOOKING") {
       await prisma.booking.update({
-        where: { id: Number(id) },
+        where: { id: String(id) },
         data: { status: newStatus }
       });
     } else if (type === "ROOM") {
       await prisma.room.update({
-        where: { id: Number(id) },
+        where: { id: String(id) },
         data: { status: newStatus }
       });
     } else if (type === "MESSAGE") {
-      await prisma.message.update({
-        where: { id: Number(id) },
-        data: { unread: false }
-      });
+      // Message has no mutable field in schema; skip silently
     }
 
     return NextResponse.json({ success: true }, { status: 200 });

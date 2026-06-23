@@ -16,8 +16,8 @@ export async function GET(request: Request) {
     ]);
 
     // Высчитываем реальный доход по типам комнат на основе бизнес-логики отеля
-    const confirmedBookings = bookings.filter(b => b.status === "Təsdiqlənib");
-    const totalRevenue = confirmedBookings.reduce((sum, b) => {
+    const confirmedBookings = bookings.filter((b: any) => b.status === "Təsdiqlənib");
+    const totalRevenue = confirmedBookings.reduce((sum: number, b: any) => {
       let roomPrice = 140; // Дефолтная цена за стандартную комнату
 
       if (b.room) {
@@ -35,19 +35,19 @@ export async function GET(request: Request) {
 
     // Считаем загруженность отеля в процентах
     const totalRoomsCount = rooms.length;
-    const fullRoomsCount = rooms.filter(r => r.status === "Dolu").length;
+    const fullRoomsCount = rooms.filter((r: any) => r.status === "Dolu").length;
     const occupancyRate = totalRoomsCount > 0 ? Math.round((fullRoomsCount / totalRoomsCount) * 100) : 0;
 
     // Распределяем комнаты по статусам для графиков
     const roomStats = {
-      bos: rooms.filter(r => r.status === "Boş").length,
+      bos: rooms.filter((r: any) => r.status === "Boş").length,
       dolu: fullRoomsCount,
-      temizlenir: rooms.filter(r => r.status === "Təmizlənir").length,
+      temizlenir: rooms.filter((r: any) => r.status === "Təmizlənir").length,
     };
 
     // Считаем популярность типов номеров
     const typeCounts: Record<string, number> = {};
-    confirmedBookings.forEach(b => {
+    confirmedBookings.forEach((b: any) => {
       if (b.room) {
         typeCounts[b.room.type] = (typeCounts[b.room.type] || 0) + 1;
       }
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
       roomStats,
       popularTypes,
       totalBookings: bookings.length,
-      pendingBookings: bookings.filter(b => b.status === "Gözləyir").length,
+      pendingBookings: bookings.filter((b: any) => b.status === "Gözləyir").length,
       totalMessages: messages.length
     }, { status: 200 });
 

@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       },
     });
 
-    let selectedRoomId: number;
+    let selectedRoomId: string;
 
     if (availableRoom) {
       selectedRoomId = availableRoom.id;

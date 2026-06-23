@@ -31,7 +31,7 @@ export async function DELETE(request: Request) {
     }
 
     await prisma.message.delete({
-      where: { id: Number(id) }
+      where: { id: String(id) }
     });
 
     return NextResponse.json({ success: true, message: "Mesaj silindi" }, { status: 200 });
