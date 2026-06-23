@@ -12,6 +12,7 @@ import type {
   About,
   Settings,
   DashboardStats,
+  Wonderland,
 } from "@/types/api";
 
 const BASE = "/api";
@@ -677,6 +678,27 @@ export async function getDashboardStats(): Promise<DashboardStats | null> {
       count: r.bookings ?? 0,
     })),
   };
+}
+
+// ─── WONDERLAND ───
+// GET /api/wonderland → { success, wonderland }
+export async function getWonderland(): Promise<Wonderland | null> {
+  const res = await fetch(`${BASE}/wonderland`, { headers: authHeaders() });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Wonderland məlumatı yüklənmədi");
+  return data.wonderland ?? null;
+}
+
+// PATCH /api/wonderland → { success, wonderland }
+export async function updateWonderland(payload: Partial<Wonderland>) {
+  const res = await fetch(`${BASE}/wonderland`, {
+    method: "PATCH",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Wonderland yadda saxlanılmadı");
+  return data;
 }
 
 // ─── UPLOAD ───

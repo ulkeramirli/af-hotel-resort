@@ -194,6 +194,19 @@ export default function Wonderland() {
     setNextBtnEnabled(emblaApi.canScrollNext());
   }, []);
 
+  const [wonderland, setWonderland] =
+  useState<any>(null);
+
+useEffect(() => {
+  fetch("/api/wonderland")
+    .then((res) => res.json())
+    .then((data) =>
+      setWonderland(
+        data.wonderland,
+      ),
+    );
+}, []);
+
   useEffect(() => {
     if (!emblaApi) return;
     
@@ -210,25 +223,34 @@ export default function Wonderland() {
     };
   }, [emblaApi, onSelect, activeTab]);
 
-  const active = c.tabs[activeTab];
-
+ const active =
+  wonderland?.bigAttractions?.[
+    activeTab
+  ];
   return (
     <section id="wonderland" className="py-24 bg-[#faf9f6] scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-20">
         
         {/* Header */}
-        <ScrollReveal direction="up" delay={0.1} className="text-center space-y-4">
-          <span className="text-[#c5a880] text-xs font-semibold tracking-[0.3em] uppercase block">
-            {c.tag}
-          </span>
-          <h2 className="text-4xl md:text-6xl font-light text-[#1e325c] font-serif tracking-tight">
-            {c.title}
-          </h2>
-          <div className="w-16 h-px bg-[#c5a880] mx-auto my-4"></div>
-          <p className="text-sm md:text-base text-stone-500 max-w-2xl mx-auto font-light leading-relaxed">
-            {c.subtitle}
-          </p>
-        </ScrollReveal>
+       <ScrollReveal
+  direction="up"
+  delay={0.1}
+  className="text-center space-y-4"
+>
+  <span className="text-[#c5a880] text-xs font-semibold tracking-[0.3em] uppercase block">
+  {wonderland?.tag}
+  </span>
+
+  <h2 className="text-4xl md:text-6xl font-light text-[#1e325c] font-serif tracking-tight">
+    {wonderland?.title}
+  </h2>
+
+  <div className="w-16 h-px bg-[#c5a880] mx-auto my-4"></div>
+
+  <p className="text-sm md:text-base text-stone-500 max-w-2xl mx-auto font-light leading-relaxed">
+    {wonderland?.description}
+  </p>
+</ScrollReveal>
 
         {/* Attractions Grid / Highlights */}
         <ScrollReveal direction="up" delay={0.2} className="space-y-8">
@@ -236,16 +258,16 @@ export default function Wonderland() {
             {c.highlightsTitle}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-            {c.highlights.map((h, i) => (
+            {wonderland?.smallAttractions?.map((h:any, i:any) => (
               <div
                 key={i}
                 className="bg-white rounded-2xl p-6 flex flex-col items-center text-center gap-3 border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
               >
                 <div className="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
-                  {h.emoji}
+                 {h?.icon}
                 </div>
-                <h4 className="text-sm font-semibold text-[#1e325c] mt-2">{h.title}</h4>
-                <p className="text-xs text-stone-400 font-light leading-normal">{h.desc}</p>
+                <h4 className="text-sm font-semibold text-[#1e325c] mt-2">{h?.name}</h4>
+                <p className="text-xs text-stone-400 font-light leading-normal">{h?.description}</p>
               </div>
             ))}
           </div>
@@ -257,7 +279,7 @@ export default function Wonderland() {
           {/* Tabs + Navigation Buttons Row */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 border-b border-stone-100 pb-6">
             <div className="flex gap-3 flex-wrap">
-              {c.tabs.map((t, i) => (
+              {wonderland?.bigAttractions?.map((t:any, i:any) => (
                 <button
                   key={i}
                   onClick={() => {
@@ -270,7 +292,7 @@ export default function Wonderland() {
                       : "bg-[#faf8f5] text-stone-500 hover:bg-stone-100 border border-stone-200/60"
                   }`}
                 >
-                  {t.label}
+                  {t.title}
                 </button>
               ))}
             </div>
@@ -305,31 +327,38 @@ export default function Wonderland() {
           {/* Embla Slider Window */}
           <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
             <div className="flex gap-6 pl-1">
-              {active?.items.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex-none w-[85vw] sm:w-[45vw] md:w-[30vw] group bg-white rounded-2xl overflow-hidden border border-stone-100 hover:shadow-2xl transition-all duration-500"
-                >
-                  <div className="relative h-56 overflow-hidden bg-stone-100">
-                    <Image
-                      src={item.img}
-                      alt={item.name}
-                      fill
-                      sizes="(max-width: 640px) 85vw, (max-width: 768px) 45vw, 30vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                      priority={i < 3}
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                  <div className="p-6 space-y-2">
-                    <h3 className="font-bold text-base text-[#1e325c] flex items-center justify-between">
-                      {item.name}
-                      <ArrowRight className="w-4 h-4 text-[#c5a880] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                    </h3>
-                    <p className="text-xs text-stone-500 font-light leading-relaxed">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
+            {active?.games?.map(
+  (game: any, i: number) => (
+    <div
+      key={i}
+      className="flex-none w-[85vw] sm:w-[45vw] md:w-[30vw] group bg-white rounded-2xl overflow-hidden border border-stone-100 hover:shadow-2xl transition-all duration-500"
+    >
+      <div className="relative h-56 overflow-hidden bg-stone-100">
+        <Image
+          src={game.image}
+          alt={game.name}
+          fill
+          sizes="(max-width: 640px) 85vw, (max-width: 768px) 45vw, 30vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+        />
+
+        <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      </div>
+
+      <div className="p-6 space-y-2">
+        <h3 className="font-bold text-base text-[#1e325c] flex items-center justify-between">
+          {game.name}
+
+          <ArrowRight className="w-4 h-4 text-[#c5a880] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+        </h3>
+
+        <p className="text-xs text-stone-500 font-light leading-relaxed">
+          {game.description}
+        </p>
+      </div>
+    </div>
+  )
+)}
             </div>
           </div>
         </ScrollReveal>
@@ -347,23 +376,24 @@ export default function Wonderland() {
               <p className="text-xs text-stone-400 font-light">Parka giriş biletləri və yaş kateqoriyaları</p>
             </div>
             
-            <div className="space-y-3 my-4">
-              {[
-                { label: c.labelAdult, price: c.priceAdult },
-                { label: c.labelChild, price: c.priceChild },
-                { label: c.labelInfant, price: c.priceInfant },
-              ].map((t) => (
-                <div
-                  key={t.label}
-                  className="flex justify-between items-center bg-[#faf9f6] px-6 py-4 rounded-xl border border-stone-100 hover:border-[#c5a880]/30 transition-colors"
-                >
-                  <span className="text-sm font-medium text-stone-600">{t.label}</span>
-                  <span className="text-lg font-bold text-[#1e325c]">
-                    {t.price}
-                  </span>
-                </div>
-              ))}
-            </div>
+           <div className="space-y-3 my-4">
+  {wonderland?.tickets?.map(
+    (ticket: any) => (
+      <div
+        key={ticket._id}
+        className="flex justify-between items-center bg-[#faf9f6] px-6 py-4 rounded-xl border border-stone-100 hover:border-[#c5a880]/30 transition-colors"
+      >
+        <span className="text-sm font-medium text-stone-600">
+          {ticket.name}
+        </span>
+
+        <span className="text-lg font-bold text-[#1e325c]">
+          {ticket.price}
+        </span>
+      </div>
+    )
+  )}
+</div>
           </div>
 
           {/* Info & Special Offer Banner */}
@@ -378,32 +408,36 @@ export default function Wonderland() {
                   <div className="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center text-[#00b5d5]">
                     <Clock className="w-4 h-4" />
                   </div>
-                  <span className="font-medium">{c.hours}</span>
+                  <span className="font-medium"><span>
+  {wonderland?.workingHours}
+</span></span>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-stone-600">
-                  <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-500">
-                    <Star className="w-4 h-4" />
-                  </div>
-                  <span className="font-medium">{c.season}</span>
-                </div>
+                
               </div>
             </div>
 
             {/* Special Discount Card */}
-            <div className="rounded-2xl p-6 text-white bg-linear-to-br from-[#1e325c] to-[#0f1b35] relative overflow-hidden shadow-inner">
-              <div className="absolute -right-8 -bottom-8 text-white/5 pointer-events-none">
-                <Sparkles className="w-36 h-36" />
-              </div>
-              <div className="relative space-y-2">
-                <span className="text-[10px] font-bold opacity-70 uppercase tracking-widest block">
-                  {c.specialOfferTitle}
-                </span>
-                <p className="text-3xl font-black text-[#c5a880] tracking-tight">{c.discount}</p>
-                <p className="text-xs opacity-80 font-light leading-relaxed pt-1">
-                  {c.specialOfferDesc}
-                </p>
-              </div>
-            </div>
+            {wonderland?.discount?.enabled && (
+  <div className="rounded-2xl p-6 text-white bg-linear-to-br from-[#1e325c] to-[#0f1b35] relative overflow-hidden shadow-inner">
+    <div className="absolute -right-8 -bottom-8 text-white/5 pointer-events-none">
+      <Sparkles className="w-36 h-36" />
+    </div>
+
+    <div className="relative space-y-2">
+      <span className="text-[10px] font-bold opacity-70 uppercase tracking-widest block">
+        Xüsusi Təklif
+      </span>
+
+      <p className="text-3xl font-black text-[#c5a880] tracking-tight">
+        {wonderland.discount.percentage}% Endirim
+      </p>
+
+      <p className="text-xs opacity-80 font-light leading-relaxed pt-1">
+        AF Hotel qonaqları üçün Wonderland giriş biletlərində xüsusi endirim.
+      </p>
+    </div>
+  </div>
+)}
 
           </div>
         </ScrollReveal>

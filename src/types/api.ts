@@ -115,6 +115,49 @@ export interface Settings {
   dining: string;
 }
 
+export interface WonderlandGame {
+  _id?: string;
+  name: string;
+  image: string;
+  description: string;
+}
+
+export interface WonderlandBigAttraction {
+  _id?: string;
+  title: string;
+  games: WonderlandGame[];
+}
+
+export interface WonderlandSmallAttraction {
+  _id?: string;
+  name: string;
+  description: string;
+  icon?: string;
+}
+
+export interface WonderlandTicket {
+  _id?: string;
+  name: string;
+  price: string;
+}
+
+export interface Wonderland {
+  _id?: string;
+  title: string;
+  tag: string;
+  workingHours: string;
+  description: string;
+  discount: {
+    enabled: boolean;
+    percentage: number;
+  };
+  tickets: WonderlandTicket[];
+  smallAttractions: WonderlandSmallAttraction[];
+  bigAttractions: WonderlandBigAttraction[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface DashboardStats {
   totalRooms: number;
   totalBookings: number;

@@ -15,6 +15,7 @@ import {
   Ticket as TicketIcon,
   Palmtree,
   Info,
+  Castle,
 } from "lucide-react";
 import { logout, getCurrentUser } from "@/services/api";
 
@@ -45,6 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Otaqlar", href: "/admin/otaqlar", icon: BedDouble },
     { name: "Bronlar", href: "/admin/bronlar", icon: CalendarCheck },
     { name: "Fəaliyyətlər", href: "/admin/activities", icon: Palmtree },
+    { name: "Wonderland", href: "/admin/wonderland", icon: Castle },
     { name: "Biletlər", href: "/admin/tickets", icon: TicketIcon },
     { name: "Rəylər", href: "/admin/reviews", icon: Star },
     { name: "Haqqımızda", href: "/admin/about", icon: Info },
