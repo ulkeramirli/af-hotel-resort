@@ -13,24 +13,27 @@ export default function About() {
       tag: "Haqqımızda",
       title: "AF Hotel & Aqua Park – Dəniz Kənarında Unudulmaz İstirahət",
       p1: "AF Hotel & Aqua Park Bakı şəhərinin Novxanı qəsəbəsində yerləşən müasir və geniş istirahət kompleksidir. Otel Xəzər dənizinin sahilində yerləşərək qonaqlara təmiz hava, gözəl dəniz mənzərəsi və rahat istirahət mühiti təqdim edir.",
-      p2: "Kompleksdə müxtəlif kateqoriyalı otaqlar, lüks villalar, aqua park, restoranlar, spa mərkəzi, idman meydançaları və uşaqlar üçün əyləncə zonaları mövcuddur.",
-      p3: "AF Hotel yalnız bir otel deyil, həm də tam istirahət təcrübəsidir — burada sakitlik, əyləncə və yüksək xidmət bir aradadır.",
+      p2: "Kompleksdə müxtəlif kateqoriyalı otaqlar, lüks villalar, nəhəng Aqua Park, beynəlxalq mətbəxə malik restoranlar, müasir spa mərkəzi, idman meydançaları və uşaqlar üçün xüsusi əyləncə zonaları mövcuddur. Füsunkar çimərliyimiz qızılı qumu və büllur kimi təmiz suyu ilə yay aylarının əvəzolunmaz məkanıdır.",
+      p3: "Ailənizlə birlikdə həm dincəlib, həm də adrenalin dolu anlar yaşaya biləcəyiniz nadir ünvanlardan biriyik. Biz hər bir qonağımıza fərdi yanaşaraq onların məmnuniyyətini ən yüksək səviyyədə təmin etməyə çalışırıq.",
+      p4: "AF Hotel yalnız bir otel deyil, həm də tam istirahət təcrübəsidir — burada sakitlik, əyləncə və yüksək xidmət bir aradadır.",
       more: "Otaqlara Bax"
     },
     en: {
       tag: "About Us",
       title: "AF Hotel & Aqua Park – Unforgettable Seaside Experience",
-      p1: "AF Hotel & Aqua Park is a modern resort complex located in Novkhany near Baku, offering fresh sea air and beautiful views of the Caspian Sea.",
-      p2: "The resort includes various room types, luxury villas, aqua park, restaurants, spa center, sports areas, and entertainment zones for children.",
-      p3: "AF Hotel is more than a hotel — it is a complete resort experience combining comfort, entertainment, and premium service.",
+      p1: "AF Hotel & Aqua Park is a modern resort complex located in Novkhany near Baku, offering fresh sea air and beautiful views of the Caspian Sea. Our private beach features golden sands and crystal-clear waters, making it an essential summer destination.",
+      p2: "The resort includes various room types, luxury villas, a giant Aqua Park, international restaurants, a modern spa center, sports areas, and special entertainment zones for children. It's a rare place where you can relax and experience adrenaline-filled moments with your family.",
+      p3: "We strive to ensure the highest level of guest satisfaction by providing a personalized approach to each and every guest. Our team is dedicated to making your stay as comfortable and enjoyable as possible.",
+      p4: "AF Hotel is more than a hotel — it is a complete resort experience combining comfort, entertainment, and premium service.",
       more: "Explore Rooms"
     },
     ru: {
       tag: "О нас",
       title: "AF Hotel & Aqua Park – Незабываемый отдых у моря",
-      p1: "AF Hotel & Aqua Park — современный курортный комплекс в Новханы, расположенный на берегу Каспийского моря.",
-      p2: "На территории есть номера, виллы, аквапарк, рестораны, спа, спорт и зоны отдыха для детей.",
-      p3: "AF Hotel — это не просто отель, а полноценный курорт с комфортом, развлечениями и высоким уровнем сервиса.",
+      p1: "AF Hotel & Aqua Park — современный курортный комплекс в Новханы, расположенный на берегу Каспийского моря. Наш частный пляж с золотым песком и кристально чистой водой является незаменимым местом для летнего отдыха.",
+      p2: "На территории есть номера различных категорий, роскошные виллы, гигантский аквапарк, рестораны международной кухни, современный спа-центр, спортивные и детские развлекательные зоны. Это редкое место, где вы можете расслабиться и получить заряд адреналина вместе с семьей.",
+      p3: "Мы стремимся обеспечить высочайший уровень удовлетворенности гостей, применяя индивидуальный подход к каждому из них. Наша команда делает все возможное, чтобы ваше пребывание было максимально комфортным.",
+      p4: "AF Hotel — это не просто отель, а полноценный курорт с комфортом, развлечениями и высоким уровнем сервиса.",
       more: "Посмотреть Номера"
     }
   };
@@ -134,6 +137,7 @@ export default function About() {
             <p>{about.p1}</p>
             <p>{about.p2}</p>
             <p>{about.p3}</p>
+            <p>{about.p4}</p>
           </div>
 
           <div className="pt-4 border-t border-stone-200/60 max-w-xs">

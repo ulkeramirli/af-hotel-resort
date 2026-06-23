@@ -3,7 +3,8 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getBookings } from "@/services/api";
+import { getBookings, updateProfile, getPublicRooms } from "@/services/api";
+import type { PublicRoom } from "@/services/api";
 import { getFavorites } from "@/lib/favorites";
 import type { Booking } from "@/types/api";
 import {
@@ -20,7 +21,14 @@ import {
   Clock,
   XCircle,
   ChevronRight,
+  Edit2,
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  Users,
+  Maximize2,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type LangType = "az" | "en" | "ru";
 
@@ -55,6 +63,11 @@ const t = {
     activeBookings: "Aktiv bron",
     favoriteRooms: "Sevimli otaq",
     memberSince: "Üzv olub",
+    editProfile: "Profili Redaktə Et",
+    save: "Yadda saxla",
+    cancel: "Ləğv et",
+    updating: "Yenilənir...",
+    updateSuccess: "Profil uğurla yeniləndi!",
   },
   ru: {
     welcome: "Добро пожаловать",
@@ -86,6 +99,11 @@ const t = {
     activeBookings: "Активных броней",
     favoriteRooms: "Избранных номеров",
     memberSince: "Участник с",
+    editProfile: "Редактировать профиль",
+    save: "Сохранить",
+    cancel: "Отмена",
+    updating: "Обновление...",
+    updateSuccess: "Профиль успешно обновлен!",
   },
   en: {
     welcome: "Welcome",
@@ -117,6 +135,11 @@ const t = {
     activeBookings: "Active Bookings",
     favoriteRooms: "Favorite Rooms",
     memberSince: "Member since",
+    editProfile: "Edit Profile",
+    save: "Save",
+    cancel: "Cancel",
+    updating: "Updating...",
+    updateSuccess: "Profile updated successfully!",
   },
 };
 
@@ -171,28 +194,60 @@ function AccountContent() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [roomsMap, setRoomsMap] = useState<Record<string, PublicRoom>>({});
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState("");
+  const [editSuccess, setEditSuccess] = useState("");
+
+  const [showMobileMenu, setShowMobileMenu] = useState(true);
 
   useEffect(() => {
     const p = searchParams.get("tab") as Tab;
-    if (p && ["profile", "bookings", "favorites"].includes(p)) setTab(p);
+    if (p && ["profile", "bookings", "favorites"].includes(p)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTab(p);
+      setShowMobileMenu(false);
+    }
   }, [searchParams]);
 
   useEffect(() => {
     if (tab === "bookings" && user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoadingBookings(true);
       getBookings()
         .then((data) => setBookings(data))
         .catch(() => setBookings([]))
         .finally(() => setLoadingBookings(false));
     }
+    
+    if (user && !editName && !editEmail) {
+      setEditName(user.name);
+      setEditEmail(user.email);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, user]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFavorites(getFavorites());
     const onUpdate = () => setFavorites(getFavorites());
     window.addEventListener("favoritesUpdated", onUpdate);
     return () => window.removeEventListener("favoritesUpdated", onUpdate);
   }, []);
+
+  useEffect(() => {
+    if (tab === "favorites") {
+      getPublicRooms().then(rooms => {
+        const map: Record<string, PublicRoom> = {};
+        rooms.forEach(r => { map[r.id] = r; });
+        setRoomsMap(map);
+      }).catch(() => {});
+    }
+  }, [tab]);
 
   if (!user) {
     return (
@@ -219,6 +274,7 @@ function AccountContent() {
 
   const activeCount = bookings.filter((b) => b.status === "confirmed").length;
   const memberDate = new Date().toLocaleDateString("az-AZ", { month: "long", year: "numeric" });
+  const validFavoritesCount = favorites.filter(id => roomsMap[id]).length;
 
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
     { key: "profile", label: tx.profile, icon: <User className="w-4 h-4" /> },
@@ -226,12 +282,37 @@ function AccountContent() {
     { key: "favorites", label: tx.favorites, icon: <Heart className="w-4 h-4" /> },
   ];
 
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditLoading(true);
+    setEditError("");
+    setEditSuccess("");
+    const res = await updateProfile(editName, editEmail);
+    if (res.success) {
+      setEditSuccess(tx.updateSuccess);
+      setIsEditing(false);
+      setTimeout(() => window.location.reload(), 1000);
+    } else {
+      setEditError(res.message || "Error");
+    }
+    setEditLoading(false);
+  };
+
   return (
     <div className="min-h-screen bg-stone-50 pt-20">
       <div className="max-w-6xl mx-auto px-4 py-10 lg:py-16">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
-          <aside className="lg:w-72 shrink-0 space-y-4">
+          <aside className={`lg:w-72 shrink-0 space-y-4 ${showMobileMenu ? 'block' : 'hidden lg:block'}`}>
+            {/* Кнопка Назад для мобильного меню */}
+            <button 
+              onClick={() => router.push("/")} 
+              className="lg:hidden flex items-center gap-2 text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-full font-medium text-sm transition-colors mb-4 w-fit"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Geri
+            </button>
+
             {/* User card */}
             <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
               <div className="h-16 w-full" style={{ background: "linear-gradient(135deg, #00b5d5, #00406a)" }} />
@@ -253,7 +334,7 @@ function AccountContent() {
               {[
                 { label: tx.totalBookings, value: bookings.length || "—" },
                 { label: tx.activeBookings, value: activeCount || "—" },
-                { label: tx.favoriteRooms, value: favorites.length || "—" },
+                { label: tx.favoriteRooms, value: validFavoritesCount || "—" },
               ].map((s) => (
                 <div key={s.label}>
                   <div className="text-xl font-bold text-[#00406a]">{s.value}</div>
@@ -267,7 +348,7 @@ function AccountContent() {
               {tabs.map(({ key, label, icon }) => (
                 <button
                   key={key}
-                  onClick={() => setTab(key)}
+                  onClick={() => { setTab(key); setShowMobileMenu(false); }}
                   className={`w-full flex items-center gap-3 px-5 py-3.5 text-sm font-semibold transition-all text-left border-none cursor-pointer
                     ${tab === key
                       ? "bg-[#00b5d5]/5 text-[#00406a] border-l-2 border-l-[#00b5d5]"
@@ -276,8 +357,8 @@ function AccountContent() {
                 >
                   <span className={tab === key ? "text-[#00b5d5]" : "text-stone-400"}>{icon}</span>
                   {label}
-                  {key === "favorites" && favorites.length > 0 && (
-                    <span className="ml-auto text-[10px] bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded-full font-bold">{favorites.length}</span>
+                  {key === "favorites" && validFavoritesCount > 0 && (
+                    <span className="ml-auto text-[10px] bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded-full font-bold">{validFavoritesCount}</span>
                   )}
                   {key === "bookings" && bookings.length > 0 && (
                     <span className="ml-auto text-[10px] bg-sky-100 text-sky-600 px-1.5 py-0.5 rounded-full font-bold">{bookings.length}</span>
@@ -298,39 +379,116 @@ function AccountContent() {
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 min-w-0">
+          <main className={`flex-1 min-w-0 ${!showMobileMenu ? 'block' : 'hidden lg:block'}`}>
+            <AnimatePresence mode="wait">
             {/* PROFILE TAB */}
             {tab === "profile" && (
-              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 md:p-8 space-y-6">
-                <h2 className="text-lg font-bold text-stone-900">{tx.profile}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {[
-                    { label: tx.name, value: user.name, icon: <User className="w-4 h-4 text-stone-300" /> },
-                    { label: tx.email, value: user.email, icon: <Mail className="w-4 h-4 text-stone-300" /> },
-                    { label: tx.role, value: user.role === "admin" ? tx.admin : tx.user, icon: <Shield className="w-4 h-4 text-stone-300" /> },
-                    { label: tx.memberSince, value: memberDate, icon: <Calendar className="w-4 h-4 text-stone-300" /> },
-                  ].map(({ label, value, icon }) => (
-                    <div key={label} className="flex items-start gap-3 p-4 bg-stone-50 rounded-xl border border-stone-100">
-                      <div className="mt-0.5">{icon}</div>
-                      <div>
-                        <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">{label}</p>
-                        <p className="text-sm font-semibold text-stone-800 mt-0.5">{value}</p>
-                      </div>
-                    </div>
-                  ))}
+              <motion.div key="profile" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 md:p-8 space-y-6">
+                
+                <button 
+                  onClick={() => setShowMobileMenu(true)} 
+                  className="lg:hidden flex items-center gap-2 text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-full font-medium text-sm transition-colors mb-4 w-fit"
+                >
+                  <ArrowLeft className="w-4 h-4" /> Geri
+                </button>
+                
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-bold text-stone-900">{tx.profile}</h2>
+                  {!isEditing && (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#00b5d5] bg-[#00b5d5]/10 rounded-lg hover:bg-[#00b5d5]/20 transition-colors"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                      {tx.editProfile}
+                    </button>
+                  )}
                 </div>
 
-                <div className="pt-4 border-t border-stone-100">
-                  <p className="text-xs text-stone-400">
-                    {tx.memberSince}: <span className="font-semibold text-stone-600">{memberDate}</span>
-                  </p>
-                </div>
-              </div>
+                {editError && (
+                  <div className="flex items-start gap-2 p-3 bg-rose-50 border border-rose-100 rounded-xl">
+                    <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-rose-700 font-medium">{editError}</p>
+                  </div>
+                )}
+                {editSuccess && (
+                  <div className="flex items-start gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
+                    <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-emerald-700 font-medium">{editSuccess}</p>
+                  </div>
+                )}
+
+                {isEditing ? (
+                  <form onSubmit={handleUpdateProfile} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-stone-500 uppercase tracking-wide">{tx.name}</label>
+                        <input
+                          type="text" required value={editName} onChange={(e) => setEditName(e.target.value)}
+                          className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[#00b5d5] focus:bg-white"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-stone-500 uppercase tracking-wide">{tx.email}</label>
+                        <input
+                          type="email" required value={editEmail} onChange={(e) => setEditEmail(e.target.value)}
+                          className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[#00b5d5] focus:bg-white"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-3 pt-4">
+                      <button
+                        type="submit" disabled={editLoading}
+                        className="px-6 py-2 bg-[#00b5d5] text-white font-bold rounded-xl hover:bg-[#0092ac] transition-colors disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {editLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                        {tx.save}
+                      </button>
+                      <button
+                        type="button" onClick={() => { setIsEditing(false); setEditName(user.name); setEditEmail(user.email); }}
+                        className="px-6 py-2 bg-stone-100 text-stone-600 font-bold rounded-xl hover:bg-stone-200 transition-colors"
+                      >
+                        {tx.cancel}
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      {[
+                        { label: tx.name, value: user.name, icon: <User className="w-4 h-4 text-stone-300" /> },
+                        { label: tx.email, value: user.email, icon: <Mail className="w-4 h-4 text-stone-300" /> },
+                        { label: tx.role, value: user.role === "admin" ? tx.admin : tx.user, icon: <Shield className="w-4 h-4 text-stone-300" /> },
+                        { label: tx.memberSince, value: memberDate, icon: <Calendar className="w-4 h-4 text-stone-300" /> },
+                      ].map(({ label, value, icon }) => (
+                        <div key={label} className="flex items-start gap-3 p-4 bg-stone-50 rounded-xl border border-stone-100">
+                          <div className="mt-0.5">{icon}</div>
+                          <div>
+                            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">{label}</p>
+                            <p className="text-sm font-semibold text-stone-800 mt-0.5">{value}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pt-4 border-t border-stone-100">
+                      <p className="text-xs text-stone-400">
+                        {tx.memberSince}: <span className="font-semibold text-stone-600">{memberDate}</span>
+                      </p>
+                    </div>
+                  </>
+                )}
+              </motion.div>
             )}
 
             {/* BOOKINGS TAB */}
             {tab === "bookings" && (
-              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 md:p-8 space-y-5">
+              <motion.div key="bookings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 md:p-8 space-y-5">
+                <button 
+                  onClick={() => setShowMobileMenu(true)} 
+                  className="lg:hidden flex items-center gap-2 text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-full font-medium text-sm transition-colors mb-4 w-fit"
+                >
+                  <ArrowLeft className="w-4 h-4" /> Geri
+                </button>
                 <h2 className="text-lg font-bold text-stone-900">{tx.bookings}</h2>
 
                 {loadingBookings ? (
@@ -378,15 +536,21 @@ function AccountContent() {
                     ))}
                   </div>
                 )}
-              </div>
+              </motion.div>
             )}
 
             {/* FAVORITES TAB */}
             {tab === "favorites" && (
-              <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 md:p-8 space-y-5">
+              <motion.div key="favorites" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 md:p-8 space-y-5">
+                <button 
+                  onClick={() => setShowMobileMenu(true)} 
+                  className="lg:hidden flex items-center gap-2 text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-full font-medium text-sm transition-colors mb-4 w-fit"
+                >
+                  <ArrowLeft className="w-4 h-4" /> Geri
+                </button>
                 <h2 className="text-lg font-bold text-stone-900">{tx.favorites}</h2>
 
-                {favorites.length === 0 ? (
+                {validFavoritesCount === 0 ? (
                   <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
                     <div className="w-14 h-14 bg-stone-100 rounded-xl flex items-center justify-center">
                       <Heart className="w-7 h-7 text-stone-300" />
@@ -400,28 +564,75 @@ function AccountContent() {
                     </button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {favorites.map((id) => (
-                      <div key={id} className="flex items-center gap-3 p-4 bg-stone-50 rounded-xl border border-stone-100 hover:border-rose-200 transition-all group">
-                        <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center shrink-0">
-                          <Heart className="w-5 h-5 text-rose-500 fill-rose-500" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {favorites.map((id) => {
+                      const room = roomsMap[id];
+                      if (!room) return null;
+                      return (
+                        <div key={id} className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col">
+                          {/* Image */}
+                          <div className="relative aspect-16/11 overflow-hidden bg-stone-100 border-b border-stone-100 block">
+                            {room.images?.[0] ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={room.images[0]} alt={room.title[l]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center"><Heart className="w-6 h-6 text-stone-300" /></div>
+                            )}
+                            <span className="absolute top-4 left-4 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-xs text-stone-800 rounded-md shadow-xs border border-stone-100 z-10">
+                              {room.category}
+                            </span>
+                            <button
+                              onClick={(e) => { 
+                                e.preventDefault(); 
+                                const currentFavs = getFavorites();
+                                const newFavs = currentFavs.filter(fid => fid !== id);
+                                localStorage.setItem("af_favorites", JSON.stringify(newFavs));
+                                window.dispatchEvent(new Event("favoritesUpdated"));
+                              }}
+                              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-105 transition-transform cursor-pointer z-20"
+                            >
+                              <Heart className="w-4.5 h-4.5 transition-colors" style={{ fill: "#e11d48", color: "#e11d48" }} />
+                            </button>
+                          </div>
+                          
+                          {/* Card Content */}
+                          <div className="p-5 space-y-4 flex flex-col flex-1 justify-between">
+                            <div className="space-y-2">
+                              <h3 className="font-bold text-stone-900 text-base tracking-tight transition-colors group-hover:text-stone-700">
+                                {room.title[l]}
+                              </h3>
+                              <p className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2">
+                                {room.desc[l]}
+                              </p>
+                              
+                              <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
+                                <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5 text-stone-300" />{room.capacity[l]}</span>
+                                <span className="flex items-center gap-1"><Maximize2 className="w-3.5 h-3.5 text-stone-300" />{room.size || "350 sqft"}</span>
+                              </div>
+                            </div>
+                            
+                            {/* Bottom */}
+                            <div className="flex flex-col gap-2 pt-4 border-t border-stone-100 mt-auto">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <span className="text-lg font-bold text-stone-900">${room.price}</span>
+                                  <span className="text-[11px] text-stone-400 font-light ml-1">/ {l==='az'?'gecə':l==='ru'?'ночь':'night'}</span>
+                                </div>
+                                <a href={`/rooms/${room.id}`} className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-semibold rounded-xl transition-colors">
+                                  <span>{l === "az" ? "Ətraflı bax" : l === "ru" ? "Подробнее" : "Details"}</span>
+                                  <ArrowRight className="w-3.5 h-3.5" />
+                                </a>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-stone-700 text-sm truncate">Room #{id.slice(-6).toUpperCase()}</p>
-                          <p className="text-[11px] text-stone-400">ID: {id}</p>
-                        </div>
-                        <a
-                          href={`/rooms/${id}`}
-                          className="text-xs font-bold text-[#00b5d5] hover:underline shrink-0"
-                        >
-                          <ChevronRight className="w-4 h-4" />
-                        </a>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
-              </div>
+              </motion.div>
             )}
+            </AnimatePresence>
           </main>
         </div>
       </div>

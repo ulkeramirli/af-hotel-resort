@@ -60,3 +60,10 @@ html, body {
 
 } 
 
+@layer base {
+  h1, h2 {
+    @apply font-serif tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#1e325c] to-[#00b5d5];
+    /* Drop shadow to make it feel premium */
+    filter: drop-shadow(0px 2px 4px rgba(30, 50, 92, 0.15));
+  }
+}

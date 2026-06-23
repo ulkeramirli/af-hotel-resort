@@ -1,11 +1,34 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Loader2, Eye, EyeOff, AlertCircle, ArrowLeft } from "lucide-react";
+
+const FlagIcon = ({ code }: { code: LangType }) => {
+  if (code === "az")
+    return (
+      <svg className="w-5 h-3.5 rounded-xs object-cover shadow-xs border border-stone-200 shrink-0" viewBox="0 0 6 3">
+        <path fill="#24aad4" d="M0 0h6v1H0z" /><path fill="#ed2c34" d="M0 1h6v1H0z" /><path fill="#339966" d="M0 2h6v1H0z" />
+        <circle cx="3" cy="1.5" r=".4" fill="#fff" /><circle cx="3.08" cy="1.5" r=".34" fill="#ed2c34" />
+        <path fill="#fff" d="M3.15 1.32l.04.14.15-.02-.1.1.07.13-.12-.08-.12.08.06-.13-.1-.1.14.02z" />
+      </svg>
+    );
+  if (code === "en")
+    return (
+      <svg className="w-5 h-3.5 rounded-xs object-cover shadow-xs border border-stone-200 shrink-0" viewBox="0 0 50 30">
+        <clipPath id="t"><path d="M0 0v30h50V0z" /></clipPath>
+        <g clipPath="url(#t)"><path d="M0 0v30h50V0z" fill="#012169" /><path d="M0 0l50 30M50 0L0 30" stroke="#fff" strokeWidth="6" /><path d="M0 0l50 30M50 0L0 30" stroke="#c8102e" strokeWidth="4" /><path d="M25 0v30M0 15h50" stroke="#fff" strokeWidth="10" /><path d="M25 0v30M0 15h50" stroke="#c8102e" strokeWidth="6" /></g>
+      </svg>
+    );
+  return (
+    <svg className="w-5 h-3.5 rounded-xs object-cover shadow-xs border border-stone-200 shrink-0" viewBox="0 0 3 2">
+      <path fill="#fff" d="M0 0h3v2H0z" /><path fill="#0039a6" d="M0 .67h3v1.33H0z" /><path fill="#d52b1e" d="M0 1.33h3v.67H0z" />
+    </svg>
+  );
+};
 
 type LangType = "az" | "en" | "ru";
 
@@ -72,15 +95,18 @@ const translations = {
   }
 };
 
-export default function SignInPage() {
+function SignInContent() {
   const { signIn, signInGoogle } = useAuth();
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [langOpen, setLangOpen] = useState(false);
 
   const l = (language as LangType) || "az";
   const t = translations[l];
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(searchParams.get("email") || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -145,6 +171,36 @@ export default function SignInPage() {
           </span>
         </div>
 
+        {/* Language Switcher Overlay */}
+        <div className="absolute top-4 right-4 z-20">
+          <div className="relative">
+            <button
+              onClick={() => setLangOpen(!langOpen)}
+              className="flex items-center space-x-1.5 font-bold text-xs tracking-wider text-white outline-none uppercase p-2 hover:bg-white/10 rounded-xl transition-all duration-300 border-none bg-transparent cursor-pointer"
+            >
+              <FlagIcon code={l} />
+              <span>{l}</span>
+            </button>
+            {langOpen && (
+              <div className="absolute right-0 mt-2 w-28 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-50">
+                {(["az", "en", "ru"] as LangType[]).map((lng) => (
+                  <button
+                    key={lng}
+                    onClick={() => {
+                      setLanguage(lng);
+                      setLangOpen(false);
+                    }}
+                    className={`w-full flex items-center space-x-2.5 px-4 py-2.5 text-[11px] font-bold tracking-wider text-slate-700 hover:bg-stone-50 transition-colors duration-150 uppercase border-none bg-transparent cursor-pointer ${language === lng ? "text-[#00b5d5] bg-stone-50/50" : ""}`}
+                  >
+                    <FlagIcon code={lng} />
+                    <span>{lng}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Контент слева снизу */}
         <div className="relative z-10 flex flex-col justify-end p-12 text-white h-full">
           <h2 className="text-4xl font-bold mb-3 leading-tight whitespace-pre-line">
@@ -165,7 +221,10 @@ export default function SignInPage() {
       </div>
 
       {/* Правая панель с формой */}
-      <div className="flex-1 lg:max-w-md flex flex-col justify-center px-8 py-12 bg-white">
+      <div className="flex-1 lg:max-w-md flex flex-col justify-center px-8 py-12 bg-white relative">
+        <button onClick={() => router.back()} className="lg:hidden absolute top-6 left-6 w-10 h-10 bg-stone-100 hover:bg-stone-200 text-stone-600 rounded-full flex items-center justify-center transition-colors">
+          <ArrowLeft className="w-5 h-5" />
+        </button>
         <div className="max-w-sm w-full mx-auto space-y-7">
           
           {/* Мобильный блок логотипа */}
@@ -280,5 +339,17 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-stone-50">
+        <Loader2 className="w-8 h-8 animate-spin text-[#00b5d5]" />
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   );
 }

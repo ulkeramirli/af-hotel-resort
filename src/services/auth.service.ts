@@ -34,7 +34,20 @@ export class AuthService {
   }
 
   static async login(email: string, password: string) {
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
+
+    // Auto-create demo admin if it doesn't exist
+    if (!user && email === "admin@afhotel.az" && password === "admin123") {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user = await User.create({
+        name: "Admin",
+        email: "admin@afhotel.az",
+        password: hashedPassword,
+        role: "admin",
+        isVerified: true,
+      });
+    }
+
     if (!user) {
       throw new Error("Invalid email or password");
     }

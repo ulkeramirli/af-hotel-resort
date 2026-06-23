@@ -1,13 +1,65 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Users, Maximize2, Loader2, BedDouble, ArrowRight } from "lucide-react";
+import { Heart, Users, Maximize2, Loader2, BedDouble, ArrowRight, CalendarCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { getPublicRooms } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
 import { toggleFavorite, isFavorite } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
+  const [active, setActive] = useState(0);
+  const [err, setErr] = useState(false);
+  
+  const src = images[active] || "";
+  const isValid = !err && src && src.startsWith("http") && !src.match(/^https?:\/\/[^/]+\.(jpg|jpeg|png|webp|gif)$/i);
+  
+  const next = (e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    setActive((prev) => (prev + 1) % images.length);
+  };
+  const prev = (e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    setActive((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  if (!isValid || err) {
+    return (
+      <div className="w-full h-full bg-linear-to-br from-stone-100 to-stone-200 flex items-center justify-center">
+        <BedDouble className="w-12 h-12 text-stone-300" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full relative group/carousel">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        onError={() => setErr(true)}
+        className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
+      />
+      {images.length > 1 && (
+        <>
+          <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/70 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 shadow-sm cursor-pointer">
+            <ChevronLeft className="w-4 h-4 text-stone-700" />
+          </button>
+          <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/70 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 shadow-sm cursor-pointer">
+            <ChevronRight className="w-4 h-4 text-stone-700" />
+          </button>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-20">
+            {images.map((_, i) => (
+              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${i === active ? "bg-white scale-125" : "bg-white/60"}`} />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 
 const content = {
@@ -57,6 +109,7 @@ type Category = "all" | "Single" | "Standard Double" | "Standard Twin" | "Apartm
 
 export default function Rooms() {
   const { language } = useLanguage();
+  const router = useRouter();
   const l = (language as "az" | "en" | "ru") || "az";
   const c = content[l];
 
@@ -177,7 +230,7 @@ export default function Rooms() {
         ) : (
           <motion.div 
             layout 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
           >
             <AnimatePresence mode="popLayout">
               {filtered.map((room) => (
@@ -192,58 +245,16 @@ export default function Rooms() {
                 >
                   {/* Изображение комнаты */}
                   <div className="relative aspect-16/11 overflow-hidden bg-stone-100 border-b border-stone-100">
-                    <Image
-                      src={room.images[0]}
-                      alt={room.title[l]}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                    />
-                    <span className="absolute top-4 left-4 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-xs text-stone-800 rounded-md shadow-xs border border-stone-100">
+                    <RoomCarousel images={room.images} alt={room.title[l]} />
+                    <span className="absolute top-4 left-4 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-xs text-stone-800 rounded-md shadow-xs border border-stone-100 z-10">
                       {room.category}
                     </span>
-
-                    <span className="flex items-center gap-1">
-                      <Maximize2 className="w-3.5 h-3.5" />
-                      {room.size}
-                    </span>
-                  </div>
-
-                  {/* Amenities */}
-                  <div className="flex flex-wrap gap-1">
-                    {room.includes[l].slice(0, 3).map((item) => (
-                      <span
-                        key={item}
-                        className="text-[10px] px-2 py-0.5 bg-stone-50 border border-stone-100 rounded-full text-stone-500"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                    {room.includes[l].length > 3 && (
-                      <span className="text-[10px] px-2 py-0.5 text-stone-400">
-                        +{room.includes[l].length - 3}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Footer */}
-                  <div className="flex justify-between items-center pt-2 border-t border-stone-50">
-                    <div>
-                      <span
-                        className="text-xl font-bold"
-                        style={{ color: "var(--color-hotel-blue)" }}
-                      >
-                        {room.price}
-                      </span>
-                      <span className="text-xs text-stone-400 ml-1">{c.perNight}</span>
-                    </div>
                     <button
                       onClick={(e) => { e.preventDefault(); handleFavorite(room.id); }}
-                      className="px-4 py-2 text-white text-xs font-bold rounded-xl transition-opacity hover:opacity-90"
-                      style={{ background: "var(--color-hotel-blue)" }}
+                      className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-105 transition-transform cursor-pointer z-20"
                     >
                       <Heart
-                        className="w-3.5 h-3.5 transition-colors"
+                        className="w-4.5 h-4.5 transition-colors"
                         style={{
                           fill: favorites.has(room.id) ? "#e11d48" : "none",
                           color: favorites.has(room.id) ? "#e11d48" : "#444",
@@ -253,8 +264,8 @@ export default function Rooms() {
                   </div>
 
                   {/* Контент карточки */}
-                  <div className="p-5 md:p-6 space-y-4 flex flex-col flex-1 justify-between">
-                    <div className="space-y-2">
+                  <div className="p-4 space-y-3 flex flex-col flex-1 justify-between">
+                    <div className="space-y-1.5">
                       <h3 className="font-bold text-stone-900 text-base md:text-lg tracking-tight transition-colors group-hover:text-stone-700">
                         {room.title[l]}
                       </h3>
@@ -275,22 +286,30 @@ export default function Rooms() {
                       </div>
                     </div>
 
-                    {/* Нижняя часть с ценой и кнопкой */}
-                    <div className="flex justify-between items-center pt-4 border-t border-stone-100 mt-auto">
-                      <div>
-                        <span className="text-lg md:text-xl font-bold text-stone-900">
-                          ${room.price}
-                        </span>
-                        <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
+                    {/* Bottom: price + buttons */}
+                    <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <span className="text-lg md:text-xl font-bold text-stone-900">
+                            ${room.price}
+                          </span>
+                          <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
+                        </div>
+                        <Link
+                          href={`/rooms/${room.id}`}
+                          className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-semibold rounded-xl transition-colors"
+                        >
+                          <span>{c.details}</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
                       </div>
-                      
-                      <Link
-                        href={`/rooms/${room.id}`}
-                        className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#03a8c1] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors"
+                      <button
+                        onClick={() => router.push(`/?roomId=${room.id}#booking`)}
+                        className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-[#ff6c02] hover:bg-[#e55f00] text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer"
                       >
-                        <span>{c.details}</span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                      </Link>
+                        <CalendarCheck className="w-3.5 h-3.5" />
+                        <span>{ l === "az" ? "İndi Rezerv Et" : l === "ru" ? "Забронировать" : "Book Now" }</span>
+                      </button>
                     </div>
                   </div>
                 </motion.div>

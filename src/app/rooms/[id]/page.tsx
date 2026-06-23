@@ -139,9 +139,9 @@ export default function RoomDetailPage({
   const handleBookingRedirect = () => {
     if (!room) return;
     const query = new URLSearchParams({
-      roomType: room.category,
+      roomId: room.id,
     });
-    router.push(`/#booking?${query.toString()}`);
+    router.push(`/?${query.toString()}#booking`);
   };
 
   if (loading) {
@@ -205,7 +205,7 @@ export default function RoomDetailPage({
                 }`}
               >
                 <Image
-                  src={img}
+                  src={img || "/AF-aqua.jpg"}
                   alt=""
                   fill
                   sizes="250px"
@@ -230,7 +230,7 @@ export default function RoomDetailPage({
                 className="w-full h-full relative"
               >
                 <Image
-                  src={room.images[activeImg] ?? room.images[0]}
+                  src={room.images[activeImg] || room.images[0] || "/AF-aqua.jpg"}
                   alt={roomTitle}
                   fill
                   sizes="(max-width: 1024px) 100vw, 75vw"
@@ -267,7 +267,7 @@ export default function RoomDetailPage({
               }`}
             >
               <Image
-                src={img}
+                src={img || "/AF-aqua.jpg"}
                 alt=""
                 fill
                 sizes="100px"
@@ -310,11 +310,11 @@ export default function RoomDetailPage({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 border border-stone-100 rounded-xl py-4 bg-stone-50/50 text-center text-xs font-medium text-stone-500">
               <div className="flex flex-col items-center gap-1 border-r border-stone-200/60">
                 <Bed className="w-4 h-4 text-stone-400" />
-                <span>1 {c.bed}</span>
+                <span>{room.beds ?? 1} {c.bed}</span>
               </div>
               <div className="flex flex-col items-center gap-1 sm:border-r border-stone-200/60">
                 <Bath className="w-4 h-4 text-stone-400" />
-                <span>1 {c.bath}</span>
+                <span>{room.baths ?? 1} {c.bath}</span>
               </div>
               <div className="flex flex-col items-center gap-1 border-r border-stone-200/60">
                 <Maximize2 className="w-4 h-4 text-stone-400" />

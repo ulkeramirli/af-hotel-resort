@@ -2,6 +2,8 @@ import cloudinary from "@/lib/cloudinary";
 import { authMiddleware } from "@/middleware/auth.middleware";
 import { connectDB } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { writeFile } from "fs/promises";
+import { join } from "path";
 
 export async function POST(req: Request) {
   await connectDB();
@@ -33,6 +35,18 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(bytes);
 
      
+    // Fallback to local file upload if Cloudinary is not configured
+    if (!process.env.CLOUDINARY_NAME) {
+      const filename = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+      const filepath = join(process.cwd(), 'public', 'uploads', filename);
+      await writeFile(filepath, buffer);
+      
+      return NextResponse.json({
+        success: true,
+        url: `/uploads/${filename}`,
+      });
+    }
+
     const result = await new Promise<any>((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(

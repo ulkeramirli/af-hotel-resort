@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Star } from 'lucide-react';
 import { getReviews } from '@/services/api';
 import type { Review as ApiReview } from '@/types/api';
+import useEmblaCarousel from 'embla-carousel-react';
 
 const content = {
   az: { tag: 'QONAQ RƏYLƏRİ', title: 'Qonaqlarımız Danışır', subtitle: 'Həqiqi qonaqların AF Hotel haqqında fikirləri', hotelReply: 'Otelin Cavabı', empty: 'Hələ rəy yoxdur.' },
@@ -23,6 +24,7 @@ export default function Reviews() {
   const c = content[l];
   const [reviews, setReviews] = useState<ApiReview[]>([]);
   const [loading, setLoading] = useState(true);
+  const [emblaRef] = useEmblaCarousel({ align: 'start', containScroll: 'trimSnaps' });
 
   useEffect(() => {
     let cancelled = false;
@@ -72,31 +74,33 @@ export default function Reviews() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reviews.map((review) => (
-              <div key={review._id} className="bg-[#f9f8f4] rounded-2xl p-6 border border-stone-100 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden bg-stone-200 flex items-center justify-center text-[#1e325c] font-bold">
-                    {review.fullName.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-[#1e325c]">{review.fullName}</p>
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`w-3 h-3 fill-amber-400 text-amber-400`} />
-                      ))}
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {reviews.slice(0, 6).map((review) => (
+                <div key={review._id} className="min-w-[85vw] sm:min-w-[60vw] md:min-w-0 flex-none bg-[#f9f8f4] rounded-2xl p-6 border border-stone-100 hover:shadow-md transition-shadow mr-4 md:mr-0 last:mr-0 snap-center md:snap-align-none">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden bg-stone-200 flex items-center justify-center text-[#1e325c] font-bold shrink-0">
+                      {review.fullName.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-[#1e325c]">{review.fullName}</p>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} className={`w-3 h-3 fill-amber-400 text-amber-400`} />
+                        ))}
+                      </div>
                     </div>
                   </div>
+                  <p className="text-xs text-stone-600 leading-relaxed line-clamp-4">{review.message}</p>
+                  {review.adminReply && (
+                    <div className="mt-4 bg-white border border-[#00b5d5]/20 rounded-xl p-3">
+                      <span className="text-[10px] font-bold text-[#00b5d5] uppercase">{c.hotelReply}</span>
+                      <p className="text-xs text-stone-500 mt-1">{review.adminReply}</p>
+                    </div>
+                  )}
                 </div>
-                <p className="text-xs text-stone-600 leading-relaxed line-clamp-4">{review.message}</p>
-                {review.adminReply && (
-                  <div className="mt-4 bg-white border border-[#00b5d5]/20 rounded-xl p-3">
-                    <span className="text-[10px] font-bold text-[#00b5d5] uppercase">{c.hotelReply}</span>
-                    <p className="text-xs text-stone-500 mt-1">{review.adminReply}</p>
-                  </div>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </div>

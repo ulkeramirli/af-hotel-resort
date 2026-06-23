@@ -30,6 +30,9 @@ export interface Room {
   capacity: number;
   amenities: string[];
   images: string[];
+  beds?: number;
+  baths?: number;
+  sqft?: number;
   isAvailable: boolean;
   createdBy?: { _id: string; name: string; email: string };
   createdAt?: string;

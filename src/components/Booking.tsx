@@ -1,113 +1,232 @@
- 
-'use client';
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { Loader2, CheckCircle, CreditCard, ShieldCheck } from 'lucide-react';
+"use client";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Loader2, CheckCircle, CreditCard, ShieldCheck, AlertCircle, Calendar } from "lucide-react";
+import { getPublicRooms, createBooking, getBookedDates } from "@/services/api";
+import type { PublicRoom } from "@/services/api";
 
 interface AuthUser {
   id: string;
   email: string;
   name?: string;
+  phone?: string;
 }
 
-export default function Booking() {
-  const { user } = useAuth() as { user: AuthUser | null };
-  const { language } = useLanguage();
-  const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+function CustomDatePicker({ value, onChange, bookedDates, label }: { value: string, onChange: (d: string) => void, bookedDates: {checkIn: Date, checkOut: Date}[], label: string }) {
+  const [open, setOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
+  const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+  const startDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
 
-  const [step, setStep] = useState<1 | 2>(1);
-  const [checkIn, setCheckIn] = useState('');
-  const [checkOut, setCheckOut] = useState('');
-  const [adults, setAdults] = useState(1);
-  const [kids, setKids] = useState(0);
-  const [selectedRoom, setSelectedRoom] = useState('1');
-  
-  // Поля банковской карты
-  const [cardName, setCardName] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvc, setCardCvc] = useState('');
+  const handlePrev = (e: React.MouseEvent) => { e.preventDefault(); setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)); };
+  const handleNext = (e: React.MouseEvent) => { e.preventDefault(); setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)); };
 
-
-  // Мультиязычные тексты для самого модуля бронирования
-  const dict = {
-    title1: { az: 'Otaq və Tarix Seçimi', en: 'Room & Date Selection', ru: 'Выбор номера и дат' }[currentLang],
-    title2: { az: 'Təhlükəsiz Onlayn Ödəniş', en: 'Secure Online Payment', ru: 'Безопасная онлайн-оплата' }[currentLang],
-    roomLabel: { az: 'Eksklüziv Otaq Seçimi', en: 'Exclusive Room Selection', ru: 'Выбор эксклюзивного номера' }[currentLang],
-    adultsLabel: { az: 'Böyüklər', en: 'Adults', ru: 'Взрослые' }[currentLang],
-    // Чёткое обозначение возрастной категории для детей (0-12 yaş / 0-12 years / 0-12 лет)
-    kidsLabel: { 
-      az: 'Uşaqlar (0-12 yaş)', 
-      en: 'Children (0-12 years old)', 
-      ru: 'Дети (0-12 лет)' 
-    }[currentLang],
-    cardHolder: { az: 'Kart Sahibinin Adı Soyadı', en: 'Cardholder Name', ru: 'Имя и фамилия владельца карты' }[currentLang],
-    cardNumber: { az: 'Kartın Nömrəsi', en: 'Card Number', ru: 'Номер карты' }[currentLang],
-    expiry: { az: 'Bitmə Tarixi', en: 'Expiry Date', ru: 'Срок действия' }[currentLang],
-    nextBtn: { az: 'Ödəniş Şöbəsinə Keç →', en: 'Proceed to Payment →', ru: 'Перейти к оплате →' }[currentLang],
-    backBtn: { az: 'Geri', en: 'Back', ru: 'Назад' }[currentLang],
-    confirmBtn: { az: 'Ödənişi Təsdiqlə', en: 'Confirm Payment', ru: 'Подтвердить оплату' }[currentLang],
-    successTitle: { az: 'Ödəniş və Rezervasiya Uğurludur!', en: 'Payment & Booking Successful!', ru: 'Оплата и бронирование успешны!' }[currentLang],
-    successDesc: { az: 'Məlumatlar dərhal sistem menecerinin admin panelinə göndərildi.', en: 'Data has been instantly sent to the admin panel.', ru: 'Данные мгновенно отправлены в админ-панель.' }[currentLang]
+  const isBooked = (d: Date) => {
+    d.setHours(0,0,0,0);
+    return bookedDates.some(b => {
+      const ci = new Date(b.checkIn); ci.setHours(0,0,0,0);
+      const co = new Date(b.checkOut); co.setHours(0,0,0,0);
+      return d >= ci && d <= co;
+    });
   };
 
-  const availableRooms = [
-    { id: '1', name: 'Premium Single Room', type: 'Single' },
-    { id: '2', name: 'Standard Double Room', type: 'Standard Double' },
-    { id: '3', name: 'Standard Twin Room', type: 'Standard Twin' },
-    { id: '4', name: 'Family Apartments for 4', type: 'Apartments for 4' }
-  ];
+  const isPast = (d: Date) => {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    return d < today;
+  };
+
+  return (
+    <div className="relative">
+      <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{label}</label>
+      <div 
+        onClick={() => setOpen(!open)}
+        className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 cursor-pointer min-h-[46px] flex items-center justify-between"
+      >
+        <span>{value || "Seçin / Select"}</span>
+        <Calendar className="w-4 h-4 text-stone-400" />
+      </div>
+      {open && (
+        <div className="absolute top-full left-0 mt-2 bg-white border border-stone-200 rounded-xl shadow-xl z-50 p-4 w-72">
+          <div className="flex justify-between items-center mb-4">
+            <button onClick={handlePrev} className="px-2 py-1 bg-stone-100 rounded hover:bg-stone-200 text-stone-600 font-bold">&lt;</button>
+            <span className="font-bold text-sm text-[#1e325c]">
+              {currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
+            </span>
+            <button onClick={handleNext} className="px-2 py-1 bg-stone-100 rounded hover:bg-stone-200 text-stone-600 font-bold">&gt;</button>
+          </div>
+          <div className="grid grid-cols-7 gap-1 text-center mb-2">
+            {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => <div key={d} className="text-[10px] font-bold text-stone-400">{d}</div>)}
+          </div>
+          <div className="grid grid-cols-7 gap-1">
+            {Array.from({ length: startDay }).map((_, i) => <div key={`empty-${i}`} />)}
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1;
+              const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+              const booked = isBooked(date);
+              const past = isPast(date);
+              const disabled = booked || past;
+              const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+              const selected = value === dateStr;
+
+              return (
+                <button
+                  key={day}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (!disabled) {
+                      onChange(dateStr);
+                      setOpen(false);
+                    }
+                  }}
+                  disabled={disabled}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold
+                    ${disabled ? 'bg-stone-100 text-stone-300 cursor-not-allowed' : 
+                      selected ? 'bg-[#00b5d5] text-white shadow-md' : 'hover:bg-stone-100 text-stone-700 cursor-pointer'}
+                  `}
+                >
+                  {day}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BookingContent() {
+  const { user } = useAuth() as { user: AuthUser | null };
+  const searchParams = useSearchParams();
+  const { language } = useLanguage();
+  const currentLang = (language as "az" | "en" | "ru") || "az";
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const [step, setStep] = useState<1 | 2>(1);
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [adults, setAdults] = useState(1);
+  const [kids, setKids] = useState(0);
+  const [selectedRoomId, setSelectedRoomId] = useState("");
+
+  const [rooms, setRooms] = useState<PublicRoom[]>([]);
+  const [loadingRooms, setLoadingRooms] = useState(true);
+  const [bookedDates, setBookedDates] = useState<{checkIn: Date, checkOut: Date}[]>([]);
+
+  const [phone, setPhone] = useState(user?.phone || "");
+  const [email, setEmail] = useState(user?.email || "");
+
+  const [cardName, setCardName] = useState(user?.name || "");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
 
   useEffect(() => {
-    const handleHeroData = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      if (customEvent.detail) {
-        setCheckIn(customEvent.detail.checkIn || '');
-        setCheckOut(customEvent.detail.checkOut || '');
-        setAdults(customEvent.detail.adults || 1);
-        setKids(customEvent.detail.kids || 0);
-      }
-    };
-    window.addEventListener('fillHeroBooking', handleHeroData);
-    return () => window.removeEventListener('fillHeroBooking', handleHeroData);
+    getPublicRooms()
+      .then((data) => {
+        setRooms(data);
+        if (data.length > 0) setSelectedRoomId(data[0].id);
+      })
+      .finally(() => setLoadingRooms(false));
   }, []);
+
+  useEffect(() => {
+    if (searchParams) {
+      const ci = searchParams.get("checkIn");
+      const co = searchParams.get("checkOut");
+      const a = searchParams.get("adults");
+      const k = searchParams.get("kids");
+      const rt = searchParams.get("roomType");
+      const rId = searchParams.get("roomId");
+
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (ci) setCheckIn(ci);
+       
+      if (co) setCheckOut(co);
+       
+      if (a) setAdults(Number(a));
+       
+      if (k) setKids(Number(k));
+      if (rId && rooms.length > 0) {
+        const match = rooms.find((r) => r.id === rId);
+        if (match) setSelectedRoomId(match.id);
+      } else if (rt && rooms.length > 0) {
+        const match = rooms.find((r) => r.category === rt || r.title[currentLang] === rt);
+        if (match) setSelectedRoomId(match.id);
+      }
+    }
+  }, [searchParams, rooms, currentLang]);
+
+  useEffect(() => {
+    if (selectedRoomId) {
+      getBookedDates(selectedRoomId).then(data => {
+        setBookedDates(data.map(d => ({ checkIn: new Date(d.checkIn), checkOut: new Date(d.checkOut) })));
+      }).catch(console.error);
+    } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setBookedDates([]);
+    }
+  }, [selectedRoomId]);
+
+  const dict = {
+    title1: { az: "Otaq və Tarix Seçimi", en: "Room & Date Selection", ru: "Выбор номера и дат" }[currentLang],
+    title2: { az: "Təhlükəsiz Onlayn Ödəniş", en: "Secure Online Payment", ru: "Безопасная онлайн-оплата" }[currentLang],
+    roomLabel: { az: "Eksklüziv Otaq Seçimi", en: "Exclusive Room Selection", ru: "Выбор эксклюзивного номера" }[currentLang],
+    adultsLabel: { az: "Böyüklər", en: "Adults", ru: "Взрослые" }[currentLang],
+    kidsLabel: { az: "Uşaqlar (0-12 yaş)", en: "Children (0-12 years old)", ru: "Дети (0-12 лет)" }[currentLang],
+    phoneLabel: { az: "Əlaqə nömrəsi", en: "Phone Number", ru: "Номер телефона" }[currentLang],
+    emailLabel: { az: "Email", en: "Email", ru: "Email" }[currentLang],
+    cardHolder: { az: "Kart Sahibinin Adı Soyadı", en: "Cardholder Name", ru: "Имя и фамилия владельца карты" }[currentLang],
+    cardNumber: { az: "Kartın Nömrəsi", en: "Card Number", ru: "Номер карты" }[currentLang],
+    expiry: { az: "Bitmə Tarixi", en: "Expiry Date", ru: "Срок действия" }[currentLang],
+    nextBtn: { az: "Ödəniş Şöbəsinə Keç →", en: "Proceed to Payment →", ru: "Перейти к оплате →" }[currentLang],
+    backBtn: { az: "Geri", en: "Back", ru: "Назад" }[currentLang],
+    confirmBtn: { az: "Ödənişi Təsdiqlə", en: "Confirm Payment", ru: "Подтвердить оплату" }[currentLang],
+    successTitle: { az: "Ödəniş və Rezervasiya Uğurludur!", en: "Payment & Booking Successful!", ru: "Оплата и бронирование успешны!" }[currentLang],
+    successDesc: { az: "Məlumatlar dərhal sistem menecerinin admin panelinə göndərildi.", en: "Data has been instantly sent to the admin panel.", ru: "Данные мгновенно отправлены в админ-панель." }[currentLang],
+  };
 
   const handleNextStep = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!checkIn || !checkOut || !selectedRoomId || !phone || !email) {
+      setError("Zəhmət olmasa bütün xanaları doldurun.");
+      return;
+    }
+    setError("");
     setStep(2);
   };
 
   const handleFinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    const targetRoom = availableRooms.find(r => r.id === selectedRoom);
-
-    // Логика формирования данных под твою админку
-    const adminBookingPayload = {
-      guest: user?.name || user?.email || cardName || 'Anonim Qonaq',
-      room: targetRoom ? targetRoom.name : 'Standart Otaq',
-      roomType: targetRoom ? targetRoom.type : 'Standart',
+    const payload = {
+      guestName: cardName || user?.name || "Anonim Qonaq",
+      email: email,
+      phone: phone,
+      room: selectedRoomId,
       checkIn: checkIn,
       checkOut: checkOut,
-      status: 'Gözləyir', 
-      paymentMethod: 'Card Online',
-      details: { adults, kids }
+      notes: `Adults: ${adults}, Kids: ${kids}. Payment: Online Card (${cardNumber.slice(-4)})`,
+      status: "pending"
     };
 
     try {
-      // Здесь отправка на бэкенд в Prisma/API
-      // await createBooking(adminBookingPayload);
-      console.log('Отправлено в админку:', adminBookingPayload);
-      
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setSuccess(true);
-    } catch (err) {
-      console.error(err);
+      const res = await createBooking(payload);
+      if (res.success) {
+        setSuccess(true);
+      } else {
+        setError(res.message || "Xəta baş verdi");
+      }
+    } catch (err: any) {
+      setError(err.message || "Xəta baş verdi");
     } finally {
       setLoading(false);
     }
@@ -126,47 +245,67 @@ export default function Booking() {
   return (
     <section id="booking" className="py-24 md:py-32 bg-stone-50/60 border-t border-stone-200/50 scroll-mt-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         <div className="flex justify-center items-center gap-4 mb-10 text-xs font-bold tracking-widest text-stone-400">
-          <span className={step === 1 ? 'text-[#00b5d5]' : 'text-emerald-500'}>1. DETAILS</span>
+          <span className={step === 1 ? "text-[#00b5d5]" : "text-emerald-500"}>1. DETAILS</span>
           <div className="w-12 h-px bg-stone-300" />
-          <span className={step === 2 ? 'text-[#00b5d5]' : ''}>2. SECURE PAYMENT</span>
+          <span className={step === 2 ? "text-[#00b5d5]" : ""}>2. SECURE PAYMENT</span>
         </div>
+
+        {error && (
+          <div className="flex items-start gap-2 p-4 bg-rose-50 border border-rose-100 rounded-2xl mb-6 shadow-sm">
+            <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />
+            <p className="text-sm text-rose-700 font-medium">{error}</p>
+          </div>
+        )}
 
         {step === 1 ? (
           <form onSubmit={handleNextStep} className="bg-white border border-stone-200/80 p-6 md:p-10 rounded-3xl shadow-xl space-y-6">
             <h2 className="text-xl font-bold text-[#1e325c] border-b border-stone-100 pb-3">{dict.title1}</h2>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">Check-In</label>
-                <input type="date" required value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800" />
-              </div>
-              <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">Check-Out</label>
-                <input type="date" required value={checkOut} onChange={(e) => setCheckOut(e.target.value)} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800" />
-              </div>
+              <CustomDatePicker label="Check-In" value={checkIn} onChange={setCheckIn} bookedDates={bookedDates} />
+              <CustomDatePicker label="Check-Out" value={checkOut} onChange={setCheckOut} bookedDates={bookedDates} />
             </div>
 
             <div>
               <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.roomLabel}</label>
-              <select value={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 cursor-pointer">
-                {availableRooms.map(r => <option key={r.id} value={r.id}>{r.name} ({r.type})</option>)}
+              <select required value={selectedRoomId} onChange={(e) => setSelectedRoomId(e.target.value)} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 cursor-pointer">
+                {loadingRooms && <option value="">Loading...</option>}
+                {!loadingRooms && rooms.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.title[currentLang]} - ${r.price}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.adultsLabel}</label>
-                <select value={adults} onChange={(e) => setAdults(Number(e.target.value))} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-800 outline-none">{[1,2,3,4].map(n => <option key={n} value={n}>{n}</option>)}</select>
+                <select value={adults} onChange={(e) => setAdults(Number(e.target.value))} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-800 outline-none">
+                  {[1, 2, 3, 4].map((n) => <option key={n} value={n}>{n}</option>)}
+                </select>
               </div>
               <div>
                 <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.kidsLabel}</label>
-                <select value={kids} onChange={(e) => setKids(Number(e.target.value))} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-800 outline-none">{[0,1,2,3].map(n => <option key={n} value={n}>{n}</option>)}</select>
+                <select value={kids} onChange={(e) => setKids(Number(e.target.value))} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-800 outline-none">
+                  {[0, 1, 2, 3].map((n) => <option key={n} value={n}>{n}</option>)}
+                </select>
               </div>
             </div>
 
-            <button type="submit" className="w-full bg-[#00b5d5] hover:bg-[#009cae] text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl shadow-md transition-transform duration-150 active:scale-[0.98] cursor-pointer">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.emailLabel}</label>
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@mail.com" className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800" />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.phoneLabel}</label>
+                <input type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+994" className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800" />
+              </div>
+            </div>
+
+            <button type="submit" className="w-full bg-[#00b5d5] hover:bg-[#009cae] text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl shadow-md transition-transform duration-150 active:scale-[0.98] cursor-pointer mt-4">
               {dict.nextBtn}
             </button>
           </form>
@@ -177,6 +316,16 @@ export default function Booking() {
               <span className="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-2.5 py-1 rounded-md flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5" /> SSL Secured</span>
             </div>
 
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-semibold text-slate-600">Total Price:</span>
+                <span className="text-xl font-bold text-slate-800">
+                  ${rooms.find(r => r.id === selectedRoomId)?.price || 0}
+                  <span className="text-xs text-slate-400 font-normal ml-1">/ night</span>
+                </span>
+              </div>
+            </div>
+
             <div>
               <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.cardHolder}</label>
               <input type="text" required value={cardName} onChange={(e) => setCardName(e.target.value)} placeholder="JOHN DOE" className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white uppercase text-slate-800 placeholder-stone-300" />
@@ -184,7 +333,7 @@ export default function Booking() {
 
             <div>
               <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.cardNumber}</label>
-              <input type="text" required maxLength={16} value={cardNumber} onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ''))} placeholder="4129 0000 0000 0000" className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 placeholder-stone-300" />
+              <input type="text" required maxLength={16} value={cardNumber} onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ""))} placeholder="4129 0000 0000 0000" className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 placeholder-stone-300 tracking-widest" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -194,11 +343,11 @@ export default function Booking() {
               </div>
               <div>
                 <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">CVC / CVC2</label>
-                <input type="password" required maxLength={3} placeholder="***" value={cardCvc} onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, ''))} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 text-center" />
+                <input type="password" required maxLength={3} placeholder="***" value={cardCvc} onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, ""))} className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 text-center tracking-[0.2em]" />
               </div>
             </div>
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-4">
               <button type="button" onClick={() => setStep(1)} className="w-1/3 bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold text-xs uppercase tracking-widest py-4 rounded-xl transition-colors cursor-pointer">
                 {dict.backBtn}
               </button>
@@ -210,5 +359,13 @@ export default function Booking() {
         )}
       </div>
     </section>
+  );
+}
+
+export default function Booking() {
+  return (
+    <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#00b5d5]" /></div>}>
+      <BookingContent />
+    </Suspense>
   );
 }

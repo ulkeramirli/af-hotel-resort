@@ -1,5 +1,6 @@
 'use client';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useState } from 'react';
 import Image from 'next/image';
 
 export default function Footer() {
@@ -16,6 +17,21 @@ export default function Footer() {
     subscribeDesc: { az: 'Yalnız abunəçilər üçün endirimlər və xəbərlər.', en: 'Subscribe to unlock premium resort updates.', ru: 'Подпишитесь, чтобы получать скрытые скидки.' }[currentLang],
     placeholder: { az: 'E-poçt ünvanınız', en: 'Your email address', ru: 'Ваш email адрес' }[currentLang],
     subBtn: { az: 'Qoşul', en: 'Join', ru: 'ОK' }[currentLang]
+  };
+
+  const [email, setEmail] = useState('');
+  const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setSubStatus('loading');
+    // Simulate API call
+    setTimeout(() => {
+      setSubStatus('success');
+      setEmail('');
+      setTimeout(() => setSubStatus('idle'), 3000);
+    }, 1000);
   };
 
   return (
@@ -46,12 +62,15 @@ export default function Footer() {
             <h4 className="text-[9px] font-bold uppercase tracking-widest text-[#00b5d5]">{content.subscribeTitle}</h4>
             <p className="text-[11px] text-stone-400 font-light">{content.subscribeDesc}</p>
             
-            <div className="flex bg-white border border-cyan-100 rounded-lg p-1 focus-within:border-[#00b5d5] transition-all">
-              <input type="email" placeholder={content.placeholder} className="w-full bg-transparent px-2.5 text-xs font-light text-stone-800 outline-none placeholder-stone-300" />
-              <button className="bg-[#ff6c02] hover:bg-[#e55f00] text-white font-bold text-[10px] uppercase tracking-wider px-4 py-2 rounded-md transition-colors cursor-pointer shrink-0">
-                {content.subBtn}
-              </button>
-            </div>
+            <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
+              <div className="flex bg-white border border-cyan-100 rounded-lg p-1 focus-within:border-[#00b5d5] transition-all">
+                <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={content.placeholder} className="w-full bg-transparent px-2.5 text-xs font-light text-stone-800 outline-none placeholder-stone-300" disabled={subStatus === 'loading'} />
+                <button type="submit" disabled={subStatus === 'loading'} className="bg-[#ff6c02] hover:bg-[#e55f00] text-white font-bold text-[10px] uppercase tracking-wider px-4 py-2 rounded-md transition-colors cursor-pointer shrink-0 disabled:opacity-50">
+                  {subStatus === 'loading' ? '...' : content.subBtn}
+                </button>
+              </div>
+              {subStatus === 'success' && <p className="text-[10px] text-emerald-500 font-bold">Successfully subscribed!</p>}
+            </form>
           </div>
 
         </div>

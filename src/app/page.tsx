@@ -4,13 +4,13 @@
 import Providers from "@/components/Providers"; 
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import Booking from "@/components/Booking";
 import About from "@/components/About";
 import Rooms from "@/components/Rooms";
 import Aquapark from "@/components/Aquapark";
 import Restoran from "@/components/Restoran";
 // import Gallery from "@/components/Gallery";
 import Reviews from "@/components/Reviews";
-import Booking from "@/components/Booking";
 import Contacts from "@/components/Contacts";
 import Footer from "@/components/Footer";
 import FloatingActions from "@/components/FloatingActions";
@@ -30,8 +30,8 @@ export default function Home() {
           <Wonderland />
           <Restoran />
           <Reviews />
-          <Booking />
           <Contacts />
+          <Booking />
         </main>
         <Footer />
         <FloatingActions />

@@ -22,6 +22,7 @@ import { logout, getCurrentUser } from "@/services/api";
 interface User {
   name: string;
   email: string;
+  role?: string;
 }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -30,8 +31,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [user, setUser] = React.useState<User | null>(null);
 
   React.useEffect(() => {
-    setUser(getCurrentUser());
-  }, []);
+    const currentUser = getCurrentUser();
+    if (!currentUser || currentUser.role !== "admin") {
+      router.push("/login");
+    } else {
+      setUser(currentUser);
+    }
+  }, [router]);
 
 
   const menuItems = [
@@ -50,6 +56,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     logout();
     router.push("/login");
   };
+
+  if (!user) return null;
 
   return (
     <div className="min-h-screen flex" style={{ background: "var(--color-hotel-light)" }}>

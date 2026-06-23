@@ -80,7 +80,10 @@ export default function AdminRoomsPage() {
       capacity: Number(roomForm.capacity),
       amenities: roomForm.amenities.split(",").map((a) => a.trim()).filter(Boolean),
       isAvailable: roomForm.isAvailable,
-      images: roomForm.images || []
+      images: roomForm.images || [],
+      beds: Number(roomForm.beds) || 1,
+      baths: Number(roomForm.baths) || 1,
+      sqft: Number(roomForm.sqft) || 350,
     };
 
     try {
@@ -269,45 +272,106 @@ export default function AdminRoomsPage() {
                     Mövcuddur (Müştərilər bron edə bilər)
                   </label>
                 )}
-                <div className="md:col-span-3 flex flex-col gap-2">
-                  <p className="text-xs font-bold text-[#1e325c]">Otaq Şəkilləri</p>
-                  <div className="flex flex-wrap gap-2">
-                    {roomForm.images.map((img, idx) => (
-                      <div key={idx} className="relative w-20 h-20 group rounded-xl overflow-hidden border border-stone-200 shadow-sm">
-                        <img src={img} alt="" className="w-full h-full object-cover" />
-                        <button 
-                          type="button" 
-                          onClick={() => setRoomForm(prev => ({...prev, images: prev.images.filter((_, i) => i !== idx)}))}
-                          className="absolute inset-0 bg-black/50 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
-                        >
-                          <X className="w-5 h-5" />
-                        </button>
-                      </div>
-                    ))}
-                    <div className="relative w-20 h-20 border-2 border-dashed border-stone-300 rounded-xl flex flex-col items-center justify-center text-stone-400 hover:text-[#00b5d5] hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 transition-all cursor-pointer bg-stone-50">
-                      <Plus className="w-5 h-5 mb-1" />
-                      <span className="text-[10px] font-semibold text-center leading-tight">Şəkil<br/>Yüklə</span>
-                      <input 
-                        type="file" 
+                <div className="md:col-span-3 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-[#1e325c]">Otaq Şəkilləri <span className="text-stone-400 font-normal">({roomForm.images.length} şəkil)</span></p>
+                    <label className="flex items-center gap-1.5 text-[11px] font-bold text-[#00b5d5] cursor-pointer hover:underline">
+                      <Plus className="w-3.5 h-3.5" />
+                      Şəkil yüklə
+                      <input
+                        type="file"
                         accept="image/*"
+                        multiple
+                        className="hidden"
                         onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (!file) return;
-                          try {
-                            const data = await uploadImage(file);
-                            if (data.success) {
-                              setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
-                            } else {
-                              alert(data.message || "Xəta baş verdi");
+                          const files = Array.from(e.target.files || []);
+                          for (const file of files) {
+                            try {
+                              const data = await uploadImage(file);
+                              if (data.success) {
+                                setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
+                              } else {
+                                alert(data.message || "Xəta baş verdi");
+                              }
+                            } catch (err: any) {
+                              alert("Şəkil yüklənərkən xəta: " + err.message);
                             }
-                          } catch (err: any) {
-                            alert("Şəkil yüklənərkən xəta: " + err.message);
                           }
+                          e.target.value = "";
                         }}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
-                    </div>
+                    </label>
                   </div>
+
+                  {/* Image grid */}
+                  {roomForm.images.length > 0 && (
+                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                      {roomForm.images.map((img, idx) => (
+                        <div key={idx} className="relative aspect-square group rounded-xl overflow-hidden border border-stone-200 shadow-sm bg-stone-50">
+                          <img src={img} alt="" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => setRoomForm(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))}
+                            className="absolute inset-0 bg-black/55 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                          >
+                            <X className="w-5 h-5" />
+                          </button>
+                          {idx === 0 && (
+                            <span className="absolute top-1 left-1 bg-[#00b5d5] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">Ana</span>
+                          )}
+                        </div>
+                      ))}
+                      {/* Add more button */}
+                      <label className="aspect-square border-2 border-dashed border-stone-300 rounded-xl flex flex-col items-center justify-center text-stone-400 hover:text-[#00b5d5] hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 transition-all cursor-pointer bg-stone-50">
+                        <Plus className="w-5 h-5 mb-0.5" />
+                        <span className="text-[9px] font-semibold">Əlavə et</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          className="hidden"
+                          onChange={async (e) => {
+                            const files = Array.from(e.target.files || []);
+                            for (const file of files) {
+                              try {
+                                const data = await uploadImage(file);
+                                if (data.success) {
+                                  setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
+                                }
+                              } catch {}
+                            }
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    </div>
+                  )}
+
+                  {roomForm.images.length === 0 && (
+                    <label className="border-2 border-dashed border-stone-300 rounded-xl flex flex-col items-center justify-center py-8 text-stone-400 hover:text-[#00b5d5] hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 transition-all cursor-pointer bg-stone-50">
+                      <Plus className="w-8 h-8 mb-2" />
+                      <span className="text-xs font-semibold">Şəkil seçin (birdən çox ola bilər)</span>
+                      <span className="text-[10px] mt-1">PNG, JPG, WEBP</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={async (e) => {
+                          const files = Array.from(e.target.files || []);
+                          for (const file of files) {
+                            try {
+                              const data = await uploadImage(file);
+                              if (data.success) {
+                                setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
+                              }
+                            } catch {}
+                          }
+                          e.target.value = "";
+                        }}
+                      />
+                    </label>
+                  )}
                 </div>
                 <div className="flex gap-2 md:col-span-3 mt-2">
                   <button
@@ -342,7 +406,19 @@ export default function AdminRoomsPage() {
             {rooms.length === 0 ? (
                <div className="col-span-full py-10 text-center text-stone-400 text-sm">Otaq tapılmadı</div>
             ) : rooms.map((room) => (
-              <div key={room._id} className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm hover:shadow-md transition-shadow">
+              <div key={room._id} className="bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                {/* Room image thumbnail */}
+                {room.images && room.images.length > 0 && (
+                  <div className="relative h-36 w-full bg-stone-100">
+                    <img src={room.images[0]} alt={room.name} className="w-full h-full object-cover" />
+                    {room.images.length > 1 && (
+                      <span className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        +{room.images.length - 1} foto
+                      </span>
+                    )}
+                  </div>
+                )}
+                <div className="p-5">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-2">
                     <BedDouble className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
@@ -373,6 +449,7 @@ export default function AdminRoomsPage() {
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${room.isAvailable ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"}`}>
                     {room.isAvailable ? "Mövcud" : "Dolu"}
                   </span>
+                </div>
                 </div>
               </div>
             ))}

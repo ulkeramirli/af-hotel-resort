@@ -1,15 +1,36 @@
 'use client';
 import { useState, FormEvent } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { createReview } from '@/services/api';
+import { Loader2 } from 'lucide-react';
 
 export default function Contacts() {
   const { language } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSend = (e: FormEvent) => {
+  const [fullName, setFullName] = useState('');
+  const [emailOrPhone, setEmailOrPhone] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSend = async (e: FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    setLoading(true);
+    setError('');
+    try {
+      const res = await createReview({ fullName, emailOrPhone, message });
+      if (res.success) {
+        setSent(true);
+      } else {
+        setError(res.message || 'Xəta baş verdi');
+      }
+    } catch {
+      setError('Şəbəkə xətası. Zəhmət olmasa yenidən cəhd edin.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const content = {
@@ -55,22 +76,51 @@ export default function Contacts() {
                 
                 <div className="space-y-1 text-left relative group">
                   <label className="block text-[10px] uppercase tracking-widest text-[#1e325c] font-bold transition-colors group-focus-within:text-[#00b5d5]">{content.labelName}</label>
-                  <input required type="text" placeholder={content.placeholderName} className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-sm font-light outline-none focus:border-[#00b5d5] transition-all" />
+                  <input
+                    required
+                    type="text"
+                    value={fullName}
+                    onChange={e => setFullName(e.target.value)}
+                    placeholder={content.placeholderName}
+                    className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-sm font-light outline-none focus:border-[#00b5d5] transition-all"
+                  />
                 </div>
 
                 <div className="space-y-1 text-left relative group">
                   <label className="block text-[10px] uppercase tracking-widest text-[#1e325c] font-bold transition-colors group-focus-within:text-[#00b5d5]">{content.labelPhone}</label>
-                  <input required type="text" placeholder="+994 / info@example.com" className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-sm font-light outline-none focus:border-[#00b5d5] transition-all" />
+                  <input
+                    required
+                    type="text"
+                    value={emailOrPhone}
+                    onChange={e => setEmailOrPhone(e.target.value)}
+                    placeholder="+994 / info@example.com"
+                    className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-sm font-light outline-none focus:border-[#00b5d5] transition-all"
+                  />
                 </div>
 
                 <div className="space-y-1 text-left relative group">
                   <label className="block text-[10px] uppercase tracking-widest text-[#1e325c] font-bold transition-colors group-focus-within:text-[#00b5d5]">{content.labelMsg}</label>
-                  <textarea required rows={3} placeholder={content.placeholderMsg} className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-xs font-light outline-none focus:border-[#00b5d5] transition-all resize-none leading-relaxed" />
+                  <textarea
+                    required
+                    rows={3}
+                    value={message}
+                    onChange={e => setMessage(e.target.value)}
+                    placeholder={content.placeholderMsg}
+                    className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-xs font-light outline-none focus:border-[#00b5d5] transition-all resize-none leading-relaxed"
+                  />
                 </div>
               </div>
 
-              <button type="submit" className="w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-xl transition-colors cursor-pointer shadow-sm">
-                {content.btn}
+              {error && (
+                <p className="text-xs text-rose-500 font-medium">{error}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#ff6c02] hover:bg-[#e55f00] disabled:bg-stone-300 text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-xl transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-2"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : content.btn}
               </button>
             </form>
           )}

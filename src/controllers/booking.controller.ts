@@ -65,7 +65,12 @@ export class BookingController {
       checkIn,
       checkOut,
     );
-    await sendMail(email, mail.subject, mail.html);
+    try {
+      await sendMail(email, mail.subject, mail.html);
+    } catch (e) {
+      console.warn("Could not send user email:", e);
+    }
+    
     const adminMail = adminBookingNotification(
       guestName,
       email,
@@ -75,12 +80,15 @@ export class BookingController {
       checkOut,
     );
 
-    await sendMail(process.env.HOTEL_EMAIL!, adminMail.subject, adminMail.html);
+    try {
+      await sendMail(process.env.HOTEL_EMAIL || "admin@example.com", adminMail.subject, adminMail.html);
+    } catch (e) {
+      console.warn("Could not send admin email:", e);
+    }
+
     return NextResponse.json({
       success: true,
-
       message: "Booking created successfully",
-
       booking,
     });
   }
@@ -202,6 +210,30 @@ export class BookingController {
       success: true,
 
       message: "Booking deleted successfully",
+    });
+  }
+
+  static async getBookedDates(req: Request) {
+    const { searchParams } = new URL(req.url);
+    const roomId = searchParams.get("roomId");
+
+    if (!roomId) {
+      throw new Error("Room ID is required");
+    }
+
+    const bookings = await Booking.find({
+      room: roomId,
+      status: { $ne: "cancelled" }
+    }).select("checkIn checkOut");
+
+    const dates = bookings.map(b => ({
+      checkIn: b.checkIn,
+      checkOut: b.checkOut
+    }));
+
+    return NextResponse.json({
+      success: true,
+      dates
     });
   }
 }

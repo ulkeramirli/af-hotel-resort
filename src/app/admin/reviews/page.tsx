@@ -2,7 +2,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Star, Reply, Loader2, CheckCircle, Trash2, ShieldAlert } from "lucide-react";
-import { getReviews, updateReviewStatus, deleteReview } from "@/services/api";
+import { getAllReviews, updateReviewStatus, deleteReview } from "@/services/api";
 import type { Review } from "@/types/api";
 
 export default function AdminReviewsPage() {
@@ -16,7 +16,7 @@ export default function AdminReviewsPage() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const data = await getReviews();
+      const data = await getAllReviews();
       setReviews(data);
     } catch (err: any) {
       setError(err.message || "Xəta baş verdi");

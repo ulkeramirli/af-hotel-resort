@@ -16,8 +16,20 @@ import type {
 
 const BASE = "/api";
 
+function setToken(token: string, user: any) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("af_token", token);
+  localStorage.setItem("af_user", JSON.stringify(user));
+  // Set cookie for 7 days
+  document.cookie = `af_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+}
+
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
+  // Try cookie first
+  const match = document.cookie.match(new RegExp("(^| )af_token=([^;]+)"));
+  if (match) return match[2];
+  // Fallback to localStorage
   const token = localStorage.getItem("af_token");
   if (!token || token === "null" || token === "undefined") return null;
   if (token.startsWith('"') && token.endsWith('"')) {
@@ -43,15 +55,16 @@ export async function login(email: string, password: string) {
   });
   const data = await res.json();
   if (data.success) {
-    localStorage.setItem("af_token", data.data.token);
-    localStorage.setItem("af_user", JSON.stringify(data.data.user));
+    setToken(data.data.token, data.data.user);
   }
   return data;
 }
 
 export function logout() {
+  if (typeof window === "undefined") return;
   localStorage.removeItem("af_token");
   localStorage.removeItem("af_user");
+  document.cookie = "af_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 }
 
 export function getCurrentUser(): User | null {
@@ -75,8 +88,70 @@ export async function register(name: string, email: string, password: string): P
     return { success: false, message: error.message };
   }
 }
-export async function loginWithGoogle(): Promise<any> {
-  return { success: false, message: "Google ilə giriş hələ aktiv deyil" };
+
+export async function forgotPassword(email: string): Promise<any> {
+  try {
+    const res = await fetch(`${BASE}/auth/forgot-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    return await res.json();
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
+
+export async function resetPassword(email: string, otp: string, newPassword: string): Promise<any> {
+  try {
+    const res = await fetch(`${BASE}/auth/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp, newPassword }),
+    });
+    return await res.json();
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
+
+export async function updateProfile(name: string, email: string): Promise<any> {
+  try {
+    const res = await fetch(`${BASE}/auth/profile`, {
+      method: "PATCH",
+      headers: authHeaders(),
+      body: JSON.stringify({ name, email }),
+    });
+    const data = await res.json();
+    if (data.success && data.data && data.data.user) {
+      localStorage.setItem("af_user", JSON.stringify(data.data.user));
+    }
+    return data;
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
+
+export async function loginWithGoogle(name?: string, email?: string): Promise<any> {
+  // Simulated Google login: if user exists → log in, else → register
+  try {
+    const res = await fetch(`${BASE}/auth/google`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name || "Google User",
+        email: email || "google_demo_user@example.com",
+        googleId: "123456789",
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setToken(data.data.token, data.data.user);
+    }
+    return data;
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
 }
 
 // ─── PUBLIC ROOM TYPES (for frontend pages) ───
@@ -90,6 +165,30 @@ export interface PublicRoom {
   price: number;
   images: string[];
   includes: { az: string[]; en: string[]; ru: string[] };
+  beds?: number;
+  baths?: number;
+}
+
+
+// Validate image URL — reject single-segment hostnames like "image.jpg"
+function isValidImageUrl(url: string): boolean {
+  try {
+    const u = new URL(url);
+    // Hostname must contain at least one dot AND not just be a file extension pretending to be a host
+    const host = u.hostname;
+    if (!host.includes(".")) return false;
+    // Reject hostnames that look like filenames (e.g. "image.jpg")
+    if (/^[^.]+\.(jpg|jpeg|png|webp|gif|svg|bmp)$/i.test(host)) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function sanitizeImages(images: string[] | undefined): string[] {
+  if (!images?.length) return [];
+  const valid = images.filter(isValidImageUrl);
+  return valid;
 }
 
 export async function getPublicRooms(): Promise<PublicRoom[]> {
@@ -108,14 +207,16 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
         en: `${r.capacity} persons`,
         ru: `${r.capacity} человек`,
       },
-      size: "35 m²",
+      size: r.sqft ? `${r.sqft} sqft` : "350 sqft",
       price: r.price,
-      images: r.images?.length ? r.images : ["/placeholder-room.jpg"],
+      images: sanitizeImages(r.images),
       includes: {
         az: r.amenities ?? [],
         en: r.amenities ?? [],
         ru: r.amenities ?? [],
       },
+      beds: r.beds,
+      baths: r.baths,
     }));
   } catch {
     return [];
@@ -138,14 +239,16 @@ export async function getPublicRoomById(id: string): Promise<PublicRoom | null> 
         en: `${r.capacity} persons`,
         ru: `${r.capacity} человек`,
       },
-      size: "35 m²",
+      size: r.sqft ? `${r.sqft} sqft` : "350 sqft",
       price: r.price,
-      images: r.images?.length ? r.images : ["/placeholder-room.jpg"],
+      images: sanitizeImages(r.images),
       includes: {
         az: r.amenities ?? [],
         en: r.amenities ?? [],
         ru: r.amenities ?? [],
       },
+      beds: r.beds,
+      baths: r.baths,
     };
   } catch {
     return null;
@@ -328,13 +431,31 @@ export async function deleteActivityCategory(id: string) {
   return data;
 }
 
-// ─── BOOKINGS ───
 // GET /api/bookings → { success, page, limit, total, totalPages, bookings[] }
 export async function getBookings(): Promise<Booking[]> {
   const res = await fetch(`${BASE}/bookings?limit=100`, { headers: authHeaders() });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Bronlar yüklənmədi");
   return data.bookings ?? [];
+}
+
+export async function getBookedDates(roomId: string): Promise<{checkIn: string; checkOut: string}[]> {
+  const res = await fetch(`${BASE}/bookings/dates?roomId=${roomId}`);
+  const data = await res.json();
+  return data.dates ?? [];
+}
+
+export async function createBooking(payload: any): Promise<any> {
+  try {
+    const res = await fetch(`${BASE}/bookings`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify(payload),
+    });
+    return await res.json();
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
 }
 
 // PATCH /api/bookings/[id] → { success, message, booking }
@@ -367,6 +488,22 @@ export async function getReviews(): Promise<Review[]> {
   const data = await res.json();
   // Backend returns key "review" (singular), not "reviews"
   return data.review ?? data.reviews ?? [];
+}
+
+// GET /api/admin/reviews → all reviews regardless of status (admin only)
+export async function getAllReviews(): Promise<Review[]> {
+  const res = await fetch(`${BASE}/admin/reviews`, { headers: authHeaders() });
+  const data = await res.json();
+  return data.reviews ?? data.review ?? [];
+}
+
+export async function createReview(payload: { fullName: string; emailOrPhone: string; message: string }) {
+  const res = await fetch(`${BASE}/reviews`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return res.json();
 }
 
 // PUT /api/reviews/[id] → { success, review }
