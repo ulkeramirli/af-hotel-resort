@@ -7,9 +7,10 @@ import { Plus, Trash2, Loader2, Pencil, X, Check, Tags, Palmtree } from "lucide-
 import { 
   getActivities, createActivity, updateActivity, deleteActivity,
   getActivityCategories, createActivityCategory, updateActivityCategory, deleteActivityCategory,
+  getActivitySettings, updateActivitySettings,
   uploadImage
 } from "@/services/api";
-import type { Activity, ActivityCategory } from "@/types/api";
+import type { Activity, ActivityCategory, ActivitySettings } from "@/types/api";
 
 const emptyActivityForm = {
   title: "",
@@ -31,15 +32,30 @@ export default function AdminActivitiesPage() {
   const [activityForm, setActivityForm] = useState(emptyActivityForm);
 
   // Category State
+  const emptyCategoryForm = { name: "", description: "", emoji: "" };
   const [editCategoryId, setEditCategoryId] = useState<string | null>(null);
-  const [categoryFormName, setCategoryFormName] = useState("");
+  const [categoryForm, setCategoryForm] = useState(emptyCategoryForm);
+
+  // Settings State
+  const emptySettings = {
+    tag: "", title: "", subtitle: "",
+    stats: [
+      { value: "", label: "", sub: "" },
+      { value: "", label: "", sub: "" },
+      { value: "", label: "", sub: "" },
+      { value: "", label: "", sub: "" },
+    ]
+  };
+  const [settingsForm, setSettingsForm] = useState<ActivitySettings>(emptySettings);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [aData, cData] = await Promise.all([getActivities(), getActivityCategories()]);
+      const [aData, cData, sData] = await Promise.all([getActivities(), getActivityCategories(), getActivitySettings()]);
       setActivities(aData);
       setCategories(cData);
+      setSettingsForm(sData);
       if (cData.length > 0 && !activityForm.category) {
         setActivityForm(prev => ({ ...prev, category: cData[0]._id }));
       }
@@ -54,6 +70,19 @@ export default function AdminActivitiesPage() {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ─── SETTINGS ACTIONS ───
+  const handleSaveSettings = async () => {
+    try {
+      setSavingSettings(true);
+      await updateActivitySettings(settingsForm);
+      alert("Tənzimləmələr yadda saxlanıldı!");
+    } catch (err: any) {
+      alert(err.message || "Xəta baş verdi");
+    } finally {
+      setSavingSettings(false);
+    }
+  };
 
   // ─── ACTIVITY ACTIONS ───
   const handleActivitySubmit = async (e: React.FormEvent) => {
@@ -100,16 +129,16 @@ export default function AdminActivitiesPage() {
   // ─── CATEGORY ACTIONS ───
   const handleCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!categoryFormName) return;
+    if (!categoryForm.name) return;
     
     try {
       if (editCategoryId) {
-        await updateActivityCategory(editCategoryId, categoryFormName);
+        await updateActivityCategory(editCategoryId, categoryForm);
       } else {
-        await createActivityCategory(categoryFormName);
+        await createActivityCategory(categoryForm);
       }
       setEditCategoryId(null);
-      setCategoryFormName("");
+      setCategoryForm(emptyCategoryForm);
       loadData();
     } catch (err: any) {
       alert(err.message || "Kateqoriya yadda saxlanılarkən xəta baş verdi");
@@ -118,7 +147,11 @@ export default function AdminActivitiesPage() {
 
   const startEditCategory = (cat: ActivityCategory) => {
     setEditCategoryId(cat._id);
-    setCategoryFormName(cat.name);
+    setCategoryForm({
+      name: cat.name || "",
+      description: cat.description || "",
+      emoji: cat.emoji || "",
+    });
   };
 
   const handleDeleteCategory = async (id: string) => {
@@ -176,6 +209,94 @@ export default function AdminActivitiesPage() {
 
       {activeTab === "activities" && (
         <div className="space-y-6">
+          {/* SETTINGS FORM */}
+          <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+                <Tags className="w-4 h-4 text-[#00b5d5]" />
+                Səhifə Başlıqları və Statistikalar
+              </h3>
+              <button
+                onClick={handleSaveSettings}
+                disabled={savingSettings}
+                className="px-4 py-2 text-white text-xs font-bold rounded-xl transition-opacity hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
+                style={{ background: "var(--color-hotel-blue)" }}
+              >
+                {savingSettings ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                Yadda Saxla
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-semibold text-stone-500 mb-1 block">Tag (məs: AQUA & BEACH RESORT)</label>
+                <input
+                  placeholder="Tag..."
+                  value={settingsForm.tag}
+                  onChange={(e) => setSettingsForm({ ...settingsForm, tag: e.target.value })}
+                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-stone-500 mb-1 block">Başlıq (məs: Eksklüziv Su Dünyası)</label>
+                <input
+                  placeholder="Başlıq..."
+                  value={settingsForm.title}
+                  onChange={(e) => setSettingsForm({ ...settingsForm, title: e.target.value })}
+                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="text-xs font-semibold text-stone-500 mb-1 block">Açıqlama</label>
+                <textarea
+                  placeholder="Səhifənin alt başlığı..."
+                  value={settingsForm.subtitle}
+                  onChange={(e) => setSettingsForm({ ...settingsForm, subtitle: e.target.value })}
+                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs h-12 resize-none focus:outline-none focus:border-[#00b5d5]"
+                />
+              </div>
+            </div>
+            
+            <div className="pt-4 border-t border-stone-100">
+              <label className="text-xs font-semibold text-stone-500 mb-2 block">4 Dinamik Statistika (İkonlar sabitdir: Dalğa, İnsanlar, Saat, Ulduz)</label>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {settingsForm.stats?.map((stat, i) => (
+                  <div key={i} className="p-3 bg-stone-50 border border-stone-200 rounded-xl space-y-2">
+                    <input
+                      placeholder="Dəyər (məs: 25+)"
+                      value={stat.value}
+                      onChange={(e) => {
+                        const newStats = [...settingsForm.stats];
+                        newStats[i].value = e.target.value;
+                        setSettingsForm({ ...settingsForm, stats: newStats });
+                      }}
+                      className="w-full px-2 py-1.5 bg-white border border-stone-200 rounded-lg text-xs font-bold focus:outline-none focus:border-[#00b5d5]"
+                    />
+                    <input
+                      placeholder="Başlıq (məs: Su Əyləncəsi)"
+                      value={stat.label}
+                      onChange={(e) => {
+                        const newStats = [...settingsForm.stats];
+                        newStats[i].label = e.target.value;
+                        setSettingsForm({ ...settingsForm, stats: newStats });
+                      }}
+                      className="w-full px-2 py-1.5 bg-white border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-[#00b5d5]"
+                    />
+                    <input
+                      placeholder="Alt başlıq (məs: Mövsüm)"
+                      value={stat.sub}
+                      onChange={(e) => {
+                        const newStats = [...settingsForm.stats];
+                        newStats[i].sub = e.target.value;
+                        setSettingsForm({ ...settingsForm, stats: newStats });
+                      }}
+                      className="w-full px-2 py-1.5 bg-white border border-stone-200 rounded-lg text-[10px] focus:outline-none focus:border-[#00b5d5]"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* ACTIVITY FORM */}
           <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
             <h3 className="font-bold text-[#1e325c] text-sm mb-4 flex items-center gap-2">
@@ -305,17 +426,29 @@ export default function AdminActivitiesPage() {
               </h3>
               <form onSubmit={handleCategorySubmit} className="space-y-4">
                 <input
-                  placeholder="Kateqoriya adı (məs: Uşaqlar üçün)"
-                  value={categoryFormName}
-                  onChange={(e) => setCategoryFormName(e.target.value)}
+                  placeholder="Kateqoriya adı (məs: Akvapark)"
+                  value={categoryForm.name}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                />
+                <input
+                  placeholder="Emoji (məs: 🌊)"
+                  value={categoryForm.emoji}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, emoji: e.target.value })}
+                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                />
+                <textarea
+                  placeholder="Açıqlama"
+                  value={categoryForm.description}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
+                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs h-16 resize-none focus:outline-none focus:border-[#00b5d5]"
                 />
                 <div className="flex gap-2">
                   <button type="submit" className="flex-1 px-4 py-2 text-white text-xs font-bold rounded-xl transition-opacity hover:opacity-90" style={{ background: "var(--color-hotel-blue)" }}>
                     {editCategoryId ? "Yadda Saxla" : "Əlavə Et"}
                   </button>
                   {editCategoryId && (
-                    <button type="button" onClick={() => { setEditCategoryId(null); setCategoryFormName(""); }} className="px-4 py-2 bg-stone-100 text-stone-600 text-xs font-bold rounded-xl">
+                    <button type="button" onClick={() => { setEditCategoryId(null); setCategoryForm(emptyCategoryForm); }} className="px-4 py-2 bg-stone-100 text-stone-600 text-xs font-bold rounded-xl">
                       Ləğv
                     </button>
                   )}
@@ -327,12 +460,17 @@ export default function AdminActivitiesPage() {
              {categories.length === 0 ? (
                <div className="bg-white py-10 rounded-2xl border border-stone-100 shadow-sm text-center text-stone-400 text-sm">Kateqoriya tapılmadı</div>
              ) : categories.map((cat) => (
-                <div key={cat._id} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-[#00b5d5]">
-                      <Tags className="w-4 h-4" />
+                <div key={cat._id} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-start">
+                  <div className="flex gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-xl shrink-0">
+                      {cat.emoji || <Tags className="w-5 h-5 text-[#00b5d5]" />}
                     </div>
-                    <span className="font-bold text-sm text-[#1e325c]">{cat.name}</span>
+                    <div>
+                      <span className="font-bold text-sm text-[#1e325c] block">{cat.name}</span>
+                      {cat.description && (
+                        <p className="text-xs text-stone-500 mt-1 line-clamp-2">{cat.description}</p>
+                      )}
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => startEditCategory(cat)} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">

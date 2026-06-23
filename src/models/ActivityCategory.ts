@@ -7,6 +7,14 @@ const activityCategorySchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    description: {
+      type: String,
+      default: "",
+    },
+    emoji: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

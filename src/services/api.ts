@@ -16,6 +16,7 @@ import type {
   Restaurant,
   MenuCategory,
   RestaurantSettings,
+  ActivitySettings,
 } from "@/types/api";
 
 const BASE = "/api";
@@ -401,11 +402,11 @@ export async function getActivityCategories(): Promise<ActivityCategory[]> {
 }
 
 // POST /api/activity-categories → { success, category }
-export async function createActivityCategory(name: string) {
+export async function createActivityCategory(payload: Partial<ActivityCategory>) {
   const res = await fetch(`${BASE}/activity-categories`, {
     method: "POST",
     headers: authHeaders(),
-    body: JSON.stringify({ name }),
+    body: JSON.stringify(payload),
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Kateqoriya yaradılmadı");
@@ -413,11 +414,11 @@ export async function createActivityCategory(name: string) {
 }
 
 // PUT /api/activity-categories/[id]
-export async function updateActivityCategory(id: string, name: string) {
+export async function updateActivityCategory(id: string, payload: Partial<ActivityCategory>) {
   const res = await fetch(`${BASE}/activity-categories/${id}`, {
     method: "PUT",
     headers: authHeaders(),
-    body: JSON.stringify({ name }),
+    body: JSON.stringify(payload),
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Kateqoriya yenilənmədi");
@@ -433,6 +434,26 @@ export async function deleteActivityCategory(id: string) {
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Kateqoriya silinmədi");
   return data;
+}
+
+// GET /api/activity-settings → { success, settings }
+export async function getActivitySettings(): Promise<ActivitySettings> {
+  const res = await fetch(`${BASE}/activity-settings`);
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Tənzimləmələr yüklənmədi");
+  return data.settings;
+}
+
+// PATCH /api/activity-settings → { success, settings }
+export async function updateActivitySettings(payload: Partial<ActivitySettings>): Promise<ActivitySettings> {
+  const res = await fetch(`${BASE}/activity-settings`, {
+    method: "PATCH",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message || "Tənzimləmələr yenilənmədi");
+  return data.settings;
 }
 
 // GET /api/bookings → { success, page, limit, total, totalPages, bookings[] }

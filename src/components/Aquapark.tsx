@@ -1,10 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, Palmtree, Tv, Compass, MapPin, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence } from "framer-motion";
+import { getActivities, getActivityCategories, getActivitySettings } from "@/services/api";
+import type { Activity, ActivityCategory, ActivitySettings } from "@/types/api";
 
 const content = {
   az: {
@@ -223,7 +225,52 @@ export default function Aquapark() {
   const [activeTab, setActiveTab] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const activeZone = c.zones[activeTab];
+  const [dbZones, setDbZones] = useState<any[]>([]);
+  const [settings, setSettings] = useState<ActivitySettings | null>(null);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const [acts, cats, sets] = await Promise.all([getActivities(), getActivityCategories(), getActivitySettings()]);
+        setSettings(sets);
+        if (cats.length > 0) {
+          const mappedZones = cats.map(cat => ({
+            id: cat._id,
+            name: cat.name,
+            desc: cat.description || "",
+            emoji: cat.emoji || "",
+            icon: Waves, // fallback icon
+            items: acts
+              .filter(a => (typeof a.category === 'object' ? (a.category as any)._id : a.category) === cat._id)
+              .map(a => ({
+                name: a.title,
+                icon: "✨",
+                desc: a.description,
+                img: a.image || "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80",
+              })),
+          }));
+          setDbZones(mappedZones);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchActivities();
+  }, []);
+
+  const activeZones = dbZones.length > 0 ? dbZones : c.zones;
+  const activeZone = activeZones[activeTab] || activeZones[0];
+
+  const displayTag = settings?.tag || c.tag;
+  const displayTitle = settings?.title || c.title;
+  const displaySubtitle = settings?.subtitle || c.subtitle;
+
+  const dynamicStats = [
+    { icon: Waves, label: settings?.stats?.[0]?.value || "25+", sub1: settings?.stats?.[0]?.label || (l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов"), sub2: settings?.stats?.[0]?.sub },
+    { icon: Users, label: settings?.stats?.[1]?.value || "2500+", sub1: settings?.stats?.[1]?.label || (l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день"), sub2: settings?.stats?.[1]?.sub },
+    { icon: Clock, label: settings?.stats?.[2]?.value || c.openHours, sub1: settings?.stats?.[2]?.label || c.season, sub2: settings?.stats?.[2]?.sub },
+    { icon: Star, label: settings?.stats?.[3]?.value || "5.0", sub1: settings?.stats?.[3]?.label || (l === "az" ? "Lüks Premium Xidmət" : l === "en" ? "Luxury Premium Service" : "Люкс Премиум Сервис"), sub2: settings?.stats?.[3]?.sub },
+  ];
 
   return (
     <section id="aquapark" className="py-32 bg-white scroll-mt-20">
@@ -231,29 +278,25 @@ export default function Aquapark() {
         {/* Header */}
         <ScrollReveal direction="up" delay={0.1} className="text-center space-y-3">
           <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
-            {c.tag}
+            {displayTag}
           </span>
           <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
-            {c.title}
+            {displayTitle}
           </h2>
-          <p className="text-sm text-stone-400 max-w-xl mx-auto leading-relaxed">{c.subtitle}</p>
+          <p className="text-sm text-stone-400 max-w-xl mx-auto leading-relaxed">{displaySubtitle}</p>
         </ScrollReveal>
 
         {/* Stats bar */}
         <ScrollReveal direction="up" delay={0.2} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: Waves, label: "25+", sub: l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов" },
-            { icon: Users, label: "2500+", sub: l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день" },
-            { icon: Clock, label: c.openHours, sub: c.season },
-            { icon: Star, label: "5.0", sub: l === "az" ? "Lüks Premium Xidmət" : l === "en" ? "Luxury Premium Service" : "Люкс Премиум Сервис" },
-          ].map((s, i) => (
+          {dynamicStats.map((s, i) => (
             <div
               key={i}
               className="bg-[#f9f8f4] border border-stone-100/50 rounded-2xl p-6 flex flex-col items-center text-center gap-2 hover:scale-[1.02] transition-transform"
             >
               <s.icon className="w-5 h-5" style={{ color: "#00b5d5" }} />
               <span className="text-xl font-bold text-[#1e325c]">{s.label}</span>
-              <span className="text-[10px] text-stone-400 font-medium tracking-wide uppercase">{s.sub}</span>
+              <span className="text-[10px] text-stone-400 font-medium tracking-wide uppercase">{s.sub1}</span>
+              {s.sub2 && <span className="text-[9px] text-stone-400 tracking-wide">{s.sub2}</span>}
             </div>
           ))}
         </ScrollReveal>
@@ -262,7 +305,7 @@ export default function Aquapark() {
         <div className="space-y-10">
           {/* Custom Luxury Navigation Tab Buttons */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-stone-50 p-2 rounded-2xl border border-stone-100">
-            {c.zones.map((zone, i) => {
+            {activeZones.map((zone, i) => {
               const IconComponent = zone.icon;
               return (
                 <button
@@ -275,7 +318,11 @@ export default function Aquapark() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <IconComponent className={`w-4 h-4 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
+                    {zone.emoji ? (
+                      <span className="text-sm">{zone.emoji}</span>
+                    ) : (
+                      <IconComponent className={`w-4 h-4 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
+                    )}
                     <span className={`text-xs font-bold ${activeTab === i ? "text-[#1e325c]" : "text-stone-500"}`}>
                       {zone.name}
                     </span>
@@ -296,7 +343,7 @@ export default function Aquapark() {
           {/* Attractions / Items Cards Dynamic Grid */}
           <motion.div layout className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <AnimatePresence mode="popLayout">
-              {activeZone?.items.map((item, i) => (
+              {activeZone?.items.map((item: any, i: number) => (
                 <motion.div
                   key={item.name}
                   initial={{ opacity: 0, scale: 0.95 }}

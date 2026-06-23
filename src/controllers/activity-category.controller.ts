@@ -7,6 +7,8 @@ export class ActivityCategoryController {
 
     const category = await ActivityCategory.create({
       name: body.name,
+      description: body.description || "",
+      emoji: body.emoji || "",
     });
 
     return NextResponse.json(

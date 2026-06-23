@@ -83,9 +83,24 @@ export interface Ticket {
   updatedAt?: string;
 }
 
+export interface ActivityStat {
+  value: string;
+  label: string;
+  sub: string;
+}
+
+export interface ActivitySettings {
+  tag: string;
+  title: string;
+  subtitle: string;
+  stats: ActivityStat[];
+}
+
 export interface ActivityCategory {
   _id: string;
   name: string;
+  description?: string;
+  emoji?: string;
   createdAt?: string;
   updatedAt?: string;
 }
