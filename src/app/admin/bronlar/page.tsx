@@ -14,6 +14,12 @@ export default function AdminBookingsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("Hamısı");
 
+  const loc = (obj: any) => {
+    if (!obj) return "";
+    if (typeof obj === "string") return obj;
+    return obj.az || obj.en || obj.ru || "";
+  };
+
   // Edit Modal State
   const [editBookingId, setEditBookingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<Booking>>({});
@@ -114,7 +120,7 @@ export default function AdminBookingsPage() {
     const searchLower = searchQuery.toLowerCase();
     const matchSearch =
       (b.guestName || "").toLowerCase().includes(searchLower) ||
-      (b.room?.name || "").toLowerCase().includes(searchLower) ||
+      loc(b.room?.name).toLowerCase().includes(searchLower) ||
       (b.email || "").toLowerCase().includes(searchLower) ||
       (b.phone || "").toLowerCase().includes(searchLower);
     return matchFilter && matchSearch;
@@ -194,8 +200,8 @@ export default function AdminBookingsPage() {
                     <td className="py-4">
                       {b.room ? (
                         <div>
-                          <p className="font-medium text-[#1e325c]">{b.room.name}</p>
-                          <p className="text-[10px] text-stone-400">{typeof b.room.type === 'object' ? (b.room.type as any).name : b.room.type}</p>
+                          <p className="font-medium text-[#1e325c]">{loc(b.room.name)}</p>
+                          <p className="text-[10px] text-stone-400">{loc(b.room.type?.name || b.room.type)}</p>
                         </div>
                       ) : (
                         <span className="text-xs text-stone-400">Silinmiş otaq</span>
@@ -282,7 +288,7 @@ export default function AdminBookingsPage() {
                   >
                     <option value="" disabled>Otaq seçin...</option>
                     {rooms.map((r) => (
-                      <option key={r._id} value={r._id}>{r.name} - {r.price} AZN</option>
+                      <option key={r._id} value={r._id}>{loc(r.name)} - {r.price} AZN</option>
                     ))}
                   </select>
                 </div>

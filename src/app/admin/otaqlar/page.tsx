@@ -60,6 +60,12 @@ export default function AdminRoomsPage() {
 
   const [formLang, setFormLang] = useState<"az" | "en" | "ru">("az");
 
+  const loc = (obj: any) => {
+    if (!obj) return "";
+    if (typeof obj === "string") return obj;
+    return obj.az || obj.en || obj.ru || "";
+  };
+
   // Room Type State
   const [editTypeId, setEditTypeId] = useState<string | null>(null);
   const [typeFormName, setTypeFormName] = useState({ az: "", en: "", ru: "" });
@@ -317,7 +323,7 @@ export default function AdminRoomsPage() {
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 >
                   {roomTypes.map((t) => (
-                    <option key={t._id} value={t._id}>{(t.name as any)?.az || t.name}</option>
+                    <option key={t._id} value={t._id}>{loc(t.name)}</option>
                   ))}
                 </select>
                 <input
@@ -475,7 +481,7 @@ export default function AdminRoomsPage() {
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-2">
                     <BedDouble className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
-                    <h4 className="font-bold text-sm text-[#1e325c]">{(room.name as any)?.az || room.name}</h4>
+                    <h4 className="font-bold text-sm text-[#1e325c]">{loc(room.name)}</h4>
                   </div>
                   <div className="flex gap-1">
                     <button onClick={() => startEditRoom(room)} className="p-1.5 text-stone-400 hover:text-[#1e325c] rounded-lg hover:bg-stone-50">
@@ -487,9 +493,9 @@ export default function AdminRoomsPage() {
                   </div>
                 </div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5] mb-1">
-                  {room.type ? (typeof room.type === 'object' ? (room.type as any).name?.az || (room.type as any).name : room.type) : "Kateqoriya silinib"}
+                  {room.type ? (typeof room.type === 'object' ? loc((room.type as any).name) : room.type) : "Kateqoriya silinib"}
                 </p>
-                <p className="text-xs text-stone-500 line-clamp-2 mb-3">{(room.description as any)?.az || room.description}</p>
+                <p className="text-xs text-stone-500 line-clamp-2 mb-3">{loc(room.description)}</p>
                 </div>
               </div>
             ))}
@@ -532,7 +538,7 @@ export default function AdminRoomsPage() {
              {roomTypes.map((type) => (
                 <div key={type._id} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <span className="font-bold text-sm text-[#1e325c]">{(type.name as any)?.az || type.name}</span>
+                    <span className="font-bold text-sm text-[#1e325c]">{loc(type.name)}</span>
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => startEditType(type)} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-blue-50">
