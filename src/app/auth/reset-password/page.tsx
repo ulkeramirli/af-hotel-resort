@@ -69,12 +69,20 @@ function ResetPasswordForm() {
     setLoading(true);
     setError("");
     try {
-      const res = await resetPassword(email, otp, newPassword);
+      const res = await resetPassword(email.trim(), otp, newPassword);
       if (res.success) {
         setSuccess(true);
         router.push("/auth/sign-in");
       } else {
-        setError(res.message || t.errorMsg);
+        let errorText = res.message;
+        if (res.message === "Invalid OTP") {
+          errorText = l === "az" ? "Təsdiq kodu yanlışdır" : l === "ru" ? "Неверный код" : "Invalid OTP";
+        } else if (res.message === "OTP expired") {
+          errorText = l === "az" ? "Təsdiq kodunun vaxtı bitib" : l === "ru" ? "Срок действия кода истек" : "OTP expired";
+        } else if (res.message === "User not found") {
+          errorText = l === "az" ? "Hesab tapılmadı" : l === "ru" ? "Аккаунт не найден" : "User not found";
+        }
+        setError(errorText || t.errorMsg);
         setLoading(false);
       }
     } catch {

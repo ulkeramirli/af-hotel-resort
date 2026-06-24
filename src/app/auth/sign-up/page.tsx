@@ -147,7 +147,7 @@ export default function SignUpPage() {
     setError("");
     setExistingUser(false);
     try {
-      const res = await signUp(name, email, password);
+      const res = await signUp(name, email.trim(), password);
       if (res && res.ok) {
         router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}`);
       } else {

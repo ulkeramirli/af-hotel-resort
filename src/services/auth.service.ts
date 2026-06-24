@@ -128,6 +128,7 @@ export class AuthService {
     }
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
+    user.isVerified = true;
     user.otp = null;
     user.otpExpires = null;
     await user.save();
