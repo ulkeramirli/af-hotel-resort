@@ -129,10 +129,18 @@ export default function Restoran() {
     setSearchQuery("");
   };
 
-  const filteredItems = activeMenu?.items?.filter((item: ApiMenuItem) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
+  const loc = (obj: any) => {
+    if (!obj) return "";
+    if (typeof obj === "string") return obj;
+    return obj[l] || obj.az || "";
+  };
+
+  const filteredItems = activeMenu?.items?.filter((item: ApiMenuItem) => {
+    const itemName = typeof item.name === 'object' ? ((item.name as any)[l] || (item.name as any).az || "") : (item.name || "");
+    const itemDesc = typeof item.description === 'object' ? ((item.description as any)[l] || (item.description as any).az || "") : (item.description || "");
+    return itemName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           itemDesc.toLowerCase().includes(searchQuery.toLowerCase());
+  }) || [];
 
   // İş saatları schedule array olaraq formatla
   const getSchedule = () => {
@@ -174,19 +182,19 @@ export default function Restoran() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
           <ScrollReveal direction="up" delay={0.1} className="space-y-3 text-left">
             <span className="text-[#00b5d5] text-[11px] font-bold tracking-[0.35em] uppercase block">
-              {settings?.tag || c.tag}
+              {loc(settings?.tag) || c.tag}
             </span>
             <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
-              {settings?.title || c.title}
+              {loc(settings?.title) || c.title}
             </h2>
             <p className="text-sm text-stone-500 max-w-xl leading-relaxed">
-              {settings?.subtitle || c.subtitle}
+              {loc(settings?.subtitle) || c.subtitle}
             </p>
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
             <CategoryTabs
-              categories={restaurants.map((r, i) => ({ id: String(i), label: (r.name as any)?.[l] || (r.name as any)?.az || r.name || "" }))}
+              categories={restaurants.map((r, i) => ({ id: String(i), label: loc(r.name) }))}
               activeId={String(activeRest)}
               onSelect={(id) => handleRestaurantChange(Number(id))}
               className="justify-start md:justify-end"
@@ -203,7 +211,7 @@ export default function Restoran() {
               {currentRestaurant.image ? (
                 <Image
                   src={currentRestaurant.image}
-                  alt={(currentRestaurant.name as any)?.[l] || (currentRestaurant.name as any)?.az || currentRestaurant.name || ""}
+                  alt={loc(currentRestaurant.name)}
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   priority
@@ -217,13 +225,13 @@ export default function Restoran() {
                 <span className="text-[10px] uppercase tracking-widest font-bold bg-[#00b5d5] px-2.5 py-1 rounded-md">
                   Hotel Concept
                 </span>
-                <h3 className="text-xl md:text-2xl font-serif font-light mt-2">{(currentRestaurant.name as any)?.[l] || (currentRestaurant.name as any)?.az || currentRestaurant.name || ""}</h3>
+                <h3 className="text-xl md:text-2xl font-serif font-light mt-2">{loc(currentRestaurant.name)}</h3>
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-2xl border border-stone-200/50 shadow-xs space-y-4">
               <p className="text-stone-600 text-sm leading-relaxed">
-                {(currentRestaurant.description as any)?.[l] || (currentRestaurant.description as any)?.az || currentRestaurant.description || ""}
+                {loc(currentRestaurant.description)}
               </p>
               <hr className="border-stone-100" />
               
@@ -270,7 +278,7 @@ export default function Restoran() {
                   <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
                     <div className="flex gap-1 flex-wrap">
                       {currentRestaurant.menu.map((cat: ApiMenuCategory, idx: number) => {
-                        const catName = (cat.name as any)?.[l] || (cat.name as any)?.az || cat.name || "";
+                        const catName = loc(cat.name);
                         const Icon = getCategoryIcon(typeof cat.name === 'string' ? cat.name : catName);
                         return (
                           <button
@@ -308,7 +316,7 @@ export default function Restoran() {
                         {filteredItems.map((item: ApiMenuItem, i: number) => (
                           <motion.div
                             layout
-                            key={item._id || item.name}
+                            key={item._id || (typeof item.name === 'string' ? item.name : (item.name as any)?.az)}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
@@ -318,14 +326,14 @@ export default function Restoran() {
                           <div className="space-y-1.5 flex-1">
                             <div className="flex flex-col gap-0.5">
                               <h4 className="font-bold text-xs md:text-sm text-[#1e325c] leading-snug">
-                                {(item.name as any)?.[l] || (item.name as any)?.az || item.name || ""}
+                                {loc(item.name)}
                               </h4>
                               <span className="text-xs font-bold text-[#00b5d5] font-mono mt-0.5">
                                 {item.price} AZN
                               </span>
                             </div>
                             <p className="text-[11px] text-stone-400 font-medium leading-normal line-clamp-2 md:line-clamp-3">
-                              {(item.description as any)[l] || item.description}
+                              {loc(item.description)}
                             </p>
                           </div>
 
@@ -333,7 +341,7 @@ export default function Restoran() {
                             <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 shadow-2xs bg-stone-50">
                               <Image
                                 src={item.image}
-                                alt={(item.name as any)[l] || (item as any).name}
+                                alt={loc(item.name)}
                                 fill
                                 sizes="(max-width: 640px) 80px, 96px"
                                 className="object-cover transition-transform duration-500 hover:scale-105"

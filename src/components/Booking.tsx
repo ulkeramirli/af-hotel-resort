@@ -108,6 +108,12 @@ function BookingContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const loc = (obj: any) => {
+    if (!obj) return "";
+    if (typeof obj === "string") return obj;
+    return obj[currentLang] || obj.az || "";
+  };
+
   const [step, setStep] = useState<1 | 2>(1);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -290,7 +296,7 @@ function BookingContent() {
                 {loadingRooms && <option value="">Loading...</option>}
                 {!loadingRooms && rooms.map((r) => (
                   <option key={r.id} value={r.id}>
-                    {r.title[currentLang]} - ${r.price}
+                    {loc(r.title)} - ${r.price}
                   </option>
                 ))}
               </select>

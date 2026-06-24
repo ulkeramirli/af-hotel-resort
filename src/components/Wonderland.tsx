@@ -248,26 +248,12 @@ useEffect(() => {
             </p>
           </ScrollReveal>
 
-          {wonderland?.bigAttractions?.length > 0 && (
-            <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
-              <CategoryTabs
-                categories={wonderland.bigAttractions.map((t:any, i:any) => ({
-                  id: String(i),
-                  label: (t.title as any)?.[l] || (t as any).title || "Tab"
-                }))}
-                activeId={String(activeTab)}
-                onSelect={(id) => {
-                  setActiveTab(Number(id));
-                  emblaApi?.scrollTo(0);
-                }}
-                className="justify-start md:justify-end"
-              />
-            </ScrollReveal>
-          )}
+          
         </div>
 
         {/* Attractions Grid / Highlights */}
         <ScrollReveal direction="up" delay={0.2} className="space-y-8">
+          
           <h3 className="text-xs uppercase font-bold tracking-widest text-stone-400 text-center">
             {c.highlightsTitle}
           </h3>
@@ -289,7 +275,23 @@ useEffect(() => {
 
         {/* Interactive Slider Section */}
         <ScrollReveal direction="up" delay={0.3} className="space-y-10 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm">
-          
+           
+           {wonderland?.bigAttractions?.length > 0 && (
+            <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
+              <CategoryTabs
+                categories={wonderland.bigAttractions.map((t:any, i:any) => ({
+                  id: String(i),
+                  label: (t.title as any)?.[l] || (t as any).title || "Tab"
+                }))}
+                activeId={String(activeTab)}
+                onSelect={(id) => {
+                  setActiveTab(Number(id));
+                  emblaApi?.scrollTo(0);
+                }}
+                className="justify-start"
+              />
+            </ScrollReveal>
+          )}
           {/* Slider Navigation Row (Buttons only, since Tabs are above) */}
           <div className="flex justify-end items-center gap-6 border-b border-stone-100 pb-6">
 

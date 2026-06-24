@@ -87,7 +87,7 @@ export default function About() {
     fetchAbout();
   }, []);
 
-  const displayTitle = dbAbout?.title || about.title;
+  const displayTitle = dbAbout?.title ? (dbAbout.title as any)?.[l] || about.title : about.title;
   const image1 = dbAbout?.images?.[0] || "/AF-aqua.jpg";
   const image2 = dbAbout?.images?.[1] || "/AF-aqua2.jpg";
 
@@ -156,7 +156,7 @@ export default function About() {
 
           <div className="space-y-4 text-xs md:text-sm text-stone-500 font-light leading-relaxed max-w-xl">
             {dbAbout?.description ? (
-              <p className="whitespace-pre-wrap">{dbAbout.description}</p>
+              <p className="whitespace-pre-wrap">{(dbAbout.description as any)?.[l] || about.p1}</p>
             ) : (
               <>
                 <p>{about.p1}</p>

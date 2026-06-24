@@ -430,7 +430,7 @@ export default function Aquapark() {
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full flex justify-between items-center p-4 text-left cursor-pointer"
                 >
-                  <span className="text-sm font-bold text-[#1e325c] pr-4">{faq.question || faq.q}</span>
+                  <span className="text-sm font-bold text-[#1e325c] pr-4">{(faq.question as any)?.[l] || (faq.question as any)?.az || faq.question || faq.q}</span>
                   {openFaq === i ? (
                     <ChevronUp className="w-4 h-4 text-stone-400 shrink-0" />
                   ) : (
@@ -439,7 +439,7 @@ export default function Aquapark() {
                 </button>
                 {openFaq === i && (
                   <div className="px-4 pb-4 bg-white/50">
-                    <p className="text-xs text-stone-500 leading-relaxed font-medium whitespace-pre-wrap">{faq.answer || faq.a}</p>
+                    <p className="text-xs text-stone-500 leading-relaxed font-medium whitespace-pre-wrap">{(faq.answer as any)?.[l] || (faq.answer as any)?.az || faq.answer || faq.a}</p>
                   </div>
                 )}
               </div>
