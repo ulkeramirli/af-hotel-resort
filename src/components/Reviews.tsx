@@ -41,6 +41,7 @@ export default function Reviews() {
     return () => { cancelled = true; };
   }, []);
 
+  const answeredReviews = reviews.filter((r) => r.adminReply && r.adminReply.trim() !== '');
   const avgRating = '5.0';
 
   return (
@@ -61,7 +62,7 @@ export default function Reviews() {
                 ))}
               </div>
               <p className="text-xs text-stone-400 mt-1">
-                {reviews.length} {l === "az" ? "rəy" : l === "ru" ? "отзыв" : "reviews"}
+                {answeredReviews.length} {l === "az" ? "rəy" : l === "ru" ? "отзыв" : "reviews"}
               </p>
             </div>
           </div>
@@ -73,10 +74,14 @@ export default function Reviews() {
               <div key={i} className="bg-[#f9f8f4] rounded-2xl h-48 animate-pulse" />
             ))}
           </div>
+        ) : answeredReviews.length === 0 ? (
+          <div className="text-center py-20 border-2 border-dashed border-stone-100 rounded-2xl">
+            <p className="text-stone-400">{c.empty}</p>
+          </div>
         ) : (
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {reviews.slice(0, 6).map((review) => (
+              {answeredReviews.slice(0, 6).map((review) => (
                 <div key={review._id} className="min-w-[85vw] sm:min-w-[60vw] md:min-w-0 flex-none bg-[#f9f8f4] rounded-2xl p-6 border border-stone-100 hover:shadow-md transition-shadow mr-4 md:mr-0 last:mr-0 snap-center md:snap-align-none">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="relative w-10 h-10 rounded-full overflow-hidden bg-stone-200 flex items-center justify-center text-[#1e325c] font-bold shrink-0">
