@@ -22,5 +22,5 @@ const activityCategorySchema = new mongoose.Schema(
   },
 );
 
-delete mongoose.models.ActivityCategory;
+// delete mongoose.models.ActivityCategory;
 export default mongoose.model("ActivityCategory", activityCategorySchema);

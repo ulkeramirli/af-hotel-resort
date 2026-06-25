@@ -20,5 +20,5 @@ const aboutShcema = new mongoose.Schema(
   },
 );
 
-delete mongoose.models.About;
+// delete mongoose.models.About;
 export default mongoose.models.About || mongoose.model("About", aboutShcema);

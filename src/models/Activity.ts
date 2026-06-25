@@ -26,5 +26,5 @@ const activitySchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-delete mongoose.models.Activity;
+// delete mongoose.models.Activity;
 export default mongoose.model("Activity", activitySchema);

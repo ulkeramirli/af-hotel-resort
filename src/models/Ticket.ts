@@ -19,5 +19,5 @@ const ticketSchema = new mongoose.Schema(
   },
 );
 
-delete mongoose.models.Ticket;
+// delete mongoose.models.Ticket;
 export default mongoose.models.Ticket || mongoose.model("Ticket", ticketSchema);

@@ -18,7 +18,8 @@ const translations = {
     btn: "Kodu Göndər",
     sending: "Göndərilir...",
     backToLogin: "Daxil ol səhifəsinə qayıt",
-    successMsg: "Şifrə sıfırlama kodu emailinizə göndərildi.",
+    successMsg: "Şifrə sıfırlama kodu emailinizə göndərildi. Yönləndirilirsiniz...",
+    successMsgDev: "Kod server terminalında görünür. Yönləndirilirsiniz...",
     errorMsg: "Xəta baş verdi. Email doğru daxil edilibmi?"
   },
   ru: {
@@ -68,8 +69,10 @@ function ForgotPasswordForm() {
       const res = await forgotPassword(trimmedEmail);
       if (res.success) {
         setSuccess(true);
-        // Immediately redirect to reset-password page with email
-        router.push(`/auth/reset-password?email=${encodeURIComponent(trimmedEmail)}`);
+        // Wait 2s so user can read the success message, then redirect
+        setTimeout(() => {
+          router.push(`/auth/reset-password?email=${encodeURIComponent(trimmedEmail)}`);
+        }, 2000);
       } else {
         const errorText = res.message === "User not found" 
           ? (l === "az" ? "Bu email ilə hesab tapılmadı" : l === "ru" ? "Аккаунт с таким email не найден" : "User not found")

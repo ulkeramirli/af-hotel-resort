@@ -38,5 +38,5 @@ const roomSchema = new mongoose.Schema(
   },
 );
 
-delete mongoose.models.Room;
+// delete mongoose.models.Room;
 export default mongoose.model("Room", roomSchema);

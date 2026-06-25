@@ -16,5 +16,5 @@ const faqSchema = new mongoose.Schema(
   },
 );
 
-delete mongoose.models.Faq;
+// delete mongoose.models.Faq;
 export default mongoose.models.Faq || mongoose.model("Faq", faqSchema);

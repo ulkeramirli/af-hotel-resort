@@ -71,5 +71,5 @@ const wonderlandSchema = new mongoose.Schema(
   },
 );
 
-delete mongoose.models.Wonderland;
+// delete mongoose.models.Wonderland;
 export default mongoose.model("Wonderland", wonderlandSchema);

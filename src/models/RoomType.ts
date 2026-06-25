@@ -13,5 +13,5 @@ const roomTypeSchema = new mongoose.Schema(
   },
 );
 
-delete mongoose.models.RoomType;
+// delete mongoose.models.RoomType;
 export default mongoose.model("RoomType", roomTypeSchema);

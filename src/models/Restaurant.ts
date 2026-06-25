@@ -75,5 +75,5 @@ const restaurantSchema = new mongoose.Schema(
   },
 );
 
-delete mongoose.models.Restaurant;
+// delete mongoose.models.Restaurant;
 export default mongoose.model("Restaurant", restaurantSchema);

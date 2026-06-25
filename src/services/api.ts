@@ -20,7 +20,9 @@ import type {
   ActivitySettings,
 } from "@/types/api";
 
-const BASE = "/api";
+// Handle absolute URLs for Server-Side Rendering
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const BASE = typeof window === "undefined" ? `${API_URL}/api` : "/api";
 
 function setToken(token: string, user: any) {
   if (typeof window === "undefined") return;
@@ -681,9 +683,15 @@ export async function deleteTicket(id: string) {
 // ─── SETTINGS ───
 // GET /api/settings → { success, settings }
 export async function getSettings(): Promise<Settings | null> {
-  const res = await fetch(`${BASE}/settings`, { headers: authHeaders() });
-  const data = await res.json();
-  return data.settings ?? null;
+  try {
+    const res = await fetch(`${BASE}/settings`, { headers: authHeaders() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.settings ?? null;
+  } catch (error) {
+    console.error("Failed to parse settings JSON:", error);
+    return null;
+  }
 }
 
 // PATCH /api/settings → { success, settings }
@@ -701,9 +709,14 @@ export async function updateSettings(payload: Partial<Settings>) {
 // ─── ABOUT ───
 // GET /api/about → { success, about }
 export async function getAbout(): Promise<About | null> {
-  const res = await fetch(`${BASE}/about`, { headers: authHeaders() });
-  const data = await res.json();
-  return data.about ?? null;
+  try {
+    const res = await fetch(`${BASE}/about`, { headers: authHeaders() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.about ?? null;
+  } catch {
+    return null;
+  }
 }
 
 // PATCH /api/about → { success, about }
@@ -722,28 +735,38 @@ export async function updateAbout(payload: Partial<About>) {
 // GET /api/dashboard → { success, stats, recentBookings[], topRooms[] }
 // topRooms: [{ _id: { name, type, price }, bookings: count }]
 export async function getDashboardStats(): Promise<DashboardStats | null> {
-  const res = await fetch(`${BASE}/dashboard`, { headers: authHeaders() });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Dashboard məlumatı yüklənmədi");
-  return {
-    ...data.stats,
-    recentBookings: data.recentBookings ?? [],
-    topRooms: (data.topRooms ?? []).map((r: { _id?: { name?: string; type?: string; price?: number }; bookings?: number }) => ({
-      name: r._id?.name ?? "Bilinmir",
-      type: r._id?.type ?? "",
-      price: r._id?.price ?? 0,
-      count: r.bookings ?? 0,
-    })),
-  };
+  try {
+    const res = await fetch(`${BASE}/dashboard`, { headers: authHeaders() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.success) return null;
+    return {
+      ...data.stats,
+      recentBookings: data.recentBookings ?? [],
+      topRooms: (data.topRooms ?? []).map((r: { _id?: { name?: string; type?: string; price?: number }; bookings?: number }) => ({
+        name: r._id?.name ?? "Bilinmir",
+        type: r._id?.type ?? "",
+        price: r._id?.price ?? 0,
+        count: r.bookings ?? 0,
+      })),
+    };
+  } catch {
+    return null;
+  }
 }
 
 // ─── WONDERLAND ───
 // GET /api/wonderland → { success, wonderland }
 export async function getWonderland(): Promise<Wonderland | null> {
-  const res = await fetch(`${BASE}/wonderland`, { headers: authHeaders() });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Wonderland məlumatı yüklənmədi");
-  return data.wonderland ?? null;
+  try {
+    const res = await fetch(`${BASE}/wonderland`, { headers: authHeaders() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.success) return null;
+    return data.wonderland ?? null;
+  } catch {
+    return null;
+  }
 }
 
 // PATCH /api/wonderland → { success, wonderland }
