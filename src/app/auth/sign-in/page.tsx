@@ -106,7 +106,7 @@ function SignInContent() {
   const l = (language as LangType) || "az";
   const t = translations[l];
 
-  const [email, setEmail] = useState(searchParams.get("email") || "");
+  const [email, setEmail] = useState(searchParams.get("email")?.trim() || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -117,12 +117,19 @@ function SignInContent() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    const trimmedEmail = email.trim();
     try {
-      const res = await signIn(email, password);
+      const res = await signIn(trimmedEmail, password);
       if (res && res.ok) {
         router.push(res.redirect ?? "/account");
       } else {
-        setError(t.errorAuth);
+        let errorText = res?.message;
+        if (res?.message === "Please verify your email first") {
+          errorText = l === "az" ? "Zəhmət olmasa hesabınızı təsdiqləyin (emailinizi yoxlayın)" : l === "ru" ? "Пожалуйста, сначала подтвердите ваш аккаунт (проверьте email)" : "Please verify your email first";
+        } else if (res?.message === "Invalid email or password" || res?.message === "User not found") {
+          errorText = t.errorAuth;
+        }
+        setError(errorText || t.errorAuth);
         setLoading(false);
       }
     } catch {

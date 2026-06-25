@@ -63,14 +63,18 @@ function ForgotPasswordForm() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    const trimmedEmail = email.trim();
     try {
-      const res = await forgotPassword(email);
+      const res = await forgotPassword(trimmedEmail);
       if (res.success) {
         setSuccess(true);
         // Immediately redirect to reset-password page with email
-        router.push(`/auth/reset-password?email=${encodeURIComponent(email)}`);
+        router.push(`/auth/reset-password?email=${encodeURIComponent(trimmedEmail)}`);
       } else {
-        setError(res.message || t.errorMsg);
+        const errorText = res.message === "User not found" 
+          ? (l === "az" ? "Bu email ilə hesab tapılmadı" : l === "ru" ? "Аккаунт с таким email не найден" : "User not found")
+          : (res.message || t.errorMsg);
+        setError(errorText);
         setLoading(false);
       }
     } catch {

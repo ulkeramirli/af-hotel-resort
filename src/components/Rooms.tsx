@@ -238,11 +238,6 @@ export default function Rooms() {
 
   const handleFavorite = (id: string) => {
     toggleFavorite(id);
-    setFavorites((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    });
   };
 
   const filtered = category === "all" ? rooms : rooms.filter((r) => r.category === category);
