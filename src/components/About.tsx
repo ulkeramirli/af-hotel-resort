@@ -12,7 +12,7 @@ export default function About() {
   const l = (language as 'az' | 'en' | 'ru') || 'az';
 
   const ABOUT = {
-    az: {
+    az: { 
       tag: "Haqqımızda",
       title: "AF Hotel & Aqua Park – Dəniz Kənarında Unudulmaz İstirahət",
       p1: "AF Hotel & Aqua Park Bakı şəhərinin Novxanı qəsəbəsində yerləşən müasir və geniş istirahət kompleksidir. Otel Xəzər dənizinin sahilində yerləşərək qonaqlara təmiz hava, gözəl dəniz mənzərəsi və rahat istirahət mühiti təqdim edir.",
@@ -87,7 +87,7 @@ export default function About() {
     fetchAbout();
   }, []);
 
-  const displayTitle = dbAbout?.title ? (dbAbout.title as any)?.[l] || about.title : about.title;
+  const displayTitle = dbAbout ? (dbAbout.title as any)?.[l] || "" : about.title;
   const image1 = dbAbout?.images?.[0] || "/AF-aqua.jpg";
   const image2 = dbAbout?.images?.[1] || "/AF-aqua2.jpg";
 
@@ -155,8 +155,8 @@ export default function About() {
           </div>
 
           <div className="space-y-4 text-xs md:text-sm text-stone-500 font-light leading-relaxed max-w-xl">
-            {dbAbout?.description ? (
-              <p className="whitespace-pre-wrap">{(dbAbout.description as any)?.[l] || about.p1}</p>
+            {dbAbout ? (
+              <div className="prose prose-sm prose-stone max-w-none text-stone-500 font-light [&>p]:mb-4" dangerouslySetInnerHTML={{ __html: (dbAbout.description as any)?.[l] || "" }} />
             ) : (
               <>
                 <p>{about.p1}</p>

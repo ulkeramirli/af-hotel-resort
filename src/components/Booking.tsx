@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Loader2, CheckCircle, CreditCard, ShieldCheck, AlertCircle, Calendar } from "lucide-react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { getPublicRooms, createBooking, getBookedDates } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
 
@@ -132,6 +133,7 @@ function BookingContent() {
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvc, setCardCvc] = useState("");
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
 
   useEffect(() => {
     getPublicRooms()
@@ -213,12 +215,17 @@ function BookingContent() {
     confirmBtn: { az: "Ödənişi Təsdiqlə", en: "Confirm Payment", ru: "Подтвердить оплату" }[currentLang],
     successTitle: { az: "Ödəniş və Rezervasiya Uğurludur!", en: "Payment & Booking Successful!", ru: "Оплата и бронирование успешны!" }[currentLang],
     successDesc: { az: "Məlumatlar dərhal sistem menecerinin admin panelinə göndərildi.", en: "Data has been instantly sent to the admin panel.", ru: "Данные мгновенно отправлены в админ-панель." }[currentLang],
+    robot: { az: "Mən robot deyiləm", en: "I am not a robot", ru: "Я не робот" }[currentLang],
   };
 
   const handleNextStep = (e: React.FormEvent) => {
     e.preventDefault();
     if (!checkIn || !checkOut || !selectedRoomId || !phone || !email) {
       setError("Zəhmət olmasa bütün xanaları doldurun.");
+      return;
+    }
+    if (!captchaValue) {
+      setError("Zəhmət olmasa robot olmadığınızı təsdiqləyin / Please verify you are not a robot");
       return;
     }
     setError("");
@@ -332,6 +339,13 @@ function BookingContent() {
                 <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">{dict.phoneLabel}</label>
                 <input type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+994" className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800" />
               </div>
+            </div>
+
+            <div className="flex justify-center my-4">
+              <ReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                onChange={(val) => setCaptchaValue(val)}
+              />
             </div>
 
             <button type="submit" className="w-full bg-[#00b5d5] hover:bg-[#009cae] text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl shadow-md transition-transform duration-150 active:scale-[0.98] cursor-pointer mt-4">

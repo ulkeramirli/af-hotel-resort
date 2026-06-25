@@ -23,4 +23,4 @@ const activityCategorySchema = new mongoose.Schema(
 );
 
 // delete mongoose.models.ActivityCategory;
-export default mongoose.model("ActivityCategory", activityCategorySchema);
+export default mongoose.models.ActivityCategory || mongoose.model("ActivityCategory", activityCategorySchema);

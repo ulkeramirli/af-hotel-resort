@@ -242,7 +242,7 @@ export default function RoomDetailPage({
 
             {/* Избранное */}
             <button
-              onClick={handleFav}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleFav(); }}
               className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-105 transition-transform cursor-pointer"
             >
               <Heart

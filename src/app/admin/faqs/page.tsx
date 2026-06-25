@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Trash2, Loader2, Pencil, HelpCircle, Globe } from "lucide-react";
 import { getFaqs, createFaq, updateFaq, deleteFaq } from "@/services/api";
+import RichTextEditor from "@/components/RichTextEditor";
 
 const emptyFaqForm = {
   question: { az: "", en: "", ru: "" },
@@ -138,11 +139,10 @@ export default function AdminFaqsPage() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-stone-500 mb-1 block">Cavab [{formLang.toUpperCase()}]</label>
-                <textarea
+                <RichTextEditor
                   placeholder="Məs: Giriş (Check-in) 14:00, çıxış (Check-out) 12:00-dadır."
                   value={form.answer[formLang]}
-                  onChange={(e) => setForm({ ...form, answer: { ...form.answer, [formLang]: e.target.value } })}
-                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5] h-24 resize-none"
+                  onChange={(val) => setForm({ ...form, answer: { ...form.answer, [formLang]: val } })}
                 />
               </div>
               <div className="flex gap-2 pt-2">

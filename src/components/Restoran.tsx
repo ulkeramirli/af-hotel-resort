@@ -187,9 +187,7 @@ export default function Restoran() {
             <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
               {loc(settings?.title) || c.title}
             </h2>
-            <p className="text-sm text-stone-500 max-w-xl leading-relaxed">
-              {loc(settings?.subtitle) || c.subtitle}
-            </p>
+            <div className="text-sm text-stone-500 max-w-xl leading-relaxed prose prose-sm prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
@@ -230,9 +228,7 @@ export default function Restoran() {
             </div>
 
             <div className="bg-white p-6 rounded-2xl border border-stone-200/50 shadow-xs space-y-4">
-              <p className="text-stone-600 text-sm leading-relaxed">
-                {loc(currentRestaurant.description)}
-              </p>
+              <div className="text-stone-600 text-sm leading-relaxed prose prose-sm prose-stone [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: loc(currentRestaurant.description) }} />
               <hr className="border-stone-100" />
               
               {schedule.length > 0 && (
@@ -332,9 +328,7 @@ export default function Restoran() {
                                 {item.price} AZN
                               </span>
                             </div>
-                            <p className="text-[11px] text-stone-400 font-medium leading-normal line-clamp-2 md:line-clamp-3">
-                              {loc(item.description)}
-                            </p>
+                            <div className="text-[11px] text-stone-400 font-medium leading-normal line-clamp-2 md:line-clamp-3 prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(item.description) }} />
                           </div>
 
                           {item.image && (

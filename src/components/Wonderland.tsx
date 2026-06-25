@@ -243,9 +243,7 @@ useEffect(() => {
               {(wonderland?.title as any)?.[l] || (wonderland?.title as any)?.name || wonderland?.title || "Əyləncə Mərkəzi"}
             </h2>
 
-            <p className="text-sm md:text-base text-stone-500 max-w-2xl font-light leading-relaxed">
-              {(wonderland?.description as any)?.[l] || (wonderland?.description as any)?.name || wonderland?.description || "Description"}
-            </p>
+            <div className="text-sm md:text-base text-stone-500 max-w-2xl font-light leading-relaxed prose prose-sm prose-stone [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: (wonderland?.description as any)?.[l] || (wonderland?.description as any)?.name || wonderland?.description || "Description" }} />
           </ScrollReveal>
 
           
@@ -267,7 +265,7 @@ useEffect(() => {
                  {h?.icon}
                 </div>
                 <h4 className="text-sm font-semibold text-[#1e325c] mt-2">{(h?.name as any)?.[l] || (h?.name as any)?.az || "Name"}</h4>
-                <p className="text-xs text-stone-400 font-light leading-normal">{(h?.description as any)?.[l] || (h?.description as any)?.az || "Desc"}</p>
+                <div className="text-xs text-stone-400 font-light leading-normal prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || "Desc" }} />
               </div>
             ))}
           </div>
@@ -350,9 +348,7 @@ useEffect(() => {
           <ArrowRight className="w-4 h-4 text-[#c5a880] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
         </h3>
 
-        <p className="text-xs text-stone-500 font-light leading-relaxed">
-          {(game.description as any)?.[l] || (game as any)?.description || "Desc"}
-        </p>
+        <div className="text-xs text-stone-500 font-light leading-relaxed prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (game.description as any)?.[l] || (game as any)?.description || "Desc" }} />
       </div>
     </div>
   )

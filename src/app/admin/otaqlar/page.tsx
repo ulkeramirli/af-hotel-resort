@@ -12,6 +12,7 @@ import {
 } from "@/services/api";
 
 import type { Room, RoomType, RoomSettings } from "@/types/api";
+import RichTextEditor from "@/components/RichTextEditor";
 
 const emptyRoomForm = {
   name: { az: "", en: "", ru: "" },
@@ -346,12 +347,13 @@ export default function AdminRoomsPage() {
                   onChange={(e) => setRoomForm({ ...roomForm, amenities: { ...roomForm.amenities, [formLang]: e.target.value } })}
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-2 focus:outline-none focus:border-[#00b5d5]"
                 />
-                <textarea
-                  placeholder={`Təsvir (${formLang.toUpperCase()})`}
-                  value={roomForm.description[formLang]}
-                  onChange={(e) => setRoomForm({ ...roomForm, description: { ...roomForm.description, [formLang]: e.target.value } })}
-                  className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-3 h-20 resize-none focus:outline-none focus:border-[#00b5d5]"
-                />
+                <div className="md:col-span-3">
+                  <RichTextEditor
+                    placeholder={`Təsvir (${formLang.toUpperCase()})`}
+                    value={roomForm.description[formLang]}
+                    onChange={(val) => setRoomForm({ ...roomForm, description: { ...roomForm.description, [formLang]: val } })}
+                  />
+                </div>
                 <input
                   type="number"
                   placeholder="Yataq sayı"
@@ -580,10 +582,9 @@ export default function AdminRoomsPage() {
             </div>
             <div>
               <label className="block text-xs font-bold text-stone-600 mb-1">Alt Başlıq [{formLang.toUpperCase()}]</label>
-              <textarea
+              <RichTextEditor
                 value={settingsForm.subtitle[formLang]}
-                onChange={(e) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: e.target.value } })}
-                className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs h-24 resize-none focus:outline-none focus:border-[#00b5d5]"
+                onChange={(val) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: val } })}
               />
             </div>
             <div className="pt-4 flex justify-end">

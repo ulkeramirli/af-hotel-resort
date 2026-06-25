@@ -27,4 +27,4 @@ const activitySchema = new mongoose.Schema(
   },
 );
 // delete mongoose.models.Activity;
-export default mongoose.model("Activity", activitySchema);
+export default mongoose.models.Activity || mongoose.model("Activity", activitySchema);

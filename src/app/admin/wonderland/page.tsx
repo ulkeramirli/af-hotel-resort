@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { getWonderland, updateWonderland, uploadImage } from "@/services/api";
 import type { Wonderland } from "@/types/api";
+import RichTextEditor from "@/components/RichTextEditor";
 
 type TabKey = "general" | "tickets" | "small" | "big";
 
@@ -353,11 +354,10 @@ export default function AdminWonderlandPage() {
 
           <div>
             <label className="block text-xs font-bold text-stone-600 mb-1">Təsvir [{formLang.toUpperCase()}]</label>
-            <textarea
+            <RichTextEditor
               placeholder="Wonderland haqqında geniş məlumat daxil edin..."
               value={form.description[formLang]}
-              onChange={(e) => setForm({ ...form, description: { ...form.description, [formLang]: e.target.value } })}
-              className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs h-32 resize-none focus:outline-none focus:border-[#00b5d5]"
+              onChange={(val) => setForm({ ...form, description: { ...form.description, [formLang]: val } })}
             />
           </div>
 
@@ -513,11 +513,10 @@ export default function AdminWonderlandPage() {
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-stone-500 mb-1 block">Təsvir [{formLang}]</label>
-                  <textarea
+                  <RichTextEditor
                     placeholder="Attraksion haqqında qısa məlumat..."
                     value={smallForm.description[formLang]}
-                    onChange={(e) => setSmallForm({ ...smallForm, description: { ...smallForm.description, [formLang]: e.target.value } })}
-                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs h-20 resize-none focus:outline-none focus:border-[#00b5d5]"
+                    onChange={(val) => setSmallForm({ ...smallForm, description: { ...smallForm.description, [formLang]: val } })}
                   />
                 </div>
                 <div>

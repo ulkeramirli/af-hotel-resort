@@ -295,7 +295,7 @@ export default function Aquapark() {
             <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
               {displayTitle}
             </h2>
-            <p className="text-sm text-stone-400 max-w-xl leading-relaxed">{displaySubtitle}</p>
+            <div className="text-sm text-stone-400 max-w-xl leading-relaxed prose prose-sm prose-stone [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: displaySubtitle }} />
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
@@ -357,9 +357,7 @@ export default function Aquapark() {
                     <h4 className="font-bold text-[#1e325c] text-sm md:text-base leading-snug">
                       {(item.name as any)[l] || (item as any).name || item.name}
                     </h4>
-                    <p className="text-xs text-stone-500 leading-relaxed max-w-[90%]">
-                      {(item.desc as any)[l] || (item as any).desc || item.desc}
-                    </p>
+                    <div className="text-xs text-stone-500 leading-relaxed max-w-[90%] prose prose-sm prose-stone [&>p]:mb-1 line-clamp-3" dangerouslySetInnerHTML={{ __html: (item.desc as any)[l] || (item as any).desc || item.desc }} />
                   </div>
                   
                   {/* Location Tag */}
@@ -439,7 +437,7 @@ export default function Aquapark() {
                 </button>
                 {openFaq === i && (
                   <div className="px-4 pb-4 bg-white/50">
-                    <p className="text-xs text-stone-500 leading-relaxed font-medium whitespace-pre-wrap">{(faq.answer as any)?.[l] || (faq.answer as any)?.az || faq.answer || faq.a}</p>
+                    <div className="text-xs text-stone-500 leading-relaxed font-medium prose prose-sm prose-stone max-w-none [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: (faq.answer as any)?.[l] || (faq.answer as any)?.az || faq.answer || faq.a }} />
                   </div>
                 )}
               </div>

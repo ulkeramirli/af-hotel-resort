@@ -15,6 +15,7 @@ import {
 import type {
   Restaurant, MenuCategory, MenuItem, RestaurantWorkingHours, RestaurantSettings,
 } from "@/types/api";
+import RichTextEditor from "@/components/RichTextEditor";
 
 const emptyWorkingHours: RestaurantWorkingHours = { breakfast: "", lunch: "", dinner: "" };
 
@@ -361,11 +362,10 @@ export default function AdminRestaurantsPage() {
 
           <div>
             <label className="block text-xs font-bold text-stone-600 mb-1">Açıqlama [{formLang.toUpperCase()}]</label>
-            <textarea
+            <RichTextEditor
               placeholder="Restoran haqqında geniş məlumat..."
               value={restForm.description[formLang]}
-              onChange={(e) => setRestForm({ ...restForm, description: { ...restForm.description, [formLang]: e.target.value } })}
-              className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs h-24 resize-none focus:outline-none focus:border-[#00b5d5]"
+              onChange={(val) => setRestForm({ ...restForm, description: { ...restForm.description, [formLang]: val } })}
             />
           </div>
 
@@ -742,11 +742,10 @@ export default function AdminRestaurantsPage() {
           </div>
           <div className="md:col-span-2">
             <label className="text-xs font-semibold text-stone-500 mb-1 block">Açıqlama [{formLang.toUpperCase()}]</label>
-            <textarea
+            <RichTextEditor
               placeholder="Səhifənin alt başlığı/açıqlaması..."
               value={settingsForm.subtitle[formLang]}
-              onChange={(e) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: e.target.value } })}
-              className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs h-16 resize-none focus:outline-none focus:border-[#00b5d5]"
+              onChange={(val) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: val } })}
             />
           </div>
         </div>
@@ -776,11 +775,10 @@ export default function AdminRestaurantsPage() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-stone-500 mb-1 block">Açıqlama [{formLang.toUpperCase()}]</label>
-                <textarea
+                <RichTextEditor
                   placeholder="Qısa təsvir..."
                   value={restForm.description[formLang]}
-                  onChange={(e) => setRestForm({ ...restForm, description: { ...restForm.description, [formLang]: e.target.value } })}
-                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs h-16 resize-none focus:outline-none focus:border-[#00b5d5]"
+                  onChange={(val) => setRestForm({ ...restForm, description: { ...restForm.description, [formLang]: val } })}
                 />
               </div>
               <div>

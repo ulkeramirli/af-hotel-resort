@@ -126,7 +126,7 @@ function RoomCard({
           {(room.categoryName as any)?.[l] || (room.categoryName as any)?.az || "Otaq"}
         </span>
         <button
-          onClick={(e) => { e.preventDefault(); onFavorite(room.id); }}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavorite(room.id); }}
           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-transform cursor-pointer z-20"
         >
           <Heart
@@ -142,9 +142,7 @@ function RoomCard({
           <h3 className="text-xl font-serif text-stone-800 leading-tight">
             {(room.title as any)?.[l] || (room.title as any)?.az || room.title || ""}
           </h3>
-          <p className="text-xs text-stone-500 line-clamp-2 mt-1.5 leading-relaxed">
-            {(room.desc as any)?.[l] || (room.desc as any)?.az || room.desc || ""}
-          </p>
+          <div className="text-xs text-stone-500 line-clamp-2 mt-1.5 leading-relaxed prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (room.desc as any)?.[l] || (room.desc as any)?.az || room.desc || "" }} />
           <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
             <span className="flex items-center gap-1">
               <Users className="w-3.5 h-3.5 text-stone-300" />
@@ -274,9 +272,7 @@ export default function Rooms() {
             <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-tight">
               {settings?.title || c.title}
             </h2>
-            <p className="text-sm font-medium text-stone-400">
-              {settings?.subtitle || c.subtitle}
-            </p>
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
           </motion.div>
 
           <CategoryTabs 

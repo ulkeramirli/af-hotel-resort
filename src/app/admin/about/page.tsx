@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from "react";
 import { Loader2, Check, AlertCircle, Info, Plus, X, Globe } from "lucide-react";
 import { getAbout, updateAbout, uploadImage } from "@/services/api";
+import RichTextEditor from "@/components/RichTextEditor";
 
 const emptyAboutForm: any = {
   title: { az: "", en: "", ru: "" },
@@ -118,11 +119,10 @@ export default function AdminAboutPage() {
 
           <div>
             <label className="block text-xs font-bold text-stone-600 mb-1">Təsvir (Mətn) [{formLang.toUpperCase()}]</label>
-            <textarea
+            <RichTextEditor
               placeholder="Geniş mətn daxil edin..."
               value={form.description[formLang]}
-              onChange={(e) => setForm({ ...form, description: { ...form.description, [formLang]: e.target.value } })}
-              className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs h-40 resize-none focus:outline-none focus:border-[#00b5d5]"
+              onChange={(val) => setForm({ ...form, description: { ...form.description, [formLang]: val } })}
             />
           </div>
 

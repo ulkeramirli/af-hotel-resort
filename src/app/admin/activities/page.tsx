@@ -11,6 +11,7 @@ import {
   uploadImage
 } from "@/services/api";
 import type { Activity, ActivityCategory, ActivitySettings } from "@/types/api";
+import RichTextEditor from "@/components/RichTextEditor";
 
 const emptyActivityForm = {
   title: { az: "", en: "", ru: "" },
@@ -293,11 +294,10 @@ export default function AdminActivitiesPage() {
               </div>
               <div className="md:col-span-2">
                 <label className="text-xs font-semibold text-stone-500 mb-1 block">Açıqlama [{formLang.toUpperCase()}]</label>
-                <textarea
+                <RichTextEditor
                   placeholder="Səhifənin alt başlığı..."
                   value={settingsForm.subtitle[formLang]}
-                  onChange={(e) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: e.target.value } })}
-                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs h-12 resize-none focus:outline-none focus:border-[#00b5d5]"
+                  onChange={(val) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: val } })}
                 />
               </div>
             </div>
@@ -406,12 +406,13 @@ export default function AdminActivitiesPage() {
                     </button>
                   </div>
                 </div>
-                <textarea
-                  placeholder={`Təsvir (${formLang.toUpperCase()})`}
-                  value={activityForm.description[formLang]}
-                  onChange={(e) => setActivityForm({ ...activityForm, description: { ...activityForm.description, [formLang]: e.target.value } })}
-                  className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs md:col-span-2 h-20 resize-none focus:outline-none focus:border-[#00b5d5]"
-                />
+                <div className="md:col-span-2">
+                  <RichTextEditor
+                    placeholder={`Təsvir (${formLang.toUpperCase()})`}
+                    value={activityForm.description[formLang]}
+                    onChange={(val) => setActivityForm({ ...activityForm, description: { ...activityForm.description, [formLang]: val } })}
+                  />
+                </div>
                 
                 <div className="flex gap-2 md:col-span-2 mt-2">
                   <button
@@ -493,11 +494,10 @@ export default function AdminActivitiesPage() {
                   onChange={(e) => setCategoryForm({ ...categoryForm, emoji: e.target.value })}
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 />
-                <textarea
+                <RichTextEditor
                   placeholder={`Açıqlama (${formLang.toUpperCase()})`}
                   value={categoryForm.description[formLang]}
-                  onChange={(e) => setCategoryForm({ ...categoryForm, description: { ...categoryForm.description, [formLang]: e.target.value } })}
-                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs h-16 resize-none focus:outline-none focus:border-[#00b5d5]"
+                  onChange={(val) => setCategoryForm({ ...categoryForm, description: { ...categoryForm.description, [formLang]: val } })}
                 />
                 <div className="flex gap-2">
                   <button type="submit" className="flex-1 px-4 py-2 text-white text-xs font-bold rounded-xl transition-opacity hover:opacity-90" style={{ background: "var(--color-hotel-blue)" }}>

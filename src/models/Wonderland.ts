@@ -72,4 +72,4 @@ const wonderlandSchema = new mongoose.Schema(
 );
 
 // delete mongoose.models.Wonderland;
-export default mongoose.model("Wonderland", wonderlandSchema);
+export default mongoose.models.Wonderland || mongoose.model("Wonderland", wonderlandSchema);

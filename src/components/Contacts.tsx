@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { createReview } from '@/services/api';
 import { Loader2 } from 'lucide-react';
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Contacts() {
   const { language } = useLanguage();
@@ -16,9 +17,14 @@ export default function Contacts() {
   const [fullName, setFullName] = useState('');
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [message, setMessage] = useState('');
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
 
   const handleSend = async (e: FormEvent) => {
     e.preventDefault();
+    if (!captchaValue) {
+      setError('Zəhmət olmasa robot olmadığınızı təsdiqləyin');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -56,7 +62,8 @@ export default function Contacts() {
       az: 'Hər bir rəy bizim üçün dəyərlidir. Xidmət keyfiyyətini artırmaq üçün qeydləriniz mütləq nəzərə alınacaq.', 
       en: 'Every review helps us grow. Your notes will be carefully reviewed by our management team to enhance our services.', 
       ru: 'Каждое мнение помогает нам стать лучше. Ваш отзыв будет передан руководством для повышения качества сервиса.' 
-    }[currentLang]
+    }[currentLang],
+    robot: { az: 'Mən robot deyiləm', en: 'I am not a robot', ru: 'Я не робот' }[currentLang]
   };
 
   return (
@@ -111,6 +118,13 @@ export default function Contacts() {
                     className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-xs font-light outline-none focus:border-[#00b5d5] transition-all resize-none leading-relaxed"
                   />
                 </div>
+              </div>
+
+              <div className="flex justify-center mt-4">
+                <ReCAPTCHA
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                  onChange={(val) => setCaptchaValue(val)}
+                />
               </div>
 
               {error && (

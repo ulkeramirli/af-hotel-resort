@@ -2,6 +2,8 @@ import { BookingController } from "@/controllers/booking.controller";
 import { connectDB } from "@/lib/db";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   await connectDB();
 
