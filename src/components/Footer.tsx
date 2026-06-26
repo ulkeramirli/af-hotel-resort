@@ -19,7 +19,8 @@ export default function Footer() {
     subscribeTitle: { az: 'XÜSUSİ TƏKLİFLƏR', en: 'EXCLUSIVE OFFERS', ru: 'ЗАКРЫТЫЕ АКЦИИ' }[currentLang],
     subscribeDesc: { az: 'Yalnız abunəçilər üçün endirimlər və xəbərlər.', en: 'Subscribe to unlock premium resort updates.', ru: 'Подпишитесь, чтобы получать скрытые скидки.' }[currentLang],
     placeholder: { az: 'E-poçt ünvanınız', en: 'Your email address', ru: 'Ваш email адрес' }[currentLang],
-    subBtn: { az: 'Qoşul', en: 'Join', ru: 'ОK' }[currentLang]
+    subBtn: { az: 'Qoşul', en: 'Join', ru: 'ОK' }[currentLang],
+    rights: { az: 'Müəllif hüquqları qorunur.', en: 'All rights reserved.', ru: 'Все права защищены.' }[currentLang]
   };
 
   const [email, setEmail] = useState('');
@@ -122,8 +123,8 @@ export default function Footer() {
           </div>
         </ScrollReveal>
 
-        <ScrollReveal direction="up" delay={0.3} className="pt-6 border-t border-cyan-100/60 flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] text-stone-400 font-mono tracking-wider">
-          <p>© {new Date().getFullYear()} {((settings?.hotelName as any)?.[currentLang] || "AF HOTEL & AQUA PARK").toUpperCase()}. All rights reserved.</p>
+        <div className="pt-6 mt-8 border-t border-cyan-100/60 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-stone-500 font-mono tracking-wider">
+          <p>© {new Date().getFullYear()} {((settings?.hotelName as any)?.[currentLang] || "AF HOTEL & AQUA PARK").toUpperCase()}. {content.rights}</p>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-4">
               {settings?.instagram && (
@@ -174,7 +175,7 @@ export default function Footer() {
               <a href="#terms" className="hover:text-[#00b5d5] transition-colors">Terms</a>
             </div>
           </div>
-        </ScrollReveal>
+        </div>
 
       </div>
     </footer>
