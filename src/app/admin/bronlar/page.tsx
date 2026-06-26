@@ -1,189 +1,365 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Search, Calendar, User, Loader2, AlertCircle } from "lucide-react";
-
-interface Booking {
-  id: number;
-  guest: string;
-  room: string;
-  roomType: string;
-  date: string;
-  status: string;
-}
+import { Search, Calendar, User, Loader2, AlertCircle, Pencil, X, Check } from "lucide-react";
+import { getBookings, updateBooking, getRooms } from "@/services/api";
+import type { Booking, Room } from "@/types/api";
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("Hamısı");
-  const token = "af-hotel-super-secret-token";
 
-  useEffect(() => {
-    let isMounted = true;
+  const loc = (obj: any) => {
+    if (!obj) return "";
+    if (typeof obj === "string") return obj;
+    return obj.az || obj.en || obj.ru || "";
+  };
 
-    const fetchBookings = async () => {
-      try {
-        const res = await fetch("/api/admin/bookings", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (!res.ok) throw new Error("Məlumatlar bazasından cavab alınmadı");
-        const data = await res.json();
-        
-        if (isMounted) {
-          setBookings(data);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : "Bilinməyən xəta");
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
+  // Edit Modal State
+  const [editBookingId, setEditBookingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<Partial<Booking>>({});
 
-    fetchBookings();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // Переключение статуса бронирования по клику
-  const handleToggleStatus = async (id: number, currentStatus: string) => {
-    const statuses = ["Gözləyir", "Təsdiqlənib", "Ləğv edilib"];
-    const nextIndex = (statuses.indexOf(currentStatus) + 1) % statuses.length;
-    const newStatus = statuses[nextIndex];
-
-    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: newStatus } : b));
-
+  const loadData = async () => {
     try {
-      await fetch("/api/bookings", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "BOOKING", id, newStatus })
-      });
-    } catch (err) {
-      console.error("Status yenilənmədi:", err);
+      setLoading(true);
+      const [bookingsData, roomsData] = await Promise.all([
+        getBookings(),
+        getRooms()
+      ]);
+      setBookings(bookingsData);
+      setRooms(roomsData);
+    } catch (err: any) {
+      setError(err.message || "Xəta baş verdi");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const filteredBookings = bookings.filter(b => {
-    const matchesFilter = activeFilter === "Hamısı" || b.status === activeFilter;
-    const matchesSearch = b.guest.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          b.room.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleToggleStatus = async (id: string, currentStatus: string) => {
+    const statuses = ["pending", "confirmed", "cancelled"] as const;
+    const next = statuses[(statuses.indexOf(currentStatus as any) + 1) % statuses.length];
+    
+    // Optimistic update
+    setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: next } : b)));
+    
+    try {
+      await updateBooking(id, { status: next });
+      loadData();
+    } catch (err: any) {
+      alert(err.message || "Status yenilənərkən xəta baş verdi");
+      loadData();
+    }
+  };
+
+  const handleEditNotes = async (id: string, currentNotes: string, status: string) => {
+    const newNotes = prompt("Qeydi daxil edin:", currentNotes || "");
+    if (newNotes !== null && newNotes !== currentNotes) {
+      setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, notes: newNotes } : b)));
+      try {
+        await updateBooking(id, { status, notes: newNotes });
+      } catch (err: any) {
+        alert(err.message || "Qeyd yenilənərkən xəta baş verdi");
+        loadData();
+      }
+    }
+  };
+
+  const startEditBooking = (booking: Booking) => {
+    setEditBookingId(booking._id);
+    setEditForm({
+      guestName: booking.guestName,
+      email: booking.email,
+      phone: booking.phone,
+      room: booking.room ? (typeof booking.room === 'object' ? (booking.room as any)._id : booking.room) : "",
+      checkIn: booking.checkIn ? new Date(booking.checkIn).toISOString().split('T')[0] as any : "",
+      checkOut: booking.checkOut ? new Date(booking.checkOut).toISOString().split('T')[0] as any : "",
+      notes: booking.notes,
+      status: booking.status,
+    });
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editBookingId) return;
+    try {
+      setLoading(true);
+      await updateBooking(editBookingId, editForm);
+      setEditBookingId(null);
+      await loadData();
+    } catch (err: any) {
+      alert(err.message || "Bron yenilənərkən xəta baş verdi");
+      setLoading(false);
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "pending": return "Gözləyir";
+      case "confirmed": return "Təsdiqlənib";
+      case "cancelled": return "Ləğv edilib";
+      default: return status;
+    }
+  };
+
+  const filtered = bookings.filter((b) => {
+    const statusMap: Record<string, string> = {
+      "Gözləyir": "pending",
+      "Təsdiqlənib": "confirmed",
+      "Ləğv edilib": "cancelled",
+    };
+    const matchFilter = activeFilter === "Hamısı" || b.status === statusMap[activeFilter];
+    const searchLower = searchQuery.toLowerCase();
+    const matchSearch =
+      (b.guestName || "").toLowerCase().includes(searchLower) ||
+      loc(b.room?.name).toLowerCase().includes(searchLower) ||
+      (b.email || "").toLowerCase().includes(searchLower) ||
+      (b.phone || "").toLowerCase().includes(searchLower);
+    return matchFilter && matchSearch;
   });
 
   return (
     <div className="space-y-6">
-      {/* ЗАГОЛОВОК И ФИЛЬТРЫ */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-gray-800">Rezervasiyaların idarə edilməsi</h2>
-          <p className="text-xs text-gray-400 mt-1">Otelə gələn bütün bron müraciətlərinin siyahısı və statusları</p>
-        </div>
-
-        <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Qonaq adı və ya otaq axtar..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#00b4d8] transition-all shadow-sm"
-          />
-        </div>
+      <div>
+        <h2 className="text-xl font-bold text-[#1e325c]">Rezervasiyalar</h2>
+        <p className="text-xs text-stone-400 mt-1">Bütün bron müraciətləri və tənzimləmələri</p>
       </div>
 
-      {/* ТАБЫ ФИЛЬТРАЦИИ */}
-      <div className="flex gap-1.5 bg-gray-100 p-1 rounded-xl self-start w-max">
+      <div className="relative w-full sm:w-72">
+        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+        <input
+          type="text"
+          placeholder="Qonaq, nömrə və ya otaq axtar..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-9 pr-4 py-2 bg-white border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+        />
+      </div>
+
+      <div className="flex gap-1.5 bg-stone-100 p-1 rounded-xl w-max overflow-x-auto whitespace-nowrap">
         {["Hamısı", "Gözləyir", "Təsdiqlənib", "Ləğv edilib"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveFilter(tab)}
-            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all ${
-              activeFilter === tab ? "bg-[#00b4d8] text-white shadow-sm" : "text-gray-500 hover:text-gray-800"
+            className={`px-4 py-2 text-xs font-semibold rounded-lg ${
+              activeFilter === tab ? "text-white" : "text-stone-500"
             }`}
+            style={activeFilter === tab ? { background: "var(--color-hotel-blue)" } : undefined}
           >
             {tab}
           </button>
         ))}
       </div>
 
-      {/* ТАБЛИЦА С БРОНЯМИ */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 overflow-hidden">
-        {loading ? (
-          <div className="py-20 flex flex-col items-center justify-center gap-3 text-gray-400">
-            <Loader2 className="w-8 h-8 animate-spin text-[#00b4d8]" />
-            <p className="text-xs font-medium">Rezervasiyalar bazadan yüklənir...</p>
+      <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
+        {loading && !editBookingId ? (
+          <div className="py-20 flex justify-center">
+            <Loader2 className="w-8 h-8 animate-spin" style={{ color: "var(--color-hotel-blue)" }} />
           </div>
         ) : error ? (
-          <div className="py-12 flex flex-col items-center justify-center gap-2 text-rose-500 bg-rose-50/50 rounded-xl p-4 border border-rose-100">
-            <AlertCircle className="w-8 h-8" />
-            <p className="text-sm font-bold">Xəta baş verdi</p>
-            <p className="text-xs text-rose-400 text-center font-medium">{error}</p>
+          <div className="py-12 text-center text-rose-500">
+            <AlertCircle className="w-8 h-8 mx-auto mb-2" />
+            <p>{error}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left text-sm min-w-[900px]">
               <thead>
-                <tr className="border-b border-gray-100 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  <th className="pb-3 font-medium">Qonaq</th>
-                  <th className="pb-3 font-medium">Otaq nömrəsi</th>
-                  <th className="pb-3 font-medium">Otaq Tipi</th>
-                  <th className="pb-3 font-medium">Tarix aralığı</th>
-                  <th className="pb-3 font-medium text-right">Status (Dəyişmək üçün kliklə)</th>
+                <tr className="border-b border-stone-100 text-xs text-stone-400 uppercase">
+                  <th className="pb-3">Qonaq</th>
+                  <th className="pb-3">Əlaqə</th>
+                  <th className="pb-3">Otaq</th>
+                  <th className="pb-3">Qeyd</th>
+                  <th className="pb-3">Tarix</th>
+                  <th className="pb-3 text-right">Status & Əməliyyat</th>
                 </tr>
               </thead>
-              <tbody className="text-sm font-medium text-gray-700 divide-y divide-gray-50">
-                {filteredBookings.length > 0 ? (
-                  filteredBookings.map((b) => (
-                    <tr key={b.id} className="hover:bg-gray-50/50 transition-colors group">
-                      <td className="py-4 flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 group-hover:bg-[#e0f7fa] group-hover:text-[#00b4d8] transition-colors">
-                          <User className="w-3.5 h-3.5" />
+              <tbody className="divide-y divide-stone-50">
+                {filtered.length === 0 ? (
+                  <tr>
+                     <td colSpan={6} className="py-10 text-center text-stone-400">Bron tapılmadı.</td>
+                  </tr>
+                ) : filtered.map((b) => (
+                  <tr key={b._id} className="hover:bg-stone-50/50">
+                    <td className="py-4 flex items-center gap-2">
+                      <User className="w-3.5 h-3.5 text-stone-400" />
+                      <span className="font-semibold">{b.guestName}</span>
+                    </td>
+                    <td className="py-4 text-xs text-stone-500">
+                      {b.email}<br />
+                      <span className="text-[10px] text-stone-400">{b.phone}</span>
+                    </td>
+                    <td className="py-4">
+                      {b.room ? (
+                        <div>
+                          <p className="font-medium text-[#1e325c]">{loc(b.room.name)}</p>
+                          <p className="text-[10px] text-stone-400">{loc(b.room.type?.name || b.room.type)}</p>
                         </div>
-                        <span className="font-semibold text-gray-800">{b.guest}</span>
-                      </td>
-                      <td className="py-4 text-gray-600">{b.room}</td>
-                      <td className="py-4 text-xs font-semibold text-gray-400">
-                        <span className="bg-gray-100 px-2 py-0.5 rounded-md">{b.roomType}</span>
-                      </td>
-                      <td className="py-4 text-gray-500 text-xs flex items-center gap-1.5 mt-1">
-                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                        <span>{b.date}</span>
-                      </td>
-                      <td className="py-4 text-right">
+                      ) : (
+                        <span className="text-xs text-stone-400">Silinmiş otaq</span>
+                      )}
+                    </td>
+                    <td className="py-4 text-xs text-stone-500 group">
+                      <div className="flex items-center gap-2">
+                        <span className="truncate max-w-[120px]" title={b.notes}>{b.notes || "-"}</span>
                         <button 
-                          onClick={() => handleToggleStatus(b.id, b.status)}
-                          className={`inline-flex px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer select-none transition-all active:scale-95 ${
-                            b.status === "Təsdiqlənib" ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100" :
-                            b.status === "Gözləyir" ? "bg-amber-50 text-amber-600 hover:bg-amber-100" :
-                            "bg-rose-50 text-rose-600 hover:bg-rose-100"
+                          onClick={() => handleEditNotes(b._id, b.notes || "", b.status)}
+                          className="p-1.5 text-stone-400 hover:text-[#00b5d5] bg-stone-100 hover:bg-blue-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                          title="Qeydi sürətli redaktə et"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                    <td className="py-4 text-xs text-stone-500 flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {new Date(b.checkIn).toLocaleDateString("az-AZ")} → {new Date(b.checkOut).toLocaleDateString("az-AZ")}
+                    </td>
+                    <td className="py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleToggleStatus(b._id, b.status)}
+                          className={`px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer ${
+                            b.status === "confirmed"
+                              ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                              : b.status === "pending"
+                              ? "bg-amber-50 text-amber-600 hover:bg-amber-100"
+                              : "bg-rose-50 text-rose-600 hover:bg-rose-100"
                           }`}
                         >
-                          {b.status}
+                          {getStatusLabel(b.status)}
                         </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="py-12 text-center text-sm text-gray-400 font-medium">
-                      Axtarışa uyğun rezervasiya tapılmadı.
+                        <button 
+                          onClick={() => startEditBooking(b)}
+                          className="p-1.5 text-stone-400 hover:text-[#00b5d5] bg-stone-50 hover:bg-blue-50 rounded-lg transition-all"
+                          title="Tam Redaktə Et"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>
         )}
       </div>
+
+      {editBookingId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-xl">
+            <div className="flex items-center justify-between p-6 border-b border-stone-100">
+              <h3 className="font-bold text-[#1e325c]">Bronu Redaktə Et</h3>
+              <button 
+                onClick={() => setEditBookingId(null)}
+                className="text-stone-400 hover:text-rose-500 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleEditSubmit} className="p-6 overflow-y-auto space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 mb-1">Qonaq Adı</label>
+                  <input
+                    required
+                    value={editForm.guestName || ""}
+                    onChange={(e) => setEditForm({...editForm, guestName: e.target.value})}
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[#00b5d5]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 mb-1">Otaq Seçimi</label>
+                  <select
+                    required
+                    value={(editForm.room as any) || ""}
+                    onChange={(e) => setEditForm({...editForm, room: e.target.value as any})}
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[#00b5d5]"
+                  >
+                    <option value="" disabled>Otaq seçin...</option>
+                    {rooms.map((r) => (
+                      <option key={r._id} value={r._id}>{loc(r.name)} - {r.price} AZN</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 mb-1">Email</label>
+                  <input
+                    required type="email"
+                    value={editForm.email || ""}
+                    onChange={(e) => setEditForm({...editForm, email: e.target.value})}
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[#00b5d5]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 mb-1">Telefon</label>
+                  <input
+                    required
+                    value={editForm.phone || ""}
+                    onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[#00b5d5]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 mb-1">Giriş Tarixi (Check-in)</label>
+                  <input
+                    required type="date"
+                    value={editForm.checkIn as any || ""}
+                    onChange={(e) => setEditForm({...editForm, checkIn: e.target.value as any})}
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[#00b5d5]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-stone-600 mb-1">Çıxış Tarixi (Check-out)</label>
+                  <input
+                    required type="date"
+                    value={editForm.checkOut as any || ""}
+                    onChange={(e) => setEditForm({...editForm, checkOut: e.target.value as any})}
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[#00b5d5]"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-stone-600 mb-1">Qeydlər</label>
+                  <textarea
+                    value={editForm.notes || ""}
+                    onChange={(e) => setEditForm({...editForm, notes: e.target.value})}
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm h-20 resize-none focus:outline-none focus:border-[#00b5d5]"
+                  />
+                </div>
+              </div>
+              
+              <div className="pt-4 border-t border-stone-100 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditBookingId(null)}
+                  className="px-4 py-2 text-stone-500 bg-stone-100 hover:bg-stone-200 text-sm font-bold rounded-xl transition-colors"
+                >
+                  Ləğv et
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-4 py-2 text-white text-sm font-bold rounded-xl flex items-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-50"
+                  style={{ background: "var(--color-hotel-blue)" }}
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                  Yadda Saxla
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

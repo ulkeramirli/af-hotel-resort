@@ -2,7 +2,7 @@
   "nav": {
     "rooms": "Otaqlar",
     "aquapark": "Aqua Park",
-    "dining": "Restoran",
+    "restoran": "Restoran",
     "spa": "SPA",
     "events": "Tədbirlər",
     "button": "Online Rezervasiya"
@@ -45,15 +45,15 @@
   "features": {
     "aquaTag": "Əyləncə",
     "aquaTitle": "Möhtəşəm Aqua Park və Hovuzlar",
-    "diningTag": "Qastronomiya",
-    "diningTitle": "Restoranlar və Dadlı Təamlar",
+    "restoranTag": "Qastronomiya",
+    "restoranTitle": "Restoranlar və Dadlı Təamlar",
     "moreInfo": "Daha Ətraflı",
     "aquaItems": [
       { "title": "Ekstremal Slaydlar", "desc": "Böyüklər üçün adrenalin dolu hündür su slaydları və sürətli enişlər." },
       { "title": "Uşaq Su Dünyası", "desc": "Yenilənmiş təhlükəsiz uşaq hovuzları, mini-slaydlar və fəvvarələr." },
       { "title": "Ailəvi Hovuz", "desc": "Dəniz mənzərəli, sakit və geniş istirahət zonasına malik böyük hovuz." }
     ],
-    "diningItems": [
+    "restoranItems": [
       { "title": "Xəzər Restoranı", "desc": "Milli və Avropa mətbəxinin ən dadlı nümunələri dəniz mənzərəsi ile." },
       { "title": "Aqua Bar & Lounge", "desc": "Hovuz kənarında təravətləndirici kokteyllər, soyuq içkilər və fast-food." }
     ]

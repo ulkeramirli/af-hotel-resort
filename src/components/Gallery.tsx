@@ -6,7 +6,7 @@
 
 // const galleryData = {
 //   az: { tag: 'FOTOQALEREYASl', title: 'Anlarınızı Kəşf Edin', all: 'Hamısı', categories: ['Otaqlar', 'Akvapark', 'Restoran', 'Sahil'] },
-//   en: { tag: 'GALLERY', title: 'Discover Your Moments', all: 'All', categories: ['Rooms', 'Aqua Park', 'Dining', 'Beach'] },
+//   en: { tag: 'GALLERY', title: 'Discover Your Moments', all: 'All', categories: ['Rooms', 'Aqua Park', 'Restoran', 'Beach'] },
 //   ru: { tag: 'ГАЛЕРЕЯ', title: 'Откройте Ваши Моменты', all: 'Все', categories: ['Номера', 'Аквапарк', 'Ресторан', 'Пляж'] },
 // };
 

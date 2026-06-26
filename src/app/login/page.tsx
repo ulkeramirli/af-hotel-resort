@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Lock, Mail, Loader2, AlertCircle } from "lucide-react";
+import { Lock, Mail, Loader2, AlertCircle, Hotel } from "lucide-react";
+import { login } from "@/services/api";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@afhotel.az");
+  const [password, setPassword] = useState("admin123");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -17,34 +17,35 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    try {
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false, // Отключаем авто-редирект, чтобы обработать ошибку вручную
-      });
+    const result = await login(email, password);
 
-      if (res?.error) {
-        setError("Email və ya parol yanlış daxil edilib!");
-        setLoading(false);
-      } else {
-        // Успешный вход — отправляем в админку
-        router.push("/admin");
-        router.refresh();
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Sistem xətası baş verdi. Yenidən yoxlayın.");
+    if (result.success) {
+      router.push("/admin");
+    } else {
+      setError(result.message || "Email və ya parol yanlış daxil edilib!");
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800">AF Hotel Admin Panel</h2>
-          <p className="text-xs text-gray-400 mt-1.5">Sistemə daxil olmaq üçün məlumatlarınızı yazın</p>
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: "var(--color-hotel-light)" }}
+    >
+      <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-2xl border border-stone-100 shadow-lg">
+        <div className="text-center space-y-2">
+          <div
+            className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center"
+            style={{ background: "var(--color-hotel-blue)" }}
+          >
+            <Hotel className="w-7 h-7 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold" style={{ color: "#1e325c" }}>
+            AF Hotel Admin
+          </h2>
+          <p className="text-xs text-stone-400">
+            Mock: admin@afhotel.az / admin123
+          </p>
         </div>
 
         {error && (
@@ -56,31 +57,29 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-500">Email ünvanı</label>
+            <label className="text-xs font-bold text-stone-500">Email</label>
             <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@afhotel.az"
-                className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#00b4d8] focus:bg-white transition-all"
+                className="w-full pl-9 pr-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#00b5d5] focus:bg-white transition-all"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-500">Parol</label>
+            <label className="text-xs font-bold text-stone-500">Parol</label>
             <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#00b4d8] focus:bg-white transition-all"
+                className="w-full pl-9 pr-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#00b5d5] focus:bg-white transition-all"
               />
             </div>
           </div>
@@ -88,15 +87,16 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-[#00b4d8] text-white text-xs font-bold rounded-xl shadow-sm hover:bg-[#0096b2] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full py-2.5 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+            style={{ background: "var(--color-hotel-blue)" }}
           >
             {loading ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>Yoxlanılır...</span>
+                Yoxlanılır...
               </>
             ) : (
-              <span>Daxil ol</span>
+              "Daxil ol"
             )}
           </button>
         </form>

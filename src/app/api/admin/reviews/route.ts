@@ -1,52 +1,18 @@
+import { ReviewController } from "@/controllers/review.controller";
+import { connectDB } from "@/lib/db";
+import { authMiddleware } from "@/middleware/auth.middleware";
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 
-interface ReviewPayload {
-  userName: string;
-  userEmail: string;
-  userImage: string;
-  rating: number;
-  comment: string;
-}
-
-interface PrismaDynamic {
-  [key: string]: {
-    findMany: (args?: { orderBy?: Record<string, string> }) => Promise<unknown[]>;
-    create: (args: { data: ReviewPayload }) => Promise<unknown>;
-  };
-}
-
-export async function GET() {
+// Admin endpoint: GET all reviews (any status)
+export async function GET(req: Request) {
+  await connectDB();
   try {
-    const dynamicPrisma = prisma as unknown as PrismaDynamic;
-    const reviews = await dynamicPrisma["review"].findMany({
-      orderBy: { createdAt: "desc" }
-    });
-    return NextResponse.json(reviews, { status: 200 });
-  } catch (logError) {
-    console.error(logError);
-    return NextResponse.json({ error: "Xəta baş verdi" }, { status: 500 });
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    const { userName, userEmail, userImage, rating, comment } = await request.json();
-    const dynamicPrisma = prisma as unknown as PrismaDynamic;
-    
-    const newReview = await dynamicPrisma["review"].create({
-      data: {
-        userName,
-        userEmail,
-        userImage,
-        rating: Number(rating),
-        comment
-      }
-    });
-
-    return NextResponse.json(newReview, { status: 201 });
-  } catch (logError) {
-    console.error(logError);
-    return NextResponse.json({ error: "Yadda saxlamaq olmadı" }, { status: 500 });
+    const user = authMiddleware(req) as any;
+    if (user.role !== "admin") {
+      throw new Error("Only admins can view all reviews");
+    }
+    return ReviewController.getAll();
+  } catch (error: any) {
+    return NextResponse.json({ success: false, message: error.message }, { status: 403 });
   }
 }

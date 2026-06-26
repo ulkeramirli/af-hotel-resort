@@ -1,213 +1,391 @@
-// src/components/Rooms.tsx — ПОЛНАЯ ЗАМЕНА (100% обход строгих правил ESLint)
-'use client';
-import { useState, useEffect, useCallback } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import Image from 'next/image';
-import Link from 'next/link';
-import InfoModal from './InfoModal';
+"use client";
+import { useState, useEffect, useCallback, useRef } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Heart, Users, Maximize2, Loader2, BedDouble, ArrowRight, CalendarCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { getPublicRooms, getRoomTypes, getRoomSettings } from "@/services/api";
+import type { PublicRoom } from "@/services/api";
+import type { RoomType, RoomSettings } from "@/types/api";
+import { toggleFavorite, isFavorite, syncFavorites } from "@/lib/favorites";
+import { useLanguage } from "@/contexts/LanguageContext";
+import CategoryTabs from "./CategoryTabs";
+import ScrollReveal from "./ScrollReveal";
 
-interface Room {
-  id: string;
-  category: string;
-  title: { az: string; en: string; ru: string };
-  price: string;
-  size: string;
-  capacity: { az: string; en: string; ru: string };
-  images: string[];
-  desc: { az: string; en: string; ru: string };
-  includes: { az: string[]; en: string[]; ru: string[] };
-}
+function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
+  const [active, setActive] = useState(0);
+  const [err, setErr] = useState(false);
 
-const CATEGORIES = {
-  az: [{ key: 'all', label: 'Hamısı' }, { key: 'standard', label: 'Standart' }, { key: 'deluxe', label: 'Deluxe' }, { key: 'cottage', label: 'Kotec' }],
-  en: [{ key: 'all', label: 'All' }, { key: 'standard', label: 'Standard' }, { key: 'deluxe', label: 'Deluxe' }, { key: 'cottage', label: 'Cottage' }],
-  ru: [{ key: 'all', label: 'Все' }, { key: 'standard', label: 'Стандарт' }, { key: 'deluxe', label: 'Делюкс' }, { key: 'cottage', label: 'Коттедж' }],
-};
+  const src = images[active] || "";
+  const isValid = !err && src && src.startsWith("http") && !src.match(/^https?:\/\/[^/]+\.(jpg|jpeg|png|webp|gif)$/i);
 
-export default function Rooms() {
-  const { language, t } = useLanguage();
-  const l = (language as 'az' | 'en' | 'ru') || 'az';
-  const cats = CATEGORIES[l];
+  const next = (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setActive((p) => (p + 1) % images.length); };
+  const prev = (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setActive((p) => (p - 1 + images.length) % images.length); };
 
-  const [rooms, setRooms] = useState<Room[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
-  const [modalData, setModalData] = useState({ isOpen: false, title: '', desc: '', price: '' });
-
-  // Основная функция запроса
-  const fetchRooms = useCallback(async (cat: string, pg: number, append = false) => {
-    setLoading(true);
-    try {
-      const url = `/api/rooms?page=${pg}&limit=6${cat !== 'all' ? `&category=${cat}` : ''}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      setRooms(prev => append ? [...prev, ...data.rooms] : data.rooms);
-      setHasMore(data.hasMore);
-    } catch {
-      setRooms([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Первичная загрузка при старте страницы — обходим линтер через setTimeout
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchRooms('all', 1);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [fetchRooms]);
-
-  // Обработчик переключения категории пользователем
-  const handleCategoryChange = (categoryKey: string) => {
-    if (categoryKey === activeCategory) return;
-    setActiveCategory(categoryKey);
-    setPage(1);
-    fetchRooms(categoryKey, 1, false);
-  };
-
-  // Пагинация / Загрузить еще
-  const loadMore = () => {
-    const next = page + 1;
-    setPage(next);
-    fetchRooms(activeCategory, next, true);
-  };
-
-  const moreInfoLabel = { az: 'Ətraflı bax', en: 'View Details', ru: 'Подробнее' }[l];
-  const bookLabel = { az: 'Rezerv Et', en: 'Book', ru: 'Забронировать' }[l];
-  const loadMoreLabel = { az: 'Daha Çox Göstər', en: 'Load More', ru: 'Загрузить ещё' }[l];
-  const perNight = { az: 'gecəyə', en: 'per night', ru: 'за ночь' }[l];
+  if (!isValid || err) {
+    return (
+      <div className="w-full h-full bg-linear-to-br from-stone-100 to-stone-200 flex items-center justify-center">
+        <BedDouble className="w-12 h-12 text-stone-300" />
+      </div>
+    );
+  }
 
   return (
-    <section id="rooms" className="py-32 bg-white scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-16">
-
-        <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block mb-3">{t.rooms.moreInfo}</span>
-            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif">
-              {{ az: 'Otaqlar və Koteclər', en: 'Rooms & Cottages', ru: 'Номера и Коттеджи' }[l]}
-            </h2>
-          </div>
-
-          {/* Фильтры по категориям */}
-          <div className="flex flex-wrap gap-2">
-            {cats.map(cat => (
-              <button
-                key={cat.key}
-                onClick={() => handleCategoryChange(cat.key)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                  activeCategory === cat.key
-                    ? 'bg-[#1e325c] text-white'
-                    : 'bg-[#f9f8f4] text-stone-500 hover:bg-[#1e325c] hover:text-white'
-                }`}
-              >
-                {cat.label}
-              </button>
+    <div className="w-full h-full relative group/carousel">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={alt} onError={() => setErr(true)} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+      {images.length > 1 && (
+        <>
+          <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 shadow-sm cursor-pointer">
+            <ChevronLeft className="w-4 h-4 text-stone-700" />
+          </button>
+          <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 shadow-sm cursor-pointer">
+            <ChevronRight className="w-4 h-4 text-stone-700" />
+          </button>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-20">
+            {images.map((_, i) => (
+              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${i === active ? "bg-white scale-125" : "bg-white/60"}`} />
             ))}
           </div>
-        </div>
+        </>
+      )}
+    </div>
+  );
+}
 
-        {/* Сетка номеров */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {rooms.map(room => (
-            <div
-              key={room.id}
-              className="group bg-white rounded-3xl overflow-hidden border border-stone-100 hover:shadow-xl transition-all duration-500 flex flex-col"
-            >
-              {/* Фото */}
-              <div className="relative h-56 overflow-hidden bg-stone-100">
-                <Image
-                  src={room.images[0]}
-                  alt={room.title[l]}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute top-3 left-3">
-                  <span className="bg-white/90 backdrop-blur-sm text-[#1e325c] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
-                    {room.category}
-                  </span>
-                </div>
-                <div className="absolute top-3 right-3">
-                  <span className="bg-[#ff6c02] text-white text-xs font-bold px-3 py-1 rounded-lg">
-                    {room.price}
-                  </span>
-                </div>
-              </div>
+const content = {
+  az: {
+    tag: "OTAQLAR & KOTECLƏR",
+    title: "Rahatlığın Yeni Səviyyəsi",
+    subtitle: "Hər zövqə uyğun lüks otaqlar",
+    all: "Hamısı",
+    single: "Single",
+    double: "Standard Double",
+    twin: "Standard Twin",
+    apartment: "Apartments for 4",
+    details: "Ətraflı bax",
+    perNight: "/ gecə",
+    empty: "Bu kateqoriyada otaq tapılmadı.",
+    swipeHint: "Sürüşdürün →",
+  },
+  en: {
+    tag: "ROOMS & COTTAGES",
+    title: "A New Level of Comfort",
+    subtitle: "Luxury rooms for every taste",
+    all: "All",
+    single: "Single",
+    double: "Standard Double",
+    twin: "Standard Twin",
+    apartment: "Apartments for 4",
+    details: "View Details",
+    perNight: "/ night",
+    empty: "No rooms found in this category.",
+    swipeHint: "Swipe →",
+  },
+  ru: {
+    tag: "НОМЕРА И КОТТЕДЖИ",
+    title: "Новый Уровень Комфорта",
+    subtitle: "Номера класса люкс на любой вкус",
+    all: "Все",
+    single: "Single",
+    double: "Standard Double",
+    twin: "Standard Twin",
+    apartment: "Apartments for 4",
+    details: "Подробнее",
+    perNight: "/ ночь",
+    empty: "В этой категории номеров нет.",
+    swipeHint: "Листайте →",
+  },
+};
 
-              {/* Контент */}
-              <div className="p-6 flex flex-col grow">
-                <h3 className="text-base font-semibold text-[#1e325c] mb-2 group-hover:text-[#00b5d5] transition-colors">
-                  {room.title[l]}
-                </h3>
-                <p className="text-xs text-stone-400 font-light leading-relaxed mb-4 line-clamp-2">
-                  {room.desc[l]}
-                </p>
+type Category = string;
 
-                {/* Характеристики */}
-                <div className="flex gap-4 mb-5 mt-auto">
-                  <span className="text-[10px] text-stone-400 font-medium">📐 {room.size}</span>
-                  <span className="text-[10px] text-stone-400 font-medium">👥 {room.capacity[l]}</span>
-                </div>
-
-                {/* Цена + кнопки */}
-                <div className="flex items-center justify-between pt-4 border-t border-stone-100 gap-3">
-                  <div>
-                    <span className="text-lg font-bold text-[#1e325c]">{room.price}</span>
-                    <span className="text-[10px] text-stone-400 font-light ml-1">/ {perNight}</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setModalData({ isOpen: true, title: room.title[l], desc: room.desc[l], price: room.price })}
-                      className="text-[10px] font-semibold text-stone-500 hover:text-[#1e325c] px-3 py-2 border border-stone-200 rounded-xl transition-all cursor-pointer"
-                    >
-                      {moreInfoLabel}
-                    </button>
-                    <Link
-                      href={`/rooms/${room.id}`}
-                      className="text-[10px] font-bold text-white bg-[#00b5d5] hover:bg-[#0096b2] px-4 py-2 rounded-xl transition-all"
-                    >
-                      {bookLabel}
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Skeleton loading */}
-        {loading && rooms.length === 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="bg-stone-100 rounded-3xl h-80 animate-pulse" />
-            ))}
-          </div>
-        )}
-
-        {/* Load more */}
-        {hasMore && !loading && (
-          <div className="mt-12 text-center">
-            <button
-              onClick={loadMore}
-              className="px-10 py-3.5 border-2 border-[#1e325c] text-[#1e325c] text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#1e325c] hover:text-white transition-all cursor-pointer"
-            >
-              {loadMoreLabel}
-            </button>
-          </div>
-        )}
+// Single room card component
+function RoomCard({
+  room,
+  l,
+  c,
+  isFav,
+  onFavorite,
+  onBook,
+  compact = false,
+}: {
+  room: PublicRoom;
+  l: "az" | "en" | "ru";
+  c: typeof content["az"];
+  isFav: boolean;
+  onFavorite: (id: string) => void;
+  onBook: (id: string) => void;
+  compact?: boolean;
+}) {
+  return (
+    <div className={`group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full ${compact ? "" : ""}`}>
+      {/* Image */}
+      <div className={`relative overflow-hidden bg-stone-100 border-b border-stone-100 ${compact ? "aspect-4/3" : "aspect-16/11"}`}>
+        <RoomCarousel images={room.images} alt={room.title[l]} />
+        <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-sm text-stone-800 rounded-md shadow-sm border border-stone-100 z-10">
+          {(room.categoryName as any)?.[l] || (room.categoryName as any)?.az || "Otaq"}
+        </span>
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavorite(room.id); }}
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-transform cursor-pointer z-20"
+        >
+          <Heart
+            className="w-4 h-4 transition-colors"
+            style={{ fill: isFav ? "#e11d48" : "none", color: isFav ? "#e11d48" : "#444" }}
+          />
+        </button>
       </div>
 
-      <InfoModal
-        isOpen={modalData.isOpen}
-        onClose={() => setModalData({ ...modalData, isOpen: false })}
-        title={modalData.title}
-        description={modalData.desc}
-        price={modalData.price}
-      />
+      {/* Content */}
+      <div className="p-4 space-y-3 flex flex-col flex-1 justify-between">
+        <div className="space-y-1.5">
+          <h3 className="text-xl font-serif text-stone-800 leading-tight">
+            {(room.title as any)?.[l] || (room.title as any)?.az || room.title || ""}
+          </h3>
+          <div className="text-xs text-stone-500 line-clamp-2 mt-1.5 leading-relaxed prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (room.desc as any)?.[l] || (room.desc as any)?.az || room.desc || "" }} />
+          <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
+            <span className="flex items-center gap-1">
+              <Users className="w-3.5 h-3.5 text-stone-300" />
+              {room.capacity[l]}
+            </span>
+            <span className="flex items-center gap-1">
+              <Maximize2 className="w-3.5 h-3.5 text-stone-300" />
+              {room.size || "350 sqft"}
+            </span>
+          </div>
+        </div>
+
+        {/* Bottom: price + buttons */}
+        <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
+          <div className="flex justify-between items-center">
+            <div>
+              <span className="text-lg font-bold text-stone-900">${room.price}</span>
+              <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
+            </div>
+            <Link
+              href={`/rooms/${room.id}`}
+              className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-semibold rounded-xl transition-colors"
+            >
+              <span>{c.details}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <button
+            onClick={() => onBook(room.id)}
+            className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-[#ff6c02] hover:bg-[#e55f00] text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer"
+          >
+            <CalendarCheck className="w-3.5 h-3.5" />
+            <span>{l === "az" ? "İndi Rezerv Et" : l === "ru" ? "Забронировать" : "Book Now"}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Rooms() {
+  const { language } = useLanguage();
+  const router = useRouter();
+  const l = (language as "az" | "en" | "ru") || "az";
+  const c = content[l];
+  const sliderRef = useRef<HTMLDivElement>(null);
+
+  const [rooms, setRooms] = useState<PublicRoom[]>([]);
+  const [types, setTypes] = useState<RoomType[]>([]);
+  const [settings, setSettings] = useState<RoomSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [category, setCategory] = useState<Category>("all");
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      getPublicRooms(),
+      getRoomTypes(),
+      getRoomSettings().catch(() => null)
+    ])
+      .then(([rData, tData, sData]) => { 
+        if (!cancelled) {
+          setRooms(rData);
+          setTypes(tData);
+          setSettings(sData);
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const buildFavSet = useCallback(
+    (roomList: PublicRoom[]) => new Set(roomList.map((r) => r.id).filter((id) => isFavorite(id))),
+    []
+  );
+
+  useEffect(() => {
+    if (rooms.length === 0) return;
+    Promise.resolve().then(() => {
+      syncFavorites(rooms.map(r => r.id));
+      setFavorites(buildFavSet(rooms));
+    });
+  }, [rooms, buildFavSet]);
+
+  useEffect(() => {
+    const onUpdate = () => setFavorites(buildFavSet(rooms));
+    window.addEventListener("favoritesUpdated", onUpdate);
+    return () => window.removeEventListener("favoritesUpdated", onUpdate);
+  }, [rooms, buildFavSet]);
+
+  const handleFavorite = (id: string) => {
+    toggleFavorite(id);
+  };
+
+  const filtered = category === "all" ? rooms : rooms.filter((r) => r.category === category);
+
+  const categories = [
+    { id: "all", label: c.all },
+    ...types.map(t => ({ 
+      id: t._id, 
+      label: (t.name as any)?.[l] || (t.name as any)?.az || t.name || "" 
+    }))
+  ];
+
+  const scrollSlider = (dir: "left" | "right") => {
+    if (!sliderRef.current) return;
+    const cardWidth = sliderRef.current.offsetWidth * 0.78 + 16;
+    sliderRef.current.scrollBy({ left: dir === "right" ? cardWidth : -cardWidth, behavior: "smooth" });
+  };
+
+  return (
+    <section id="rooms" className="py-20 md:py-32 scroll-mt-20 bg-white text-stone-800 antialiased selection:bg-stone-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Header & Tabs Container */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
+          <ScrollReveal type="revealClip" className="space-y-2 text-left">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5]">
+              {settings?.tag || c.tag}
+            </span>
+            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-tight">
+              {settings?.title || c.title}
+            </h2>
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
+          </ScrollReveal>
+
+          <ScrollReveal type="dropIn" delay={0.2}>
+            <CategoryTabs 
+              categories={categories}
+              activeId={category}
+              onSelect={(id) => setCategory(id)}
+              className="justify-start md:justify-end"
+            />
+          </ScrollReveal>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="w-6 h-6 animate-spin text-stone-400" />
+          </div>
+        ) : filtered.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-20 text-stone-400 text-xs flex flex-col items-center gap-3"
+          >
+            <BedDouble className="w-8 h-8 text-stone-300" />
+            {c.empty}
+          </motion.div>
+        ) : (
+          <>
+            {/* ── MOBILE: horizontal slider ── */}
+            <div className="md:hidden relative">
+              {/* Scroll arrows */}
+              <button
+                onClick={() => scrollSlider("left")}
+                className="absolute -left-1 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white shadow-md rounded-full flex items-center justify-center border border-stone-100 cursor-pointer hover:bg-stone-50 transition-colors"
+                aria-label="Previous"
+              >
+                <ChevronLeft className="w-4 h-4 text-stone-600" />
+              </button>
+              <button
+                onClick={() => scrollSlider("right")}
+                className="absolute -right-1 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white shadow-md rounded-full flex items-center justify-center border border-stone-100 cursor-pointer hover:bg-stone-50 transition-colors"
+                aria-label="Next"
+              >
+                <ChevronRight className="w-4 h-4 text-stone-600" />
+              </button>
+
+              {/* Slider track */}
+              <div
+                ref={sliderRef}
+                className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-1 scrollbar-hide"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                <AnimatePresence mode="popLayout">
+                  {filtered.map((room) => (
+                    <motion.div
+                      layout
+                      key={room.id}
+                      initial={{ opacity: 0, x: 30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, margin: "-20px" }}
+                      exit={{ opacity: 0, x: -30 }}
+                      transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
+                      className="snap-start shrink-0 w-[78vw] max-w-[320px]"
+                    >
+                      <RoomCard
+                        room={room}
+                        l={l}
+                        c={c}
+                        isFav={favorites.has(room.id)}
+                        onFavorite={handleFavorite}
+                        onBook={(id) => router.push(`/?roomId=${id}#booking`)}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+
+              {/* Swipe hint dots */}
+              <div className="flex justify-center gap-1.5 mt-2">
+                {filtered.slice(0, Math.min(filtered.length, 8)).map((_, i) => (
+                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-stone-200" />
+                ))}
+                {filtered.length > 8 && <span className="text-[10px] text-stone-400 ml-1">+{filtered.length - 8}</span>}
+              </div>
+            </div>
+
+            {/* ── DESKTOP: grid ── */}
+            <motion.div
+              layout
+              className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+            >
+              <AnimatePresence mode="popLayout">
+                {filtered.map((room) => (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    exit={{ opacity: 0, y: 30 }}
+                    transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
+                    key={room.id}
+                  >
+                    <RoomCard
+                      room={room}
+                      l={l}
+                      c={c}
+                      isFav={favorites.has(room.id)}
+                      onFavorite={handleFavorite}
+                      onBook={(id) => router.push(`/?roomId=${id}#booking`)}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </>
+         )}
+      </div>
     </section>
   );
 }

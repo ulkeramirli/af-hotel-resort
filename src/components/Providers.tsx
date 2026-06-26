@@ -2,14 +2,17 @@
 'use client';
 
 import { LanguageProvider } from "@/contexts/LanguageContext";
-import { SessionProvider } from "next-auth/react"; // <-- Добавили провайдер сессий
+import { AuthProvider } from "@/contexts/AuthContext";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
-      <LanguageProvider>
-        {children}
-      </LanguageProvider>
-    </SessionProvider>
+    <AuthProvider>
+      <SettingsProvider>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+      </SettingsProvider>
+    </AuthProvider>
   );
 }

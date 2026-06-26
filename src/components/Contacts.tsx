@@ -1,15 +1,44 @@
 'use client';
 import { useState, FormEvent } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSettings } from '@/contexts/SettingsContext';
+import { createReview } from '@/services/api';
+import { Loader2 } from 'lucide-react';
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Contacts() {
   const { language } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const { settings } = useSettings();
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSend = (e: FormEvent) => {
+  const [fullName, setFullName] = useState('');
+  const [emailOrPhone, setEmailOrPhone] = useState('');
+  const [message, setMessage] = useState('');
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
+
+  const handleSend = async (e: FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    if (!captchaValue) {
+      setError('Zəhmət olmasa robot olmadığınızı təsdiqləyin');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      const res = await createReview({ fullName, emailOrPhone, message });
+      if (res.success) {
+        setSent(true);
+      } else {
+        setError(res.message || 'Xəta baş verdi');
+      }
+    } catch {
+      setError('Şəbəkə xətası. Zəhmət olmasa yenidən cəhd edin.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const content = {
@@ -33,7 +62,8 @@ export default function Contacts() {
       az: 'Hər bir rəy bizim üçün dəyərlidir. Xidmət keyfiyyətini artırmaq üçün qeydləriniz mütləq nəzərə alınacaq.', 
       en: 'Every review helps us grow. Your notes will be carefully reviewed by our management team to enhance our services.', 
       ru: 'Каждое мнение помогает нам стать лучше. Ваш отзыв будет передан руководством для повышения качества сервиса.' 
-    }[currentLang]
+    }[currentLang],
+    robot: { az: 'Mən robot deyiləm', en: 'I am not a robot', ru: 'Я не робот' }[currentLang]
   };
 
   return (
@@ -55,22 +85,58 @@ export default function Contacts() {
                 
                 <div className="space-y-1 text-left relative group">
                   <label className="block text-[10px] uppercase tracking-widest text-[#1e325c] font-bold transition-colors group-focus-within:text-[#00b5d5]">{content.labelName}</label>
-                  <input required type="text" placeholder={content.placeholderName} className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-sm font-light outline-none focus:border-[#00b5d5] transition-all" />
+                  <input
+                    required
+                    type="text"
+                    value={fullName}
+                    onChange={e => setFullName(e.target.value)}
+                    placeholder={content.placeholderName}
+                    className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-sm font-light outline-none focus:border-[#00b5d5] transition-all"
+                  />
                 </div>
 
                 <div className="space-y-1 text-left relative group">
                   <label className="block text-[10px] uppercase tracking-widest text-[#1e325c] font-bold transition-colors group-focus-within:text-[#00b5d5]">{content.labelPhone}</label>
-                  <input required type="text" placeholder="+994 / info@example.com" className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-sm font-light outline-none focus:border-[#00b5d5] transition-all" />
+                  <input
+                    required
+                    type="text"
+                    value={emailOrPhone}
+                    onChange={e => setEmailOrPhone(e.target.value)}
+                    placeholder="+994 / info@example.com"
+                    className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-sm font-light outline-none focus:border-[#00b5d5] transition-all"
+                  />
                 </div>
 
                 <div className="space-y-1 text-left relative group">
                   <label className="block text-[10px] uppercase tracking-widest text-[#1e325c] font-bold transition-colors group-focus-within:text-[#00b5d5]">{content.labelMsg}</label>
-                  <textarea required rows={3} placeholder={content.placeholderMsg} className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-xs font-light outline-none focus:border-[#00b5d5] transition-all resize-none leading-relaxed" />
+                  <textarea
+                    required
+                    rows={3}
+                    value={message}
+                    onChange={e => setMessage(e.target.value)}
+                    placeholder={content.placeholderMsg}
+                    className="w-full bg-transparent border-b border-stone-200 text-stone-900 placeholder-stone-300 py-2 text-xs font-light outline-none focus:border-[#00b5d5] transition-all resize-none leading-relaxed"
+                  />
                 </div>
               </div>
 
-              <button type="submit" className="w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-xl transition-colors cursor-pointer shadow-sm">
-                {content.btn}
+              <div className="flex justify-center mt-4">
+                <ReCAPTCHA
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                  onChange={(val) => setCaptchaValue(val)}
+                />
+              </div>
+
+              {error && (
+                <p className="text-xs text-rose-500 font-medium">{error}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#ff6c02] hover:bg-[#e55f00] disabled:bg-stone-300 text-white font-bold text-xs uppercase tracking-widest py-3.5 rounded-xl transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-2"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : content.btn}
               </button>
             </form>
           )}
@@ -90,21 +156,31 @@ export default function Contacts() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left text-xs">
             <div className="p-4 bg-white/40 border border-white/60 rounded-xl md:col-span-2 space-y-1 backdrop-blur-xs">
               <span className="block text-[9px] text-stone-400 font-bold uppercase tracking-widest">{content.loc}</span>
-              <p className="text-stone-800 font-light text-sm leading-snug">{content.address}</p>
+              <p className="text-stone-800 font-light text-sm leading-snug whitespace-pre-line">{settings?.address || content.address}</p>
             </div>
 
             <div className="p-4 bg-white/40 border border-white/60 rounded-xl space-y-1 backdrop-blur-xs">
               <span className="block text-[9px] text-stone-400 font-bold uppercase tracking-widest">{content.reception}</span>
               <div className="flex flex-col space-y-0.5">
-                <a href="tel:+994124483030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 12 448 3030</a>
-                <a href="tel:+994502253030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 50 225 3030</a>
+                {settings?.reception ? (
+                  settings.reception.split('\n').map((phone, i) => (
+                    <a key={i} href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">{phone}</a>
+                  ))
+                ) : (
+                  <>
+                    <a href="tel:+994124483030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 12 448 3030</a>
+                    <a href="tel:+994502253030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 50 225 3030</a>
+                  </>
+                )}
               </div>
             </div>
 
             <div className="p-4 bg-white/40 border border-white/60 rounded-xl space-y-1 backdrop-blur-xs flex flex-col justify-between">
               <div>
                 <span className="block text-[9px] text-stone-400 font-bold uppercase tracking-widest">Digital Concierge</span>
-                <a href="mailto:info@afhotel.az" className="inline-block mt-0.5 text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm underline decoration-[#00b5d5]/30 underline-offset-4">info@afhotel.az</a>
+                <a href={`mailto:${settings?.email || 'info@afhotel.az'}`} className="inline-block mt-0.5 text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm underline decoration-[#00b5d5]/30 underline-offset-4">
+                  {settings?.email || 'info@afhotel.az'}
+                </a>
               </div>
             </div>
           </div>

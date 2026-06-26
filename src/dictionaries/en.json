@@ -2,7 +2,7 @@
   "nav": {
     "rooms": "Rooms",
     "aquapark": "Aqua Park",
-    "dining": "Dining",
+    "restoran": "Restoran",
     "spa": "SPA",
     "events": "Events",
     "button": "Book Online"
@@ -45,15 +45,15 @@
   "features": {
     "aquaTag": "Entertainment",
     "aquaTitle": "Magnificent Aqua Park & Pools",
-    "diningTag": "Gastronomy",
-    "diningTitle": "Restaurants & Fine Dining",
+    "restoranTag": "Gastronomy",
+    "restoranTitle": "Restaurants & Fine Dining",
     "moreInfo": "Learn More",
     "aquaItems": [
       { "title": "Extreme Slides", "desc": "Adrenaline-filled high water slides and fast descents for adults." },
       { "title": "Kids Water World", "desc": "Renovated safe kids' pools, mini-slides, and fun water fountains." },
       { "title": "Family Pool", "desc": "A large swimming pool with a sea view and a peaceful relaxation area." }
     ],
-    "diningItems": [
+    "restoranItems": [
       { "title": "Caspian Restaurant", "desc": "The finest Azerbaijani and European cuisine paired with stunning sea views." },
       { "title": "Aqua Bar & Lounge", "desc": "Refreshing cocktails, cold drinks, and snacks right by the poolside." }
     ]
