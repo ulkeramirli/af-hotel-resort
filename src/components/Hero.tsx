@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { CalendarCheck, BedDouble, Waves, Star, ArrowRight } from 'lucide-react';
+import type { Variants } from "framer-motion";
 
 export default function Hero() {
   const { language } = useLanguage();
@@ -33,10 +34,25 @@ export default function Hero() {
     }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 40, scale: 0.9, filter: 'blur(10px)' },
-    show: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', transition: { type: "spring", bounce: 0.4, duration: 0.8 } }
-  };
+ const itemVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 40,
+    scale: 0.9,
+    filter: "blur(10px)",
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      type: "spring",
+      bounce: 0.4,
+      duration: 0.8,
+    },
+  },
+};
 
   return (
     <section className="relative min-h-[95vh] lg:min-h-screen pt-28 pb-12 flex items-center bg-stone-50 overflow-hidden select-none">
