@@ -229,36 +229,34 @@ useEffect(() => {
     activeTab
   ];
   return (
-    <section id="wonderland" className="py-24 bg-[#faf9f6] scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-20">
+    <section id="wonderland" className="py-16 md:py-24 bg-[#faf9f6] scroll-mt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-12 md:space-y-20">
         
         {/* Header & Tabs Container */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <ScrollReveal direction="up" delay={0.1} className="space-y-4 text-left">
+          <ScrollReveal type="flipUp" delay={0.1} className="space-y-4 text-left">
             <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
               {(wonderland?.tag as any)?.[l] || (wonderland?.tag as any)?.name || wonderland?.tag || "WONDERLAND"}
             </span>
 
-            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
+            <h2 className="text-2xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
               {(wonderland?.title as any)?.[l] || (wonderland?.title as any)?.name || wonderland?.title || "Əyləncə Mərkəzi"}
             </h2>
 
             <div className="text-sm md:text-base text-stone-500 max-w-2xl font-light leading-relaxed prose prose-sm prose-stone [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: (wonderland?.description as any)?.[l] || (wonderland?.description as any)?.name || wonderland?.description || "Description" }} />
           </ScrollReveal>
-
-          
         </div>
 
         {/* Attractions Grid / Highlights */}
-        <ScrollReveal direction="up" delay={0.2} className="space-y-8">
-          
-          <h3 className="text-xs uppercase font-bold tracking-widest text-stone-400 text-center">
-            {c.highlightsTitle}
-          </h3>
+        <div className="space-y-8">
+          <ScrollReveal type="revealClip" delay={0.1}>
+            <h3 className="text-xs uppercase font-bold tracking-widest text-stone-400 text-center">
+              {c.highlightsTitle}
+            </h3>
+          </ScrollReveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
             {wonderland?.smallAttractions?.map((h:any, i:any) => (
-              <div
-                key={i}
+              <ScrollReveal key={i} type="zoomIn" delay={i * 0.08}
                 className="bg-white rounded-2xl p-6 flex flex-col items-center text-center gap-3 border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
               >
                 <div className="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
@@ -266,16 +264,16 @@ useEffect(() => {
                 </div>
                 <h4 className="text-sm font-semibold text-[#1e325c] mt-2">{(h?.name as any)?.[l] || (h?.name as any)?.az || "Name"}</h4>
                 <div className="text-xs text-stone-400 font-light leading-normal prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || "Desc" }} />
-              </div>
+              </ScrollReveal>
             ))}
           </div>
-        </ScrollReveal>
+        </div>
 
         {/* Interactive Slider Section */}
-        <ScrollReveal direction="up" delay={0.3} className="space-y-10 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm">
+        <ScrollReveal type="slideLeft" delay={0.2} className="space-y-10 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm">
            
            {wonderland?.bigAttractions?.length > 0 && (
-            <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
+            <ScrollReveal type="dropIn" delay={0.1} className="flex-shrink-0">
               <CategoryTabs
                 categories={wonderland.bigAttractions.map((t:any, i:any) => ({
                   id: String(i),

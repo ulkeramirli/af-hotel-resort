@@ -24,12 +24,12 @@ export default function CategoryTabs({
   if (!categories || categories.length === 0) return null;
 
   return (
-    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+    <div className={`flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide ${className}`}>
       {categories.map((cat) => (
         <button
           key={cat.id}
           onClick={() => onSelect(cat.id)}
-          className={`relative px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden ${
+          className={`shrink-0 relative px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden ${
             activeId === cat.id
               ? "text-white shadow-md"
               : "text-stone-500 bg-stone-100 hover:bg-stone-200"

@@ -38,8 +38,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#e9f7fa] text-stone-600 pt-16 pb-8 border-t border-cyan-100 relative overflow-hidden select-none text-left">
-      <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-12 relative z-10">
+    <footer className="bg-[#e9f7fa] text-stone-600 pt-10 md:pt-16 pb-8 border-t border-cyan-100 relative overflow-hidden select-none text-left">
+      <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-8 md:space-y-12 relative z-10">
         
         {/* qlavnaya panel */}
         <ScrollReveal direction="up" delay={0.1} className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-8 border-b border-cyan-100/60 items-start">

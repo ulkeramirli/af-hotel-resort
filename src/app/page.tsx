@@ -19,7 +19,7 @@ import Wonderland from "@/components/Wonderland";
 export default function Home() {
   return (
     <Providers> {/* LanguageProvider na Providers */}
-      <div className="bg-white min-h-screen antialiased selection:bg-slate-900 selection:text-white">
+      <div className="bg-white min-h-screen antialiased selection:bg-slate-900 selection:text-white overflow-x-hidden w-full relative">
         <Header />
         <main>
           <Hero />

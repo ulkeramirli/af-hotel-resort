@@ -146,16 +146,27 @@ export default function Header() {
   return (
     <>
       <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { y: -20, opacity: 0 },
+          visible: { 
+            y: 0, opacity: 1, 
+            transition: { 
+              duration: 0.5, 
+              ease: "easeOut",
+              staggerChildren: 0.1,
+              delayChildren: 0.2
+            } 
+          }
+        }}
         className={`fixed top-0 left-0 w-full z-50 px-4 lg:px-12 py-1.5 flex justify-between items-center transition-all duration-500 ${
           scrolled
             ? "bg-white/95 backdrop-blur-md border-b border-stone-200/60 shadow-sm"
             : "bg-white border-b border-stone-100"
         }`}
       >
-        <div className="flex items-center select-none transition-transform duration-300 hover:scale-[1.02]">
+        <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 200 } } }} className="flex items-center select-none transition-transform duration-300 hover:scale-[1.02]">
           <Image
             src="/loqo-af.png"
             alt="AF Hotel & Resort"
@@ -165,11 +176,11 @@ export default function Header() {
             className="w-24 h-auto sm:w-28 md:w-30 object-contain"
             style={{ width: "auto", height: "auto" }}
           />
-        </div>
+        </motion.div>
 
         <nav className="hidden lg:flex items-center space-x-3 xl:space-x-5 text-[11px] font-bold uppercase tracking-widest text-slate-700">
           {navLinks.map((item) => (
-            <div key={item.id} className="relative py-2 group">
+            <motion.div key={item.id} variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300 } } }} className="relative py-2 group">
               <a
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.id)}
@@ -185,7 +196,7 @@ export default function Header() {
                     : "w-0 opacity-0 group-hover:w-full group-hover:opacity-100"
                 }`}
               />
-            </div>
+            </motion.div>
           ))}
         </nav>
 
@@ -331,24 +342,37 @@ export default function Header() {
       <AnimatePresence>
         {mobileNavOpen && (
           <motion.div 
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", stiffness: 200, damping: 25 }}
-            className="fixed inset-0 top-13.75 bg-white z-40 lg:hidden flex flex-col justify-between p-6 border-t border-stone-100"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="fixed inset-0 top-[60px] bg-white z-40 lg:hidden flex flex-col justify-between p-6 border-t border-stone-100"
           >
-            <nav className="flex flex-col space-y-5 text-sm font-bold tracking-widest text-slate-800">
+            <motion.nav 
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={{
+                open: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+                closed: { transition: { staggerChildren: 0.05, staggerDirection: -1 } }
+              }}
+              className="flex flex-col space-y-5 text-sm font-bold tracking-widest text-slate-800"
+            >
             {navLinks.map((item) => (
-              <a
+              <motion.a
                 key={item.id}
+                variants={{
+                  open: { opacity: 1, x: 0 },
+                  closed: { opacity: 0, x: -20 }
+                }}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.id)}
                 className={`py-2 border-b border-stone-50 ${activeNav === item.id ? "text-[#00b5d5]" : ""}`}
               >
                 {item.label}
-              </a>
+              </motion.a>
             ))}
-          </nav>
+            </motion.nav>
           <div className="space-y-4">
             <a
               href={`tel:${settings?.phone || "+994124480000"}`}

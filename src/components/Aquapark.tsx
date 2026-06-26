@@ -272,33 +272,35 @@ export default function Aquapark() {
   const activeZones = dbZones.length > 0 ? dbZones : c.zones;
   const activeZone = activeZones[activeTab] || activeZones[0];
 
-  const displayTag = settings?.tag || c.tag;
-  const displayTitle = settings?.title || c.title;
-  const displaySubtitle = settings?.subtitle || c.subtitle;
+  const loc = (v: any): string => (typeof v === 'object' && v !== null) ? (v[l] || v['az'] || '') : (v || '');
+
+  const displayTag = loc(settings?.tag) || c.tag;
+  const displayTitle = loc(settings?.title) || c.title;
+  const displaySubtitle = loc(settings?.subtitle) || c.subtitle;
 
   const dynamicStats = [
-    { icon: Waves, label: settings?.stats?.[0]?.value || "25+", sub1: settings?.stats?.[0]?.label || (l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов"), sub2: settings?.stats?.[0]?.sub },
-    { icon: Users, label: settings?.stats?.[1]?.value || "2500+", sub1: settings?.stats?.[1]?.label || (l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день"), sub2: settings?.stats?.[1]?.sub },
-    { icon: Clock, label: settings?.stats?.[2]?.value || c.openHours, sub1: settings?.stats?.[2]?.label || c.season, sub2: settings?.stats?.[2]?.sub },
-    { icon: Star, label: settings?.stats?.[3]?.value || "5.0", sub1: settings?.stats?.[3]?.label || (l === "az" ? "Lüks Premium Xidmət" : l === "en" ? "Luxury Premium Service" : "Люкс Премиум Сервис"), sub2: settings?.stats?.[3]?.sub },
+    { icon: Waves, label: loc(settings?.stats?.[0]?.value) || "25+", sub1: loc(settings?.stats?.[0]?.label) || (l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов"), sub2: loc(settings?.stats?.[0]?.sub) },
+    { icon: Users, label: loc(settings?.stats?.[1]?.value) || "2500+", sub1: loc(settings?.stats?.[1]?.label) || (l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день"), sub2: loc(settings?.stats?.[1]?.sub) },
+    { icon: Clock, label: loc(settings?.stats?.[2]?.value) || c.openHours, sub1: loc(settings?.stats?.[2]?.label) || c.season, sub2: loc(settings?.stats?.[2]?.sub) },
+    { icon: Star, label: loc(settings?.stats?.[3]?.value) || "5.0", sub1: loc(settings?.stats?.[3]?.label) || (l === "az" ? "Lüks Premium Xidmət" : l === "en" ? "Luxury Premium Service" : "Люкс Премиум Сервис"), sub2: loc(settings?.stats?.[3]?.sub) },
   ];
 
   return (
-    <section id="aquapark" className="py-32 bg-white scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-16">
+    <section id="aquapark" className="py-16 md:py-32 bg-white scroll-mt-20">
+      <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-10 md:space-y-16">
         {/* Header & Tabs Container */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <ScrollReveal direction="up" delay={0.1} className="space-y-3 text-left">
+          <ScrollReveal type="revealClip" delay={0.1} className="space-y-3 text-left">
             <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
               {displayTag}
             </span>
-            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
+            <h2 className="text-2xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
               {displayTitle}
             </h2>
             <div className="text-sm text-stone-400 max-w-xl leading-relaxed prose prose-sm prose-stone [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: displaySubtitle }} />
           </ScrollReveal>
 
-          <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
+          <ScrollReveal type="dropIn" delay={0.3} className="flex-shrink-0">
             <CategoryTabs
               categories={activeZones.map((z, i) => ({ 
                 id: String(i), 
@@ -313,19 +315,18 @@ export default function Aquapark() {
         </div>
 
         {/* Stats bar */}
-        <ScrollReveal direction="up" delay={0.2} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {dynamicStats.map((s, i) => (
-            <div
-              key={i}
+            <ScrollReveal key={i} type="zoomIn" delay={i * 0.12}
               className="bg-[#f9f8f4] border border-stone-100/50 rounded-2xl p-6 flex flex-col items-center text-center gap-2 hover:scale-[1.02] transition-transform"
             >
               <s.icon className="w-5 h-5" style={{ color: "#00b5d5" }} />
               <span className="text-xl font-bold text-[#1e325c]">{s.label}</span>
               <span className="text-[10px] text-stone-400 font-medium tracking-wide uppercase">{s.sub1}</span>
               {s.sub2 && <span className="text-[9px] text-stone-400 tracking-wide">{s.sub2}</span>}
-            </div>
+            </ScrollReveal>
           ))}
-        </ScrollReveal>
+        </div>
 
         {/* Dynamic Resort Zones (Ideal UI) */}
         <div className="space-y-10">

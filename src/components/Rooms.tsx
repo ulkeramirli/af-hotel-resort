@@ -10,6 +10,7 @@ import type { RoomType, RoomSettings } from "@/types/api";
 import { toggleFavorite, isFavorite, syncFavorites } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
 import CategoryTabs from "./CategoryTabs";
+import ScrollReveal from "./ScrollReveal";
 
 function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0);
@@ -260,12 +261,7 @@ export default function Rooms() {
 
         {/* Header & Tabs Container */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            className="space-y-2 text-left"
-          >
+          <ScrollReveal type="revealClip" className="space-y-2 text-left">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5]">
               {settings?.tag || c.tag}
             </span>
@@ -273,14 +269,16 @@ export default function Rooms() {
               {settings?.title || c.title}
             </h2>
             <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
-          </motion.div>
+          </ScrollReveal>
 
-          <CategoryTabs 
-            categories={categories}
-            activeId={category}
-            onSelect={(id) => setCategory(id)}
-            className="justify-start md:justify-end"
-          />
+          <ScrollReveal type="dropIn" delay={0.2}>
+            <CategoryTabs 
+              categories={categories}
+              activeId={category}
+              onSelect={(id) => setCategory(id)}
+              className="justify-start md:justify-end"
+            />
+          </ScrollReveal>
         </div>
 
         {/* Content */}
@@ -328,10 +326,11 @@ export default function Rooms() {
                     <motion.div
                       layout
                       key={room.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.2 }}
+                      initial={{ opacity: 0, x: 30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, margin: "-20px" }}
+                      exit={{ opacity: 0, x: -30 }}
+                      transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
                       className="snap-start shrink-0 w-[78vw] max-w-[320px]"
                     >
                       <RoomCard
@@ -365,10 +364,11 @@ export default function Rooms() {
                 {filtered.map((room) => (
                   <motion.div
                     layout
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.25 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    exit={{ opacity: 0, y: 30 }}
+                    transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
                     key={room.id}
                   >
                     <RoomCard

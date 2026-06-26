@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body className={inter.className}>
+      <body className={`${inter.className} overflow-x-hidden w-full`}>
         {/* 
           Оборачиваем всё приложение в единый клиентский компонент Providers.
           Внутри него уже должны лежать LanguageProvider и AuthProvider, 

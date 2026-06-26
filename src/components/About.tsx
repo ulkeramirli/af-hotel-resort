@@ -44,32 +44,26 @@ export default function About() {
   const about = ABOUT[l];
 
   const leftCardVariants: Variants = {
-    hidden: { opacity: 0, x: -60, y: 10 },
+    hidden: { opacity: 0, rotateY: -20, x: -80, scale: 0.9, filter: 'blur(10px)' },
     visible: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      transition: { duration: 0.9, ease: 'easeOut' }
+      opacity: 1, rotateY: 0, x: 0, scale: 1, filter: 'blur(0px)',
+      transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
     }
   };
 
   const rightCardVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.95, x: 40, y: 30 },
+    hidden: { opacity: 0, rotateY: 20, x: 60, scale: 0.88, filter: 'blur(10px)' },
     visible: {
-      opacity: 1,
-      scale: 1,
-      x: 0,
-      y: 0,
-      transition: { duration: 0.9, delay: 0.2, ease: 'easeOut' }
+      opacity: 1, rotateY: 0, x: 0, scale: 1, filter: 'blur(0px)',
+      transition: { duration: 1.2, delay: 0.25, ease: [0.16, 1, 0.3, 1] }
     }
   };
 
   const textVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, x: 60, filter: 'blur(12px)' },
     visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, delay: 0.3, ease: 'easeOut' }
+      opacity: 1, x: 0, filter: 'blur(0px)',
+      transition: { duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }
     }
   };
 
@@ -92,9 +86,9 @@ export default function About() {
   const image2 = dbAbout?.images?.[1] || "/AF-aqua2.jpg";
 
   return (
-    <section id="about" className="py-32 bg-white scroll-mt-20 select-none overflow-hidden font-sans">
+    <section id="about" className="py-16 md:py-32 bg-white scroll-mt-20 select-none overflow-hidden font-sans">
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+      <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 lg:gap-24 items-center">
 
         {/* LEFT IMAGES */}
         <div className="lg:col-span-7 relative h-112.5 sm:h-125 md:h-162.5 w-full flex items-center">
@@ -149,7 +143,7 @@ export default function About() {
               {about.tag}
             </span>
 
-            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-[1.2]">
+            <h2 className="text-2xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-[1.2]">
               {displayTitle}
             </h2>
           </div>
