@@ -371,7 +371,7 @@ export default function AdminActivitiesPage() {
                   className="px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 >
                   {categories.map((c) => (
-                    <option key={c._id} value={c._id}>{(c.name as any)?.az || c.name}</option>
+                    <option key={c._id} value={c._id}>{typeof c.name === 'object' ? ((c.name as any)?.az || "") : c.name}</option>
                   ))}
                 </select>
                 <div className="md:col-span-2 flex items-center gap-4">
@@ -450,7 +450,7 @@ export default function AdminActivitiesPage() {
                   <img src={act.image} alt="" className="w-full h-32 object-cover rounded-xl mb-3" />
                 )}
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-bold text-sm text-[#1e325c]">{(act.title as any)?.az || act.title}</h4>
+                  <h4 className="font-bold text-sm text-[#1e325c]">{typeof act.title === 'object' ? ((act.title as any)?.az || "") : act.title}</h4>
                   <div className="flex gap-1">
                     <button onClick={() => startEditActivity(act)} className="p-1.5 text-stone-400 hover:text-[#1e325c] rounded-lg hover:bg-stone-50">
                       <Pencil className="w-4 h-4" />
@@ -461,9 +461,9 @@ export default function AdminActivitiesPage() {
                   </div>
                 </div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5] mb-2">
-                  {typeof act.category === 'object' ? ((act.category as any).name?.az || (act.category as any).name) : act.category}
+                  {typeof act.category === 'object' ? ((act.category as any).name?.az || "") : act.category}
                 </p>
-                <p className="text-xs text-stone-500 line-clamp-3">{(act.description as any)?.az || act.description}</p>
+                <p className="text-xs text-stone-500 line-clamp-3">{typeof act.description === 'object' ? ((act.description as any)?.az || "") : act.description}</p>
               </div>
             ))}
           </div>
@@ -522,7 +522,7 @@ export default function AdminActivitiesPage() {
                       {cat.emoji || <Tags className="w-5 h-5 text-[#00b5d5]" />}
                     </div>
                     <div>
-                      <span className="font-bold text-sm text-[#1e325c] block">{(cat.name as any)?.az || cat.name}</span>
+                      <span className="font-bold text-sm text-[#1e325c] block">{typeof cat.name === 'object' ? ((cat.name as any)?.az || "") : cat.name}</span>
                       {(cat.description as any)?.az && (
                         <p className="text-xs text-stone-500 mt-1 line-clamp-2">{(cat.description as any).az}</p>
                       )}

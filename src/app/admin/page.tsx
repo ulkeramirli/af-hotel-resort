@@ -84,7 +84,7 @@ export default function DashboardPage() {
     const matchFilter = activeFilter === "Hamısı" || b.status === statusMap[activeFilter];
     const matchSearch =
       b.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (b.room?.name || "").toLowerCase().includes(searchQuery.toLowerCase());
+      (typeof b.room?.name === 'object' ? ((b.room.name as any)?.az || "") : (b.room?.name || "")).toLowerCase().includes(searchQuery.toLowerCase());
     return matchFilter && matchSearch;
   });
 
@@ -177,7 +177,7 @@ export default function DashboardPage() {
                             <User className="w-3.5 h-3.5 text-stone-400" />
                             {b.guestName}
                           </td>
-                          <td className="py-3 text-stone-500">{b.room?.name || "Bilinmir"}</td>
+                          <td className="py-3 text-stone-500">{typeof b.room?.name === 'object' ? ((b.room.name as any)?.az || "Bilinmir") : (b.room?.name || "Bilinmir")}</td>
                           <td className="py-3 text-stone-500 text-xs">
                             {new Date(b.checkIn).toLocaleDateString("az-AZ")} → {new Date(b.checkOut).toLocaleDateString("az-AZ")}
                           </td>
@@ -215,8 +215,8 @@ export default function DashboardPage() {
                 stats.topRooms.map((r, idx) => (
                   <div key={idx} className="flex justify-between items-center p-3 bg-stone-50 rounded-xl border border-stone-100">
                     <div>
-                      <h4 className="font-bold text-xs text-[#1e325c]">{r.name}</h4>
-                      <p className="text-[10px] text-stone-400">{r.type}</p>
+                      <h4 className="font-bold text-xs text-[#1e325c]">{typeof r.name === 'object' ? ((r.name as any)?.az || "") : r.name}</h4>
+                      <p className="text-[10px] text-stone-400">{typeof r.type === 'object' ? ((r.type as any)?.az || "") : r.type}</p>
                     </div>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">
                       {r.count} bron

@@ -468,7 +468,7 @@ export default function AdminWonderlandPage() {
                     <Ticket className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1e325c]">{(ticket.name as any)?.az || ticket.name}</h4>
+                    <h4 className="font-bold text-sm text-[#1e325c]">{typeof ticket.name === 'object' ? ((ticket.name as any)?.az || "") : ticket.name}</h4>
                     <p className="text-xs font-semibold text-stone-500 mt-0.5">
                       <span className="text-[#00b5d5]">{ticket.price}</span>
                     </p>
@@ -562,8 +562,8 @@ export default function AdminWonderlandPage() {
                     {sa.icon ? <span className="text-lg">{sa.icon}</span> : <Star className="w-5 h-5" />}
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1e325c]">{(sa.name as any)?.az || sa.name}</h4>
-                    <p className="text-xs text-stone-400 mt-0.5 line-clamp-1">{(sa.description as any)?.az || sa.description}</p>
+                    <h4 className="font-bold text-sm text-[#1e325c]">{typeof sa.name === 'object' ? ((sa.name as any)?.az || "") : sa.name}</h4>
+                    <p className="text-xs text-stone-400 mt-0.5 line-clamp-1">{typeof sa.description === 'object' ? ((sa.description as any)?.az || "") : sa.description}</p>
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">
@@ -636,7 +636,7 @@ export default function AdminWonderlandPage() {
                     <Gamepad2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1e325c]">{(ba.title as any)?.az || ba.title}</h4>
+                    <h4 className="font-bold text-sm text-[#1e325c]">{typeof ba.title === 'object' ? ((ba.title as any)?.az || "") : ba.title}</h4>
                     <p className="text-[10px] text-stone-400 mt-0.5">{ba.games.length} oyun</p>
                   </div>
                 </div>
@@ -772,8 +772,8 @@ export default function AdminWonderlandPage() {
                           <div className="p-3">
                             <div className="flex justify-between items-start">
                               <div className="flex-1 min-w-0">
-                                <h5 className="font-bold text-xs text-[#1e325c] truncate">{(game.name as any)?.az || game.name}</h5>
-                                <p className="text-[10px] text-stone-400 mt-0.5 line-clamp-2">{(game.description as any)?.az || game.description}</p>
+                                <h5 className="font-bold text-xs text-[#1e325c] truncate">{typeof game.name === 'object' ? ((game.name as any)?.az || "") : game.name}</h5>
+                                <p className="text-[10px] text-stone-400 mt-0.5 line-clamp-2">{typeof game.description === 'object' ? ((game.description as any)?.az || "") : game.description}</p>
                               </div>
                               <div className="flex gap-1 ml-2 shrink-0">
                                 <button

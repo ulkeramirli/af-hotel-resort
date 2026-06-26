@@ -181,8 +181,8 @@ export default function AdminFaqsPage() {
                     <HelpCircle className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1e325c] mb-1">{(faq.question as any)?.az || faq.question}</h4>
-                    <p className="text-xs text-stone-500 line-clamp-3">{(faq.answer as any)?.az || faq.answer}</p>
+                    <h4 className="font-bold text-sm text-[#1e325c] mb-1">{typeof faq.question === 'object' ? ((faq.question as any)?.az || "") : faq.question}</h4>
+                    <p className="text-xs text-stone-500 line-clamp-3">{typeof faq.answer === 'object' ? ((faq.answer as any)?.az || "") : faq.answer}</p>
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">

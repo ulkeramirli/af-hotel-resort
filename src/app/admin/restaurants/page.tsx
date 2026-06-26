@@ -286,8 +286,8 @@ export default function AdminRestaurantsPage() {
   };
 
   const filteredRestaurants = restaurants.filter((r) => {
-    const rName = (r.name as any)?.az || r.name || "";
-    const rDesc = (r.description as any)?.az || r.description || "";
+    const rName = typeof r.name === 'object' ? ((r.name as any)?.az || "") : (r.name || "");
+    const rDesc = typeof r.description === 'object' ? ((r.description as any)?.az || "") : (r.description || "");
     return rName.toLowerCase().includes(searchQuery.toLowerCase()) || rDesc.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
@@ -505,7 +505,7 @@ export default function AdminRestaurantsPage() {
                     <ShoppingBag className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1e325c]">{(cat.name as any)?.az || cat.name}</h4>
+                    <h4 className="font-bold text-sm text-[#1e325c]">{typeof cat.name === 'object' ? ((cat.name as any)?.az || "") : cat.name}</h4>
                     <p className="text-[10px] text-stone-400 mt-0.5">{cat.items.length} məhsul</p>
                   </div>
                 </div>
@@ -637,11 +637,11 @@ export default function AdminRestaurantsPage() {
                             )}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
-                                <h5 className="font-bold text-xs text-[#1e325c] truncate">{(item.name as any)?.az || item.name}</h5>
+                                <h5 className="font-bold text-xs text-[#1e325c] truncate">{typeof item.name === 'object' ? ((item.name as any)?.az || "") : item.name}</h5>
                                 <span className="text-xs font-bold text-[#00b5d5] whitespace-nowrap">{item.price} AZN</span>
                               </div>
-                              {((item.description as any)?.az || item.description) && (
-                                <p className="text-[10px] text-stone-400 mt-0.5 truncate">{(item.description as any)?.az || item.description}</p>
+                              {(typeof item.description === 'object' ? (item.description as any)?.az : item.description) && (
+                                <p className="text-[10px] text-stone-400 mt-0.5 truncate">{typeof item.description === 'object' ? ((item.description as any)?.az || "") : item.description}</p>
                               )}
                             </div>
                           </div>
@@ -873,7 +873,7 @@ export default function AdminRestaurantsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="font-bold text-sm text-[#1e325c]">{(rest.name as any)?.az || rest.name}</h4>
+                      <h4 className="font-bold text-sm text-[#1e325c]">{typeof rest.name === 'object' ? ((rest.name as any)?.az || "") : rest.name}</h4>
                       {rest.phone && (
                         <p className="text-[10px] text-[#00b5d5] font-semibold mt-0.5">{rest.phone}</p>
                       )}
@@ -895,8 +895,8 @@ export default function AdminRestaurantsPage() {
                       </button>
                     </div>
                   </div>
-                  {((rest.description as any)?.az || rest.description) && (
-                    <p className="text-[11px] text-stone-400 mt-1 line-clamp-2">{(rest.description as any)?.az || rest.description}</p>
+                  {(typeof rest.description === 'object' ? (rest.description as any)?.az : rest.description) && (
+                    <p className="text-[11px] text-stone-400 mt-1 line-clamp-2">{typeof rest.description === 'object' ? ((rest.description as any)?.az || "") : rest.description}</p>
                   )}
                   <div className="flex flex-wrap gap-2 mt-2">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">

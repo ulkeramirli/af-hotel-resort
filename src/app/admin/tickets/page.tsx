@@ -180,7 +180,7 @@ export default function AdminTicketsPage() {
                   <TicketIcon className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-[#1e325c]">{(ticket.name as any)?.az || ticket.name}</h4>
+                  <h4 className="font-bold text-sm text-[#1e325c]">{typeof ticket.name === 'object' ? ((ticket.name as any)?.az || "") : ticket.name}</h4>
                   <p className="text-xs font-semibold text-stone-500 mt-1">
                     <span className="text-[#00b5d5]">{ticket.price} AZN</span>
                   </p>
