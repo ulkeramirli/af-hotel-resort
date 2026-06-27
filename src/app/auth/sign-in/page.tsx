@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Loader2, Eye, EyeOff, AlertCircle, ArrowLeft } from "lucide-react";
-
+import type { FormEvent } from "react";
 const FlagIcon = ({ code }: { code: LangType }) => {
   if (code === "az")
     return (
@@ -113,7 +113,7 @@ function SignInContent() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");

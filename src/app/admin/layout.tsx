@@ -20,6 +20,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { logout, getCurrentUser } from "@/services/api";
+import { useEffect, useState } from "react";
 import React from "react";
 
 // Предполагаем интерфейс пользователя, адаптируйте под вашу схему типов
@@ -32,9 +33,9 @@ interface User {
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = React.useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const currentUser = getCurrentUser();
     if (!currentUser || currentUser.role !== "admin") {
       router.push("/login");

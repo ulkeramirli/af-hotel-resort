@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Search, Calendar, User, Loader2, AlertCircle, Pencil, X, Check } from "lucide-react";
 import { getBookings, updateBooking, getRooms } from "@/services/api";
 import type { Booking, Room } from "@/types/api";
-
+import type { FormEvent } from "react";
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -87,7 +87,7 @@ export default function AdminBookingsPage() {
     });
   };
 
-  const handleEditSubmit = async (e: React.FormEvent) => {
+  const handleEditSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!editBookingId) return;
     try {

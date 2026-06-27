@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Loader2, Eye, EyeOff, User, Mail, Lock, CheckCircle2, AlertCircle, ArrowLeft } from "lucide-react";
-
+import type { FormEvent } from "react";
 const FlagIcon = ({ code }: { code: LangType }) => {
   if (code === "az")
     return (
@@ -140,7 +140,7 @@ export default function SignUpPage() {
 
   const [existingUser, setExistingUser] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (password.length < 6) { setError(t.errorLength); return; }
     setLoading(true);

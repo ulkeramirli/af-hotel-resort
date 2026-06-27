@@ -10,10 +10,10 @@ import {
 import { getWonderland, updateWonderland, uploadImage } from "@/services/api";
 import type { Wonderland } from "@/types/api";
 import RichTextEditor from "@/components/RichTextEditor";
-
+import type { ElementType } from "react";
 type TabKey = "general" | "tickets" | "small" | "big";
 
-const tabs: { key: TabKey; label: string; icon: React.ElementType }[] = [
+const tabs: { key: TabKey; label: string; icon: ElementType }[] = [
   { key: "general", label: "Ümumi Məlumat", icon: Castle },
   { key: "tickets", label: "Biletlər", icon: Ticket },
   { key: "small", label: "Kiçik Attraksionlar", icon: Star },

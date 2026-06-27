@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Save, Loader2, CheckCircle2, Phone, Mail, MapPin, Link as LinkIcon, Globe } from "lucide-react";
 import { getSettings, updateSettings } from "@/services/api";
+import type { FormEvent,ChangeEvent } from "react";
 
 const defaultSettings: any = {
   hotelName: { az: "", en: "", ru: "" },
@@ -60,7 +61,7 @@ export default function AdminSettingsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setError(null);
@@ -75,7 +76,7 @@ export default function AdminSettingsPage() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 

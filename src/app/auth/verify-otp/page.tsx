@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Loader2, Shield, CheckCircle, AlertCircle, RotateCcw } from "lucide-react";
-
+import type { KeyboardEvent,ClipboardEvent } from "react";
 type LangType = "az" | "en" | "ru";
 
 const translations = {
@@ -94,14 +94,14 @@ function VerifyOTPContent() {
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+  const handleKeyDown = (index: number, e: KeyboardEvent) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       const el = document.getElementById(`otp-${index - 1}`);
       el?.focus();
     }
   };
 
-  const handlePaste = (e: React.ClipboardEvent) => {
+  const handlePaste = (e: ClipboardEvent) => {
     const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
     if (text.length === 6) {
       setOtp(text.split(""));

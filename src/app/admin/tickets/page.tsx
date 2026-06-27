@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Trash2, Loader2, Pencil, Ticket as TicketIcon, Globe } from "lucide-react";
 import { getTickets, createTicket, updateTicket, deleteTicket } from "@/services/api";
-
+import type { FormEvent } from "react";
 const emptyTicketForm = {
   name: { az: "", en: "", ru: "" },
   price: 0,
@@ -53,7 +53,7 @@ export default function AdminTicketsPage() {
     loadData();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!form.name.az || form.price < 0) {
       alert("Ad (AZ) və qiymət düzgün qeyd olunmalıdır!");

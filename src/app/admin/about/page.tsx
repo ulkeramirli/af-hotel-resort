@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Loader2, Check, AlertCircle, Info, Plus, X, Globe } from "lucide-react";
 import { getAbout, updateAbout, uploadImage } from "@/services/api";
 import RichTextEditor from "@/components/RichTextEditor";
-
+import type { FormEvent } from "react";
 const emptyAboutForm: any = {
   title: { az: "", en: "", ru: "" },
   description: { az: "", en: "", ru: "" },
@@ -61,7 +61,7 @@ export default function AdminAboutPage() {
     loadData();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       setSaving(true);

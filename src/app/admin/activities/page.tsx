@@ -12,7 +12,7 @@ import {
 } from "@/services/api";
 import type { Activity, ActivityCategory, ActivitySettings } from "@/types/api";
 import RichTextEditor from "@/components/RichTextEditor";
-
+import type { FormEvent } from "react";
 const emptyActivityForm = {
   title: { az: "", en: "", ru: "" },
   category: "",
@@ -122,7 +122,7 @@ export default function AdminActivitiesPage() {
   };
 
   // ─── ACTIVITY ACTIONS ───
-  const handleActivitySubmit = async (e: React.FormEvent) => {
+  const handleActivitySubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!activityForm.title.az || !activityForm.description.az || !activityForm.category) {
       alert("Ən azı AZ dilində Başlıq və Təsvir, və Kateqoriya mütləq doldurulmalıdır!");
@@ -166,7 +166,7 @@ export default function AdminActivitiesPage() {
   };
 
   // ─── CATEGORY ACTIONS ───
-  const handleCategorySubmit = async (e: React.FormEvent) => {
+  const handleCategorySubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!categoryForm.name.az) {
       alert("Kateqoriya adı ən azı AZ dilində daxil edilməlidir!");

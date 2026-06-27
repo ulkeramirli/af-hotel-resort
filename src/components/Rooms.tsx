@@ -12,6 +12,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import CategoryTabs from "./CategoryTabs";
 import ScrollReveal from "./ScrollReveal";
 import React from "react";
+import type { MouseEvent } from "react";
 function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0);
   const [err, setErr] = useState(false);
@@ -19,8 +20,8 @@ function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   const src = images[active] || "";
   const isValid = !err && src && src.startsWith("http") && !src.match(/^https?:\/\/[^/]+\.(jpg|jpeg|png|webp|gif)$/i);
 
-  const next = (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setActive((p) => (p + 1) % images.length); };
-  const prev = (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setActive((p) => (p - 1 + images.length) % images.length); };
+  const next = (e: MouseEvent) => { e.preventDefault(); e.stopPropagation(); setActive((p) => (p + 1) % images.length); };
+  const prev = (e: MouseEvent) => { e.preventDefault(); e.stopPropagation(); setActive((p) => (p - 1 + images.length) % images.length); };
 
   if (!isValid || err) {
     return (

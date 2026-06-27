@@ -9,6 +9,8 @@ import { User, LogOut, Menu, X, Phone, Heart, BookOpen } from "lucide-react";
 import { getFavorites } from "@/lib/favorites";
 import { useSettings } from "@/contexts/SettingsContext";
 import React from "react";
+
+import type { MouseEvent } from "react";
 type LangType = "az" | "en" | "ru";
 
 type AuthUser = {
@@ -122,7 +124,7 @@ export default function Header() {
   }, []);
 
   const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
+    e: MouseEvent<HTMLAnchorElement>,
     id: string,
   ) => {
     setActiveNav(id);

@@ -13,7 +13,7 @@ import {
 
 import type { Room, RoomType, RoomSettings } from "@/types/api";
 import RichTextEditor from "@/components/RichTextEditor";
-
+import type { FormEvent } from "react";
 const emptyRoomForm = {
   name: { az: "", en: "", ru: "" },
   type: "",
@@ -107,7 +107,7 @@ export default function AdminRoomsPage() {
   }, []);
 
   // ─── ROOM ACTIONS ───
-  const handleRoomSubmit = async (e: React.FormEvent) => {
+  const handleRoomSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!roomForm.name.az || !roomForm.description.az || !roomForm.price || !roomForm.type) {
       alert("Ən azı AZ dilində məlumatları və qiyməti daxil edin!");
@@ -194,7 +194,7 @@ export default function AdminRoomsPage() {
   };
 
   // ─── ROOM TYPE ACTIONS ───
-  const handleTypeSubmit = async (e: React.FormEvent) => {
+  const handleTypeSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!typeFormName.az) return;
     try {
@@ -227,7 +227,7 @@ export default function AdminRoomsPage() {
   };
 
   // ─── SETTINGS ACTIONS ───
-  const handleSettingsSubmit = async (e: React.FormEvent) => {
+  const handleSettingsSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       setSavingSettings(true);

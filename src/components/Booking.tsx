@@ -8,6 +8,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { getPublicRooms, createBooking, getBookedDates } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
 import React from "react";
+import type { MouseEvent,FormEvent } from "react";
 interface AuthUser {
   id: string;
   email: string;
@@ -22,8 +23,8 @@ function CustomDatePicker({ value, onChange, bookedDates, label }: { value: stri
   const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
   const startDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
 
-  const handlePrev = (e: React.MouseEvent) => { e.preventDefault(); setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)); };
-  const handleNext = (e: React.MouseEvent) => { e.preventDefault(); setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)); };
+  const handlePrev = (e: MouseEvent) => { e.preventDefault(); setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)); };
+  const handleNext = (e: MouseEvent) => { e.preventDefault(); setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)); };
 
   const isBooked = (d: Date) => {
     d.setHours(0,0,0,0);
@@ -218,7 +219,7 @@ function BookingContent() {
     robot: { az: "Mən robot deyiləm", en: "I am not a robot", ru: "Я не робот" }[currentLang],
   };
 
-  const handleNextStep = (e: React.FormEvent) => {
+  const handleNextStep = (e: FormEvent) => {
     e.preventDefault();
     if (!checkIn || !checkOut || !selectedRoomId || !phone || !email) {
       setError("Zəhmət olmasa bütün xanaları doldurun.");
@@ -232,7 +233,7 @@ function BookingContent() {
     setStep(2);
   };
 
-  const handleFinalSubmit = async (e: React.FormEvent) => {
+  const handleFinalSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");

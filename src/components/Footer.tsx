@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import ScrollReveal from '@/components/ScrollReveal';
 import React from "react";
+import type { FormEvent} from "react";
 export default function Footer() {
   const { language, t } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
@@ -26,7 +27,7 @@ export default function Footer() {
   const [email, setEmail] = useState('');
   const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const handleSubscribe = async (e: FormEvent) => {
     e.preventDefault();
     if (!email) return;
     setSubStatus('loading');

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Trash2, Loader2, Pencil, HelpCircle, Globe } from "lucide-react";
 import { getFaqs, createFaq, updateFaq, deleteFaq } from "@/services/api";
 import RichTextEditor from "@/components/RichTextEditor";
-
+import type { FormEvent } from "react";
 const emptyFaqForm = {
   question: { az: "", en: "", ru: "" },
   answer: { az: "", en: "", ru: "" },
@@ -54,7 +54,7 @@ export default function AdminFaqsPage() {
     loadData();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!form.question.az || !form.answer.az) {
       alert("Sual və cavab AZ dilində mütləq doldurulmalıdır!");

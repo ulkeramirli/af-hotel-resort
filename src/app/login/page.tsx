@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Lock, Mail, Loader2, AlertCircle, Hotel } from "lucide-react";
 import { login } from "@/services/api";
-
+import type { FormEvent } from "react";
 export default function LoginPage() {
   const [email, setEmail] = useState("admin@afhotel.az");
   const [password, setPassword] = useState("admin123");
@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);

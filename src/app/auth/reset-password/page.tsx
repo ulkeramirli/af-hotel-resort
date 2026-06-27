@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { resetPassword } from "@/services/api";
 import { Loader2, KeyRound, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
-
+import type { FormEvent } from "react";
 type LangType = "az" | "en" | "ru";
 
 const translations = {
@@ -63,7 +63,7 @@ function ResetPasswordForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!email) { setError(t.errorMsg); return; }
     setLoading(true);
