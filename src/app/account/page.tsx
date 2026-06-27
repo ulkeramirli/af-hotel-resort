@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import type { ReactNode, FormEvent } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -152,7 +153,7 @@ function formatDate(d: string | Date) {
 }
 
 function StatusBadge({ status, tx }: { status: string; tx: typeof t.az }) {
-  const map: Record<string, { color: string; icon: React.ReactNode; label: string }> = {
+  const map: Record<string, { color: string; icon: ReactNode; label: string }> = {
     pending: {
       color: "bg-amber-50 text-amber-700 border-amber-200",
       icon: <Clock className="w-3 h-3" />,
@@ -284,7 +285,7 @@ function AccountContent() {
     ? favorites.filter(id => !!roomsMap[id]).length
     : favorites.length; // fallback while loading
 
-  const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
+  const tabs: { key: Tab; label: string; icon: ReactNode }[] = [
     ...(user ? [
       { key: "profile" as Tab, label: tx.profile, icon: <User className="w-4 h-4" /> },
       { key: "bookings" as Tab, label: tx.bookings, icon: <BookOpen className="w-4 h-4" /> },
@@ -292,7 +293,7 @@ function AccountContent() {
     { key: "favorites" as Tab, label: tx.favorites, icon: <Heart className="w-4 h-4" /> },
   ];
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
+  const handleUpdateProfile = async (e: FormEvent) => {
     e.preventDefault();
     setEditLoading(true);
     setEditError("");
