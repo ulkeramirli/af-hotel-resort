@@ -25,10 +25,12 @@
 "react-dom": "19.1.1",
     "react-google-recaptcha": "^3.1.0",
     "react-quill-new": "^3.8.3",
-    "resend": "^6.12.4"
+    "resend": "^6.12.4",
+    "@tailwindcss/postcss": "^4",
+"tailwindcss": "^4",
+"typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.19.42",
     "@types/nodemailer": "^8.0.1",
@@ -38,9 +40,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.6",
-    "tailwindcss": "^4",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "ts-node": "^10.9.2"
   }
  
 }
