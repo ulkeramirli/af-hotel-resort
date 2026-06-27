@@ -8,7 +8,7 @@ import Link from "next/link";
 import { User, LogOut, Menu, X, Phone, Heart, BookOpen } from "lucide-react";
 import { getFavorites } from "@/lib/favorites";
 import { useSettings } from "@/contexts/SettingsContext";
-
+import React from "react";
 type LangType = "az" | "en" | "ru";
 
 type AuthUser = {

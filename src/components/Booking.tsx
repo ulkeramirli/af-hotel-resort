@@ -7,7 +7,7 @@ import { Loader2, CheckCircle, CreditCard, ShieldCheck, AlertCircle, Calendar } 
 import ReCAPTCHA from "react-google-recaptcha";
 import { getPublicRooms, createBooking, getBookedDates } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
-
+import React from "react";
 interface AuthUser {
   id: string;
   email: string;

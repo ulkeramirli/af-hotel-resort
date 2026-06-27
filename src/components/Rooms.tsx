@@ -11,7 +11,7 @@ import { toggleFavorite, isFavorite, syncFavorites } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
 import CategoryTabs from "./CategoryTabs";
 import ScrollReveal from "./ScrollReveal";
-
+import React from "react";
 function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0);
   const [err, setErr] = useState(false);

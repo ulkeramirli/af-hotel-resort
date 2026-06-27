@@ -4,7 +4,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 import { useState } from 'react';
 import Image from 'next/image';
 import ScrollReveal from '@/components/ScrollReveal';
-
+import React from "react";
 export default function Footer() {
   const { language, t } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
