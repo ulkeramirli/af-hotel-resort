@@ -6,7 +6,7 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "eslint",
-    "build": "npx next build"
+    "build": "next build"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
