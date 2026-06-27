@@ -8,6 +8,7 @@ import {
   logout as apiLogout,
 } from "@/services/api";
 
+import type { ReactNode } from "react";
 interface User {
   id: string;
   name: string;
@@ -33,7 +34,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 

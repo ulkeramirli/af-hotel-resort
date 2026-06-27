@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { getSettings } from "@/services/api";
 import type { Settings } from "@/types/api";
-
+import type { ReactNode } from "react";
 interface SettingsContextType {
   settings: Settings | null;
   loading: boolean;
@@ -10,7 +10,7 @@ interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType>({ settings: null, loading: true });
 
-export function SettingsProvider({ children }: { children: React.ReactNode }) {
+export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
 

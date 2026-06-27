@@ -1,6 +1,6 @@
 "use client";
+import { useState, useEffect, Suspense } from "react";
 import type { ReactNode, FormEvent } from "react";
-import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";

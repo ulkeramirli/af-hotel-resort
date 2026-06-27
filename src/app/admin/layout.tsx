@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
-import React from "react";
+
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -19,6 +20,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { logout, getCurrentUser } from "@/services/api";
+import React from "react";
 
 // Предполагаем интерфейс пользователя, адаптируйте под вашу схему типов
 interface User {
@@ -27,7 +29,7 @@ interface User {
   role?: string;
 }
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = React.useState<User | null>(null);

@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import React from "react";
+import type { ReactNode } from "react";
 interface Category {
   id: string;
   label: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 }
 
 interface CategoryTabsProps {
