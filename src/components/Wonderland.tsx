@@ -273,7 +273,7 @@ useEffect(() => {
         <ScrollReveal type="slideLeft" delay={0.2} className="space-y-10 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm">
            
            {wonderland?.bigAttractions?.length > 0 && (
-            <ScrollReveal type="dropIn" delay={0.1} className="flex-shrink-0">
+            <ScrollReveal type="dropIn" delay={0.1} className="shrink-0">
               <CategoryTabs
                 categories={wonderland.bigAttractions.map((t:any, i:any) => ({
                   id: String(i),

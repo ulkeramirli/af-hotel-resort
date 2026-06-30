@@ -346,7 +346,7 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed inset-0 top-[60px] bg-white z-40 lg:hidden flex flex-col justify-between p-6 border-t border-stone-100"
+            className="fixed inset-0 top-15 bg-white z-40 lg:hidden flex flex-col justify-between p-6 border-t border-stone-100"
           >
             <motion.nav 
               initial="closed"
@@ -356,7 +356,7 @@ export default function Header() {
                 open: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
                 closed: { transition: { staggerChildren: 0.05, staggerDirection: -1 } }
               }}
-              className="flex flex-col space-y-5 text-sm font-bold tracking-widest text-slate-800"
+              className="flex flex-col mt-6 space-y-5 text-sm font-bold tracking-widest text-slate-800"
             >
             {navLinks.map((item) => (
               <motion.a
