@@ -300,7 +300,23 @@ export default function Aquapark() {
             <div className="text-sm text-stone-400 max-w-xl leading-relaxed prose prose-sm prose-stone [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: displaySubtitle }} />
           </ScrollReveal>
 
-          <ScrollReveal type="dropIn" delay={0.3} className="flex-shrink-0">
+        </div>
+
+        {/* Stats bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {dynamicStats.map((s, i) => (
+            <ScrollReveal key={i} type="zoomIn" delay={i * 0.12}
+            className="bg-[#f9f8f4] border border-stone-100/50 rounded-2xl p-6 flex flex-col items-center text-center gap-2 hover:scale-[1.02] transition-transform"
+            >
+              <s.icon className="w-5 h-5" style={{ color: "#00b5d5" }} />
+              <span className="text-xl font-bold text-[#1e325c]">{s.label}</span>
+              <span className="text-[10px] text-stone-400 font-medium tracking-wide uppercase">{s.sub1}</span>
+              {s.sub2 && <span className="text-[9px] text-stone-400 tracking-wide">{s.sub2}</span>}
+            </ScrollReveal>
+          ))}
+        </div>
+
+          <ScrollReveal type="dropIn" delay={0.3} className="shrink-0">
             <CategoryTabs
               categories={activeZones.map((z, i) => ({ 
                 id: String(i), 
@@ -312,22 +328,6 @@ export default function Aquapark() {
               className="justify-start md:justify-end"
             />
           </ScrollReveal>
-        </div>
-
-        {/* Stats bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {dynamicStats.map((s, i) => (
-            <ScrollReveal key={i} type="zoomIn" delay={i * 0.12}
-              className="bg-[#f9f8f4] border border-stone-100/50 rounded-2xl p-6 flex flex-col items-center text-center gap-2 hover:scale-[1.02] transition-transform"
-            >
-              <s.icon className="w-5 h-5" style={{ color: "#00b5d5" }} />
-              <span className="text-xl font-bold text-[#1e325c]">{s.label}</span>
-              <span className="text-[10px] text-stone-400 font-medium tracking-wide uppercase">{s.sub1}</span>
-              {s.sub2 && <span className="text-[9px] text-stone-400 tracking-wide">{s.sub2}</span>}
-            </ScrollReveal>
-          ))}
-        </div>
-
         {/* Dynamic Resort Zones (Ideal UI) */}
         <div className="space-y-10">
 
