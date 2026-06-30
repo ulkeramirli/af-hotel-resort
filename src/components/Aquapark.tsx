@@ -439,7 +439,7 @@ export default function Aquapark() {
                 {openFaq === i && (
                   <div className="px-4 pb-4 bg-white/50">
                     <div className="text-xs text-stone-500 leading-relaxed font-medium prose prose-sm prose-stone max-w-none [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: (faq.answer as any)?.[l] || (faq.answer as any)?.az || faq.answer || faq.a }} />
-                  </div>
+                    </div>
                 )}
               </div>
             ))}
