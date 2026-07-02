@@ -23,11 +23,11 @@ import type {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 const BASE = typeof window === "undefined" ? `${API_URL}/api` : "/api";
 
-function setToken(token: string, user: any) {
+function setToken(token: string) {
   if (typeof window === "undefined") return;
+
   localStorage.setItem("af_token", token);
-  localStorage.setItem("af_user", JSON.stringify(user));
-  // Set cookie for 7 days
+
   document.cookie = `af_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
 }
 
@@ -62,7 +62,7 @@ export async function login(email: string, password: string) {
   });
   const data = await res.json();
   if (data.success) {
-    setToken(data.data.token, data.data.user);
+    setToken(data.data.token);
   }
   return data;
 }
@@ -70,14 +70,8 @@ export async function login(email: string, password: string) {
 export function logout() {
   if (typeof window === "undefined") return;
   localStorage.removeItem("af_token");
-  localStorage.removeItem("af_user");
-  document.cookie = "af_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-}
 
-export function getCurrentUser(): User | null {
-  if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem("af_user");
-  return raw ? JSON.parse(raw) : null;
+  document.cookie = "af_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 }
 
 export function getRedirectAfterLogin(user: User) {
@@ -138,9 +132,7 @@ export async function updateProfile(name: string, email: string): Promise<any> {
       body: JSON.stringify({ name, email }),
     });
     const data = await res.json();
-    if (data.success && data.data && data.data.user) {
-      localStorage.setItem("af_user", JSON.stringify(data.data.user));
-    }
+
     return data;
   } catch (error: any) {
     return { success: false, message: error.message };
@@ -164,7 +156,7 @@ export async function loginWithGoogle(
     });
     const data = await res.json();
     if (data.success) {
-      setToken(data.data.token, data.data.user);
+      setToken(data.data.token);
     }
     return data;
   } catch (error: any) {
@@ -979,4 +971,21 @@ export async function uploadImage(file: File) {
     body: formData,
   });
   return res.json();
+}
+export async function getCurrentUser() {
+  try {
+    const res = await fetch(`${BASE}/auth/me`, {
+      headers: authHeaders(),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      return null;
+    }
+
+    return data.data;
+  } catch {
+    return null;
+  }
 }

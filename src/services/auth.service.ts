@@ -163,4 +163,18 @@ export class AuthService {
       message: "Password changed successfully",
     };
   }
+  static async me(userId: string) {
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+  }
 }
