@@ -41,12 +41,12 @@ export default function AdminLayout({
       const currentUser = await getCurrentUser();
 
       if (!currentUser) {
-        router.replace("/login");
+        router.replace("/auth/sign-in");
         return;
       }
 
       if (currentUser.role !== "admin") {
-        router.replace("/");
+        router.replace("/auth/sign-in");
         return;
       }
 
@@ -73,7 +73,7 @@ export default function AdminLayout({
 
   const handleLogout = () => {
     logout();
-    router.replace("/login");
+    router.replace("/auth/sign-in");
   };
 
   if (loading) {
