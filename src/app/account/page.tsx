@@ -379,6 +379,7 @@ function AccountContent() {
                   )}
                   <ChevronRight className={`w-4 h-4 ml-auto text-stone-300 ${tab === key ? "text-[#00b5d5]" : ""}`} />
                 </button>
+                
               ))}
               {user && (
                 <div className="border-t border-stone-100">
@@ -588,7 +589,7 @@ function AccountContent() {
                         return (
                           <div key={id} className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
                             {/* Image */}
-                            <div className="relative aspect-[16/11] overflow-hidden bg-stone-100 border-b border-stone-100">
+                            <div className="relative aspect-16/11 overflow-hidden bg-stone-100 border-b border-stone-100">
                               {room.images?.[0] ? (
                                 // eslint-disable-next-line @next/next/no-img-element
                                 <img
@@ -679,7 +680,6 @@ function AccountContent() {
     </div>
   );
 }
-
 export default function AccountPage() {
   return (
     <Suspense fallback={
