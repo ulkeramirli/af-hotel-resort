@@ -27,12 +27,24 @@ export interface RoomSettings {
   subtitle: string;
 }
 
+export interface PublicRoom {
+  id: string;
+  name: Record<string, string>;
+  type: string;
+  price: number;
+  priceUsd?: number;
+  images: string[];
+  capacity: { adults: number; children: number };
+  includes: Record<string, string[]>;
+}
+
 export interface Room {
   _id: string;
   name: any;
   type: string | any;
   description: any;
   price: number;
+  priceUsd?: number;
   capacity: number;
   amenities: any[];
   images: string[];
@@ -58,6 +70,10 @@ export interface Booking {
   checkIn: string;
   checkOut: string;
   status: "pending" | "confirmed" | "cancelled";
+  paymentStatus?: "pending" | "paid" | "failed" | "refunded";
+  paymentTransaction?: string;
+  amount?: number;
+  currency?: "AZN" | "USD";
   notes?: string;
   createdAt?: string;
   updatedAt?: string;

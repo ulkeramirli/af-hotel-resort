@@ -8,6 +8,7 @@ import Link from "next/link";
 import { User, LogOut, Menu, X, Phone, Heart, BookOpen } from "lucide-react";
 import { getFavorites } from "@/lib/favorites";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 type LangType = "az" | "en" | "ru";
 
@@ -66,6 +67,7 @@ const FlagIcon = ({ code }: { code: LangType }) => {
 
 export default function Header() {
   const [langOpen, setLangOpen] = useState(false);
+  const [currOpen, setCurrOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [activeNav, setActiveNav] = useState("home");
@@ -77,8 +79,10 @@ export default function Header() {
   const { language, setLanguage, t } = useLanguage();
   const currentLang = (language as LangType) || "az";
   const { settings } = useSettings();
+  const { currency, setCurrency } = useCurrency();
 
   const langRef = useRef<HTMLDivElement>(null);
+  const currRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -209,6 +213,34 @@ export default function Header() {
             <span>{settings?.phone || "+994 (12) 448-00-00"}</span>
           </a>
 
+          {/* Currency Switcher */}
+          <div className="relative" ref={currRef}>
+            <button
+              onClick={() => setCurrOpen(!currOpen)}
+              className="flex items-center space-x-1.5 font-bold text-[11px] tracking-wider text-slate-700 outline-none uppercase p-2 hover:bg-stone-50 rounded-xl transition-all duration-300 border-none bg-transparent cursor-pointer"
+            >
+              <span className="hidden sm:inline font-bold text-[#1e325c] bg-stone-100 px-2 py-1 rounded-md">{currency}</span>
+              <span className="sm:hidden font-bold text-[#1e325c] bg-stone-100 px-2 py-1 rounded-md">{currency === "AZN" ? "₼" : "$"}</span>
+            </button>
+
+            {currOpen && (
+              <div className="absolute right-0 mt-2 w-20 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                {(["AZN", "USD"] as const).map((curr) => (
+                  <button
+                    key={curr}
+                    onClick={() => {
+                      setCurrency(curr);
+                      setCurrOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-center space-x-2.5 px-4 py-2.5 text-[11px] font-bold tracking-wider text-slate-700 hover:bg-stone-50 transition-colors duration-150 uppercase border-none bg-transparent cursor-pointer ${currency === curr ? "text-[#00b5d5] bg-stone-50/50" : ""}`}
+                  >
+                    <span>{curr}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="relative" ref={langRef}>
             <button
               onClick={() => setLangOpen(!langOpen)}
@@ -236,8 +268,6 @@ export default function Header() {
               </div>
             )}
           </div>
-
-
 
           <a
             href="#booking"

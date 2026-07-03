@@ -22,6 +22,7 @@ const roomSchema = new mongoose.Schema(
     },
     description: localizedString,
     price: { type: Number, required: true },
+    priceUsd: { type: Number, default: 0 },
     capacity: { type: Number, required: true },
     images: { type: [String], default: [] },
     amenities: [localizedStringOptional],

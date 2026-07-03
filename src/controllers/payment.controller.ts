@@ -9,7 +9,7 @@ import { sendMail } from "@/lib/send-email";
 export class PaymentController {
   static async create(req: Request) {
     const body = await req.json();
-    const { room, guestName, email, phone, checkIn, checkOut, notes } = body;
+    const { room, guestName, email, phone, checkIn, checkOut, notes, currency = "AZN" } = body;
     const existingRoom = await Room.findById(room);
     const conflictBooking = await Booking.findOne({
       room,
@@ -44,7 +44,13 @@ export class PaymentController {
     const nights = Math.ceil(
       (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
     );
-    const amount = existingRoom.price * nights;
+    const unitPrice = currency === "USD" ? (existingRoom.priceUsd || 0) : existingRoom.price;
+    const amount = unitPrice * nights;
+    
+    if (amount <= 0) {
+      throw new Error("Invalid total amount");
+    }
+
     const booking = await Booking.create({
       room,
       guestName,
@@ -54,6 +60,7 @@ export class PaymentController {
       checkOut,
       notes,
       amount,
+      currency,
       paymentStatus: "pending",
       status: "pending",
     });
@@ -62,6 +69,7 @@ export class PaymentController {
         amount,
         orderId: booking._id.toString(),
         description: `Booking #${booking._id}`,
+        currency,
       });
 
       console.log("EPOINT RESPONSE:", payment);
@@ -154,6 +162,10 @@ export class PaymentController {
         adminMail.subject,
         adminMail.html,
       );
+    } else if (decoded.status === "refunded") {
+      booking.paymentStatus = "refunded";
+      booking.status = "cancelled";
+      await booking.save();
     } else {
       booking.paymentStatus = "failed";
       booking.status = "cancelled";

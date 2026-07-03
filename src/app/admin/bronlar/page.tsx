@@ -174,6 +174,7 @@ export default function AdminBookingsPage() {
                   <th className="pb-3">Qonaq</th>
                   <th className="pb-3">Əlaqə</th>
                   <th className="pb-3">Otaq</th>
+                  <th className="pb-3">Məbləğ</th>
                   <th className="pb-3">Qeyd</th>
                   <th className="pb-3">Tarix</th>
                   <th className="pb-3 text-right">Status & Əməliyyat</th>
@@ -182,7 +183,7 @@ export default function AdminBookingsPage() {
               <tbody className="divide-y divide-stone-50">
                 {filtered.length === 0 ? (
                   <tr>
-                     <td colSpan={6} className="py-10 text-center text-stone-400">Bron tapılmadı.</td>
+                     <td colSpan={7} className="py-10 text-center text-stone-400">Bron tapılmadı.</td>
                   </tr>
                 ) : filtered.map((b) => (
                   <tr key={b._id} className="hover:bg-stone-50/50">
@@ -203,6 +204,12 @@ export default function AdminBookingsPage() {
                       ) : (
                         <span className="text-xs text-stone-400">Silinmiş otaq</span>
                       )}
+                    </td>
+                    <td className="py-4 text-sm font-bold text-[#1e325c]">
+                      {b.amount} {b.currency || "AZN"}
+                      <div className="text-[10px] text-stone-400 font-normal">
+                        {b.paymentStatus === "paid" ? "Ödənilib" : b.paymentStatus === "refunded" ? "Geri qaytarılıb" : b.paymentStatus === "failed" ? "Ödəniş Uğursuz" : "Gözləyir"}
+                      </div>
                     </td>
                     <td className="py-4 text-xs text-stone-500 group">
                       <div className="flex items-center gap-2">

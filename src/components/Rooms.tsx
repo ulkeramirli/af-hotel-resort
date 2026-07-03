@@ -9,6 +9,7 @@ import type { PublicRoom } from "@/services/api";
 import type { RoomType, RoomSettings } from "@/types/api";
 import { toggleFavorite, isFavorite, syncFavorites } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import CategoryTabs from "./CategoryTabs";
 import ScrollReveal from "./ScrollReveal";
 
@@ -109,6 +110,7 @@ function RoomCard({
   onFavorite,
   onBook,
   compact = false,
+  currency,
 }: {
   room: PublicRoom;
   l: "az" | "en" | "ru";
@@ -117,6 +119,7 @@ function RoomCard({
   onFavorite: (id: string) => void;
   onBook: (id: string) => void;
   compact?: boolean;
+  currency: "AZN" | "USD";
 }) {
   return (
     <div className={`group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full ${compact ? "" : ""}`}>
@@ -160,7 +163,9 @@ function RoomCard({
         <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
           <div className="flex justify-between items-center">
             <div>
-              <span className="text-lg font-bold text-stone-900">${room.price}</span>
+              <span className="text-lg font-bold text-stone-900">
+                {currency === "USD" ? `$${room.priceUsd || 0}` : `${room.price} ₼`}
+              </span>
               <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
             </div>
             <Link
@@ -186,6 +191,7 @@ function RoomCard({
 
 export default function Rooms() {
   const { language } = useLanguage();
+  const { currency } = useCurrency();
   const router = useRouter();
   const l = (language as "az" | "en" | "ru") || "az";
   const c = content[l];
@@ -340,6 +346,7 @@ export default function Rooms() {
                         isFav={favorites.has(room.id)}
                         onFavorite={handleFavorite}
                         onBook={(id) => router.push(`/?roomId=${id}#booking`)}
+                        currency={currency}
                       />
                     </motion.div>
                   ))}
@@ -378,6 +385,7 @@ export default function Rooms() {
                       isFav={favorites.has(room.id)}
                       onFavorite={handleFavorite}
                       onBook={(id) => router.push(`/?roomId=${id}#booking`)}
+                      currency={currency}
                     />
                   </motion.div>
                 ))}

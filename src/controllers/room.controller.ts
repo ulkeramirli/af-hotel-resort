@@ -13,7 +13,7 @@ interface UserPayload {
 export class RoomController {
   static async create(req: Request, user: UserPayload) {
     try {
-      const { name, type, description, price, capacity, images, amenities } =
+      const { name, type, description, price, priceUsd, capacity, images, amenities } =
         await req.json();
 
       const room = await Room.create({
@@ -21,6 +21,7 @@ export class RoomController {
         type,
         description,
         price,
+        priceUsd,
         capacity,
         images,
         amenities,
