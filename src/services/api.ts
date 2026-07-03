@@ -1,4 +1,3 @@
- 
 import type {
   Room,
   RoomType,
@@ -24,11 +23,11 @@ import type {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 const BASE = typeof window === "undefined" ? `${API_URL}/api` : "/api";
 
-function setToken(token: string, user: any) {
+function setToken(token: string) {
   if (typeof window === "undefined") return;
+
   localStorage.setItem("af_token", token);
-  localStorage.setItem("af_user", JSON.stringify(user));
-  // Set cookie for 7 days
+
   document.cookie = `af_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
 }
 
@@ -63,7 +62,7 @@ export async function login(email: string, password: string) {
   });
   const data = await res.json();
   if (data.success) {
-    setToken(data.data.token, data.data.user);
+    setToken(data.data.token);
   }
   return data;
 }
@@ -71,20 +70,18 @@ export async function login(email: string, password: string) {
 export function logout() {
   if (typeof window === "undefined") return;
   localStorage.removeItem("af_token");
-  localStorage.removeItem("af_user");
-  document.cookie = "af_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-}
 
-export function getCurrentUser(): User | null {
-  if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem("af_user");
-  return raw ? JSON.parse(raw) : null;
+  document.cookie = "af_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 }
 
 export function getRedirectAfterLogin(user: User) {
   return user.role === "admin" ? "/admin" : "/account";
 }
-export async function register(name: string, email: string, password: string): Promise<any> {
+export async function register(
+  name: string,
+  email: string,
+  password: string,
+): Promise<any> {
   try {
     const res = await fetch(`${BASE}/auth/register`, {
       method: "POST",
@@ -110,7 +107,11 @@ export async function forgotPassword(email: string): Promise<any> {
   }
 }
 
-export async function resetPassword(email: string, otp: string, newPassword: string): Promise<any> {
+export async function resetPassword(
+  email: string,
+  otp: string,
+  newPassword: string,
+): Promise<any> {
   try {
     const res = await fetch(`${BASE}/auth/reset-password`, {
       method: "POST",
@@ -131,16 +132,17 @@ export async function updateProfile(name: string, email: string): Promise<any> {
       body: JSON.stringify({ name, email }),
     });
     const data = await res.json();
-    if (data.success && data.data && data.data.user) {
-      localStorage.setItem("af_user", JSON.stringify(data.data.user));
-    }
+
     return data;
   } catch (error: any) {
     return { success: false, message: error.message };
   }
 }
 
-export async function loginWithGoogle(name?: string, email?: string): Promise<any> {
+export async function loginWithGoogle(
+  name?: string,
+  email?: string,
+): Promise<any> {
   // Simulated Google login: if user exists → log in, else → register
   try {
     const res = await fetch(`${BASE}/auth/google`, {
@@ -154,7 +156,7 @@ export async function loginWithGoogle(name?: string, email?: string): Promise<an
     });
     const data = await res.json();
     if (data.success) {
-      setToken(data.data.token, data.data.user);
+      setToken(data.data.token);
     }
     return data;
   } catch (error: any) {
@@ -180,7 +182,6 @@ export interface PublicRoom {
   rulesCheckIn?: string;
   rulesCheckOut?: string;
 }
-
 
 // Validate image URL — reject single-segment hostnames like "image.jpg"
 function isValidImageUrl(url: string): boolean {
@@ -209,31 +210,48 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
     const data = await res.json();
     if (!data.success) return [];
     const rooms: Room[] = data.rooms ?? [];
-    return rooms.map((r): PublicRoom => ({
-      id: r._id,
-      category: typeof r.type === "object" && r.type !== null ? (r.type as any)._id : String(r.type),
-      categoryName: typeof r.type === "object" && r.type !== null ? (r.type as any).name : { az: "Otaq", en: "Room", ru: "Номер" },
-      title: (r.name as any) || { az: "", en: "", ru: "" },
-      desc: (r.description as any) || { az: "", en: "", ru: "" },
-      capacity: {
-        az: `${r.capacity} nəfər`,
-        en: `${r.capacity} persons`,
-        ru: `${r.capacity} человек`,
-      },
-      rawCapacity: r.capacity || 2,
-      size: r.sqft ? `${r.sqft} sqft` : "350 sqft",
-      price: r.price,
-      images: sanitizeImages(r.images),
-      includes: {
-        az: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.az : a) || [],
-        en: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.en : a) || [],
-        ru: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.ru : a) || [],
-      },
-      beds: r.beds,
-      baths: r.baths,
-      rulesCheckIn: r.rulesCheckIn as any,
-      rulesCheckOut: r.rulesCheckOut as any,
-    }));
+    return rooms.map(
+      (r): PublicRoom => ({
+        id: r._id,
+        category:
+          typeof r.type === "object" && r.type !== null
+            ? (r.type as any)._id
+            : String(r.type),
+        categoryName:
+          typeof r.type === "object" && r.type !== null
+            ? (r.type as any).name
+            : { az: "Otaq", en: "Room", ru: "Номер" },
+        title: (r.name as any) || { az: "", en: "", ru: "" },
+        desc: (r.description as any) || { az: "", en: "", ru: "" },
+        capacity: {
+          az: `${r.capacity} nəfər`,
+          en: `${r.capacity} persons`,
+          ru: `${r.capacity} человек`,
+        },
+        rawCapacity: r.capacity || 2,
+        size: r.sqft ? `${r.sqft} sqft` : "350 sqft",
+        price: r.price,
+        images: sanitizeImages(r.images),
+        includes: {
+          az:
+            (r.amenities as any)?.map((a: any) =>
+              typeof a === "object" ? a.az : a,
+            ) || [],
+          en:
+            (r.amenities as any)?.map((a: any) =>
+              typeof a === "object" ? a.en : a,
+            ) || [],
+          ru:
+            (r.amenities as any)?.map((a: any) =>
+              typeof a === "object" ? a.ru : a,
+            ) || [],
+        },
+        beds: r.beds,
+        baths: r.baths,
+        rulesCheckIn: r.rulesCheckIn as any,
+        rulesCheckOut: r.rulesCheckOut as any,
+      }),
+    );
   } catch {
     return [];
   }
@@ -243,23 +261,29 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
 export async function getRoomSettings(): Promise<RoomSettings> {
   const res = await fetch(`${BASE}/room-settings`);
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Tənzimləmələr yüklənmədi");
+  if (!data.success)
+    throw new Error(data.message || "Tənzimləmələr yüklənmədi");
   return data.settings;
 }
 
 // PATCH /api/room-settings → { success, settings }
-export async function updateRoomSettings(payload: Partial<RoomSettings>): Promise<RoomSettings> {
+export async function updateRoomSettings(
+  payload: Partial<RoomSettings>,
+): Promise<RoomSettings> {
   const res = await fetch(`${BASE}/room-settings`, {
     method: "PATCH",
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Tənzimləmələr yenilənmədi");
+  if (!data.success)
+    throw new Error(data.message || "Tənzimləmələr yenilənmədi");
   return data.settings;
 }
 
-export async function getPublicRoomById(id: string): Promise<PublicRoom | null> {
+export async function getPublicRoomById(
+  id: string,
+): Promise<PublicRoom | null> {
   try {
     const res = await fetch(`${BASE}/rooms/${id}`);
     const data = await res.json();
@@ -267,8 +291,14 @@ export async function getPublicRoomById(id: string): Promise<PublicRoom | null> 
     const r: Room = data.room;
     return {
       id: r._id,
-      category: typeof r.type === "object" && r.type !== null ? (r.type as any)._id : String(r.type),
-      categoryName: typeof r.type === "object" && r.type !== null ? (r.type as any).name : { az: "Otaq", en: "Room", ru: "Номер" },
+      category:
+        typeof r.type === "object" && r.type !== null
+          ? (r.type as any)._id
+          : String(r.type),
+      categoryName:
+        typeof r.type === "object" && r.type !== null
+          ? (r.type as any).name
+          : { az: "Otaq", en: "Room", ru: "Номер" },
       title: (r.name as any) || { az: "", en: "", ru: "" },
       desc: (r.description as any) || { az: "", en: "", ru: "" },
       capacity: {
@@ -281,9 +311,18 @@ export async function getPublicRoomById(id: string): Promise<PublicRoom | null> 
       price: r.price,
       images: sanitizeImages(r.images),
       includes: {
-        az: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.az : a) || [],
-        en: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.en : a) || [],
-        ru: (r.amenities as any)?.map((a:any) => typeof a === 'object' ? a.ru : a) || [],
+        az:
+          (r.amenities as any)?.map((a: any) =>
+            typeof a === "object" ? a.az : a,
+          ) || [],
+        en:
+          (r.amenities as any)?.map((a: any) =>
+            typeof a === "object" ? a.en : a,
+          ) || [],
+        ru:
+          (r.amenities as any)?.map((a: any) =>
+            typeof a === "object" ? a.ru : a,
+          ) || [],
       },
       beds: r.beds,
       baths: r.baths,
@@ -344,7 +383,8 @@ export async function deleteRoom(id: string) {
 export async function getRoomTypes(): Promise<RoomType[]> {
   const res = await fetch(`${BASE}/room-types`, { headers: authHeaders() });
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Kateqoriyalar yüklənmədi");
+  if (!data.success)
+    throw new Error(data.message || "Kateqoriyalar yüklənmədi");
   return data.roomTypes ?? [];
 }
 
@@ -430,14 +470,19 @@ export async function deleteActivity(id: string) {
 // ─── ACTIVITY CATEGORIES ───
 // GET /api/activity-categories → { success, categories[] }
 export async function getActivityCategories(): Promise<ActivityCategory[]> {
-  const res = await fetch(`${BASE}/activity-categories`, { headers: authHeaders() });
+  const res = await fetch(`${BASE}/activity-categories`, {
+    headers: authHeaders(),
+  });
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Kateqoriyalar yüklənmədi");
+  if (!data.success)
+    throw new Error(data.message || "Kateqoriyalar yüklənmədi");
   return data.categories ?? [];
 }
 
 // POST /api/activity-categories → { success, category }
-export async function createActivityCategory(payload: Partial<ActivityCategory>) {
+export async function createActivityCategory(
+  payload: Partial<ActivityCategory>,
+) {
   const res = await fetch(`${BASE}/activity-categories`, {
     method: "POST",
     headers: authHeaders(),
@@ -449,7 +494,10 @@ export async function createActivityCategory(payload: Partial<ActivityCategory>)
 }
 
 // PUT /api/activity-categories/[id]
-export async function updateActivityCategory(id: string, payload: Partial<ActivityCategory>) {
+export async function updateActivityCategory(
+  id: string,
+  payload: Partial<ActivityCategory>,
+) {
   const res = await fetch(`${BASE}/activity-categories/${id}`, {
     method: "PUT",
     headers: authHeaders(),
@@ -475,46 +523,58 @@ export async function deleteActivityCategory(id: string) {
 export async function getActivitySettings(): Promise<ActivitySettings> {
   const res = await fetch(`${BASE}/activity-settings`);
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Tənzimləmələr yüklənmədi");
+  if (!data.success)
+    throw new Error(data.message || "Tənzimləmələr yüklənmədi");
   return data.settings;
 }
 
 // PATCH /api/activity-settings → { success, settings }
-export async function updateActivitySettings(payload: Partial<ActivitySettings>): Promise<ActivitySettings> {
+export async function updateActivitySettings(
+  payload: Partial<ActivitySettings>,
+): Promise<ActivitySettings> {
   const res = await fetch(`${BASE}/activity-settings`, {
     method: "PATCH",
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Tənzimləmələr yenilənmədi");
+  if (!data.success)
+    throw new Error(data.message || "Tənzimləmələr yenilənmədi");
   return data.settings;
 }
 
 // GET /api/bookings → { success, page, limit, total, totalPages, bookings[] }
 export async function getBookings(): Promise<Booking[]> {
-  const res = await fetch(`${BASE}/bookings?limit=100`, { headers: authHeaders() });
+  const res = await fetch(`${BASE}/bookings?limit=100`, {
+    headers: authHeaders(),
+  });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Bronlar yüklənmədi");
   return data.bookings ?? [];
 }
 
-export async function getBookedDates(roomId: string): Promise<{checkIn: string; checkOut: string}[]> {
+export async function getBookedDates(
+  roomId: string,
+): Promise<{ checkIn: string; checkOut: string }[]> {
   const res = await fetch(`${BASE}/bookings/dates?roomId=${roomId}`);
   const data = await res.json();
   return data.dates ?? [];
 }
 
-export async function createBooking(payload: any): Promise<any> {
+export async function createPayment(payload: any): Promise<any> {
   try {
-    const res = await fetch(`${BASE}/bookings`, {
+    const res = await fetch(`${BASE}/payment/create`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify(payload),
     });
+
     return await res.json();
   } catch (error: any) {
-    return { success: false, message: error.message };
+    return {
+      success: false,
+      message: error.message,
+    };
   }
 }
 
@@ -557,7 +617,11 @@ export async function getAllReviews(): Promise<Review[]> {
   return data.reviews ?? data.review ?? [];
 }
 
-export async function createReview(payload: { fullName: string; emailOrPhone: string; message: string }) {
+export async function createReview(payload: {
+  fullName: string;
+  emailOrPhone: string;
+  message: string;
+}) {
   const res = await fetch(`${BASE}/reviews`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -567,7 +631,11 @@ export async function createReview(payload: { fullName: string; emailOrPhone: st
 }
 
 // PUT /api/reviews/[id] → { success, review }
-export async function updateReviewStatus(id: string, status: string, adminReply?: string) {
+export async function updateReviewStatus(
+  id: string,
+  status: string,
+  adminReply?: string,
+) {
   const payload: { status: string; adminReply?: string } = { status };
   if (adminReply !== undefined) payload.adminReply = adminReply;
 
@@ -593,7 +661,7 @@ export async function deleteReview(id: string) {
 }
 
 // ─── FAQS ───
-// GET /api/faqs → { success, faq[] }  ← KEY IS "faq" (singular) 
+// GET /api/faqs → { success, faq[] }  ← KEY IS "faq" (singular)
 export async function getFaqs(): Promise<Faq[]> {
   const res = await fetch(`${BASE}/faqs`, { headers: authHeaders() });
   const data = await res.json();
@@ -702,7 +770,8 @@ export async function updateSettings(payload: Partial<Settings>) {
     body: JSON.stringify(payload),
   });
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Tənzimləmələr yadda saxlanılmadı");
+  if (!data.success)
+    throw new Error(data.message || "Tənzimləmələr yadda saxlanılmadı");
   return data;
 }
 
@@ -727,7 +796,8 @@ export async function updateAbout(payload: Partial<About>) {
     body: JSON.stringify(payload),
   });
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Haqqımızda yadda saxlanılmadı");
+  if (!data.success)
+    throw new Error(data.message || "Haqqımızda yadda saxlanılmadı");
   return data;
 }
 
@@ -743,12 +813,17 @@ export async function getDashboardStats(): Promise<DashboardStats | null> {
     return {
       ...data.stats,
       recentBookings: data.recentBookings ?? [],
-      topRooms: (data.topRooms ?? []).map((r: { _id?: { name?: string; type?: string; price?: number }; bookings?: number }) => ({
-        name: r._id?.name ?? "Bilinmir",
-        type: r._id?.type ?? "",
-        price: r._id?.price ?? 0,
-        count: r.bookings ?? 0,
-      })),
+      topRooms: (data.topRooms ?? []).map(
+        (r: {
+          _id?: { name?: string; type?: string; price?: number };
+          bookings?: number;
+        }) => ({
+          name: r._id?.name ?? "Bilinmir",
+          type: r._id?.type ?? "",
+          price: r._id?.price ?? 0,
+          count: r.bookings ?? 0,
+        }),
+      ),
     };
   } catch {
     return null;
@@ -777,7 +852,8 @@ export async function updateWonderland(payload: Partial<Wonderland>) {
     body: JSON.stringify(payload),
   });
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Wonderland yadda saxlanılmadı");
+  if (!data.success)
+    throw new Error(data.message || "Wonderland yadda saxlanılmadı");
   return data;
 }
 
@@ -785,15 +861,21 @@ export async function updateWonderland(payload: Partial<Wonderland>) {
 // GET /api/restaurants → { success, restaurants[] }
 export async function getRestaurants(search?: string): Promise<Restaurant[]> {
   const query = search ? `?search=${encodeURIComponent(search)}` : "";
-  const res = await fetch(`${BASE}/restaurants${query}`, { headers: authHeaders() });
+  const res = await fetch(`${BASE}/restaurants${query}`, {
+    headers: authHeaders(),
+  });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Restoranlar yüklənmədi");
   return data.restaurants ?? [];
 }
 
 // GET /api/restaurants/[id] → { success, restaurant }
-export async function getRestaurantById(id: string): Promise<Restaurant | null> {
-  const res = await fetch(`${BASE}/restaurants/${id}`, { headers: authHeaders() });
+export async function getRestaurantById(
+  id: string,
+): Promise<Restaurant | null> {
+  const res = await fetch(`${BASE}/restaurants/${id}`, {
+    headers: authHeaders(),
+  });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Restoran tapılmadı");
   return data.restaurant ?? null;
@@ -812,7 +894,10 @@ export async function createRestaurant(payload: Partial<Restaurant>) {
 }
 
 // PUT /api/restaurants/[id] → { success, restaurant }
-export async function updateRestaurant(id: string, payload: Partial<Restaurant>) {
+export async function updateRestaurant(
+  id: string,
+  payload: Partial<Restaurant>,
+) {
   const res = await fetch(`${BASE}/restaurants/${id}`, {
     method: "PUT",
     headers: authHeaders(),
@@ -835,10 +920,16 @@ export async function deleteRestaurant(id: string) {
 }
 
 // GET /api/restaurants/[id]/menu-search?q=query → { success, menu[] }
-export async function searchRestaurantMenu(id: string, query: string): Promise<MenuCategory[]> {
-  const res = await fetch(`${BASE}/restaurants/${id}/menu-search?q=${encodeURIComponent(query)}`);
+export async function searchRestaurantMenu(
+  id: string,
+  query: string,
+): Promise<MenuCategory[]> {
+  const res = await fetch(
+    `${BASE}/restaurants/${id}/menu-search?q=${encodeURIComponent(query)}`,
+  );
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Menyü axtarışı uğursuz oldu");
+  if (!data.success)
+    throw new Error(data.message || "Menyü axtarışı uğursuz oldu");
   return data.menu ?? [];
 }
 
@@ -846,22 +937,25 @@ export async function searchRestaurantMenu(id: string, query: string): Promise<M
 export async function getRestaurantSettings(): Promise<RestaurantSettings> {
   const res = await fetch(`${BASE}/restaurant-settings`);
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Tənzimləmələr yüklənmədi");
+  if (!data.success)
+    throw new Error(data.message || "Tənzimləmələr yüklənmədi");
   return data.settings;
 }
 
 // PATCH /api/restaurant-settings → { success, settings }
-export async function updateRestaurantSettings(payload: Partial<RestaurantSettings>): Promise<RestaurantSettings> {
+export async function updateRestaurantSettings(
+  payload: Partial<RestaurantSettings>,
+): Promise<RestaurantSettings> {
   const res = await fetch(`${BASE}/restaurant-settings`, {
     method: "PATCH",
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
   const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Tənzimləmələr yenilənmədi");
+  if (!data.success)
+    throw new Error(data.message || "Tənzimləmələr yenilənmədi");
   return data.settings;
 }
-
 
 // ─── UPLOAD ───
 export async function uploadImage(file: File) {
@@ -877,4 +971,25 @@ export async function uploadImage(file: File) {
     body: formData,
   });
   return res.json();
+}
+export async function getCurrentUser() {
+  const token = getToken();
+
+  console.log("TOKEN =", token);
+
+  const headers = authHeaders();
+
+  console.log("HEADERS =", headers);
+
+  const res = await fetch(`${BASE}/auth/me`, {
+    headers,
+  });
+
+  console.log("STATUS =", res.status);
+
+  const data = await res.json();
+
+  console.log("DATA =", data);
+
+  return data.success ? data.data : null;
 }

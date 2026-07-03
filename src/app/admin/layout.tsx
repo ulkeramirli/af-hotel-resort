@@ -27,20 +27,35 @@ interface User {
   role?: string;
 }
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = React.useState<User | null>(null);
-
+  const [loading, setLoading] = React.useState(true);
   React.useEffect(() => {
-    const currentUser = getCurrentUser();
-    if (!currentUser || currentUser.role !== "admin") {
-      router.push("/login");
-    } else {
-      setUser(currentUser);
-    }
-  }, [router]);
+    async function loadUser() {
+      const currentUser = await getCurrentUser();
 
+      if (!currentUser) {
+        router.replace("/auth/sign-in");
+        return;
+      }
+
+      if (currentUser.role !== "admin") {
+        router.replace("/auth/sign-in");
+        return;
+      }
+
+      setUser(currentUser);
+      setLoading(false);
+    }
+
+    loadUser();
+  }, [router]);
 
   const menuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -58,13 +73,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleLogout = () => {
     logout();
-    router.push("/login");
+    router.replace("/auth/sign-in");
   };
 
-  if (!user) return null;
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        Yüklənir...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen flex" style={{ background: "var(--color-hotel-light)" }}>
+    <div
+      className="min-h-screen flex"
+      style={{ background: "var(--color-hotel-light)" }}
+    >
       <aside className="w-64 bg-white border-r border-stone-100 flex flex-col justify-between p-6 shrink-0 h-screen sticky top-0 shadow-sm">
         <div className="space-y-8">
           <div className="flex items-center gap-3 px-2">
@@ -75,7 +103,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Hotel className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="font-bold text-sm tracking-wide uppercase" style={{ color: "#1e325c" }}>
+              <h1
+                className="font-bold text-sm tracking-wide uppercase"
+                style={{ color: "#1e325c" }}
+              >
                 AF Hotel
               </h1>
               <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-wider">
@@ -97,7 +128,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       ? "text-white shadow-md"
                       : "text-stone-500 hover:text-[#1e325c] hover:bg-stone-50"
                   }`}
-                  style={isActive ? { background: "var(--color-hotel-blue)" } : undefined}
+                  style={
+                    isActive
+                      ? { background: "var(--color-hotel-blue)" }
+                      : undefined
+                  }
                 >
                   <Icon className="w-4 h-4 shrink-0" />
                   <span>{item.name}</span>

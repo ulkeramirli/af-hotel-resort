@@ -1,7 +1,5 @@
-import { adminBookingNotification } from "@/lib/emails/admin-nofication";
 import { bookingCancelledEmail } from "@/lib/emails/booking-canceled";
 import { bookingConfirmedEmail } from "@/lib/emails/booking-confirmed";
-import { bookingCreatedEmail } from "@/lib/emails/booking-created";
 import { sendMail } from "@/lib/send-email";
 import Booking from "@/models/Booking";
 import Room from "@/models/Room";
@@ -60,32 +58,6 @@ export class BookingController {
       checkOut,
       notes,
     });
-    const mail = bookingCreatedEmail(
-      guestName,
-      (existingRoom.name as any)?.az || "Otaq",
-      checkIn,
-      checkOut,
-    );
-    try {
-      await sendMail(email, mail.subject, mail.html);
-    } catch (e) {
-      console.warn("Could not send user email:", e);
-    }
-    
-    const adminMail = adminBookingNotification(
-      guestName,
-      email,
-      phone,
-      (existingRoom.name as any)?.az || "Otaq",
-      checkIn,
-      checkOut,
-    );
-
-    try {
-      await sendMail(process.env.HOTEL_EMAIL || "admin@example.com", adminMail.subject, adminMail.html);
-    } catch (e) {
-      console.warn("Could not send admin email:", e);
-    }
 
     return NextResponse.json({
       success: true,
@@ -134,7 +106,8 @@ export class BookingController {
   static async updateStatus(id: string, req: Request) {
     const body = await req.json();
 
-    const { status, notes, room, checkIn, checkOut, guestName, email, phone } = body;
+    const { status, notes, room, checkIn, checkOut, guestName, email, phone } =
+      body;
 
     const booking = await Booking.findById(id).populate("room");
 
@@ -158,19 +131,24 @@ export class BookingController {
     if (phone !== undefined) booking.phone = phone;
 
     if (room || checkIn || checkOut) {
-       const conflictBooking = await Booking.findOne({
-         _id: { $ne: id },
-         room: booking.room ? (typeof booking.room === "object" ? (booking.room as any)._id : booking.room) : null,
-         status: { $ne: "cancelled" },
-         checkIn: { $lt: booking.checkOut },
-         checkOut: { $gt: booking.checkIn },
-       });
-       if (conflictBooking) throw new Error("Seçilmiş tarixlərdə bu otaq artıq doludur (Conflict)");
+      const conflictBooking = await Booking.findOne({
+        _id: { $ne: id },
+        room: booking.room
+          ? typeof booking.room === "object"
+            ? (booking.room as any)._id
+            : booking.room
+          : null,
+        status: { $ne: "cancelled" },
+        checkIn: { $lt: booking.checkOut },
+        checkOut: { $gt: booking.checkIn },
+      });
+      if (conflictBooking)
+        throw new Error("Seçilmiş tarixlərdə bu otaq artıq doludur (Conflict)");
     }
 
     await booking.save();
     await booking.populate("room");
-    
+
     const roomName = booking.room ? booking.room.name : "Silinmiş otaq";
 
     if (status === "confirmed") {
@@ -224,17 +202,17 @@ export class BookingController {
 
     const bookings = await Booking.find({
       room: roomId,
-      status: { $ne: "cancelled" }
+      status: { $ne: "cancelled" },
     }).select("checkIn checkOut");
 
-    const dates = bookings.map(b => ({
+    const dates = bookings.map((b) => ({
       checkIn: b.checkIn,
-      checkOut: b.checkOut
+      checkOut: b.checkOut,
     }));
 
     return NextResponse.json({
       success: true,
-      dates
+      dates,
     });
   }
 }

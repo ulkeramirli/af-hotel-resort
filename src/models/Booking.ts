@@ -7,31 +7,56 @@ const bookingSchema = new mongoose.Schema(
       ref: "Room",
       required: true,
     },
+
     guestName: {
       type: String,
       required: true,
     },
+
     email: {
       type: String,
       required: true,
     },
+
     phone: {
       type: String,
       required: true,
     },
+
     checkIn: {
       type: Date,
       required: true,
     },
+
     checkOut: {
       type: Date,
       required: true,
     },
+
     status: {
       type: String,
       enum: ["pending", "confirmed", "cancelled"],
       default: "pending",
     },
+
+    // EPOINT
+
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
+    },
+
+    paymentTransaction: {
+      type: String,
+      default: "",
+    },
+
+    amount: {
+      type: Number,
+      required: true,
+    },
+
     notes: {
       type: String,
       default: "",

@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import {
   getCurrentUser,
   login,
@@ -20,12 +26,12 @@ interface AuthContextType {
   loading: boolean;
   signIn: (
     email: string,
-    password: string
+    password: string,
   ) => Promise<{ ok: boolean; message?: string; redirect?: string }>;
   signUp: (
     name: string,
     email: string,
-    password: string
+    password: string,
   ) => Promise<{ ok: boolean; message?: string }>;
   signInGoogle: () => Promise<{ ok: boolean; redirect?: string }>;
   signOut: () => void;
@@ -40,15 +46,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ✅ Fix: use startTransition to defer setState in effect
   useEffect(() => {
     let cancelled = false;
-    // Run after mount — no synchronous setState in effect body
-    const u = getCurrentUser() as User | null;
-    Promise.resolve().then(() => {
+
+    async function loadUser() {
+      const u = (await getCurrentUser()) as User | null;
+
       if (!cancelled) {
         setUser(u);
         setLoading(false);
       }
-    });
-    return () => { cancelled = true; };
+    }
+
+    loadUser();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
@@ -61,14 +73,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { ok: false, message: res.message ?? "Xəta baş verdi" };
   }, []);
 
-  const signUp = useCallback(async (name: string, email: string, password: string) => {
-    const res = await register(name, email, password);
-    if (res.success) {
-      // User is not logged in yet, need to verify OTP
-      return { ok: true };
-    }
-    return { ok: false, message: res.message ?? "Xəta baş verdi" };
-  }, []);
+  const signUp = useCallback(
+    async (name: string, email: string, password: string) => {
+      const res = await register(name, email, password);
+      if (res.success) {
+        // User is not logged in yet, need to verify OTP
+        return { ok: true };
+      }
+      return { ok: false, message: res.message ?? "Xəta baş verdi" };
+    },
+    [],
+  );
 
   const signInGoogle = useCallback(async () => {
     const res = await loginWithGoogle("Google User", "guest@gmail.com");
@@ -88,7 +103,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signInGoogle, signOut }}>
+    <AuthContext.Provider
+      value={{ user, loading, signIn, signUp, signInGoogle, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );
