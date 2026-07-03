@@ -106,14 +106,13 @@ export class PaymentController {
     if (!booking) {
       throw new Error("Booking not found");
     }
-    if (booking.paymentStatus === "paid") {
-      return NextResponse.json({
-        success: true,
-        message: "Payment already processed",
-      });
-    }
-
     if (decoded.status === "success") {
+      if (booking.paymentStatus === "paid") {
+        return NextResponse.json({
+          success: true,
+          message: "Payment already processed",
+        });
+      }
       booking.paymentStatus = "paid";
       booking.status = "pending"; // Admin will manually approve
       booking.paymentTransaction = decoded.transaction || "";
