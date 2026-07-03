@@ -46,7 +46,7 @@ export default function AdminBookingsPage() {
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     // Optimistic update
-    setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: newStatus } : b)));
+    setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: newStatus as "pending" | "confirmed" | "cancelled" } : b)));
     
     try {
       await updateBooking(id, { status: newStatus });
