@@ -9,7 +9,7 @@ import { sendMail } from "@/lib/send-email";
 export class PaymentController {
   static async create(req: Request) {
     const body = await req.json();
-    const { room, guestName, email, phone, checkIn, checkOut, notes, currency = "AZN" } = body;
+    const { room, guestName, email, phone, checkIn, checkOut, notes, currency = "AZN", language = "az" } = body;
     const existingRoom = await Room.findById(room);
     const conflictBooking = await Booking.findOne({
       room,
@@ -69,7 +69,8 @@ export class PaymentController {
         amount,
         orderId: booking._id.toString(),
         description: `Booking #${booking._id}`,
-        currency,
+        currency: currency === "USD" ? "USD" : "AZN",
+        language,
       });
 
       console.log("EPOINT RESPONSE:", payment);

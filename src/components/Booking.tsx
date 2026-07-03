@@ -381,7 +381,8 @@ function BookingContent() {
       checkOut: checkOut,
       notes: `Adults: ${adults}, Kids: ${kids}`,
       status: "pending",
-      currency: currency,
+      currency: currency === "USD" ? "USD" : "AZN",
+      language: currentLang,
     };
     try {
       const res = await createPayment(payload);
