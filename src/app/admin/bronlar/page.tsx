@@ -44,15 +44,12 @@ export default function AdminBookingsPage() {
     loadData();
   }, []);
 
-  const handleToggleStatus = async (id: string, currentStatus: string) => {
-    const statuses = ["pending", "confirmed", "cancelled"] as const;
-    const next = statuses[(statuses.indexOf(currentStatus as any) + 1) % statuses.length];
-    
+  const handleStatusChange = async (id: string, newStatus: string) => {
     // Optimistic update
-    setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: next } : b)));
+    setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: newStatus } : b)));
     
     try {
-      await updateBooking(id, { status: next });
+      await updateBooking(id, { status: newStatus });
       loadData();
     } catch (err: any) {
       alert(err.message || "Status yenilənərkən xəta baş verdi");
@@ -225,18 +222,27 @@ export default function AdminBookingsPage() {
                     </td>
                     <td className="py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleToggleStatus(b._id, b.status)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer ${
+                        <select
+                          value={b.status}
+                          onChange={(e) => handleStatusChange(b._id, e.target.value)}
+                          className={`px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer appearance-none outline-none border-none pr-7 ${
                             b.status === "confirmed"
                               ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
                               : b.status === "pending"
                               ? "bg-amber-50 text-amber-600 hover:bg-amber-100"
                               : "bg-rose-50 text-rose-600 hover:bg-rose-100"
                           }`}
+                          style={{
+                            backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "right 8px center",
+                            backgroundSize: "12px",
+                          }}
                         >
-                          {getStatusLabel(b.status)}
-                        </button>
+                          <option value="pending" className="bg-white text-stone-800">Gözləyir</option>
+                          <option value="confirmed" className="bg-white text-stone-800">Təsdiqlənib</option>
+                          <option value="cancelled" className="bg-white text-stone-800">Ləğv edilib</option>
+                        </select>
                         <button 
                           onClick={() => startEditBooking(b)}
                           className="p-1.5 text-stone-400 hover:text-[#00b5d5] bg-stone-50 hover:bg-blue-50 rounded-lg transition-all"

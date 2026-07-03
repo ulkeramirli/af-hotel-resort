@@ -593,9 +593,9 @@ function BookingContent() {
                   Total Price:
                 </span>
                 <span className="text-xl font-bold text-slate-800">
-                  ${rooms.find((r) => r.id === selectedRoomId)?.price || 0}
+                  ${(rooms.find((r) => r.id === selectedRoomId)?.price || 0) * (checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1)}
                   <span className="text-xs text-slate-400 font-normal ml-1">
-                    / night
+                    ({checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1} {currentLang === 'az' ? 'gecə' : currentLang === 'ru' ? 'ночей' : 'nights'})
                   </span>
                 </span>
               </div>

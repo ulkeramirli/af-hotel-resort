@@ -115,7 +115,7 @@ export class PaymentController {
 
     if (decoded.status === "success") {
       booking.paymentStatus = "paid";
-      booking.status = "confirmed";
+      booking.status = "pending"; // Admin will manually approve
       booking.paymentTransaction = decoded.transaction || "";
       await booking.save();
 

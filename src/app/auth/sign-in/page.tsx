@@ -315,11 +315,7 @@ function SignInContent() {
             </Link>
           </p>
 
-          <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl text-center">
-            <p className="text-[10px] text-amber-700 font-medium">
-              Demo: <span className="font-bold">admin@afhotel.az</span> / <span className="font-bold">admin123</span>
-            </p>
-          </div>
+
         </div>
       </div>
     </div>
