@@ -123,11 +123,20 @@ export class PaymentController {
 
       const roomName = (booking.room as any)?.name?.az || "Otaq";
 
+      const formatDate = (dateInput: any) => {
+        if (!dateInput) return "";
+        const d = new Date(dateInput);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}.${month}.${year}`;
+      };
+
       const mail = bookingCreatedEmail(
         booking.guestName,
         roomName,
-        booking.checkIn,
-        booking.checkOut,
+        formatDate(booking.checkIn),
+        formatDate(booking.checkOut),
       );
 
       await sendMail(booking.email, mail.subject, mail.html);
@@ -137,8 +146,8 @@ export class PaymentController {
         booking.email,
         booking.phone,
         roomName,
-        booking.checkIn,
-        booking.checkOut,
+        formatDate(booking.checkIn),
+        formatDate(booking.checkOut),
       );
 
       await sendMail(
@@ -148,6 +157,7 @@ export class PaymentController {
       );
     } else {
       booking.paymentStatus = "failed";
+      booking.status = "cancelled";
       await booking.save();
     }
 
