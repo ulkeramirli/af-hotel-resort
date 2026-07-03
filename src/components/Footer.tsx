@@ -3,6 +3,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 
 export default function Footer() {
@@ -170,9 +171,11 @@ export default function Footer() {
                 </a>
               )}
             </div>
-            <div className="flex space-x-4 uppercase font-bold border-l border-stone-200/40 pl-5">
-              <a href="#privacy" className="hover:text-[#00b5d5] transition-colors">Privacy</a>
-              <a href="#terms" className="hover:text-[#00b5d5] transition-colors">Terms</a>
+            <div className="flex flex-wrap gap-4 uppercase font-bold border-l border-stone-200/40 pl-5 lg:max-w-md">
+              <Link href="/privacy" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Məxfilik Siyasəti', en: 'Privacy Policy', ru: 'Конфиденциальность' }[currentLang] }</Link>
+              <Link href="/terms" className="hover:text-[#00b5d5] transition-colors">{ { az: 'İstifadə Şərtləri', en: 'Terms of Use', ru: 'Условия Использования' }[currentLang] }</Link>
+              <Link href="/booking-policy" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Rezervasiya Qaydaları', en: 'Booking Policy', ru: 'Правила Бронирования' }[currentLang] }</Link>
+              <Link href="/cookie-policy" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Cookie Siyasəti', en: 'Cookie Policy', ru: 'Политика Cookie' }[currentLang] }</Link>
             </div>
           </div>
         </div>
