@@ -433,8 +433,12 @@ export default function AdminRoomsPage() {
                             const data = await uploadImage(file);
                             if (data.success) {
                               setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
+                            } else {
+                              alert("Şəkil yüklənərkən xəta: " + (data.message || "Bilinməyən xəta"));
                             }
-                          } catch {}
+                          } catch (err: any) {
+                            alert("Sistem xətası: " + err.message);
+                          }
                         }
                         e.target.value = "";
                       }}
