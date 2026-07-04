@@ -25,31 +25,31 @@ export default function Home() {
       */}
       <div className="hidden lg:block">
         <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-hero.jpg')" }}>
-          <div className="bg-white/95 backdrop-blur-sm">
+          <div className="bg-white">
             <About />
           </div>
         </div>
         
         <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-hotel.jpg')" }}>
-          <div className="bg-stone-50/90 backdrop-blur-md">
+          <div className="bg-stone-50">
             <Rooms />
           </div>
         </div>
 
         <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-aqua.jpg')" }}>
-          <div className="bg-white/95 backdrop-blur-sm">
+          <div className="bg-white">
             <Aquapark />
           </div>
         </div>
 
         <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-aqua2.jpg')" }}>
-          <div className="bg-stone-900/85 backdrop-blur-sm">
+          <div className="bg-stone-900">
             <Wonderland />
           </div>
         </div>
 
         <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-hotel.jpg')" }}>
-          <div className="bg-white/95 backdrop-blur-sm">
+          <div className="bg-white">
             <Restoran />
           </div>
         </div>

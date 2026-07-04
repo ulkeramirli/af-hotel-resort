@@ -7,6 +7,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import CategoryTabs from "./CategoryTabs";
 import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence } from "framer-motion";
+import TiltCard from "./TiltCard";
+import MagneticButton from "./MagneticButton";
+import TextReveal from "./TextReveal";
 import { getRestaurants, getRestaurantSettings } from "@/services/api";
 import type { Restaurant, MenuCategory as ApiMenuCategory, MenuItem as ApiMenuItem, RestaurantSettings } from "@/types/api";
 
@@ -179,28 +182,62 @@ export default function Restoran() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-12 md:space-y-16">
         
         {/* Header & Tabs Container */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
-          <ScrollReveal direction="up" delay={0.1} className="space-y-4 text-left">
-            <div className="flex items-center gap-4">
+        <div className="flex flex-col items-center justify-center mb-16 gap-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', stiffness: 80, damping: 18 }}
+            className="space-y-4 flex flex-col items-center max-w-3xl"
+          >
+            <div className="flex items-center justify-center gap-4">
               <div className="w-8 h-[1px] bg-[#00b5d5]" />
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
                 {loc(settings?.tag) || c.tag}
               </span>
+              <div className="w-8 h-[1px] bg-[#00b5d5]" />
             </div>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none break-words whitespace-normal">
-              {loc(settings?.title) || c.title}
+              <TextReveal text={loc(settings?.title) || c.title} delay={0.1} />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
-          </ScrollReveal>
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
+          </motion.div>
 
-          <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">
-            <CategoryTabs
-              categories={restaurants.map((r, i) => ({ id: String(i), label: loc(r.name) }))}
-              activeId={String(activeRest)}
-              onSelect={(id) => handleRestaurantChange(Number(id))}
-              className="justify-start md:justify-end"
-            />
-          </ScrollReveal>
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', stiffness: 80, damping: 18, delay: 0.15 }}
+            className="flex justify-center w-full mt-4"
+          >
+            <div className="grid grid-cols-2 gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
+              {restaurants.map((r, i) => {
+                const isActive = activeRest === i;
+                const IconComponent = getCategoryIcon(loc(r.name));
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleRestaurantChange(i)}
+                    className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer flex-1 ${
+                      isActive
+                        ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
+                        : "hover:bg-white/60 border border-transparent"
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 md:gap-2">
+                      <IconComponent className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isActive ? "text-[#00b5d5]" : "text-stone-400"}`} />
+                      <span className={`text-[12px] md:text-[13px] font-bold tracking-tight ${isActive ? "text-[#1e325c]" : "text-stone-500"}`}>
+                        {loc(r.name)}
+                      </span>
+                    </div>
+                    {loc(r.description) && (
+                      <span className="text-[10px] md:text-[11px] text-stone-400 font-medium line-clamp-1 w-full text-center md:text-left mt-0.5" dangerouslySetInnerHTML={{ __html: loc(r.description) }} />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
         </div>
 
         {/* Əsas Grid */}
@@ -253,12 +290,16 @@ export default function Restoran() {
 
               {currentRestaurant.phone && (
                 <div className="grid grid-cols-2 gap-3 pt-2">
-                  <a href={`tel:${currentRestaurant.phone.replace(/\s+/g, "")}`} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1e325c] hover:bg-[#162545] text-white text-xs font-bold rounded-xl transition-colors shadow-xs">
-                    <Calendar className="w-3.5 h-3.5" /> {c.reserve}
-                  </a>
-                  <a href={`tel:${currentRestaurant.phone.replace(/\s+/g, "")}`} className="flex items-center justify-center gap-2 px-4 py-3 bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 text-xs font-bold rounded-xl transition-colors">
-                    <Phone className="w-3.5 h-3.5 text-[#00b5d5]" /> {c.call}
-                  </a>
+                  <MagneticButton className="w-full block">
+                    <a href={`tel:${currentRestaurant.phone.replace(/\s+/g, "")}`} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1e325c] hover:bg-[#162545] text-white text-xs font-bold rounded-xl transition-colors shadow-xs w-full">
+                      <Calendar className="w-3.5 h-3.5" /> {c.reserve}
+                    </a>
+                  </MagneticButton>
+                  <MagneticButton className="w-full block">
+                    <a href={`tel:${currentRestaurant.phone.replace(/\s+/g, "")}`} className="flex items-center justify-center gap-2 px-4 py-3 bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 text-xs font-bold rounded-xl transition-colors w-full">
+                      <Phone className="w-3.5 h-3.5 text-[#00b5d5]" /> {c.call}
+                    </a>
+                  </MagneticButton>
                 </div>
               )}
             </div>
@@ -320,31 +361,34 @@ export default function Restoran() {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.25, delay: i * 0.05 }}
-                            className="bg-white p-3.5 rounded-2xl border border-stone-100/80 shadow-2xs hover:shadow-md hover:border-stone-200/60 transition-all duration-300 flex justify-between items-center gap-4 min-h-27.5"
                           >
-                          <div className="space-y-1.5 flex-1">
-                            <div className="flex flex-col gap-0.5">
-                              <h4 className="font-bold text-xs md:text-sm text-[#1e325c] leading-snug">
-                                {loc(item.name)}
-                              </h4>
-                              <span className="text-xs font-bold text-[#00b5d5] font-mono mt-0.5">
-                                {item.price} AZN
-                              </span>
+                            <TiltCard tiltAmount={3}>
+                            <div className="bg-white p-3.5 rounded-2xl border border-stone-100/80 shadow-2xs hover:shadow-md hover:border-stone-200/60 transition-all duration-300 flex justify-between items-center gap-4 min-h-27.5">
+                            <div className="space-y-1.5 flex-1">
+                              <div className="flex flex-col gap-0.5">
+                                <h4 className="font-bold text-xs md:text-sm text-[#1e325c] leading-snug">
+                                  {loc(item.name)}
+                                </h4>
+                                <span className="text-xs font-bold text-[#00b5d5] font-mono mt-0.5">
+                                  {item.price} AZN
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-stone-400 font-medium leading-normal line-clamp-2 md:line-clamp-3 prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(item.description) }} />
                             </div>
-                            <div className="text-[11px] text-stone-400 font-medium leading-normal line-clamp-2 md:line-clamp-3 prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(item.description) }} />
-                          </div>
 
-                          {item.image && (
-                            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 shadow-2xs bg-stone-50">
-                              <Image
-                                src={item.image}
-                                alt={loc(item.name)}
-                                fill
-                                sizes="(max-width: 640px) 80px, 96px"
-                                className="object-cover transition-transform duration-500 hover:scale-105"
-                              />
+                            {item.image && (
+                              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 shadow-2xs bg-stone-50">
+                                <Image
+                                  src={item.image}
+                                  alt={loc(item.name)}
+                                  fill
+                                  sizes="(max-width: 640px) 80px, 96px"
+                                  className="object-cover transition-transform duration-500 hover:scale-105"
+                                />
+                              </div>
+                            )}
                             </div>
-                          )}
+                            </TiltCard>
                           </motion.div>
                         ))}
                       </AnimatePresence>

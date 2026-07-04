@@ -21,7 +21,8 @@ const sections = [
     key: "rooms",
     href: "/rooms",
     icon: BedDouble,
-    gradient: "from-[#1e325c] via-[#1e325c] to-[#0f1b35]",
+    image: "/AF-hero.jpg",
+    gradient: "from-[#1e325c]/80 via-[#1e325c]/60 to-[#0f1b35]/80",
     accent: "#c5a880",
     glow: "rgba(197,168,128,0.25)",
     labels: {
@@ -36,7 +37,8 @@ const sections = [
     key: "aquapark",
     href: "/aquapark",
     icon: Waves,
-    gradient: "from-[#004e7c] via-[#006fa5] to-[#0097c4]",
+    image: "/AF-aqua.jpg",
+    gradient: "from-[#004e7c]/80 via-[#006fa5]/60 to-[#0097c4]/80",
     accent: "#5dd8f4",
     glow: "rgba(0,181,213,0.3)",
     labels: {
@@ -51,7 +53,8 @@ const sections = [
     key: "wonderland",
     href: "/wonderland",
     icon: FerrisWheel,
-    gradient: "from-[#5b1a8b] via-[#7c2e9e] to-[#9b44c0]",
+    image: "/AF-aqua.jpg",
+    gradient: "from-[#5b1a8b]/80 via-[#7c2e9e]/60 to-[#9b44c0]/80",
     accent: "#f59e0b",
     glow: "rgba(245,158,11,0.25)",
     labels: {
@@ -66,7 +69,8 @@ const sections = [
     key: "restoran",
     href: "/restoran",
     icon: UtensilsCrossed,
-    gradient: "from-[#5c2200] via-[#7a3000] to-[#9c4200]",
+    image: "/AF-hero.jpg",
+    gradient: "from-[#5c2200]/80 via-[#7a3000]/60 to-[#9c4200]/80",
     accent: "#fb923c",
     glow: "rgba(249,115,22,0.25)",
     labels: {
@@ -81,7 +85,8 @@ const sections = [
     key: "about",
     href: "/about",
     icon: Info,
-    gradient: "from-[#143314] via-[#1a4d1a] to-[#1f5c1f]",
+    image: "/AF-aqua.jpg",
+    gradient: "from-[#143314]/80 via-[#1a4d1a]/60 to-[#1f5c1f]/80",
     accent: "#4ade80",
     glow: "rgba(74,222,128,0.2)",
     labels: {
@@ -122,9 +127,6 @@ export default function MobileOverview() {
 
   return (
     <section className="block lg:hidden relative overflow-hidden bg-[#fcfbf7] pb-12 pt-8">
-      {/* Subtle top gradient bridge from Hero */}
-      <div className="absolute top-0 inset-x-0 h-12 bg-linear-to-b from-stone-900/10 to-transparent pointer-events-none z-10" />
-
       {/* Decorative blobs */}
       <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-[#00b5d5]/8 blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 -left-10 w-48 h-48 rounded-full bg-[#c5a880]/8 blur-3xl pointer-events-none" />
@@ -139,10 +141,10 @@ export default function MobileOverview() {
           className="mb-6 space-y-1.5"
         >
           <div className="flex items-center gap-3">
-            <div className="w-5 h-[1.5px] bg-[#c5a880]" />
-            <p className="text-[9px] font-black tracking-[0.3em] text-[#c5a880] uppercase">{heading.tag}</p>
+            <div className="w-5 h-[1.5px] bg-[#00b5d5]" />
+            <p className="text-[9px] font-bold tracking-[0.3em] text-[#00b5d5] uppercase">{heading.tag}</p>
           </div>
-          <h2 className="text-2xl font-black text-[#1e325c] leading-tight tracking-tight">{heading.title}</h2>
+          <h2 className="text-2xl font-bold text-[#1e325c] leading-tight tracking-tight">{heading.title}</h2>
           <p className="text-xs text-stone-400 font-light">{heading.sub}</p>
         </motion.div>
 
@@ -183,21 +185,23 @@ export default function MobileOverview() {
                 className={sec.large ? "col-span-2" : "col-span-1"}
               >
                 <Link href={sec.href} className="block group relative overflow-hidden rounded-[22px]">
-                  {/* Gradient background */}
-                  <div className={`absolute inset-0 bg-linear-to-br ${sec.gradient}`} />
+                  {/* Card background image */}
+                  <Image
+                    src={(sec as any).image}
+                    alt={sec.labels[l].title}
+                    fill
+                    sizes="(max-width: 640px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  {/* Color gradient overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${sec.gradient}`} />
+                  {/* Extra dark bottom gradient for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
                   {/* Glow */}
                   <div
                     className="absolute -bottom-8 -right-8 w-28 h-28 rounded-full blur-2xl opacity-50 transition-opacity duration-500 group-hover:opacity-70"
                     style={{ backgroundColor: sec.glow }}
-                  />
-
-                  {/* Grid texture */}
-                  <div className="absolute inset-0 opacity-[0.03]"
-                    style={{
-                      backgroundImage: `linear-gradient(${sec.accent} 1px, transparent 1px), linear-gradient(90deg, ${sec.accent} 1px, transparent 1px)`,
-                      backgroundSize: "20px 20px",
-                    }}
                   />
 
                   {/* Content */}
@@ -206,34 +210,34 @@ export default function MobileOverview() {
                     <div className="flex items-start justify-between">
                       <div
                         className="w-9 h-9 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: `${sec.accent}22`, border: `1px solid ${sec.accent}44` }}
+                        style={{ backgroundColor: `${sec.accent}33`, border: `1px solid ${sec.accent}55` }}
                       >
                         <Icon className="w-4.5 h-4.5" style={{ color: sec.accent }} />
                       </div>
-                      <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-all">
-                        <ArrowUpRight className="w-3 h-3 text-white/50 group-hover:text-white transition-colors" />
+                      <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/25 transition-all">
+                        <ArrowUpRight className="w-3 h-3 text-white/70 group-hover:text-white transition-colors" />
                       </div>
                     </div>
 
                     {/* Bottom */}
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       <span
-                        className={`inline-flex items-center font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${sec.large ? "text-[9px]" : "text-[8px]"}`}
-                        style={{ backgroundColor: `${sec.accent}20`, color: sec.accent }}
+                        className={`inline-flex items-center font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${sec.large ? "text-[9px]" : "text-[8px]"}`}
+                        style={{ backgroundColor: `${sec.accent}30`, color: sec.accent }}
                       >
                         {badgeText}
                       </span>
-                      <h3 className={`font-black text-white leading-tight ${sec.large ? "text-lg" : "text-sm"}`}>
+                      <h3 className={`font-bold text-white leading-tight [text-shadow:_0_2px_8px_rgba(0,0,0,0.8)] ${sec.large ? "text-lg" : "text-sm"}`}>
                         {label.title}
                       </h3>
-                      <p className={`text-white/50 font-light leading-snug ${sec.large ? "text-xs" : "text-[11px]"}`}>
+                      <p className={`text-white/90 font-light leading-snug [text-shadow:_0_1px_4px_rgba(0,0,0,0.8)] ${sec.large ? "text-xs" : "text-[11px]"}`}>
                         {label.sub}
                       </p>
                     </div>
                   </div>
 
                   {/* Hover shimmer */}
-                  <div className="absolute inset-0 bg-white/0 group-active:bg-white/8 transition-all duration-200 rounded-[22px]" />
+                  <div className="absolute inset-0 bg-white/0 group-active:bg-white/5 transition-all duration-200 rounded-[22px]" />
                 </Link>
               </motion.div>
             );

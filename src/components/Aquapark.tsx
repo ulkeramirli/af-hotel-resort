@@ -4,7 +4,10 @@ import Image from "next/image";
 import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Compass, MapPin, Palmtree, Tv } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ScrollReveal from "@/components/ScrollReveal";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import TiltCard from "./TiltCard";
+import MagneticButton from "./MagneticButton";
+import TextReveal from "./TextReveal";
 import { getActivities, getActivityCategories, getActivitySettings, getTickets, getFaqs } from "@/services/api";
 import type { Activity, ActivityCategory, ActivitySettings, Ticket, Faq } from "@/types/api";
 
@@ -233,6 +236,10 @@ export default function Aquapark() {
   // Реф для программного скролла слайдера с фото
   const photoSliderRef = useRef<HTMLDivElement>(null);
 
+  // Stats section animation ref
+  const statsRef = useRef<HTMLDivElement>(null);
+  const statsInView = useInView(statsRef, { once: true, margin: '-80px' });
+
   const loc = (v: any): string => {
     if (!v) return "";
     if (typeof v === 'object' && v !== null) {
@@ -331,38 +338,74 @@ export default function Aquapark() {
         
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <ScrollReveal type="revealClip" delay={0.1} className="space-y-4 text-left">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ type: 'spring', stiffness: 80, damping: 18, delay: 0.05 }}
+            className="space-y-4 text-left"
+          >
             <div className="flex items-center gap-4">
-              <div className="w-8 h-[1px] bg-[#00b5d5]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+                style={{ originX: 0 }}
+                className="w-8 h-[1px] bg-[#00b5d5]"
+              />
+              <motion.span
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]"
+              >
                 {displayTag}
-              </span>
+              </motion.span>
             </div>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none break-words whitespace-normal">
-              {displayTitle}
+              <TextReveal text={displayTitle} delay={0.1} />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: displaySubtitle }} />
-          </ScrollReveal>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: displaySubtitle }}
+            />
+          </motion.div>
         </div>
 
-        {/* СТАТИСТИКА (ВЕРХНЯЯ ЧАСТЬ НА СКРИНШОТЕ) — Маленькие аккуратные блоки */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+        {/* Stats */}
+        <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
           {dynamicStats.map((s, i) => (
-            <ScrollReveal key={i} type="zoomIn" delay={i * 0.12}
-              className="bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl md:rounded-[2rem] p-4 md:p-8 flex flex-col items-center text-center gap-2 hover:-translate-y-1 transition-transform"
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30, scale: 0.94 }}
+              animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+              transition={{ type: 'spring', stiffness: 110, damping: 18, delay: i * 0.1 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              className="bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl md:rounded-[2rem] p-4 md:p-8 flex flex-col items-center text-center gap-2 transition-shadow hover:shadow-[0_12px_40px_rgba(0,181,213,0.10)]"
             >
               <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#00b5d5]/10 flex items-center justify-center mb-1">
                 <s.icon className="w-5 h-5 md:w-7 md:h-7 text-[#00b5d5]" />
               </div>
-              <span className="text-lg md:text-3xl font-black text-[#1e325c] tracking-tight">{s.label}</span>
-              <span className="text-[10px] md:text-xs text-stone-500 font-bold tracking-widest uppercase">{s.sub1}</span>
+              <span className="text-lg md:text-3xl font-bold text-[#1e325c] tracking-tight">{s.label}</span>
+              <span className="text-[10px] md:text-xs text-stone-500 font-semibold tracking-widest uppercase">{s.sub1}</span>
               {s.sub2 && <span className="text-[9px] md:text-[10px] text-stone-400 font-medium tracking-wide mt-1">{s.sub2}</span>}
-            </ScrollReveal>
+            </motion.div>
           ))}
         </div>
 
-        {/* ТАБЫ (lalala, cinema, hovuz...) — Сетка 2х2 переходящая в 4х1 на десктопе, как в оригинале, но адаптивная */}
-        <ScrollReveal type="dropIn" delay={0.3} className="w-full pt-4">
+        {/* Tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ type: 'spring', stiffness: 90, damping: 20, delay: 0.15 }}
+          className="w-full pt-4"
+        >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 bg-white/40 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-white/60 backdrop-blur-md shadow-sm">
             {activeZones.map((zone, i) => {
               const IconComponent = zone.icon;
@@ -370,9 +413,10 @@ export default function Aquapark() {
               const zoneDesc = loc(zone.desc);
 
               return (
-                <button
+                <motion.button
                   key={zone.id || i}
                   onClick={() => setActiveTab(i)}
+                  whileTap={{ scale: 0.97 }}
                   className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer ${
                     activeTab === i
                       ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
@@ -386,7 +430,7 @@ export default function Aquapark() {
                       <IconComponent className={`w-3 h-3 md:w-4 md:h-4 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
                     ) : null}
 
-                    <span className={`text-[11px] md:text-xs font-bold tracking-tight ${activeTab === i ? "text-[#1e325c]" : "text-stone-500"}`}>
+                    <span className={`text-[11px] md:text-xs font-semibold tracking-tight ${activeTab === i ? "text-[#1e325c]" : "text-stone-500"}`}>
                       {zoneName}
                     </span>
 
@@ -402,11 +446,11 @@ export default function Aquapark() {
                       {stripHtml(zoneDesc)}
                     </span>
                   )}
-                </button>
+                </motion.button>
               );
             })}
           </div>
-        </ScrollReveal>
+        </motion.div>
 
         {/* НИЖНИЕ КАРТОЧКИ С ФОТОГРАФИЯМИ */}
         <div className="space-y-4">
@@ -471,9 +515,9 @@ export default function Aquapark() {
             )}
           </div>
 
-          {/* Десктопная версия: Премиальная Grid-сетка */}
+          {/* Desktop: Premium staggered grid */}
           <div className="hidden md:block">
-            <motion.div layout className="grid grid-cols-3 gap-6">
+            <motion.div layout className="grid grid-cols-3 gap-4">
               <AnimatePresence mode="popLayout">
                 {activeZone?.items.map((item: any, i: number) => {
                   const itemName = loc(item.name);
@@ -483,30 +527,38 @@ export default function Aquapark() {
                   return (
                     <motion.div
                       key={itemName || i}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.3, delay: i * 0.05 }}
-                      className="group rounded-3xl overflow-hidden border border-stone-100 bg-white shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col"
+                      initial={{ opacity: 0, y: 24, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.94, y: -10 }}
+                      transition={{ type: 'spring', stiffness: 120, damping: 20, delay: i * 0.08 }}
+                      className="h-full"
                     >
-                      <div className="relative h-56 overflow-hidden bg-stone-100">
-                        <Image src={item.img} alt={itemName} fill sizes="400px" className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                        <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/80 via-[#1e325c]/10 to-transparent opacity-90" />
-                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-xs font-bold text-[#1e325c] shadow-xs flex items-center gap-1">
-                          <span>{item.icon}</span>
-                          <span>{itemName}</span>
+                      <TiltCard tiltAmount={5} className="h-full">
+                      <motion.div
+                        whileHover={{ y: -4, boxShadow: '0 20px 50px rgba(0,181,213,0.13)' }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 22 }}
+                        className="group rounded-2xl overflow-hidden border border-stone-100 bg-white shadow-sm flex flex-col h-full cursor-pointer"
+                      >
+                        <div className="relative h-40 overflow-hidden bg-stone-100">
+                          <Image src={item.img} alt={itemName} fill sizes="400px" className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                          <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/70 via-[#1e325c]/10 to-transparent" />
+                          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-full text-[11px] font-semibold text-[#1e325c] shadow-xs flex items-center gap-1">
+                            <span>{item.icon}</span>
+                            <span>{itemName}</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="p-5 grow flex flex-col justify-between space-y-2">
-                        <div>
-                          <h4 className="font-bold text-[#1e325c] text-base leading-snug">{itemName}</h4>
-                          <div className="text-xs text-stone-500 leading-relaxed line-clamp-3 prose prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: itemDesc }} />
+                        <div className="p-4 grow flex flex-col justify-between space-y-1.5">
+                          <div>
+                            <h4 className="font-semibold text-[#1e325c] text-sm leading-snug">{itemName}</h4>
+                            <div className="text-[11px] text-stone-500 leading-relaxed line-clamp-2 prose prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: itemDesc }} />
+                          </div>
+                          <div className="pt-2 border-t border-stone-50 flex items-center gap-1 text-stone-400">
+                            <MapPin className="w-3 h-3 text-[#00b5d5]" />
+                            <span className="text-[10px] font-medium uppercase tracking-wider">{activeZoneName}</span>
+                          </div>
                         </div>
-                        <div className="pt-3 border-t border-stone-50 flex items-center gap-1 text-stone-400">
-                          <MapPin className="w-3 h-3 text-[#00b5d5]" />
-                          <span className="text-[10px] font-bold uppercase tracking-wider">{activeZoneName}</span>
-                        </div>
-                      </div>
+                      </motion.div>
+                      </TiltCard>
                     </motion.div>
                   );
                 })}
@@ -544,13 +596,15 @@ export default function Aquapark() {
                 </div>
               ))}
             </div>
-            <a
-              href="tel:+994123456789"
-              className="flex items-center justify-center gap-2 w-full py-3.5 text-white text-sm font-bold rounded-2xl transition-all active:scale-[0.99] shadow-md shadow-[#00406a]/10"
-              style={{ background: "var(--color-hotel-blue)" }}
-            >
-              {c.orderTicket}
-            </a>
+            <MagneticButton className="w-full block">
+              <a
+                href="tel:+994123456789"
+                className="flex items-center justify-center gap-2 w-full py-3.5 text-white text-sm font-bold rounded-2xl transition-all active:scale-[0.99] shadow-md shadow-[#00406a]/10"
+                style={{ background: "var(--color-hotel-blue)" }}
+              >
+                {c.orderTicket}
+              </a>
+            </MagneticButton>
           </div>
 
           {/* FAQ */}

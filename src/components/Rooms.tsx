@@ -11,7 +11,10 @@ import type { RoomType, RoomSettings } from "@/types/api";
 import { toggleFavorite, isFavorite, syncFavorites } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
 import CategoryTabs from "./CategoryTabs";
-import ScrollReveal from "./ScrollReveal";
+import TiltCard from "./TiltCard";
+import MagneticButton from "./MagneticButton";
+import TextReveal from "./TextReveal";
+import useEmblaCarousel from "embla-carousel-react";
 
 function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0);
@@ -68,6 +71,7 @@ const content = {
     perNight: "/ gecə",
     empty: "Bu kateqoriyada otaq tapılmadı.",
     swipeHint: "Sürüşdürün →",
+    book: "Rezervasiya",
   },
   en: {
     tag: "ROOMS & COTTAGES",
@@ -82,6 +86,7 @@ const content = {
     perNight: "/ night",
     empty: "No rooms found in this category.",
     swipeHint: "Swipe →",
+    book: "Book",
   },
   ru: {
     tag: "НОМЕРА И КОТТЕДЖИ",
@@ -96,6 +101,7 @@ const content = {
     perNight: "/ ночь",
     empty: "В этой категории номеров нет.",
     swipeHint: "Листайте →",
+    book: "Забронировать",
   },
 };
 
@@ -120,7 +126,8 @@ function RoomCard({
   compact?: boolean;
 }) {
   return (
-    <div className="group bg-white rounded-[2rem] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-500 flex flex-col h-full border border-stone-100/80">
+    <TiltCard tiltAmount={4} className="h-full">
+      <div className="group bg-white rounded-[2rem] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-500 flex flex-col h-full border border-stone-100/80">
       {/* Image */}
       <div className="relative overflow-hidden bg-stone-100 aspect-[16/10]">
         <RoomCarousel images={room.images} alt={(room.title as any)?.[l] || ""} />
@@ -161,29 +168,34 @@ function RoomCard({
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-stone-100">
-          <div>
+        <div className="flex items-end justify-between mt-auto pt-3 border-t border-stone-100">
+          <div className="mb-1">
             <div className="text-xl font-black text-[#1e325c] tracking-tight">${room.price}</div>
             <span className="text-[10px] text-stone-400 font-light">{c.perNight}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/rooms/${room.id}`}
-              className="inline-flex items-center gap-1 px-3.5 py-2 bg-stone-50 hover:bg-[#1e325c] text-stone-600 hover:text-white text-[11px] font-bold rounded-xl border border-stone-200/60 hover:border-transparent transition-all duration-200 cursor-pointer"
-            >
-              <span>{c.details}</span>
-              <ArrowRight className="w-3 h-3" />
-            </Link>
-            <button
-              onClick={() => onBook(room.id)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[11px] font-bold rounded-xl shadow-sm shadow-[#ff6c02]/30 transition-all duration-200 cursor-pointer active:scale-[0.97]"
-            >
-              <CalendarCheck className="w-3.5 h-3.5" />
-            </button>
+          <div className="flex flex-col gap-2 w-32">
+            <MagneticButton className="w-full block">
+              <Link
+                href={`/rooms/${room.id}`}
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-white text-[#00b5d5] hover:bg-[#00b5d5] hover:text-white text-[10px] sm:text-[11px] font-bold rounded-xl border-2 border-[#00b5d5] transition-all duration-300 cursor-pointer w-full"
+              >
+                <span>{c.details}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </MagneticButton>
+            <MagneticButton className="w-full block">
+              <button
+                onClick={() => onBook(room.id)}
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[10px] sm:text-[11px] font-bold rounded-xl shadow-sm shadow-[#ff6c02]/30 transition-all duration-200 cursor-pointer active:scale-[0.97] w-full"
+              >
+                {c.book as string}
+              </button>
+            </MagneticButton>
           </div>
         </div>
       </div>
     </div>
+    </TiltCard>
   );
 }
 
@@ -199,6 +211,18 @@ export default function Rooms() {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState<Category>("all");
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+
+  const [emblaRef, emblaRoomsApi] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: true,
+    breakpoints: {
+      '(min-width: 640px)': { active: false }, // disable on sm and up
+    }
+  });
+
+  const scrollRoomsPrev = useCallback(() => emblaRoomsApi && emblaRoomsApi.scrollPrev(), [emblaRoomsApi]);
+  const scrollRoomsNext = useCallback(() => emblaRoomsApi && emblaRoomsApi.scrollNext(), [emblaRoomsApi]);
 
   useEffect(() => {
     let cancelled = false;
@@ -258,35 +282,41 @@ export default function Rooms() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header & Tabs Container */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
-          <ScrollReveal type="revealClip" className="space-y-3 text-left">
-            <div className="flex items-center gap-4">
+        <div className="flex flex-col items-center justify-center mb-16 gap-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', stiffness: 80, damping: 18 }}
+            className="space-y-4 flex flex-col items-center max-w-3xl"
+          >
+            <div className="flex items-center gap-4 justify-center">
               <div className="w-8 h-[1px] bg-[#00b5d5]" />
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
                 {settings?.tag || c.tag}
               </span>
+              <div className="w-8 h-[1px] bg-[#00b5d5]" />
             </div>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none">
-              {settings?.title || c.title}
+              <TextReveal text={settings?.title || c.title} delay={0.1} />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
-          </ScrollReveal>
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
+          </motion.div>
 
-          <ScrollReveal type="dropIn" delay={0.2} className="flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setCategory(cat.id)}
-                className={`shrink-0 px-4 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 border ${
-                  category === cat.id
-                    ? "bg-[#1e325c] text-white border-[#1e325c] shadow-sm"
-                    : "bg-white text-stone-500 border-stone-200 hover:border-[#1e325c]/40 hover:text-[#1e325c]"
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </ScrollReveal>
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', stiffness: 80, damping: 18, delay: 0.15 }}
+            className="flex justify-center w-full mt-2"
+          >
+            <CategoryTabs
+              categories={categories}
+              activeId={category}
+              onSelect={setCategory}
+              className="justify-center"
+            />
+          </motion.div>
         </div>
 
         {/* Content */}
@@ -305,33 +335,52 @@ export default function Rooms() {
           </motion.div>
         ) : (
           <>
-            <motion.div
-              layout
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-            >
-              <AnimatePresence mode="popLayout">
-                {filtered.map((room) => (
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.35, type: "spring", stiffness: 120 }}
-                    key={room.id}
-                  >
-                    <RoomCard
-                      room={room}
-                      l={l}
-                      c={c}
-                      isFav={favorites.has(room.id)}
-                      onFavorite={handleFavorite}
-                      onBook={(id) => router.push(`/booking?roomId=${id}`)}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
+            <div className="relative">
+              {/* Mobile arrow buttons */}
+              <button
+                onClick={scrollRoomsPrev}
+                className="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 z-20 w-10 h-10 bg-white border border-stone-200 rounded-full shadow-md flex items-center justify-center text-[#1e325c] hover:bg-[#1e325c] hover:text-white transition-all active:scale-90"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={scrollRoomsNext}
+                className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 z-20 w-10 h-10 bg-[#ff6c02] border border-[#ff6c02] rounded-full shadow-md flex items-center justify-center text-white hover:bg-[#e55f00] transition-all active:scale-90"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+
+              <div className="overflow-hidden sm:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0" ref={emblaRef}>
+                <motion.div
+                  layout
+                  className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 cursor-grab active:cursor-grabbing sm:cursor-auto"
+                >
+                  <AnimatePresence mode="popLayout">
+                    {filtered.map((room) => (
+                      <motion.div
+                        layout
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-50px" }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.35, type: "spring", stiffness: 120 }}
+                        key={room.id}
+                        className="min-w-[80vw] sm:min-w-0 flex-shrink-0 sm:flex-shrink h-full"
+                      >
+                        <RoomCard
+                        room={room}
+                        l={l}
+                        c={c}
+                        isFav={favorites.has(room.id)}
+                        onFavorite={handleFavorite}
+                        onBook={(id) => router.push(`/booking?roomId=${id}`)}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+              </div>
+            </div>
           </>
          )}
       </div>

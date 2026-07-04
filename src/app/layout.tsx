@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Montserrat } from "next/font/google";
+import { Cormorant_Garamond, Montserrat, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 
@@ -12,6 +12,12 @@ const cormorant = Cormorant_Garamond({
 const montserrat = Montserrat({ 
   subsets: ["latin", "cyrillic"], 
   variable: '--font-montserrat'
+});
+
+const greatVibes = Great_Vibes({ 
+  subsets: ["latin"], 
+  weight: ["400"],
+  variable: '--font-great-vibes'
 });
 
 export const metadata: Metadata = {
@@ -122,7 +128,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="az" className={`${cormorant.variable} ${montserrat.variable}`} data-scroll-behavior="smooth">
+    <html lang="az" className={`${cormorant.variable} ${montserrat.variable} ${greatVibes.variable}`} data-scroll-behavior="smooth">
       <head>
         <script
           type="application/ld+json"

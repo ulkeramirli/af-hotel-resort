@@ -10,6 +10,7 @@ import { User, LogOut, Menu, X, Phone, Heart, BookOpen } from "lucide-react";
 import { getFavorites } from "@/lib/favorites";
 import { useSettings } from "@/contexts/SettingsContext";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import MagneticButton from "./MagneticButton";
 
 type LangType = "az" | "en" | "ru";
 
@@ -164,17 +165,19 @@ export default function Header() {
             : "bg-white border-b border-stone-100"
         }`}
       >
-        <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 200 } } }} className="flex items-center select-none transition-transform duration-300 hover:scale-[1.02]">
-          <Image
-            src="/loqo-af.png"
-            alt="AF Hotel & Resort"
-            width={120}
-            height={55}
-            priority
-            className="w-24 h-auto sm:w-28 md:w-30 object-contain"
-            style={{ width: "auto", height: "auto" }}
-          />
-        </motion.div>
+        <MagneticButton>
+          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 200 } } }} className="flex items-center select-none transition-transform duration-300 hover:scale-[1.02]">
+            <Image
+              src="/loqo-af.png"
+              alt="AF Hotel & Resort"
+              width={120}
+              height={55}
+              priority
+              className="w-24 h-auto sm:w-28 md:w-30 object-contain"
+              style={{ width: "auto", height: "auto" }}
+            />
+          </motion.div>
+        </MagneticButton>
 
         <nav className="hidden lg:flex items-center space-x-3 xl:space-x-5 text-[11px] font-bold uppercase tracking-widest text-slate-700">
           {navLinks.map((item) => {
@@ -240,12 +243,14 @@ export default function Header() {
 
 
 
-          <Link
-            href="/booking"
-            className="hidden sm:flex items-center text-[11px] font-bold uppercase tracking-widest px-4.5 py-2.5 bg-[#ff6c02] text-white hover:bg-[#e55f00] rounded-xl shadow-xs transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-          >
-            {t.nav.book}
-          </Link>
+          <MagneticButton>
+            <Link
+              href="/booking"
+              className="hidden sm:flex items-center text-[11px] font-bold uppercase tracking-widest px-4.5 py-2.5 bg-[#ff6c02] text-white hover:bg-[#e55f00] rounded-xl shadow-xs transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              {t.nav.book}
+            </Link>
+          </MagneticButton>
 
           <div className="relative" ref={menuRef}>
             {user ? (

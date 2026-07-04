@@ -24,26 +24,17 @@ export default function CategoryTabs({
   if (!categories || categories.length === 0) return null;
 
   return (
-    <div className={`flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide ${className}`}>
+    <div className={`flex flex-wrap items-center gap-3 justify-center w-full ${className}`}>
       {categories.map((cat) => (
         <button
           key={cat.id}
           onClick={() => onSelect(cat.id)}
-          className={`shrink-0 relative px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden ${
+          className={`shrink-0 px-6 py-2.5 rounded-xl text-[13px] font-bold transition-all duration-300 border ${
             activeId === cat.id
-              ? "text-white shadow-md"
-              : "text-stone-500 bg-stone-100 hover:bg-stone-200"
+              ? "bg-[#00b5d5] text-white border-[#00b5d5] shadow-md shadow-[#00b5d5]/20 scale-105"
+              : "bg-white text-stone-500 border-stone-200 hover:border-[#00b5d5]/40 hover:text-[#00b5d5] hover:bg-[#00b5d5]/5"
           }`}
-          style={activeId === cat.id ? { background: "var(--color-hotel-blue, #00b5d5)" } : undefined}
         >
-          {activeId === cat.id && (
-            <motion.div
-              layoutId="activeTabBackground"
-              className="absolute inset-0 bg-[#00b5d5]"
-              initial={false}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            />
-          )}
           <span className="relative z-10 flex items-center gap-1.5">
             {cat.icon && <span className="w-3.5 h-3.5">{cat.icon}</span>}
             {cat.label}
