@@ -5,9 +5,11 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { User, LogOut, Menu, X, Phone, Heart, BookOpen } from "lucide-react";
 import { getFavorites } from "@/lib/favorites";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type LangType = "az" | "en" | "ru";
 
@@ -68,7 +70,8 @@ export default function Header() {
   const [langOpen, setLangOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [activeNav, setActiveNav] = useState("home");
+  const pathname = usePathname();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [scrolled, setScrolled] = useState(false);
   const [favCount, setFavCount] = useState(0);
 
@@ -121,26 +124,21 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    id: string,
-  ) => {
-    setActiveNav(id);
-    if (id === "home") {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+  // All hooks must be called before any early returns (Rules of Hooks)
+  if (pathname.startsWith('/admin') || pathname.startsWith('/auth') || pathname.startsWith('/login')) return null;
+
+  const handleNavClick = () => {
     setMobileNavOpen(false);
   };
 
   const navLinks = [
-    { id: "home", href: "#", label: t.nav.home },
-    { id: "about", href: "#about", label: t.nav.about },
-    { id: "rooms", href: "#rooms", label: t.nav.rooms },
-    { id: "aquapark", href: "#aquapark", label: t.nav.aquapark },
-    { id: "wonderland", href: "#wonderland", label: t.nav.wonderland },
-    { id: "restoran", href: "#restoran", label: t.nav.restoran },
-    { id: "contacts", href: "#contacts", label: t.nav.contacts },
+    { id: "/", href: "/", label: t.nav.home },
+    { id: "/about", href: isDesktop ? "/#about" : "/about", label: t.nav.about },
+    { id: "/rooms", href: isDesktop ? "/#rooms" : "/rooms", label: t.nav.rooms },
+    { id: "/aquapark", href: isDesktop ? "/#aquapark" : "/aquapark", label: t.nav.aquapark },
+    { id: "/wonderland", href: isDesktop ? "/#wonderland" : "/wonderland", label: t.nav.wonderland },
+    { id: "/restoran", href: isDesktop ? "/#restoran" : "/restoran", label: t.nav.restoran },
+    { id: "/contacts", href: isDesktop ? "/#contacts" : "/contacts", label: t.nav.contacts },
   ];
 
   return (
@@ -179,25 +177,28 @@ export default function Header() {
         </motion.div>
 
         <nav className="hidden lg:flex items-center space-x-3 xl:space-x-5 text-[11px] font-bold uppercase tracking-widest text-slate-700">
-          {navLinks.map((item) => (
-            <motion.div key={item.id} variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300 } } }} className="relative py-2 group">
-              <a
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.id)}
-                className="transition-colors duration-300 hover:text-[#00b5d5]"
-                style={{ color: activeNav === item.id ? "#00b5d5" : "" }}
-              >
-                {item.label}
-              </a>
-              <div
-                className={`absolute bottom-0 left-0 h-[1.5px] bg-[#00b5d5] transition-all duration-300 ${
-                  activeNav === item.id
-                    ? "w-full opacity-100"
-                    : "w-0 opacity-0 group-hover:w-full group-hover:opacity-100"
-                }`}
-              />
-            </motion.div>
-          ))}
+          {navLinks.map((item) => {
+            const isActive = pathname === item.href || (pathname === '/' && item.href === '/');
+            return (
+              <motion.div key={item.id} variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300 } } }} className="relative py-2 group">
+                <Link
+                  href={item.href}
+                  onClick={handleNavClick}
+                  className="transition-colors duration-300 hover:text-[#00b5d5]"
+                  style={{ color: isActive ? "#00b5d5" : "" }}
+                >
+                  {item.label}
+                </Link>
+                <div
+                  className={`absolute bottom-0 left-0 h-[1.5px] bg-[#00b5d5] transition-all duration-300 ${
+                    isActive
+                      ? "w-full opacity-100"
+                      : "w-0 opacity-0 group-hover:w-full group-hover:opacity-100"
+                  }`}
+                />
+              </motion.div>
+            );
+          })}
         </nav>
 
         <div className="flex items-center space-x-2 md:space-x-4">
@@ -239,12 +240,12 @@ export default function Header() {
 
 
 
-          <a
-            href="#booking"
+          <Link
+            href="/booking"
             className="hidden sm:flex items-center text-[11px] font-bold uppercase tracking-widest px-4.5 py-2.5 bg-[#ff6c02] text-white hover:bg-[#e55f00] rounded-xl shadow-xs transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
           >
             {t.nav.book}
-          </a>
+          </Link>
 
           <div className="relative" ref={menuRef}>
             {user ? (
@@ -358,20 +359,27 @@ export default function Header() {
               }}
               className="flex flex-col mt-6 space-y-5 text-sm font-bold tracking-widest text-slate-800"
             >
-            {navLinks.map((item) => (
-              <motion.a
-                key={item.id}
-                variants={{
-                  open: { opacity: 1, x: 0 },
-                  closed: { opacity: 0, x: -20 }
-                }}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.id)}
-                className={`py-2 border-b border-stone-50 ${activeNav === item.id ? "text-[#00b5d5]" : ""}`}
-              >
-                {item.label}
-              </motion.a>
-            ))}
+            {navLinks.map((item) => {
+              const isActive = pathname === item.href || (pathname === '/' && item.href === '/');
+              return (
+                <motion.div
+                  key={item.id}
+                  variants={{
+                    open: { opacity: 1, x: 0 },
+                    closed: { opacity: 0, x: -20 }
+                  }}
+                  className="border-b border-stone-50"
+                >
+                  <Link
+                    href={item.href}
+                    onClick={handleNavClick}
+                    className={`block py-2 ${isActive ? "text-[#00b5d5]" : ""}`}
+                  >
+                    {item.label}
+                  </Link>
+                </motion.div>
+              );
+            })}
             </motion.nav>
           <div className="space-y-4">
             <a
@@ -380,13 +388,13 @@ export default function Header() {
             >
               <Phone className="w-4 h-4 text-[#00b5d5]" /> {settings?.phone || "+994 (12) 448-00-00"}
             </a>
-            <a
-              href="#booking"
+            <Link
+              href="/booking"
               onClick={() => setMobileNavOpen(false)}
               className="flex justify-center items-center text-xs font-bold uppercase tracking-widest w-full py-4 bg-[#ff6c02] text-white rounded-xl shadow-md"
             >
               {t.nav.book}
-            </a>
+            </Link>
           </div>
         </motion.div>
       )}

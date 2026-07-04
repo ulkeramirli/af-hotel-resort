@@ -326,39 +326,44 @@ export default function Aquapark() {
   };
 
   return (
-    <section id="aquapark" className="py-12 md:py-32 bg-white scroll-mt-20 overflow-hidden">
+    <section id="aquapark" className="py-12 md:py-32 bg-transparent scroll-mt-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-10 md:space-y-16">
         
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <ScrollReveal type="revealClip" delay={0.1} className="space-y-3 text-left">
-            <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
-              {displayTag}
-            </span>
-            <h2 className="text-2xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
+          <ScrollReveal type="revealClip" delay={0.1} className="space-y-4 text-left">
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-[1px] bg-[#00b5d5]" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
+                {displayTag}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none break-words whitespace-normal">
               {displayTitle}
             </h2>
-            <div className="text-sm text-stone-400 max-w-xl leading-relaxed prose prose-sm prose-stone [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: displaySubtitle }} />
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: displaySubtitle }} />
           </ScrollReveal>
         </div>
 
         {/* СТАТИСТИКА (ВЕРХНЯЯ ЧАСТЬ НА СКРИНШОТЕ) — Маленькие аккуратные блоки */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
           {dynamicStats.map((s, i) => (
             <ScrollReveal key={i} type="zoomIn" delay={i * 0.12}
-              className="bg-[#f9f8f4] border border-stone-100/50 rounded-xl md:rounded-2xl p-2.5 md:p-6 flex flex-col items-center text-center gap-1 hover:scale-[1.02] transition-transform"
+              className="bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl md:rounded-[2rem] p-4 md:p-8 flex flex-col items-center text-center gap-2 hover:-translate-y-1 transition-transform"
             >
-              <s.icon className="w-4 h-4 md:w-5 md:h-5 text-[#00b5d5]" />
-              <span className="text-sm md:text-xl font-bold text-[#1e325c] line-clamp-1 truncate">{s.label}</span>
-              <span className="text-[9px] md:text-[10px] text-stone-400 font-bold tracking-wide uppercase line-clamp-1 text-center w-full">{s.sub1}</span>
-              {s.sub2 && <span className="text-[8px] md:text-[9px] text-stone-400 tracking-wide line-clamp-1 truncate">{s.sub2}</span>}
+              <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#00b5d5]/10 flex items-center justify-center mb-1">
+                <s.icon className="w-5 h-5 md:w-7 md:h-7 text-[#00b5d5]" />
+              </div>
+              <span className="text-lg md:text-3xl font-black text-[#1e325c] tracking-tight">{s.label}</span>
+              <span className="text-[10px] md:text-xs text-stone-500 font-bold tracking-widest uppercase">{s.sub1}</span>
+              {s.sub2 && <span className="text-[9px] md:text-[10px] text-stone-400 font-medium tracking-wide mt-1">{s.sub2}</span>}
             </ScrollReveal>
           ))}
         </div>
 
         {/* ТАБЫ (lalala, cinema, hovuz...) — Сетка 2х2 переходящая в 4х1 на десктопе, как в оригинале, но адаптивная */}
-        <ScrollReveal type="dropIn" delay={0.3} className="w-full">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 bg-stone-50 p-1.5 md:p-2 rounded-xl md:rounded-2xl border border-stone-100">
+        <ScrollReveal type="dropIn" delay={0.3} className="w-full pt-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 bg-white/40 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-white/60 backdrop-blur-md shadow-sm">
             {activeZones.map((zone, i) => {
               const IconComponent = zone.icon;
               const zoneName = loc(zone.name);
@@ -368,10 +373,10 @@ export default function Aquapark() {
                 <button
                   key={zone.id || i}
                   onClick={() => setActiveTab(i)}
-                  className={`relative p-2.5 md:p-4 rounded-lg md:rounded-xl flex flex-col items-center md:items-start text-center md:text-left gap-0.5 transition-all cursor-pointer ${
+                  className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer ${
                     activeTab === i
-                      ? "bg-white shadow-xs md:shadow-md border border-stone-100"
-                      : "hover:bg-white/50"
+                      ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
+                      : "hover:bg-white/60 border border-transparent"
                   }`}
                 >
                   <div className="flex items-center gap-1 md:gap-1.5 whitespace-nowrap">

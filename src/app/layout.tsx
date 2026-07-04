@@ -1,31 +1,142 @@
-// src/app/layout.tsx
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 
-const inter = Inter({ subsets: ["latin"] });
+const cormorant = Cormorant_Garamond({ 
+  subsets: ["latin", "cyrillic"], 
+  weight: ["300", "400", "500", "600", "700"],
+  variable: '--font-cormorant'
+});
+
+const montserrat = Montserrat({ 
+  subsets: ["latin", "cyrillic"], 
+  variable: '--font-montserrat'
+});
 
 export const metadata: Metadata = {
-  title: "AF Hotel & Aqua Park",
-  description: "Resort and Hotel in Baku",
+  title: {
+    default: "AF Hotel & Aqua Park Complex | Luxury Resort in Baku, Azerbaijan",
+    template: "%s | AF Hotel & Aqua Park"
+  },
+  description: "AF Hotel & Aqua Park Complex — premium 5-star resort in Novkhani, Baku. Enjoy luxury rooms, thrilling aqua park with 20+ slides, Wonderland theme park, gourmet restaurants, and stunning Caspian Sea views. Book directly for best rates.",
+  keywords: [
+    "AF Hotel Baku", "AF Aqua Park", "hotel Baku Azerbaijan", "Novkhani resort",
+    "luxury hotel Baku", "aqua park Baku", "Xəzər sahili hotel", "5 star hotel Azerbaijan",
+    "family resort Baku", "Wonderland Baku", "AF Hotel Aqua Park Complex",
+    "best hotel Baku", "Caspian Sea resort", "hotel Novkhani", "бронирование отель Баку"
+  ],
+  authors: [{ name: "AF Hotel & Aqua Park Complex" }],
+  creator: "AF Hotel & Aqua Park Complex",
+  publisher: "AF Hotel & Aqua Park Complex",
+  metadataBase: new URL("https://af-hotel.az"),
+  alternates: {
+    canonical: "/",
+    languages: {
+      "az": "/",
+      "en": "/?lang=en",
+      "ru": "/?lang=ru",
+    }
+  },
+  openGraph: {
+    type: "website",
+    locale: "az_AZ",
+    alternateLocale: ["en_US", "ru_RU"],
+    url: "https://af-hotel.az",
+    siteName: "AF Hotel & Aqua Park Complex",
+    title: "AF Hotel & Aqua Park Complex | Luxury Resort in Baku",
+    description: "5-star luxury resort in Novkhani, Baku. Premium rooms, aqua park with 20+ attractions, Wonderland theme park, gourmet dining. Book your dream vacation today.",
+    images: [
+      {
+        url: "/AF-hero.jpg",
+        width: 1200,
+        height: 630,
+        alt: "AF Hotel & Aqua Park Complex — Premium Resort in Baku, Azerbaijan",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AF Hotel & Aqua Park Complex | Luxury Resort Baku",
+    description: "5-star luxury resort in Baku. Premium rooms, aqua park, Wonderland theme park & fine dining.",
+    images: ["/AF-hero.jpg"],
+    creator: "@AFHotelBaku",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  // icons are auto-generated from app/icon.tsx and app/apple-icon.tsx
+  verification: {
+    google: "google-site-verification-placeholder",
+  },
+  category: "travel",
 };
+
+
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import FloatingActions from "@/components/FloatingActions";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Hotel',
+    name: 'AF Hotel & Aqua Park Complex',
+    description: 'Premium 5-star resort in Novkhani, Baku with luxury rooms, aqua park, Wonderland theme park, and fine dining.',
+    url: 'https://af-hotel.az',
+    logo: 'https://af-hotel.az/loqo-af.png',
+    image: 'https://af-hotel.az/AF-hero.jpg',
+    telephone: '+994501234567',
+    starRating: { '@type': 'Rating', ratingValue: '5' },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Novkhani',
+      addressRegion: 'Baku',
+      addressCountry: 'AZ',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: '40.5833',
+      longitude: '50.1000',
+    },
+    amenityFeature: [
+      { '@type': 'LocationFeatureSpecification', name: 'Aqua Park', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Wonderland Theme Park', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Restaurant', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Swimming Pool', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Free Parking', value: true },
+    ],
+    sameAs: ['https://www.instagram.com/afhotel', 'https://www.facebook.com/afhotel'],
+  };
+
   return (
-    <html lang="en" data-scroll-behavior="smooth">
-      <body className={`${inter.className} overflow-x-hidden w-full`}>
-        {/* 
-          Оборачиваем всё приложение в единый клиентский компонент Providers.
-          Внутри него уже должны лежать LanguageProvider и AuthProvider, 
-          чтобы контексты работали на всех страницах без ошибок.
-        */}
+    <html lang="az" className={`${cormorant.variable} ${montserrat.variable}`} data-scroll-behavior="smooth">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
+      <body className="font-sans antialiased overflow-x-hidden w-full bg-[var(--color-hotel-light)] text-[var(--color-hotel-dark)]">
         <Providers>
-          {children}
+          <Header />
+          <main className="flex-1 w-full flex flex-col min-h-screen">
+            {children}
+          </main>
+          <Footer />
+          <FloatingActions />
         </Providers>
       </body>
     </html>

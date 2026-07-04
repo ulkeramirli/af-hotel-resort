@@ -155,7 +155,7 @@ export default function Restoran() {
 
   if (loading) {
     return (
-      <section id="restoran" className="py-24 md:py-32 bg-[#fdfcf7] scroll-mt-20">
+      <section id="restoran" className="py-24 md:py-32 bg-transparent scroll-mt-20">
         <div className="flex justify-center items-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-[#00b5d5]" />
           <span className="ml-3 text-sm text-stone-500">{c.loading}</span>
@@ -166,7 +166,7 @@ export default function Restoran() {
 
   if (restaurants.length === 0) {
     return (
-      <section id="restoran" className="py-24 md:py-32 bg-[#fdfcf7] scroll-mt-20">
+      <section id="restoran" className="py-24 md:py-32 bg-transparent scroll-mt-20">
         <div className="text-center py-20 text-stone-400 text-sm">{c.noRestaurants}</div>
       </section>
     );
@@ -175,19 +175,22 @@ export default function Restoran() {
   const schedule = getSchedule();
 
   return (
-    <section id="restoran" className="py-24 md:py-32 bg-[#fdfcf7] scroll-mt-20">
+    <section id="restoran" className="py-24 md:py-32 bg-transparent scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-12 md:space-y-16">
         
         {/* Header & Tabs Container */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
-          <ScrollReveal direction="up" delay={0.1} className="space-y-3 text-left">
-            <span className="text-[#00b5d5] text-[11px] font-bold tracking-[0.35em] uppercase block">
-              {loc(settings?.tag) || c.tag}
-            </span>
-            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
+          <ScrollReveal direction="up" delay={0.1} className="space-y-4 text-left">
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-[1px] bg-[#00b5d5]" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
+                {loc(settings?.tag) || c.tag}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none break-words whitespace-normal">
               {loc(settings?.title) || c.title}
             </h2>
-            <div className="text-sm text-stone-500 max-w-xl leading-relaxed prose prose-sm prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={0.2} className="flex-shrink-0">

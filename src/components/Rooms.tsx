@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Users, Maximize2, Loader2, BedDouble, ArrowRight, CalendarCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -33,7 +34,7 @@ function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   return (
     <div className="w-full h-full relative group/carousel">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} onError={() => setErr(true)} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+      <Image src={src} alt={alt} fill sizes="(max-width: 768px) 100vw, 33vw" onError={() => setErr(true)} className="object-cover group-hover:scale-[1.02] transition-transform duration-500" />
       {images.length > 1 && (
         <>
           <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 shadow-sm cursor-pointer">
@@ -119,65 +120,67 @@ function RoomCard({
   compact?: boolean;
 }) {
   return (
-    <div className={`group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full ${compact ? "" : ""}`}>
+    <div className="group bg-white rounded-[2rem] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-500 flex flex-col h-full border border-stone-100/80">
       {/* Image */}
-      <div className={`relative overflow-hidden bg-stone-100 border-b border-stone-100 ${compact ? "aspect-4/3" : "aspect-16/11"}`}>
-        <RoomCarousel images={room.images} alt={room.title[l]} />
-        <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-sm text-stone-800 rounded-md shadow-sm border border-stone-100 z-10">
+      <div className="relative overflow-hidden bg-stone-100 aspect-[16/10]">
+        <RoomCarousel images={room.images} alt={(room.title as any)?.[l] || ""} />
+        {/* Gradient overlay at bottom */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10" />
+        {/* Category badge */}
+        <span className="absolute top-3 left-3 text-[9px] font-black uppercase tracking-wider px-2.5 py-1 bg-white/95 backdrop-blur-sm text-[#1e325c] rounded-xl shadow-sm border border-stone-100/60 z-20">
           {(room.categoryName as any)?.[l] || (room.categoryName as any)?.az || "Otaq"}
         </span>
+        {/* Fav button */}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavorite(room.id); }}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-transform cursor-pointer z-20"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition-transform cursor-pointer z-20"
         >
           <Heart
             className="w-4 h-4 transition-colors"
-            style={{ fill: isFav ? "#e11d48" : "none", color: isFav ? "#e11d48" : "#444" }}
+            style={{ fill: isFav ? "#e11d48" : "none", color: isFav ? "#e11d48" : "#999" }}
           />
         </button>
+        {/* Number of photos badge */}
+        {room.images.length > 1 && (
+          <span className="absolute bottom-3 right-3 text-[9px] font-bold px-2 py-0.5 bg-black/50 backdrop-blur-sm text-white rounded-md z-20">
+            {room.images.length} photos
+          </span>
+        )}
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-3 flex flex-col flex-1 justify-between">
-        <div className="space-y-1.5">
-          <h3 className="text-xl font-serif text-stone-800 leading-tight">
-            {(room.title as any)?.[l] || (room.title as any)?.az || room.title || ""}
+      <div className="p-5 flex flex-col flex-1 gap-3">
+        <div className="space-y-1">
+          <h3 className="text-base font-bold text-[#1e325c] leading-snug tracking-tight font-serif">
+            {(room.title as any)?.[l] || (room.title as any)?.az || ""}
           </h3>
-          <div className="text-xs text-stone-500 line-clamp-2 mt-1.5 leading-relaxed prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (room.desc as any)?.[l] || (room.desc as any)?.az || room.desc || "" }} />
-          <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
-            <span className="flex items-center gap-1">
-              <Users className="w-3.5 h-3.5 text-stone-300" />
-              {room.capacity[l]}
-            </span>
-            <span className="flex items-center gap-1">
-              <Maximize2 className="w-3.5 h-3.5 text-stone-300" />
-              {room.size || "350 sqft"}
-            </span>
+          <div className="flex items-center gap-3 text-[11px] font-medium text-stone-400">
+            <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5 text-stone-300" />{room.capacity[l]}</span>
+            <span className="w-1 h-1 rounded-full bg-stone-200" />
+            <span className="flex items-center gap-1.5"><Maximize2 className="w-3.5 h-3.5 text-stone-300" />{room.size || "350 sqft"}</span>
           </div>
         </div>
 
-        {/* Bottom: price + buttons */}
-        <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
-          <div className="flex justify-between items-center">
-            <div>
-              <span className="text-lg font-bold text-stone-900">${room.price}</span>
-              <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
-            </div>
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-stone-100">
+          <div>
+            <div className="text-xl font-black text-[#1e325c] tracking-tight">${room.price}</div>
+            <span className="text-[10px] text-stone-400 font-light">{c.perNight}</span>
+          </div>
+          <div className="flex items-center gap-2">
             <Link
               href={`/rooms/${room.id}`}
-              className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-semibold rounded-xl transition-colors"
+              className="inline-flex items-center gap-1 px-3.5 py-2 bg-stone-50 hover:bg-[#1e325c] text-stone-600 hover:text-white text-[11px] font-bold rounded-xl border border-stone-200/60 hover:border-transparent transition-all duration-200 cursor-pointer"
             >
               <span>{c.details}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3 h-3" />
             </Link>
+            <button
+              onClick={() => onBook(room.id)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[11px] font-bold rounded-xl shadow-sm shadow-[#ff6c02]/30 transition-all duration-200 cursor-pointer active:scale-[0.97]"
+            >
+              <CalendarCheck className="w-3.5 h-3.5" />
+            </button>
           </div>
-          <button
-            onClick={() => onBook(room.id)}
-            className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-[#ff6c02] hover:bg-[#e55f00] text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer"
-          >
-            <CalendarCheck className="w-3.5 h-3.5" />
-            <span>{l === "az" ? "İndi Rezerv Et" : l === "ru" ? "Забронировать" : "Book Now"}</span>
-          </button>
         </div>
       </div>
     </div>
@@ -189,7 +192,6 @@ export default function Rooms() {
   const router = useRouter();
   const l = (language as "az" | "en" | "ru") || "az";
   const c = content[l];
-  const sliderRef = useRef<HTMLDivElement>(null);
 
   const [rooms, setRooms] = useState<PublicRoom[]>([]);
   const [types, setTypes] = useState<RoomType[]>([]);
@@ -249,35 +251,41 @@ export default function Rooms() {
     }))
   ];
 
-  const scrollSlider = (dir: "left" | "right") => {
-    if (!sliderRef.current) return;
-    const cardWidth = sliderRef.current.offsetWidth * 0.78 + 16;
-    sliderRef.current.scrollBy({ left: dir === "right" ? cardWidth : -cardWidth, behavior: "smooth" });
-  };
+
 
   return (
-    <section id="rooms" className="py-20 md:py-32 scroll-mt-20 bg-white text-stone-800 antialiased selection:bg-stone-100">
+    <section id="rooms" className="py-20 md:py-32 scroll-mt-20 bg-transparent text-stone-800 antialiased selection:bg-stone-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header & Tabs Container */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
-          <ScrollReveal type="revealClip" className="space-y-2 text-left">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5]">
-              {settings?.tag || c.tag}
-            </span>
-            <h2 className="text-3xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-tight">
+          <ScrollReveal type="revealClip" className="space-y-3 text-left">
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-[1px] bg-[#00b5d5]" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
+                {settings?.tag || c.tag}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none">
               {settings?.title || c.title}
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
           </ScrollReveal>
 
-          <ScrollReveal type="dropIn" delay={0.2}>
-            <CategoryTabs 
-              categories={categories}
-              activeId={category}
-              onSelect={(id) => setCategory(id)}
-              className="justify-start md:justify-end"
-            />
+          <ScrollReveal type="dropIn" delay={0.2} className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setCategory(cat.id)}
+                className={`shrink-0 px-4 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 border ${
+                  category === cat.id
+                    ? "bg-[#1e325c] text-white border-[#1e325c] shadow-sm"
+                    : "bg-white text-stone-500 border-stone-200 hover:border-[#1e325c]/40 hover:text-[#1e325c]"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
           </ScrollReveal>
         </div>
 
@@ -297,78 +305,19 @@ export default function Rooms() {
           </motion.div>
         ) : (
           <>
-            {/* ── MOBILE: horizontal slider ── */}
-            <div className="md:hidden relative">
-              {/* Scroll arrows */}
-              <button
-                onClick={() => scrollSlider("left")}
-                className="absolute -left-1 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white shadow-md rounded-full flex items-center justify-center border border-stone-100 cursor-pointer hover:bg-stone-50 transition-colors"
-                aria-label="Previous"
-              >
-                <ChevronLeft className="w-4 h-4 text-stone-600" />
-              </button>
-              <button
-                onClick={() => scrollSlider("right")}
-                className="absolute -right-1 top-1/2 -translate-y-1/2 z-20 w-8 h-8 bg-white shadow-md rounded-full flex items-center justify-center border border-stone-100 cursor-pointer hover:bg-stone-50 transition-colors"
-                aria-label="Next"
-              >
-                <ChevronRight className="w-4 h-4 text-stone-600" />
-              </button>
-
-              {/* Slider track */}
-              <div
-                ref={sliderRef}
-                className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 px-1 scrollbar-hide"
-                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-              >
-                <AnimatePresence mode="popLayout">
-                  {filtered.map((room) => (
-                    <motion.div
-                      layout
-                      key={room.id}
-                      initial={{ opacity: 0, x: 30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, margin: "-20px" }}
-                      exit={{ opacity: 0, x: -30 }}
-                      transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
-                      className="snap-start shrink-0 w-[78vw] max-w-[320px]"
-                    >
-                      <RoomCard
-                        room={room}
-                        l={l}
-                        c={c}
-                        isFav={favorites.has(room.id)}
-                        onFavorite={handleFavorite}
-                        onBook={(id) => router.push(`/?roomId=${id}#booking`)}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
-
-              {/* Swipe hint dots */}
-              <div className="flex justify-center gap-1.5 mt-2">
-                {filtered.slice(0, Math.min(filtered.length, 8)).map((_, i) => (
-                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-stone-200" />
-                ))}
-                {filtered.length > 8 && <span className="text-[10px] text-stone-400 ml-1">+{filtered.length - 8}</span>}
-              </div>
-            </div>
-
-            {/* ── DESKTOP: grid ── */}
             <motion.div
               layout
-              className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
             >
               <AnimatePresence mode="popLayout">
                 {filtered.map((room) => (
                   <motion.div
                     layout
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
-                    exit={{ opacity: 0, y: 30 }}
-                    transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.35, type: "spring", stiffness: 120 }}
                     key={room.id}
                   >
                     <RoomCard
@@ -377,7 +326,7 @@ export default function Rooms() {
                       c={c}
                       isFav={favorites.has(room.id)}
                       onFavorite={handleFavorite}
-                      onBook={(id) => router.push(`/?roomId=${id}#booking`)}
+                      onBook={(id) => router.push(`/booking?roomId=${id}`)}
                     />
                   </motion.div>
                 ))}

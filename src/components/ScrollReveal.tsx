@@ -113,7 +113,7 @@ const ScrollReveal = forwardRef<HTMLDivElement, ScrollRevealProps>(({
       ref={ref}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-60px' }}
+      viewport={{ once: true, margin: '0px' }}
       variants={variants}
       className={className}
     >

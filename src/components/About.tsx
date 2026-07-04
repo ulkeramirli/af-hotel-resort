@@ -86,7 +86,7 @@ export default function About() {
   const image2 = dbAbout?.images?.[1] || "/AF-aqua2.jpg";
 
   return (
-    <section id="about" className="py-16 md:py-32 bg-white scroll-mt-20 select-none overflow-hidden font-sans">
+    <section id="about" className="py-16 md:py-32 bg-transparent scroll-mt-20 select-none overflow-hidden font-sans">
 
       <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 lg:gap-24 items-center">
 
@@ -138,19 +138,22 @@ export default function About() {
           className="lg:col-span-5 space-y-6"
         >
 
-          <div className="space-y-3">
-            <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
-              {about.tag}
-            </span>
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-[1px] bg-[#00b5d5]" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
+                {about.tag}
+              </span>
+            </div>
 
-            <h2 className="text-2xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-[1.2]">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none break-words whitespace-normal">
               {displayTitle}
             </h2>
           </div>
 
           <div className="space-y-4 text-xs md:text-sm text-stone-500 font-light leading-relaxed max-w-xl">
             {dbAbout ? (
-              <div className="prose prose-sm prose-stone max-w-none text-stone-500 font-light [&>p]:mb-4" dangerouslySetInnerHTML={{ __html: (dbAbout.description as any)?.[l] || "" }} />
+              <div className="prose prose-stone prose-lg text-stone-500 leading-relaxed font-light break-words whitespace-normal" dangerouslySetInnerHTML={{ __html: (dbAbout.description as any)?.[l] || "" }} />
             ) : (
               <>
                 <p>{about.p1}</p>

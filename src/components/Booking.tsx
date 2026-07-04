@@ -78,13 +78,13 @@ function CustomDatePicker({
   };
 
   return (
-    <div className="relative">
-      <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">
+    <div className="relative w-full">
+      <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
         {label}
       </label>
       <div
         onClick={() => setOpen(!open)}
-        className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 cursor-pointer min-h-[46px] flex items-center justify-between"
+        className="w-full border border-stone-200 rounded-xl px-4 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 cursor-pointer h-12 flex items-center justify-between shadow-sm"
       >
         <span>{value || "Seçin / Select"}</span>
         <Calendar className="w-4 h-4 text-stone-400" />
@@ -92,43 +92,22 @@ function CustomDatePicker({
       {open && (
         <div className="absolute top-full left-0 mt-2 bg-white border border-stone-200 rounded-xl shadow-xl z-50 p-4 w-72">
           <div className="flex justify-between items-center mb-4">
-            <button
-              onClick={handlePrev}
-              className="px-2 py-1 bg-stone-100 rounded hover:bg-stone-200 text-stone-600 font-bold"
-            >
-              &lt;
-            </button>
+            <button onClick={handlePrev} className="px-2 py-1 bg-stone-100 rounded hover:bg-stone-200 text-stone-600 font-bold">&lt;</button>
             <span className="font-bold text-sm text-[#1e325c]">
-              {currentMonth.toLocaleString("default", {
-                month: "long",
-                year: "numeric",
-              })}
+              {currentMonth.toLocaleString("default", { month: "long", year: "numeric" })}
             </span>
-            <button
-              onClick={handleNext}
-              className="px-2 py-1 bg-stone-100 rounded hover:bg-stone-200 text-stone-600 font-bold"
-            >
-              &gt;
-            </button>
+            <button onClick={handleNext} className="px-2 py-1 bg-stone-100 rounded hover:bg-stone-200 text-stone-600 font-bold">&gt;</button>
           </div>
           <div className="grid grid-cols-7 gap-1 text-center mb-2">
             {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
-              <div key={d} className="text-[10px] font-bold text-stone-400">
-                {d}
-              </div>
+              <div key={d} className="text-[10px] font-bold text-stone-400">{d}</div>
             ))}
           </div>
           <div className="grid grid-cols-7 gap-1">
-            {Array.from({ length: startDay }).map((_, i) => (
-              <div key={`empty-${i}`} />
-            ))}
+            {Array.from({ length: startDay }).map((_, i) => <div key={`empty-${i}`} />)}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
-              const date = new Date(
-                currentMonth.getFullYear(),
-                currentMonth.getMonth(),
-                day,
-              );
+              const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
               const booked = isBooked(date);
               const past = isPast(date);
               const disabled = booked || past;
@@ -140,20 +119,11 @@ function CustomDatePicker({
                   key={day}
                   onClick={(e) => {
                     e.preventDefault();
-                    if (!disabled) {
-                      onChange(dateStr);
-                      setOpen(false);
-                    }
+                    if (!disabled) { onChange(dateStr); setOpen(false); }
                   }}
                   disabled={disabled}
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold
-                    ${
-                      disabled
-                        ? "bg-stone-100 text-stone-300 cursor-not-allowed"
-                        : selected
-                          ? "bg-[#00b5d5] text-white shadow-md"
-                          : "hover:bg-stone-100 text-stone-700 cursor-pointer"
-                    }
+                    ${disabled ? "bg-stone-100 text-stone-300 cursor-not-allowed" : selected ? "bg-[#00b5d5] text-white shadow-md" : "hover:bg-stone-100 text-stone-700 cursor-pointer"}
                   `}
                 >
                   {day}
@@ -404,9 +374,8 @@ function BookingContent() {
 
   if (success) {
     return (
-      <section
-        id="booking"
-        className="py-24 bg-white text-center flex flex-col items-center justify-center px-4 animate-in fade-in duration-500"
+      <div
+        className="py-12 bg-transparent text-center flex flex-col items-center justify-center px-4 animate-in fade-in duration-500"
       >
         <CheckCircle className="w-16 h-16 text-emerald-500 mb-4" />
         <h3 className="text-2xl font-bold text-slate-800">
@@ -415,16 +384,15 @@ function BookingContent() {
         <p className="text-sm text-stone-500 mt-2 max-w-md">
           {dict.successDesc}
         </p>
-      </section>
+      </div>
     );
   }
 
   return (
-    <section
-      id="booking"
-      className="py-24 md:py-32 bg-stone-50/60 border-t border-stone-200/50 scroll-mt-20"
+    <div
+      className="w-full relative scroll-mt-20"
     >
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto px-0 md:px-2">
         <div className="flex justify-center items-center gap-4 mb-10 text-xs font-bold tracking-widest text-stone-400">
           <span className={step === 1 ? "text-[#00b5d5]" : "text-emerald-500"}>
             1. DETAILS
@@ -467,14 +435,14 @@ function BookingContent() {
             </div>
 
             <div>
-              <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">
+              <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
                 {dict.roomLabel}
               </label>
               <select
                 required
                 value={selectedRoomId}
                 onChange={(e) => setSelectedRoomId(e.target.value)}
-                className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 cursor-pointer"
+                className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 cursor-pointer shadow-sm"
               >
                 {loadingRooms && <option value="">Loading...</option>}
                 {!loadingRooms &&
@@ -488,7 +456,7 @@ function BookingContent() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">
+                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
                   {dict.adultsLabel}
                 </label>
                 <select
@@ -500,7 +468,7 @@ function BookingContent() {
                       setKids(maxCapacity - val);
                     }
                   }}
-                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-800 outline-none"
+                  className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm bg-white text-slate-800 outline-none shadow-sm cursor-pointer"
                 >
                   {adultsOptions.map((n) => (
                     <option key={`adult-${n}`} value={n}>
@@ -510,13 +478,13 @@ function BookingContent() {
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">
+                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
                   {dict.kidsLabel}
                 </label>
                 <select
                   value={kids}
                   onChange={(e) => setKids(Number(e.target.value))}
-                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm bg-white text-slate-800 outline-none"
+                  className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm bg-white text-slate-800 outline-none shadow-sm cursor-pointer"
                 >
                   {kidsOptions.map((n) => (
                     <option key={`kid-${n}`} value={n}>
@@ -529,7 +497,7 @@ function BookingContent() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">
+                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
                   {dict.emailLabel}
                 </label>
                 <input
@@ -538,11 +506,11 @@ function BookingContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="example@mail.com"
-                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800"
+                  className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 shadow-sm"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">
+                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
                   {dict.phoneLabel}
                 </label>
                 <input
@@ -551,7 +519,7 @@ function BookingContent() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+994"
-                  className="w-full border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800"
+                  className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 shadow-sm"
                 />
               </div>
             </div>
@@ -630,20 +598,28 @@ function BookingContent() {
           </form>
         )}
       </div>
-    </section>
+    </div>
   );
 }
 
-export default function Booking() {
+export default function Booking({ standalone = false }: { standalone?: boolean }) {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-[50vh] flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-[#00b5d5]" />
-        </div>
-      }
-    >
-      <BookingContent />
-    </Suspense>
+    <div id="booking" className={`w-full relative z-30 px-4 md:px-6 max-w-6xl mx-auto ${standalone ? "py-16" : "-mt-32 pb-16"}`}>
+      <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.12)] border border-white p-6 md:p-8 lg:p-12 relative overflow-hidden">
+        {/* Subtle decorative background blur */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#00b5d5]/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#ff6c02]/5 rounded-full blur-3xl -z-10 -translate-x-1/2 translate-y-1/2" />
+
+        <Suspense
+          fallback={
+            <div className="min-h-[30vh] flex items-center justify-center">
+              <Loader2 className="w-8 h-8 animate-spin text-[#00b5d5]" />
+            </div>
+          }
+        >
+          <BookingContent />
+        </Suspense>
+      </div>
+    </div>
   );
 }

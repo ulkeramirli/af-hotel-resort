@@ -4,9 +4,11 @@ import { useSettings } from '@/contexts/SettingsContext';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import ScrollReveal from '@/components/ScrollReveal';
 
 export default function Footer() {
+  const pathname = usePathname();
   const { language, t } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
   const { settings } = useSettings();
@@ -26,6 +28,8 @@ export default function Footer() {
 
   const [email, setEmail] = useState('');
   const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  if (pathname.startsWith('/admin') || pathname.startsWith('/auth') || pathname.startsWith('/login')) return null;
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();

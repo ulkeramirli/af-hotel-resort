@@ -138,10 +138,7 @@ export default function RoomDetailPage({
 
   const handleBookingRedirect = () => {
     if (!room) return;
-    const query = new URLSearchParams({
-      roomId: room.id,
-    });
-    router.push(`/?${query.toString()}#booking`);
+    router.push(`/booking?roomId=${room.id}`);
   };
 
   if (loading) {
@@ -158,7 +155,7 @@ export default function RoomDetailPage({
         <p className="text-sm font-semibold text-stone-500">{c.notFound}</p>
         <button
           onClick={() => router.push("/#rooms")}
-          className="text-xs underline text-stone-600 cursor-pointer"
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1e325c] text-white rounded-xl shadow-md hover:bg-[#1e325c]/90 transition-all font-semibold text-sm cursor-pointer"
         >
           {c.back}
         </button>
@@ -179,8 +176,8 @@ export default function RoomDetailPage({
         <motion.button
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-xs font-bold text-stone-400 hover:text-stone-700 transition-colors cursor-pointer"
+          onClick={() => router.push('/#rooms')}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-stone-200 shadow-sm rounded-xl text-sm font-semibold text-stone-600 hover:text-[#1e325c] hover:border-[#1e325c]/30 hover:bg-stone-50 transition-all cursor-pointer mb-2 w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           {c.back}

@@ -229,48 +229,57 @@ useEffect(() => {
     activeTab
   ];
   return (
-    <section id="wonderland" className="py-16 md:py-24 bg-[#faf9f6] scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-12 md:space-y-20">
+    <section id="wonderland" className="py-16 md:py-32 bg-transparent relative overflow-hidden scroll-mt-20">
+      {/* Decorative background blobs */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-[10%] -right-[5%] w-[40%] h-[40%] rounded-full bg-[#00b5d5]/5 blur-[120px]" />
+        <div className="absolute top-[40%] -left-[10%] w-[50%] h-[50%] rounded-full bg-[#c5a880]/5 blur-[120px]" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-16 md:space-y-24 relative z-10">
         
         {/* Header & Tabs Container */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <ScrollReveal type="flipUp" delay={0.1} className="space-y-4 text-left">
-            <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
-              {(wonderland?.tag as any)?.[l] || (wonderland?.tag as any)?.name || wonderland?.tag || "WONDERLAND"}
-            </span>
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-[1px] bg-[#00d4f5]" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00d4f5]">
+                {(wonderland?.tag as any)?.[l] || (wonderland?.tag as any)?.name || wonderland?.tag || "WONDERLAND"}
+              </span>
+            </div>
 
-            <h2 className="text-2xl md:text-5xl font-light text-[#1e325c] font-serif tracking-tight">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-white tracking-tight font-serif leading-none break-words whitespace-normal drop-shadow-md">
               {(wonderland?.title as any)?.[l] || (wonderland?.title as any)?.name || wonderland?.title || "Əyləncə Mərkəzi"}
             </h2>
 
-            <div className="text-sm md:text-base text-stone-500 max-w-2xl font-light leading-relaxed prose prose-sm prose-stone [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: (wonderland?.description as any)?.[l] || (wonderland?.description as any)?.name || wonderland?.description || "Description" }} />
+            <div className="text-sm md:text-base text-stone-300 max-w-2xl font-light leading-relaxed prose prose-sm prose-invert break-words whitespace-normal [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: (wonderland?.description as any)?.[l] || (wonderland?.description as any)?.name || wonderland?.description || "Description" }} />
           </ScrollReveal>
         </div>
 
         {/* Attractions Grid / Highlights */}
         <div className="space-y-8">
           <ScrollReveal type="revealClip" delay={0.1}>
-            <h3 className="text-xs uppercase font-bold tracking-widest text-stone-400 text-center">
+            <h3 className="text-xs uppercase font-bold tracking-widest text-stone-300 text-center">
               {c.highlightsTitle}
             </h3>
           </ScrollReveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
             {wonderland?.smallAttractions?.map((h:any, i:any) => (
               <ScrollReveal key={i} type="zoomIn" delay={i * 0.08}
-                className="bg-white rounded-2xl p-6 flex flex-col items-center text-center gap-3 border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+                className="bg-stone-900/40 backdrop-blur-3xl rounded-[2rem] p-6 flex flex-col items-center text-center gap-3 border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-stone-800/60 hover:-translate-y-2 transition-all duration-500 group"
               >
-                <div className="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 border border-white/5">
                  {h?.icon}
                 </div>
-                <h4 className="text-sm font-semibold text-[#1e325c] mt-2">{(h?.name as any)?.[l] || (h?.name as any)?.az || "Name"}</h4>
-                <div className="text-xs text-stone-400 font-light leading-normal prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || "Desc" }} />
+                <h4 className="text-sm font-bold text-white mt-2">{(h?.name as any)?.[l] || (h?.name as any)?.az || "Name"}</h4>
+                <div className="text-xs text-stone-300 font-light leading-normal prose prose-sm prose-invert [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || "Desc" }} />
               </ScrollReveal>
             ))}
           </div>
         </div>
 
         {/* Interactive Slider Section */}
-        <ScrollReveal type="slideLeft" delay={0.2} className="space-y-10 bg-white rounded-3xl p-8 lg:p-12 border border-stone-100 shadow-sm">
+        <ScrollReveal type="slideLeft" delay={0.2} className="space-y-10 bg-white/10 backdrop-blur-2xl rounded-[40px] p-8 lg:p-14 border border-white/15 shadow-[0_8px_60px_rgb(0,0,0,0.2)]">
            
            {wonderland?.bigAttractions?.length > 0 && (
             <ScrollReveal type="dropIn" delay={0.1} className="shrink-0">
@@ -289,7 +298,7 @@ useEffect(() => {
             </ScrollReveal>
           )}
           {/* Slider Navigation Row (Buttons only, since Tabs are above) */}
-          <div className="flex justify-end items-center gap-6 border-b border-stone-100 pb-6">
+          <div className="flex justify-end items-center gap-6 border-b border-white/10 pb-6">
 
             {/* Slider Controls */}
             <div className="flex gap-2 self-end sm:self-auto">
@@ -298,8 +307,8 @@ useEffect(() => {
                 disabled={!prevBtnEnabled}
                 className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all ${
                   prevBtnEnabled
-                    ? "border-stone-200 text-[#1e325c] bg-[#faf8f5] hover:bg-stone-100"
-                    : "border-stone-100 text-stone-300 cursor-not-allowed"
+                    ? "border-white/20 text-white bg-white/10 hover:bg-white/20"
+                    : "border-white/5 text-white/30 cursor-not-allowed"
                 }`}
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -309,8 +318,8 @@ useEffect(() => {
                 disabled={!nextBtnEnabled}
                 className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all ${
                   nextBtnEnabled
-                    ? "border-stone-200 text-[#1e325c] bg-[#faf8f5] hover:bg-stone-100"
-                    : "border-stone-100 text-stone-300 cursor-not-allowed"
+                    ? "border-white/20 text-white bg-white/10 hover:bg-white/20"
+                    : "border-white/5 text-white/30 cursor-not-allowed"
                 }`}
               >
                 <ArrowRight className="w-4 h-4" />
@@ -333,13 +342,13 @@ useEffect(() => {
           alt={(game.name as any)?.[l] || (game.name as any)?.az || "Game"}
           fill
           sizes="(max-width: 640px) 85vw, (max-width: 768px) 45vw, 30vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          className="object-cover group-hover:scale-110 group-hover:rotate-1 transition-all duration-700 ease-out"
         />
 
-        <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/80 via-[#1e325c]/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
       </div>
 
-      <div className="p-6 space-y-2">
+      <div className="p-6 space-y-3 relative bg-white group-hover:bg-stone-50 transition-colors">
         <h3 className="font-bold text-base text-[#1e325c] flex items-center justify-between">
           {(game.name as any)?.[l] || (game.name as any)?.az || "Game"}
 
@@ -359,13 +368,13 @@ useEffect(() => {
         <ScrollReveal direction="up" delay={0.4} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           {/* Tickets Pricing */}
-          <div className="bg-white rounded-3xl p-8 lg:p-10 border border-stone-100 shadow-sm lg:col-span-7 space-y-6 flex flex-col justify-between">
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/15 shadow-sm lg:col-span-7 space-y-6 flex flex-col justify-between">
             <div className="space-y-2">
-              <h3 className="font-serif text-2xl text-[#1e325c] flex items-center gap-3">
-                <Ticket className="w-6 h-6 text-[#c5a880]" />
+              <h3 className="font-serif text-2xl text-white flex items-center gap-3">
+                <Ticket className="w-6 h-6 text-[#00d4f5]" />
                 {c.tickets}
               </h3>
-              <p className="text-xs text-stone-400 font-light">Parka giriş biletləri və yaş kateqoriyaları</p>
+              <p className="text-xs text-stone-300 font-light">Parka giriş biletləri və yaş kateqoriyaları</p>
             </div>
             
            <div className="space-y-3 my-4">
@@ -373,13 +382,13 @@ useEffect(() => {
     (ticket: any) => (
       <div
         key={ticket._id}
-        className="flex justify-between items-center bg-[#faf9f6] px-6 py-4 rounded-xl border border-stone-100 hover:border-[#c5a880]/30 transition-colors"
+        className="flex justify-between items-center bg-white/10 px-6 py-4 rounded-xl border border-white/10 hover:border-[#00d4f5]/30 transition-colors"
       >
-        <span className="text-sm font-medium text-stone-600">
+        <span className="text-sm font-medium text-stone-200">
           {(ticket.name as any)?.[l] || (ticket.name as any)?.az || ticket.name || "Ticket"}
         </span>
 
-        <span className="text-lg font-bold text-[#1e325c]">
+        <span className="text-lg font-bold text-[#00d4f5]">
           {ticket.price}
         </span>
       </div>
@@ -389,20 +398,18 @@ useEffect(() => {
           </div>
 
           {/* Info & Special Offer Banner */}
-          <div className="bg-white rounded-3xl p-8 lg:p-10 border border-stone-100 shadow-sm lg:col-span-5 flex flex-col justify-between space-y-8">
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/15 shadow-sm lg:col-span-5 flex flex-col justify-between space-y-8">
             <div className="space-y-6">
-              <h3 className="font-serif text-2xl text-[#1e325c] flex items-center gap-3">
-                <Compass className="w-6 h-6 text-[#c5a880]" />
+              <h3 className="font-serif text-2xl text-white flex items-center gap-3">
+                <Compass className="w-6 h-6 text-[#00d4f5]" />
                 Wonderland Info
               </h3>
-              <div className="space-y-4 border-b border-stone-100 pb-6">
-                <div className="flex items-center gap-4 text-sm text-stone-600">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center text-[#00b5d5]">
+              <div className="space-y-4 border-b border-white/10 pb-6">
+                <div className="flex items-center gap-4 text-sm text-stone-200">
+                  <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-[#00d4f5]">
                     <Clock className="w-4 h-4" />
                   </div>
-                  <span className="font-medium"><span>
-  {wonderland?.workingHours}
-</span></span>
+                  <span className="font-medium">{wonderland?.workingHours}</span>
                 </div>
                 
               </div>

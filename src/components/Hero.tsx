@@ -49,7 +49,7 @@ const itemVariants = {
 };
 
   return (
-    <section className="relative min-h-[95vh] lg:min-h-screen pt-28 pb-12 flex items-center bg-stone-50 overflow-hidden select-none">
+    <section className="relative min-h-[95vh] lg:min-h-screen pt-28 pb-16 lg:pb-24 flex items-center bg-stone-50 overflow-hidden select-none">
       {/* Background image */}
       <motion.div 
         initial={{ opacity: 0, scale: 1.1 }}
@@ -78,45 +78,48 @@ const itemVariants = {
           animate="show"
           className="lg:col-span-7 space-y-6 lg:space-y-8 text-left"
         >
-          <motion.div variants={itemVariants} className="space-y-1 md:space-y-2 drop-shadow-lg">
-            <h2 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-[#00b5d5] lg:text-white tracking-wider uppercase leading-tight drop-shadow-md">
-              {texts.line1}
-            </h2>
-            <h1 className="text-[28px] sm:text-4xl md:text-[56px] font-black text-white lg:text-transparent lg:bg-clip-text tracking-tight uppercase leading-tight pb-2 filter drop-shadow-md" style={{backgroundImage: 'linear-gradient(90deg, #fff, #f0f0f0)', WebkitTextFillColor: 'initial'}}>
+          <motion.div variants={itemVariants} className="space-y-2 md:space-y-3 drop-shadow-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-[1px] bg-[#00b5d5] hidden lg:block" />
+              <h2 className="text-sm sm:text-base md:text-lg font-bold text-[#00b5d5] lg:text-[#00b5d5] tracking-[0.3em] uppercase leading-tight drop-shadow-md font-sans">
+                {texts.line1}
+              </h2>
+            </div>
+            <h1 className="text-[32px] sm:text-5xl md:text-[60px] lg:text-[72px] font-serif font-semibold text-white lg:text-transparent lg:bg-clip-text tracking-tight leading-none pb-2 filter drop-shadow-md" style={{backgroundImage: 'linear-gradient(90deg, #fff, #f0f0f0)', WebkitTextFillColor: 'initial'}}>
               <span className="lg:hidden">{texts.line2}</span>
-              <span className="hidden lg:inline" style={{backgroundImage: 'linear-gradient(90deg, #00b5d5, #0088b3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>{texts.line2}</span>
+              <span className="hidden lg:inline" style={{backgroundImage: 'linear-gradient(135deg, #1e325c 0%, #00b5d5 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>{texts.line2}</span>
             </h1>
-            <p className="text-sm sm:text-lg md:text-xl font-semibold text-white/95 tracking-widest pt-1 drop-shadow-md uppercase">
+            <p className="text-xs sm:text-sm font-medium text-white/80 lg:text-stone-500/90 tracking-[0.25em] pt-1 drop-shadow-md uppercase font-sans">
               {texts.sub}
             </p>
           </motion.div>
 
-          {/* Feature cards */}
+          {/* Feature cards — clickable */}
           <motion.div variants={itemVariants} className="grid grid-cols-2 gap-2 sm:gap-2.5 pt-4 lg:pt-6 max-w-xl md:max-w-2xl">
-            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2 sm:p-2.5 rounded-xl border border-white/60 shadow-sm">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
+            <motion.button whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => router.push('/rooms')} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/85 lg:bg-white/70 backdrop-blur-sm p-2 sm:p-2.5 rounded-2xl border border-white/70 shadow-md cursor-pointer text-left transition-shadow hover:shadow-lg group">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30 group-hover:bg-[#00b5d5]/25 transition-colors">
                 <Image src="/bed.png" alt="Rooms" width={36} height={36} className="w-7 h-7 sm:w-9 sm:h-9 object-contain" />
               </div>
-              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f1}</p>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2 sm:p-2.5 rounded-xl border border-white/60 shadow-sm">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
+              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-semibold leading-tight tracking-wide">{texts.f1}</p>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => router.push('/aquapark')} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/85 lg:bg-white/70 backdrop-blur-sm p-2 sm:p-2.5 rounded-2xl border border-white/70 shadow-md cursor-pointer text-left transition-shadow hover:shadow-lg group">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30 group-hover:bg-[#00b5d5]/25 transition-colors">
                 <Image src="/aqua-park1.png" alt="Aquapark" width={36} height={36} className="w-7 h-7 sm:w-9 sm:h-9 object-contain" />
               </div>
-              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f2}</p>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2 sm:p-2.5 rounded-xl border border-white/60 shadow-sm">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
+              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-semibold leading-tight tracking-wide">{texts.f2}</p>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => router.push('/wonderland')} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/85 lg:bg-white/70 backdrop-blur-sm p-2 sm:p-2.5 rounded-2xl border border-white/70 shadow-md cursor-pointer text-left transition-shadow hover:shadow-lg group">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30 group-hover:bg-[#00b5d5]/25 transition-colors">
                 <Image src="/carousel.png" alt="Lunapark" width={36} height={36} className="w-7 h-7 sm:w-9 sm:h-9 object-contain" />
               </div>
-              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f4}</p>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2 sm:p-2.5 rounded-xl border border-white/60 shadow-sm">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
+              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-semibold leading-tight tracking-wide">{texts.f4}</p>
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => router.push('/restoran')} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/85 lg:bg-white/70 backdrop-blur-sm p-2 sm:p-2.5 rounded-2xl border border-white/70 shadow-md cursor-pointer text-left transition-shadow hover:shadow-lg group">
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30 group-hover:bg-[#00b5d5]/25 transition-colors">
                 <Image src="/spoon.png" alt="Restaurant" width={36} height={36} className="w-7 h-7 sm:w-9 sm:h-9 object-contain" />
               </div>
-              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f3}</p>
-            </motion.div>
+              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-semibold leading-tight tracking-wide">{texts.f3}</p>
+            </motion.button>
           </motion.div>
         </motion.div>
 
@@ -178,23 +181,15 @@ const itemVariants = {
             {/* CTA Buttons */}
             <div className="space-y-3">
               <button
-                onClick={() => {
-                  const el = document.getElementById('booking');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  else router.push('/#booking');
-                }}
-                className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-bold uppercase tracking-wider py-4 rounded-xl transition-all shadow-md shadow-[#ff6c02]/20 cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+                onClick={() => router.push('/booking')}
+                className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-bold uppercase tracking-[0.1em] py-4 rounded-2xl transition-all shadow-md shadow-[#ff6c02]/30 cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
               >
                 <CalendarCheck className="w-4 h-4" />
                 {texts.btnBook}
               </button>
               <button
-                onClick={() => {
-                  const el = document.getElementById('rooms');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  else router.push('/#rooms');
-                }}
-                className="flex items-center justify-center gap-2 w-full bg-white border-2 border-[#1e325c]/15 hover:border-[#00b5d5] text-[#1e325c] text-[13px] font-bold uppercase tracking-wider py-3.5 rounded-xl transition-all cursor-pointer hover:bg-[#00b5d5]/5"
+                onClick={() => router.push('/rooms')}
+                className="flex items-center justify-center gap-2 w-full bg-white/90 border border-[#1e325c]/20 hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 text-[#1e325c] text-[13px] font-semibold uppercase tracking-[0.1em] py-3.5 rounded-2xl transition-all cursor-pointer"
               >
                 {texts.btnRooms}
                 <ArrowRight className="w-4 h-4" />
