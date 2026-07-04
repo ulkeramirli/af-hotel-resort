@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import {
   Loader2,
   CheckCircle,
@@ -141,6 +142,7 @@ function BookingContent() {
   const { user } = useAuth() as { user: AuthUser | null };
   const searchParams = useSearchParams();
   const { language } = useLanguage();
+  const { currency } = useCurrency();
   const currentLang = (language as "az" | "en" | "ru") || "az";
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -312,6 +314,11 @@ function BookingContent() {
       en: "I am not a robot",
       ru: "Я не робот",
     }[currentLang],
+    totalPrice: {
+      az: "Ümumi Qiymət:",
+      en: "Total Price:",
+      ru: "Итоговая цена:",
+    }[currentLang],
   };
 
   const handleNextStep = (e: React.FormEvent) => {
@@ -344,6 +351,8 @@ function BookingContent() {
       checkOut: checkOut,
       notes: `Adults: ${adults}, Kids: ${kids}`,
       status: "pending",
+      currency: currency === "USD" ? "USD" : "AZN",
+      language: currentLang,
     };
     try {
       const res = await createPayment(payload);
@@ -448,7 +457,7 @@ function BookingContent() {
                 {!loadingRooms &&
                   rooms.map((r) => (
                     <option key={r.id} value={r.id}>
-                      {loc(r.title)} - ${r.price}
+                      {loc(r.title)} - {currency === "USD" ? `$${r.priceUsd || 0}` : `${r.price} ₼`}
                     </option>
                   ))}
               </select>
@@ -558,12 +567,15 @@ function BookingContent() {
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-semibold text-slate-600">
-                  Total Price:
+                  {dict.totalPrice}
                 </span>
                 <span className="text-xl font-bold text-slate-800">
-                  ${rooms.find((r) => r.id === selectedRoomId)?.price || 0}
+                  {currency === "USD" 
+                    ? `$${(rooms.find((r) => r.id === selectedRoomId)?.priceUsd || 0) * (checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1)}`
+                    : `${(rooms.find((r) => r.id === selectedRoomId)?.price || 0) * (checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1)} ₼`
+                  }
                   <span className="text-xs text-slate-400 font-normal ml-1">
-                    / night
+                    ({checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1} {currentLang === 'az' ? 'gecə' : currentLang === 'ru' ? 'ночей' : 'nights'})
                   </span>
                 </span>
               </div>

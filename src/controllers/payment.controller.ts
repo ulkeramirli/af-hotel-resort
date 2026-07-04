@@ -9,7 +9,7 @@ import { sendMail } from "@/lib/send-email";
 export class PaymentController {
   static async create(req: Request) {
     const body = await req.json();
-    const { room, guestName, email, phone, checkIn, checkOut, notes } = body;
+    const { room, guestName, email, phone, checkIn, checkOut, notes, currency = "AZN", language = "az" } = body;
     const existingRoom = await Room.findById(room);
     const conflictBooking = await Booking.findOne({
       room,
@@ -44,7 +44,13 @@ export class PaymentController {
     const nights = Math.ceil(
       (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
     );
-    const amount = existingRoom.price * nights;
+    const unitPrice = currency === "USD" ? (existingRoom.priceUsd || 0) : existingRoom.price;
+    const amount = unitPrice * nights;
+    
+    if (amount <= 0) {
+      throw new Error("Invalid total amount");
+    }
+
     const booking = await Booking.create({
       room,
       guestName,
@@ -54,6 +60,7 @@ export class PaymentController {
       checkOut,
       notes,
       amount,
+      currency,
       paymentStatus: "pending",
       status: "pending",
     });
@@ -62,6 +69,8 @@ export class PaymentController {
         amount,
         orderId: booking._id.toString(),
         description: `Booking #${booking._id}`,
+        currency: currency === "USD" ? "USD" : "AZN",
+        language,
       });
 
       console.log("EPOINT RESPONSE:", payment);
@@ -106,16 +115,15 @@ export class PaymentController {
     if (!booking) {
       throw new Error("Booking not found");
     }
-    if (booking.paymentStatus === "paid") {
-      return NextResponse.json({
-        success: true,
-        message: "Payment already processed",
-      });
-    }
-
     if (decoded.status === "success") {
+      if (booking.paymentStatus === "paid") {
+        return NextResponse.json({
+          success: true,
+          message: "Payment already processed",
+        });
+      }
       booking.paymentStatus = "paid";
-      booking.status = "confirmed";
+      booking.status = "pending"; // Admin will manually approve
       booking.paymentTransaction = decoded.transaction || "";
       await booking.save();
 
@@ -123,11 +131,20 @@ export class PaymentController {
 
       const roomName = (booking.room as any)?.name?.az || "Otaq";
 
+      const formatDate = (dateInput: any) => {
+        if (!dateInput) return "";
+        const d = new Date(dateInput);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}.${month}.${year}`;
+      };
+
       const mail = bookingCreatedEmail(
         booking.guestName,
         roomName,
-        booking.checkIn,
-        booking.checkOut,
+        formatDate(booking.checkIn),
+        formatDate(booking.checkOut),
       );
 
       await sendMail(booking.email, mail.subject, mail.html);
@@ -137,8 +154,8 @@ export class PaymentController {
         booking.email,
         booking.phone,
         roomName,
-        booking.checkIn,
-        booking.checkOut,
+        formatDate(booking.checkIn),
+        formatDate(booking.checkOut),
       );
 
       await sendMail(
@@ -146,8 +163,13 @@ export class PaymentController {
         adminMail.subject,
         adminMail.html,
       );
+    } else if (decoded.status === "refunded") {
+      booking.paymentStatus = "refunded";
+      booking.status = "cancelled";
+      await booking.save();
     } else {
       booking.paymentStatus = "failed";
+      booking.status = "cancelled";
       await booking.save();
     }
 

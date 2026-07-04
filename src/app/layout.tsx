@@ -22,17 +22,21 @@ const greatVibes = Great_Vibes({
 
 export const metadata: Metadata = {
   title: {
-    default: "AF Hotel & Aqua Park Complex | Luxury Resort in Baku, Azerbaijan",
+    default: "AF Hotel & Aqua Park Complex | Bakı, Novxanı — Lüks Kurort",
     template: "%s | AF Hotel & Aqua Park"
   },
-  description: "AF Hotel & Aqua Park Complex — premium 5-star resort in Novkhani, Baku. Enjoy luxury rooms, thrilling aqua park with 20+ slides, Wonderland theme park, gourmet restaurants, and stunning Caspian Sea views. Book directly for best rates.",
+  description: "AF Hotel & Aqua Park Complex — Novxanı sahilindəki premium 5 ulduzlu kurort. Lüks otaqlar, 20+ sürüşkənli aquapark, Wonderland lunapark, restoranlar və Xəzər dənizi mənzərəsi. Birbaşa bron edin!",
   keywords: [
     "AF Hotel Baku", "AF Aqua Park", "hotel Baku Azerbaijan", "Novkhani resort",
     "luxury hotel Baku", "aqua park Baku", "Xəzər sahili hotel", "5 star hotel Azerbaijan",
     "family resort Baku", "Wonderland Baku", "AF Hotel Aqua Park Complex",
-    "best hotel Baku", "Caspian Sea resort", "hotel Novkhani", "бронирование отель Баку"
+    "best hotel Baku", "Caspian Sea resort", "hotel Novkhani", "бронирование отель Баку",
+    "AF Hotel qiymətlər", "Novxanı otel", "Bakı kurort", "su parkı Bakı",
+    "AF Hotel Novxanı", "Xəzər dənizi otel", "ailə istirahəti Bakı",
+    "Azərbaycan kurort", "otel rezervasiya", "AF Hotel telefon",
+    "отель Баку Новханы", "аквапарк Баку цены", "отдых Новханы Баку"
   ],
-  authors: [{ name: "AF Hotel & Aqua Park Complex" }],
+  authors: [{ name: "AF Hotel & Aqua Park Complex", url: "https://af-hotel.az" }],
   creator: "AF Hotel & Aqua Park Complex",
   publisher: "AF Hotel & Aqua Park Complex",
   metadataBase: new URL("https://af-hotel.az"),
@@ -50,8 +54,8 @@ export const metadata: Metadata = {
     alternateLocale: ["en_US", "ru_RU"],
     url: "https://af-hotel.az",
     siteName: "AF Hotel & Aqua Park Complex",
-    title: "AF Hotel & Aqua Park Complex | Luxury Resort in Baku",
-    description: "5-star luxury resort in Novkhani, Baku. Premium rooms, aqua park with 20+ attractions, Wonderland theme park, gourmet dining. Book your dream vacation today.",
+    title: "AF Hotel & Aqua Park | Bakı Novxanı — Lüks 5 Ulduzlu Kurort",
+    description: "Novxanı sahilindəki 5 ulduzlu lüks kurort. Premium otaqlar, 20+ cihazlı aquapark, Wonderland lunapark, restoranlar. Ən yaxşı qiymətlə birbaşa bron edin.",
     images: [
       {
         url: "/AF-hero.jpg",
@@ -59,12 +63,18 @@ export const metadata: Metadata = {
         height: 630,
         alt: "AF Hotel & Aqua Park Complex — Premium Resort in Baku, Azerbaijan",
       },
+      {
+        url: "/AF-aqua.jpg",
+        width: 1200,
+        height: 630,
+        alt: "AF Aqua Park — Water Park in Novkhani Baku",
+      },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AF Hotel & Aqua Park Complex | Luxury Resort Baku",
-    description: "5-star luxury resort in Baku. Premium rooms, aqua park, Wonderland theme park & fine dining.",
+    title: "AF Hotel & Aqua Park | Bakı Novxanı Lüks Kurort",
+    description: "Novxanıda 5 ulduzlu lüks kurort. Premium otaqlar, aquapark, Wonderland lunapark & restoranlar.",
     images: ["/AF-hero.jpg"],
     creator: "@AFHotelBaku",
   },
@@ -79,7 +89,10 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  // icons are auto-generated from app/icon.tsx and app/apple-icon.tsx
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   verification: {
     google: "google-site-verification-placeholder",
   },

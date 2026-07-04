@@ -7,6 +7,8 @@ export async function createEpointPayment(payload: {
   amount: number;
   orderId: string;
   description: string;
+  currency?: string;
+  language?: string;
 }) {
   const {
     EPOINT_PUBLIC_KEY,
@@ -35,8 +37,8 @@ export async function createEpointPayment(payload: {
   const body: Record<string, any> = {
     public_key: EPOINT_PUBLIC_KEY,
     amount: payload.amount,
-    currency: "AZN",
-    language: "az",
+    currency: payload.currency === "USD" ? "USD" : "AZN",
+    language: payload.language === "ru" ? "ru" : payload.language === "en" ? "en" : "az",
     order_id: payload.orderId,
     description: payload.description,
     success_redirect_url: EPOINT_SUCCESS_URL,

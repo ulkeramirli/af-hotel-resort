@@ -57,6 +57,12 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
 
+    currency: {
+      type: String,
+      enum: ["AZN", "USD"],
+      default: "AZN",
+    },
+
     notes: {
       type: String,
       default: "",

@@ -21,6 +21,7 @@ import { getPublicRoomById } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
 import { toggleFavorite, isFavorite } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 const content = {
   az: {
@@ -103,6 +104,7 @@ export default function RoomDetailPage({
 }) {
   const { id } = use(params);
   const { language } = useLanguage();
+  const { currency } = useCurrency();
   
   // Bezopasnaya proverka, chtoby yazyk podkhodil pod nashi klyuchi (az, en, ru)
   const l: LanguageKey = (language && language in content) ? (language as LanguageKey) : "az";
@@ -330,8 +332,8 @@ export default function RoomDetailPage({
                   {c.pricePerNight}
                 </span>
                 <div className="text-2xl md:text-3xl font-bold text-stone-900">
-                  ${room.price}{" "}
-                  <span className="text-xs text-stone-400 font-normal">
+                  {currency === "USD" ? `$${room.priceUsd || 0}` : `${room.price} ₼`}
+                  <span className="text-xs text-stone-400 font-normal ml-2">
                     / {c.night}
                   </span>
                 </div>
@@ -355,9 +357,10 @@ export default function RoomDetailPage({
             <h3 className="text-xs font-bold uppercase tracking-widest text-stone-400">
               {c.overview}
             </h3>
-            <p className="text-xs md:text-sm text-stone-600 leading-relaxed font-light text-justify">
-              {roomDesc}
-            </p>
+            <div 
+              className="text-xs md:text-sm text-stone-600 leading-relaxed font-light text-justify prose prose-sm prose-stone max-w-none"
+              dangerouslySetInnerHTML={{ __html: roomDesc }}
+            />
           </div>
 
           {/* Удобства (Room Amenities) */}

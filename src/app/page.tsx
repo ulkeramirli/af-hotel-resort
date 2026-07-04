@@ -1,14 +1,16 @@
 'use client';
 
+import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
 import MobileOverview from "@/components/MobileOverview";
-import About from "@/components/About";
-import Rooms from "@/components/Rooms";
-import Aquapark from "@/components/Aquapark";
-import Wonderland from "@/components/Wonderland";
-import Restoran from "@/components/Restoran";
-import Reviews from "@/components/Reviews";
-import Contacts from "@/components/Contacts";
+
+const About = dynamic(() => import("@/components/About"), { ssr: true });
+const Rooms = dynamic(() => import("@/components/Rooms"), { ssr: true });
+const Aquapark = dynamic(() => import("@/components/Aquapark"), { ssr: true });
+const Wonderland = dynamic(() => import("@/components/Wonderland"), { ssr: true });
+const Restoran = dynamic(() => import("@/components/Restoran"), { ssr: true });
+const Reviews = dynamic(() => import("@/components/Reviews"), { ssr: true });
+const Contacts = dynamic(() => import("@/components/Contacts"), { ssr: true });
 
 export default function Home() {
   return (

@@ -149,14 +149,23 @@ export class BookingController {
     await booking.save();
     await booking.populate("room");
 
-    const roomName = booking.room ? booking.room.name : "Silinmiş otaq";
+    const roomName = booking.room ? (booking.room as any).name?.az || "Otaq" : "Silinmiş otaq";
+
+    const formatDate = (dateInput: any) => {
+      if (!dateInput) return "";
+      const d = new Date(dateInput);
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day}.${month}.${year}`;
+    };
 
     if (status === "confirmed") {
       const mail = bookingConfirmedEmail(
         booking.guestName,
         roomName,
-        booking.checkIn,
-        booking.checkOut,
+        formatDate(booking.checkIn),
+        formatDate(booking.checkOut),
       );
       await sendMail(booking.email, mail.subject, mail.html);
     }
@@ -165,8 +174,8 @@ export class BookingController {
       const mail = bookingCancelledEmail(
         booking.guestName,
         roomName,
-        booking.checkIn,
-        booking.checkOut,
+        formatDate(booking.checkIn),
+        formatDate(booking.checkOut),
       );
       await sendMail(booking.email, mail.subject, mail.html);
     }

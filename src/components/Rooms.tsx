@@ -10,6 +10,7 @@ import type { PublicRoom } from "@/services/api";
 import type { RoomType, RoomSettings } from "@/types/api";
 import { toggleFavorite, isFavorite, syncFavorites } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import CategoryTabs from "./CategoryTabs";
 import TiltCard from "./TiltCard";
 import MagneticButton from "./MagneticButton";
@@ -116,6 +117,7 @@ function RoomCard({
   onFavorite,
   onBook,
   compact = false,
+  currency,
 }: {
   room: PublicRoom;
   l: "az" | "en" | "ru";
@@ -124,6 +126,7 @@ function RoomCard({
   onFavorite: (id: string) => void;
   onBook: (id: string) => void;
   compact?: boolean;
+  currency: "AZN" | "USD";
 }) {
   return (
     <TiltCard tiltAmount={4} className="h-full">
@@ -170,7 +173,9 @@ function RoomCard({
 
         <div className="flex items-end justify-between mt-auto pt-3 border-t border-stone-100">
           <div className="mb-1">
-            <div className="text-xl font-black text-[#1e325c] tracking-tight">${room.price}</div>
+            <div className="text-xl font-black text-[#1e325c] tracking-tight">
+              {currency === "USD" ? `$${room.priceUsd || 0}` : `${room.price} ₼`}
+            </div>
             <span className="text-[10px] text-stone-400 font-light">{c.perNight}</span>
           </div>
           <div className="flex flex-col gap-2 w-32">
@@ -201,6 +206,7 @@ function RoomCard({
 
 export default function Rooms() {
   const { language } = useLanguage();
+  const { currency } = useCurrency();
   const router = useRouter();
   const l = (language as "az" | "en" | "ru") || "az";
   const c = content[l];
@@ -335,7 +341,7 @@ export default function Rooms() {
           </motion.div>
         ) : (
           <>
-            <div className="relative">
+            <div className="relative md:hidden">
               {/* Mobile arrow buttons */}
               <button
                 onClick={scrollRoomsPrev}
@@ -374,6 +380,7 @@ export default function Rooms() {
                         isFav={favorites.has(room.id)}
                         onFavorite={handleFavorite}
                         onBook={(id) => router.push(`/booking?roomId=${id}`)}
+                        currency={currency}
                       />
                     </motion.div>
                   ))}
@@ -381,6 +388,35 @@ export default function Rooms() {
               </motion.div>
               </div>
             </div>
+            {/* ── DESKTOP: grid ── */}
+            <motion.div
+              layout
+              className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+            >
+              <AnimatePresence mode="popLayout">
+                {filtered.map((room) => (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    exit={{ opacity: 0, y: 30 }}
+                    transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
+                    key={room.id}
+                  >
+                    <RoomCard
+                      room={room}
+                      l={l}
+                      c={c}
+                      isFav={favorites.has(room.id)}
+                      onFavorite={handleFavorite}
+                      onBook={(id) => router.push(`/booking?roomId=${id}`)}
+                      currency={currency}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           </>
          )}
       </div>

@@ -115,37 +115,37 @@ const itemVariants = {
           </motion.div>
 
           {/* Feature cards — clickable, soft square shape */}
-          <motion.div variants={itemVariants} className="grid grid-cols-2 gap-2 sm:gap-3 pt-3 lg:pt-5 max-w-md md:max-w-lg">
+          <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3 sm:gap-4 pt-4 lg:pt-6 max-w-lg md:max-w-xl">
             <TiltCard tiltAmount={10}>
-              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/rooms', 'rooms')} className="w-full flex flex-row items-center space-x-2 bg-white/95 hover:bg-white p-2.5 rounded-xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
-                <div className="w-9 h-9 rounded-lg bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
-                  <Image src="/bed.png" alt="Rooms" width={30} height={30} className="w-5 h-5 object-contain opacity-90" />
+              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/rooms', 'rooms')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
+                  <Image src="/bed.png" alt="Rooms" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[10px] sm:text-[11px] text-[#1e325c] font-semibold leading-tight tracking-wide">{texts.f1}</p>
+                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f1}</p>
               </motion.button>
             </TiltCard>
             <TiltCard tiltAmount={10}>
-              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/aquapark', 'aquapark')} className="w-full flex flex-row items-center space-x-2 bg-white/95 hover:bg-white p-2.5 rounded-xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
-                <div className="w-9 h-9 rounded-lg bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
-                  <Image src="/aqua-park1.png" alt="Aquapark" width={30} height={30} className="w-5 h-5 object-contain opacity-90" />
+              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/aquapark', 'aquapark')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
+                  <Image src="/aqua-park1.png" alt="Aquapark" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[10px] sm:text-[11px] text-[#1e325c] font-semibold leading-tight tracking-wide">{texts.f2}</p>
+                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f2}</p>
               </motion.button>
             </TiltCard>
             <TiltCard tiltAmount={10}>
-              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/wonderland', 'wonderland')} className="w-full flex flex-row items-center space-x-2 bg-white/95 hover:bg-white p-2.5 rounded-xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
-                <div className="w-9 h-9 rounded-lg bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
-                  <Image src="/carousel.png" alt="Lunapark" width={30} height={30} className="w-5 h-5 object-contain opacity-90" />
+              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/wonderland', 'wonderland')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
+                  <Image src="/carousel.png" alt="Lunapark" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[10px] sm:text-[11px] text-[#1e325c] font-semibold leading-tight tracking-wide">{texts.f4}</p>
+                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f4}</p>
               </motion.button>
             </TiltCard>
             <TiltCard tiltAmount={10}>
-              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/restoran', 'restoran')} className="w-full flex flex-row items-center space-x-2 bg-white/95 hover:bg-white p-2.5 rounded-xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
-                <div className="w-9 h-9 rounded-lg bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
-                  <Image src="/spoon.png" alt="Restaurant" width={30} height={30} className="w-5 h-5 object-contain opacity-90" />
+              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/restoran', 'restoran')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
+                  <Image src="/spoon.png" alt="Restaurant" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[10px] sm:text-[11px] text-[#1e325c] font-semibold leading-tight tracking-wide">{texts.f3}</p>
+                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f3}</p>
               </motion.button>
             </TiltCard>
           </motion.div>
