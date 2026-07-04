@@ -90,7 +90,7 @@ export default function About() {
       <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 lg:gap-24 items-center">
 
         {/* ЛЕВАЯ СТОРОНА: Панорамный, вытянутый в ширину коллаж */}
-        <div className="lg:col-span-7 relative h-[450px] sm:h-[500px] md:h-[650px] w-full flex items-center">
+        <div className="lg:col-span-7 relative h-112.5 sm:h-125 md:h-162.5 w-full flex items-center">
           
           {/* Большая левая картинка (Широкоформатная панорама, w-[90%] при h-[68%]) */}
           <motion.div 
@@ -141,20 +141,20 @@ export default function About() {
 
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-8 h-[1px] bg-[#00b5d5]" />
+              <div className="w-8 h-px bg-[#00b5d5]" />
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
                 {about.tag}
               </span>
             </div>
 
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none break-words whitespace-normal">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none wrap-break-word whitespace-normal">
               {displayTitle}
             </h2>
           </div>
 
           <div className="space-y-4 text-xs md:text-sm text-stone-500 font-light leading-relaxed max-w-xl">
             {dbAbout ? (
-              <div className="prose prose-stone prose-lg text-stone-500 leading-relaxed font-light break-words whitespace-normal" dangerouslySetInnerHTML={{ __html: (dbAbout.description as any)?.[l] || "" }} />
+              <div className="prose prose-stone prose-lg text-stone-500 leading-relaxed font-light wrap-break-word whitespace-normal" dangerouslySetInnerHTML={{ __html: (dbAbout.description as any)?.[l] || "" }} />
             ) : (
               <>
                 <p>{about.p1}</p>
