@@ -1,17 +1,23 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSettings } from "@/contexts/SettingsContext";
+import { usePathname } from "next/navigation";
 
 export default function FloatingActions() {
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [socialOpen, setSocialOpen] = useState(false);
   const { settings } = useSettings();
+
 
   useEffect(() => {
     const handleScroll = () => setShow(window.scrollY > 400);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // All hooks must be called before any early returns (Rules of Hooks)
+  if (pathname.startsWith('/admin') || pathname.startsWith('/auth') || pathname.startsWith('/login')) return null;
 
   const hasSocials = settings?.instagram || settings?.facebook || settings?.tiktok;
 

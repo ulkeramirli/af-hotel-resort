@@ -2,10 +2,11 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import Image from 'next/image';
-import { motion, Variants } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion, Variants, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback } from 'react';
 import { getAbout } from '@/services/api';
 import type { About as AboutType } from '@/types/api';
+import useEmblaCarousel from 'embla-carousel-react';
 
 export default function About() {
   const { language } = useLanguage();
@@ -82,46 +83,46 @@ export default function About() {
   }, []);
 
   const displayTitle = dbAbout ? (dbAbout.title as any)?.[l] || "" : about.title;
-  const image1 = dbAbout?.images?.[0] || "/AF-aqua.jpg";
-  const image2 = dbAbout?.images?.[1] || "/AF-aqua2.jpg";
 
   return (
-    <section id="about" className="py-16 md:py-32 bg-white scroll-mt-20 select-none overflow-hidden font-sans">
+    <section id="about" className="py-16 md:py-32 bg-transparent scroll-mt-20 select-none overflow-hidden font-sans">
 
       <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 lg:gap-24 items-center">
 
-        {/* LEFT IMAGES */}
+        {/* ЛЕВАЯ СТОРОНА: Панорамный, вытянутый в ширину коллаж */}
         <div className="lg:col-span-7 relative h-112.5 sm:h-125 md:h-162.5 w-full flex items-center">
-
-          <motion.div
+          
+          {/* Большая левая картинка (Широкоформатная панорама, w-[90%] при h-[68%]) */}
+          <motion.div 
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             variants={leftCardVariants}
-            className="absolute left-0 top-4 w-[90%] h-[68%] overflow-hidden shadow-2xl rounded-2xl"
+            className="absolute left-0 top-4 w-[90%] h-[68%] overflow-hidden shadow-2xl transform hover:scale-[1.01] transition-transform duration-700 ease-out z-10 rounded-2xl"
           >
-            <Image
-              src={image1}
-              alt="AF Hotel"
+            <Image 
+              src={dbAbout?.images?.[0] || "/AF-aqua.jpg"}
+              alt="Premium Living Space" 
               fill
-              sizes="(max-width: 768px) 90vw, 60vw"
+              sizes="(max-width: 1024px) 85vw, 50vw"
               className="object-cover object-[center_30%]"
               priority
             />
           </motion.div>
-
-          <motion.div
+          
+          {/* Маленькая правая картинка (Тоже вытянута в ширину: w-[80%] при h-[50%]) */}
+          <motion.div 
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             variants={rightCardVariants}
-            className="absolute right-0 bottom-4 w-[80%] h-[50%] overflow-hidden shadow-2xl border-8 border-[#fdfbf7] rounded-2xl"
+            className="absolute right-0 bottom-4 w-[80%] h-[50%] overflow-hidden shadow-2xl border-8 border-[#fdfbf7] transform hover:scale-[1.03] transition-transform duration-700 ease-out z-20 rounded-2xl"
           >
-            <Image
-              src={image2}
-              alt="AF Hotel Resort"
+            <Image 
+              src={dbAbout?.images?.[1] || "/AF-aqua2.jpg"}
+              alt="Luxury Suite Interior" 
               fill
-              sizes="(max-width: 768px) 80vw, 50vw"
+              sizes="(max-width: 1024px) 65vw, 35vw"
               className="object-cover object-center"
               priority
             />
@@ -138,19 +139,22 @@ export default function About() {
           className="lg:col-span-5 space-y-6"
         >
 
-          <div className="space-y-3">
-            <span className="text-[#00b5d5] text-[10px] font-bold tracking-[0.4em] uppercase block">
-              {about.tag}
-            </span>
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-px bg-[#00b5d5]" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
+                {about.tag}
+              </span>
+            </div>
 
-            <h2 className="text-2xl md:text-5xl font-light text-[#1e325c] tracking-tight font-serif leading-[1.2]">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none wrap-break-word whitespace-normal">
               {displayTitle}
             </h2>
           </div>
 
           <div className="space-y-4 text-xs md:text-sm text-stone-500 font-light leading-relaxed max-w-xl">
             {dbAbout ? (
-              <div className="prose prose-sm prose-stone max-w-none text-stone-500 font-light [&>p]:mb-4" dangerouslySetInnerHTML={{ __html: (dbAbout.description as any)?.[l] || "" }} />
+              <div className="prose prose-stone prose-lg text-stone-500 leading-relaxed font-light wrap-break-word whitespace-normal" dangerouslySetInnerHTML={{ __html: (dbAbout.description as any)?.[l] || "" }} />
             ) : (
               <>
                 <p>{about.p1}</p>

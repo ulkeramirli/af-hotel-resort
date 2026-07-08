@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://af-hotel.az/sitemap.xml

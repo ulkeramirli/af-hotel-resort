@@ -63,9 +63,9 @@ export default function InfoModal({ isOpen, onClose, title, description, price }
         <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-4 justify-between items-center">
           <span className="text-[11px] text-gray-400 tracking-widest uppercase font-medium">AF RESORT</span>
           <a 
-            href="#booking" 
+            href="/booking" 
             onClick={onClose}
-            className="w-full sm:w-auto bg-slate-900 hover:bg-black text-white font-medium uppercase tracking-widest text-[11px] px-8 py-3.5 rounded-xl text-center transition-all duration-300"
+            className="flex-1 bg-[#ff6c02] text-white hover:bg-[#e55f00] font-bold text-[10px] uppercase tracking-wider py-3 px-4 rounded-xl text-center transition-all shadow-md active:scale-95"
           >
             Rezervasiya
           </a>

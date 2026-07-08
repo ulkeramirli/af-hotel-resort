@@ -25,45 +25,45 @@ const getVariants = (type: AnimationType, direction: string): Variants => {
   switch (type) {
     case 'zoomIn':
       return {
-        hidden: { opacity: 0, scale: 0.7, filter: 'blur(12px)' },
-        visible: { opacity: 1, scale: 1, filter: 'blur(0px)',
-          transition: { duration: 0.9, ease: [0.34, 1.56, 0.64, 1] } }
+        hidden: { opacity: 0, scale: 0.82 },
+        visible: { opacity: 1, scale: 1,
+          transition: { type: 'spring', stiffness: 130, damping: 18, mass: 0.8 } }
       };
     case 'flipUp':
       return {
-        hidden: { opacity: 0, rotateX: 60, y: 40, transformPerspective: 800 },
-        visible: { opacity: 1, rotateX: 0, y: 0, transformPerspective: 800,
-          transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] } }
+        hidden: { opacity: 0, rotateX: -90, y: 60, transformPerspective: 1200, scale: 0.9 },
+        visible: { opacity: 1, rotateX: 0, y: 0, transformPerspective: 1200, scale: 1,
+          transition: { type: 'spring', stiffness: 100, damping: 15, mass: 1 } }
       };
     case 'dropIn':
       return {
-        hidden: { opacity: 0, y: -80, scale: 0.9 },
-        visible: { opacity: 1, y: 0, scale: 1,
-          transition: { type: 'spring', stiffness: 200, damping: 18 } }
+        hidden: { opacity: 0, y: -100, scale: 1.1, rotateZ: 5 },
+        visible: { opacity: 1, y: 0, scale: 1, rotateZ: 0,
+          transition: { type: 'spring', stiffness: 250, damping: 15, bounce: 0.6 } }
       };
     case 'slideLeft':
       return {
-        hidden: { opacity: 0, x: 100, filter: 'blur(6px)' },
-        visible: { opacity: 1, x: 0, filter: 'blur(0px)',
-          transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } }
+        hidden: { opacity: 0, x: 120, filter: 'blur(10px)', skewX: 10 },
+        visible: { opacity: 1, x: 0, filter: 'blur(0px)', skewX: 0,
+          transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
       };
     case 'slideRight':
       return {
-        hidden: { opacity: 0, x: -100, filter: 'blur(6px)' },
-        visible: { opacity: 1, x: 0, filter: 'blur(0px)',
-          transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } }
+        hidden: { opacity: 0, x: -120, filter: 'blur(10px)', skewX: -10 },
+        visible: { opacity: 1, x: 0, filter: 'blur(0px)', skewX: 0,
+          transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
       };
     case 'revealClip':
       return {
-        hidden: { opacity: 0, clipPath: 'inset(0 100% 0 0)' },
-        visible: { opacity: 1, clipPath: 'inset(0 0% 0 0)',
-          transition: { duration: 1.1, ease: [0.77, 0, 0.18, 1] } }
+        hidden: { opacity: 0, clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)', y: 50 },
+        visible: { opacity: 1, clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', y: 0,
+          transition: { duration: 1.2, ease: [0.77, 0, 0.18, 1] } }
       };
     case 'fadeDown':
       return {
-        hidden: { opacity: 0, y: -50, scale: 0.95, filter: 'blur(8px)' },
+        hidden: { opacity: 0, y: -60, scale: 0.9, filter: 'blur(10px)' },
         visible: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)',
-          transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }
+          transition: { type: 'spring', stiffness: 100, damping: 20 } }
       };
     case 'none':
       return {
@@ -74,14 +74,13 @@ const getVariants = (type: AnimationType, direction: string): Variants => {
       return {
         hidden: {
           opacity: 0,
-          y: direction === 'up' ? 50 : direction === 'down' ? -50 : 0,
-          x: direction === 'left' ? 50 : direction === 'right' ? -50 : 0,
-          scale: 0.95,
-          filter: 'blur(8px)'
+          y: direction === 'up' ? 40 : direction === 'down' ? -40 : 0,
+          x: direction === 'left' ? 40 : direction === 'right' ? -40 : 0,
+          scale: 0.97,
         },
         visible: {
-          opacity: 1, y: 0, x: 0, scale: 1, filter: 'blur(0px)',
-          transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
+          opacity: 1, y: 0, x: 0, scale: 1,
+          transition: { type: 'spring', stiffness: 90, damping: 18, mass: 0.9 }
         }
       };
   }
@@ -113,7 +112,7 @@ const ScrollReveal = forwardRef<HTMLDivElement, ScrollRevealProps>(({
       ref={ref}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-60px' }}
+      viewport={{ once: true, margin: '0px' }}
       variants={variants}
       className={className}
     >

@@ -2,13 +2,18 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { CalendarCheck, BedDouble, Waves, Star, ArrowRight } from 'lucide-react';
+import TiltCard from './TiltCard';
+import MagneticButton from './MagneticButton';
+import TextReveal from './TextReveal';
 
 export default function Hero() {
   const { language } = useLanguage();
   const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
   const router = useRouter();
+  const { scrollY } = useScroll();
+  const yBg = useTransform(scrollY, [0, 1000], [0, 300]); // Parallax effect
 
   const texts = {
     line1: { az: 'ƏYLƏNCƏ DOLU', en: 'FULL OF FUN', ru: 'ПОЛНЫЙ ВЕСЕЛЬЯ' }[currentLang],
@@ -25,37 +30,46 @@ export default function Hero() {
     statRating: { az: 'Reytinq', en: 'Rating', ru: 'Рейтинг' }[currentLang],
   };
 
+  const handleNav = (path: string, hash: string) => {
+    if (window.innerWidth >= 1024) {
+      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      router.push(path);
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.1 }
+      transition: { staggerChildren: 0.12, delayChildren: 0.05 }
     }
   };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20, scale: 1, filter: "blur(0px)" }, // öz layihəndəki dəyərlər qalsın
+  hidden: { opacity: 0, y: 30, scale: 0.98 },
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
-    filter: "blur(0px)",
     transition: {
-      type: "spring" as const, // Bax bura "as const" əlavə etdik!
-      bounce: 0.4,
-      duration: 0.8
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 20,
+      mass: 0.8
     }
   }
 };
 
   return (
-    <section className="relative min-h-[95vh] lg:min-h-screen pt-28 pb-12 flex items-center bg-stone-50 overflow-hidden select-none">
+    <section className="relative min-h-[95vh] lg:min-h-screen pt-28 pb-16 lg:pb-24 flex items-center bg-stone-50 overflow-hidden select-none">
       {/* Background image */}
       <motion.div 
+        style={{ y: yBg }}
         initial={{ opacity: 0, scale: 1.1 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 2, ease: "easeOut" }}
-        className="absolute inset-0 z-0 w-full h-full"
+        className="absolute inset-0 z-0 w-full h-[120%]"
       >
         <Image
           src="/AF-aqua.jpg"
@@ -78,45 +92,62 @@ const itemVariants = {
           animate="show"
           className="lg:col-span-7 space-y-6 lg:space-y-8 text-left"
         >
-          <motion.div variants={itemVariants} className="space-y-1 md:space-y-2 drop-shadow-lg">
-            <h2 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-[#00b5d5] lg:text-white tracking-wider uppercase leading-tight drop-shadow-md">
-              {texts.line1}
-            </h2>
-            <h1 className="text-[28px] sm:text-4xl md:text-[56px] font-black text-white lg:text-transparent lg:bg-clip-text tracking-tight uppercase leading-tight pb-2 filter drop-shadow-md" style={{backgroundImage: 'linear-gradient(90deg, #fff, #f0f0f0)', WebkitTextFillColor: 'initial'}}>
-              <span className="lg:hidden">{texts.line2}</span>
-              <span className="hidden lg:inline" style={{backgroundImage: 'linear-gradient(90deg, #00b5d5, #0088b3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>{texts.line2}</span>
-            </h1>
-            <p className="text-sm sm:text-lg md:text-xl font-semibold text-white/95 tracking-widest pt-1 drop-shadow-md uppercase">
+          <motion.div variants={itemVariants} className="space-y-4 md:space-y-5">
+            {/* Small elegant badge */}
+            <div className="inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-sm lg:bg-[#00b5d5]/10 border border-white/30 lg:border-[#00b5d5]/20 px-4 py-1.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#ff6c02] animate-pulse shrink-0" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white lg:text-[#00b5d5]">
+                {texts.line1}
+              </span>
+            </div>
+
+            {/* Main heading */}
+            <div>
+              <h1 className="text-[38px] sm:text-5xl md:text-[58px] lg:text-[68px] font-serif font-semibold leading-[1.1] tracking-tight text-white lg:text-[#1e325c] [text-shadow:_0_4px_24px_rgba(0,0,0,0.7)] lg:[text-shadow:_none]">
+                <TextReveal text={texts.line2} delay={0.2} />
+              </h1>
+            </div>
+
+            {/* Subtitle */}
+            <p className="text-[11px] sm:text-xs font-medium uppercase tracking-[0.22em] text-white/80 lg:text-stone-400 [text-shadow:_0_2px_8px_rgba(0,0,0,0.6)] lg:[text-shadow:_none]">
               {texts.sub}
             </p>
           </motion.div>
 
-          {/* Feature cards */}
-          <motion.div variants={itemVariants} className="grid grid-cols-2 gap-2 sm:gap-2.5 pt-4 lg:pt-6 max-w-xl md:max-w-2xl">
-            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2 sm:p-2.5 rounded-xl border border-white/60 shadow-sm">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
-                <Image src="/bed.png" alt="Rooms" width={36} height={36} className="w-7 h-7 sm:w-9 sm:h-9 object-contain" />
-              </div>
-              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f1}</p>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2 sm:p-2.5 rounded-xl border border-white/60 shadow-sm">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
-                <Image src="/aqua-park1.png" alt="Aquapark" width={36} height={36} className="w-7 h-7 sm:w-9 sm:h-9 object-contain" />
-              </div>
-              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f2}</p>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2 sm:p-2.5 rounded-xl border border-white/60 shadow-sm">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
-                <Image src="/carousel.png" alt="Lunapark" width={36} height={36} className="w-7 h-7 sm:w-9 sm:h-9 object-contain" />
-              </div>
-              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f4}</p>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.02 }} className="flex items-center space-x-2 sm:space-x-2.5 bg-white/80 lg:bg-white/60 backdrop-blur-sm p-2 sm:p-2.5 rounded-xl border border-white/60 shadow-sm">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-[#00b5d5]/15 flex items-center justify-center shrink-0 border border-[#00b5d5]/30">
-                <Image src="/spoon.png" alt="Restaurant" width={36} height={36} className="w-7 h-7 sm:w-9 sm:h-9 object-contain" />
-              </div>
-              <p className="text-[10px] sm:text-[11px] lg:text-[12.5px] text-slate-800 font-bold leading-tight tracking-wide">{texts.f3}</p>
-            </motion.div>
+          {/* Feature cards — clickable, soft square shape */}
+          <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3 sm:gap-4 pt-4 lg:pt-6 max-w-lg md:max-w-xl">
+            <TiltCard tiltAmount={10}>
+              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/rooms', 'rooms')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
+                  <Image src="/bed.png" alt="Rooms" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
+                </div>
+                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f1}</p>
+              </motion.button>
+            </TiltCard>
+            <TiltCard tiltAmount={10}>
+              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/aquapark', 'aquapark')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
+                  <Image src="/aqua-park1.png" alt="Aquapark" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
+                </div>
+                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f2}</p>
+              </motion.button>
+            </TiltCard>
+            <TiltCard tiltAmount={10}>
+              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/wonderland', 'wonderland')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
+                  <Image src="/carousel.png" alt="Lunapark" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
+                </div>
+                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f4}</p>
+              </motion.button>
+            </TiltCard>
+            <TiltCard tiltAmount={10}>
+              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/restoran', 'restoran')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
+                  <Image src="/spoon.png" alt="Restaurant" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
+                </div>
+                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f3}</p>
+              </motion.button>
+            </TiltCard>
           </motion.div>
         </motion.div>
 
@@ -177,28 +208,24 @@ const itemVariants = {
 
             {/* CTA Buttons */}
             <div className="space-y-3">
-              <button
-                onClick={() => {
-                  const el = document.getElementById('booking');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  else router.push('/#booking');
-                }}
-                className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-bold uppercase tracking-wider py-4 rounded-xl transition-all shadow-md shadow-[#ff6c02]/20 cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+              <MagneticButton
+                onClick={() => router.push('/booking')}
+                className="w-full block"
               >
-                <CalendarCheck className="w-4 h-4" />
-                {texts.btnBook}
-              </button>
-              <button
-                onClick={() => {
-                  const el = document.getElementById('rooms');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  else router.push('/#rooms');
-                }}
-                className="flex items-center justify-center gap-2 w-full bg-white border-2 border-[#1e325c]/15 hover:border-[#00b5d5] text-[#1e325c] text-[13px] font-bold uppercase tracking-wider py-3.5 rounded-xl transition-all cursor-pointer hover:bg-[#00b5d5]/5"
+                <div className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-bold uppercase tracking-[0.1em] py-4 rounded-2xl transition-all shadow-md shadow-[#ff6c02]/30 cursor-pointer">
+                  <CalendarCheck className="w-4 h-4" />
+                  {texts.btnBook}
+                </div>
+              </MagneticButton>
+              <MagneticButton
+                onClick={() => router.push('/rooms')}
+                className="w-full block"
               >
-                {texts.btnRooms}
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                <div className="flex items-center justify-center gap-2 w-full bg-white/90 border border-[#1e325c]/20 hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 text-[#1e325c] text-[13px] font-semibold uppercase tracking-[0.1em] py-3.5 rounded-2xl transition-all cursor-pointer">
+                  {texts.btnRooms}
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              </MagneticButton>
             </div>
 
             {/* Location badge */}
