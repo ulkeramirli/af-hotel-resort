@@ -45,6 +45,7 @@ export interface Room {
   description: any;
   price: number;
   priceUsd?: number;
+  priceEur?: number;
   capacity: number;
   amenities: any[];
   images: string[];
