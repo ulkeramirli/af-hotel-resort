@@ -18,6 +18,13 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+
+            node -v
+            npm -v
+            pm2 -v
+
             cd /var/www/afhotel
 
             git pull origin Ali-backend
@@ -27,3 +34,5 @@ jobs:
             npm run build
 
             pm2 restart afhotel
+
+            pm2 save
