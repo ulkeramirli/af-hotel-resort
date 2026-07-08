@@ -164,7 +164,7 @@ function RoomCard({
           <div className="flex justify-between items-center">
             <div>
               <span className="text-lg font-bold text-stone-900">
-                {currency === "USD" ? `$${room.priceUsd || 0}` : `${room.price} ₼`}
+                {currency === "USD" ? `$${room.priceUsd || 0}` : currency === "EUR" ? `€${room.priceEur || 0}` : `${room.price} ₼`}
               </span>
               <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
             </div>

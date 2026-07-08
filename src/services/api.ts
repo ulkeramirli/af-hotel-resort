@@ -176,6 +176,7 @@ export interface PublicRoom {
   size: string;
   price: number;
   priceUsd?: number;
+  priceEur?: number;
   images: string[];
   includes: { az: string[]; en: string[]; ru: string[] };
   beds?: number;
@@ -233,6 +234,7 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
         size: r.sqft ? `${r.sqft} sqft` : "350 sqft",
         price: r.price,
         priceUsd: r.priceUsd,
+        priceEur: (r as any).priceEur,
         images: sanitizeImages(r.images),
         includes: {
           az:
@@ -312,6 +314,7 @@ export async function getPublicRoomById(
       size: r.sqft ? `${r.sqft} sqft` : "350 sqft",
       price: r.price,
       priceUsd: r.priceUsd,
+      priceEur: (r as any).priceEur,
       images: sanitizeImages(r.images),
       includes: {
         az:

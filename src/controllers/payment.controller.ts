@@ -1,6 +1,7 @@
 import { createEpointPayment } from "@/lib/epoint";
 import Booking from "@/models/Booking";
 import Room from "@/models/Room";
+import ExchangeRate from "@/models/ExchangeRate";
 import { NextResponse } from "next/server";
 import { generateSignature } from "@/lib/signature";
 import { bookingCreatedEmail } from "@/lib/emails/booking-created";
@@ -44,7 +45,7 @@ export class PaymentController {
     const nights = Math.ceil(
       (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
     );
-    const unitPrice = currency === "USD" ? (existingRoom.priceUsd || 0) : existingRoom.price;
+    const unitPrice = currency === "USD" ? (existingRoom.priceUsd || 0) : currency === "EUR" ? (existingRoom.priceEur || 0) : existingRoom.price;
     const amount = unitPrice * nights;
     
     if (amount <= 0) {
@@ -65,11 +66,20 @@ export class PaymentController {
       status: "pending",
     });
     try {
+      let exchangeRates = await ExchangeRate.findOne();
+      if (!exchangeRates) {
+         exchangeRates = { usd: 1.7, eur: 1.85 };
+      }
+      
+      let epointAmount = amount;
+      if (currency === "USD") epointAmount = amount * exchangeRates.usd;
+      if (currency === "EUR") epointAmount = amount * exchangeRates.eur;
+
       const payment = await createEpointPayment({
-        amount,
+        amount: epointAmount,
         orderId: booking._id.toString(),
         description: `Booking #${booking._id}`,
-        currency: currency === "USD" ? "USD" : "AZN",
+        currency: "AZN",
         language,
       });
 

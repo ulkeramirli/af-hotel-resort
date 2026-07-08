@@ -17,6 +17,7 @@ import {
   Info,
   Castle,
   UtensilsCrossed,
+  Banknote,
 } from "lucide-react";
 import { logout, getCurrentUser } from "@/services/api";
 
@@ -68,6 +69,7 @@ export default function AdminLayout({
     { name: "Rəylər", href: "/admin/reviews", icon: Star },
     { name: "Haqqımızda", href: "/admin/about", icon: Info },
     { name: "FAQ", href: "/admin/faqs", icon: HelpCircle },
+    { name: "Məzənnələr", href: "/admin/exchange-rates", icon: Banknote },
     { name: "Tənzimləmələr", href: "/admin/settings", icon: Settings },
   ];
 

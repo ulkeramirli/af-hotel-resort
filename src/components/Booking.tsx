@@ -177,6 +177,16 @@ function BookingContent() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [rates, setRates] = useState<{ usd: number; eur: number } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/exchange-rates")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setRates(data.data);
+      })
+      .catch(console.error);
+  }, []);
 
   const loc = (obj: any) => {
     if (!obj) return "";
@@ -381,7 +391,7 @@ function BookingContent() {
       checkOut: checkOut,
       notes: `Adults: ${adults}, Kids: ${kids}`,
       status: "pending",
-      currency: currency === "USD" ? "USD" : "AZN",
+      currency: currency === "USD" ? "USD" : currency === "EUR" ? "EUR" : "AZN",
       language: currentLang,
     };
     try {
@@ -427,6 +437,15 @@ function BookingContent() {
       </section>
     );
   }
+
+  const nights = checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1;
+  const roomPriceUsd = rooms.find((r) => r.id === selectedRoomId)?.priceUsd || 0;
+  const roomPriceEur = rooms.find((r) => r.id === selectedRoomId)?.priceEur || 0;
+  const roomPriceAzn = rooms.find((r) => r.id === selectedRoomId)?.price || 0;
+  
+  const totalUsd = roomPriceUsd * nights;
+  const totalEur = roomPriceEur * nights;
+  const totalAzn = roomPriceAzn * nights;
 
   return (
     <section
@@ -489,7 +508,7 @@ function BookingContent() {
                 {!loadingRooms &&
                   rooms.map((r) => (
                     <option key={r.id} value={r.id}>
-                      {loc(r.title)} - {currency === "USD" ? `$${r.priceUsd || 0}` : `${r.price} ₼`}
+                      {loc(r.title)} - {currency === "USD" ? `$${r.priceUsd || 0}` : currency === "EUR" ? `€${r.priceEur || 0}` : `${r.price} ₼`}
                     </option>
                   ))}
               </select>
@@ -601,15 +620,24 @@ function BookingContent() {
                 <span className="text-sm font-semibold text-slate-600">
                   {dict.totalPrice}
                 </span>
-                <span className="text-xl font-bold text-slate-800">
-                  {currency === "USD" 
-                    ? `$${(rooms.find((r) => r.id === selectedRoomId)?.priceUsd || 0) * (checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1)}`
-                    : `${(rooms.find((r) => r.id === selectedRoomId)?.price || 0) * (checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1)} ₼`
-                  }
-                  <span className="text-xs text-slate-400 font-normal ml-1">
-                    ({checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1} {currentLang === 'az' ? 'gecə' : currentLang === 'ru' ? 'ночей' : 'nights'})
+                <div className="text-right">
+                  <span className="text-xl font-bold text-slate-800">
+                    {currency === "USD" ? `$${totalUsd}` : currency === "EUR" ? `€${totalEur}` : `${totalAzn} ₼`}
+                    <span className="text-xs text-slate-400 font-normal ml-1">
+                      ({nights} {currentLang === 'az' ? 'gecə' : currentLang === 'ru' ? 'ночей' : 'nights'})
+                    </span>
                   </span>
-                </span>
+                  {currency === "USD" && rates?.usd && (
+                    <div className="text-xs text-stone-500 font-normal mt-1">
+                      (≈ {(totalUsd * rates.usd).toFixed(2)} ₼)
+                    </div>
+                  )}
+                  {currency === "EUR" && rates?.eur && (
+                    <div className="text-xs text-stone-500 font-normal mt-1">
+                      (≈ {(totalEur * rates.eur).toFixed(2)} ₼)
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
