@@ -37,7 +37,7 @@ export class AuthService {
     let user = await User.findOne({ email });
 
     // Auto-create demo admin if it doesn't exist
-    if (!user && email === "admin@afhotel.az" && password === "admin123") {
+    if (!user && email === "admin@afhotel.az" && password === " ") {
       const hashedPassword = await bcrypt.hash(password, 10);
       user = await User.create({
         name: "Admin",

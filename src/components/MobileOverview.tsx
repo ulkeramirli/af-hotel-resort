@@ -111,7 +111,7 @@ const cardVariants = {
   hidden: { opacity: 0, y: 24 },
   show: (i: number) => ({
     opacity: 1, y: 0,
-    transition: { type: "spring" as const, bounce: 0.25, duration: 0.6, delay: i * 0.07 },
+    transition: { ease: "easeOut" as const, duration: 0.6, delay: i * 0.07 },
   }),
 };
 
@@ -131,21 +131,21 @@ export default function MobileOverview() {
       <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-[#00b5d5]/8 blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 -left-10 w-48 h-48 rounded-full bg-[#c5a880]/8 blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 px-4">
+      <div className="relative z-10 px-4 sm:px-6 md:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-6 space-y-1.5"
+          className="mb-8 space-y-2 md:space-y-3"
         >
           <div className="flex items-center gap-3">
-            <div className="w-5 h-[1.5px] bg-[#00b5d5]" />
-            <p className="text-[9px] font-bold tracking-[0.3em] text-[#00b5d5] uppercase">{heading.tag}</p>
+            <div className="w-8 h-[2px] bg-[#00b5d5]" />
+            <p className="text-xs sm:text-sm font-bold tracking-[0.3em] text-[#00b5d5] uppercase">{heading.tag}</p>
           </div>
-          <h2 className="text-2xl font-bold text-[#1e325c] leading-tight tracking-tight">{heading.title}</h2>
-          <p className="text-xs text-stone-400 font-light">{heading.sub}</p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#1e325c] leading-tight tracking-tight drop-shadow-sm">{heading.title}</h2>
+          <p className="text-sm sm:text-base text-stone-500 font-medium leading-relaxed max-w-lg">{heading.sub}</p>
         </motion.div>
 
         {/* Stats row */}

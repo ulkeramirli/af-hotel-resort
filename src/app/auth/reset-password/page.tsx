@@ -53,7 +53,7 @@ function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
 
-  const l = (language as LangType) || "az";
+  const l = language || "az";
   const t = translations[l];
 
   const [otp, setOtp] = useState("");

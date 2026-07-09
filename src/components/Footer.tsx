@@ -11,25 +11,12 @@ import MagneticButton from './MagneticButton';
 export default function Footer() {
   const pathname = usePathname();
   const { language, t } = useLanguage();
-  const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const currentLang = language;
   const { settings } = useSettings();
-
-  const content = {
-    desc: {
-      az: 'Novxanı sahilində yerləşən AF Hotel & Aqua Park, Aralıq dənizi üslubunda ailəvi istirahət və unudulmaz dəniz macəraları təklif edir.',
-      en: 'Located on the scenic Novkhani coast, AF Hotel & Aqua Park delivers Mediterranean-style family leisure and pristine seaside getaways.',
-      ru: 'Расположенный на побережье Новханы, AF Hotel & Aqua Park предлагает семейный отдых в средиземноморском стиле и незабываемые морские приключения.'
-    }[currentLang],
-    subscribeTitle: { az: 'XÜSUSİ TƏKLİFLƏR', en: 'EXCLUSIVE OFFERS', ru: 'ЗАКРЫТЫЕ АКЦИИ' }[currentLang],
-    subscribeDesc: { az: 'Yalnız abunəçilər üçün endirimlər və xəbərlər.', en: 'Subscribe to unlock premium resort updates.', ru: 'Подпишитесь, чтобы получать скрытые скидки.' }[currentLang],
-    placeholder: { az: 'E-poçt ünvanınız', en: 'Your email address', ru: 'Ваш email адрес' }[currentLang],
-    subBtn: { az: 'Qoşul', en: 'Join', ru: 'ОK' }[currentLang],
-    rights: { az: 'Müəllif hüquqları qorunur.', en: 'All rights reserved.', ru: 'Все права защищены.' }[currentLang]
-  };
 
   const [email, setEmail] = useState('');
   const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  if (pathname.startsWith('/admin') || pathname.startsWith('/auth') || pathname.startsWith('/login') || pathname.startsWith('/account')) return null;
+  if (pathname.startsWith('/admin') || pathname.startsWith('/auth') || pathname.startsWith('/login') || pathname.startsWith('/account') || pathname.startsWith('/rooms/')) return null;
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
@@ -62,20 +49,20 @@ export default function Footer() {
               />
             </div>
             <p className="text-xs text-stone-500 font-light leading-relaxed max-w-sm">
-              {content.desc}
+              {t.footer.desc}
             </p>
           </div>
 
           <div className="lg:col-span-6 space-y-2 lg:text-right w-full lg:max-w-xs lg:ml-auto">
-            <h4 className="text-[9px] font-bold uppercase tracking-widest text-[#00b5d5]">{content.subscribeTitle}</h4>
-            <p className="text-[11px] text-stone-400 font-light">{content.subscribeDesc}</p>
+            <h4 className="text-[9px] font-bold uppercase tracking-widest text-[#00b5d5]">{t.footer.subscribeTitle}</h4>
+            <p className="text-[11px] text-stone-400 font-light">{t.footer.subscribeDesc}</p>
             
             <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
               <div className="flex bg-white border border-cyan-100 rounded-lg p-1 focus-within:border-[#00b5d5] transition-all">
-                <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={content.placeholder} className="w-full bg-transparent px-2.5 text-xs font-light text-stone-800 outline-none placeholder-stone-300" disabled={subStatus === 'loading'} />
+                <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t.footer.placeholder} className="w-full bg-transparent px-2.5 text-xs font-light text-stone-800 outline-none placeholder-stone-300" disabled={subStatus === 'loading'} />
                 <MagneticButton>
                   <button type="submit" disabled={subStatus === 'loading'} className="bg-[#ff6c02] hover:bg-[#e55f00] text-white font-bold text-[10px] uppercase tracking-wider px-4 py-2 rounded-md transition-colors cursor-pointer shrink-0 disabled:opacity-50 h-full">
-                    {subStatus === 'loading' ? '...' : content.subBtn}
+                    {subStatus === 'loading' ? '...' : t.footer.subBtn}
                   </button>
                 </MagneticButton>
               </div>
@@ -90,7 +77,7 @@ export default function Footer() {
           <div className="space-y-3">
             <h4 className="text-[9px] font-bold uppercase tracking-widest text-stone-400">The Resort</h4>
             <div className="flex flex-col space-y-2 font-light text-stone-600">
-              <a href="#about" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Haqqımızda', en: 'About Us', ru: 'О нас' }[currentLang] }</a>
+              <a href="#about" className="hover:text-[#00b5d5] transition-colors">{t.footer.aboutUs}</a>
               <a href="#rooms" className="hover:text-[#00b5d5] transition-colors">{t.nav.rooms}</a>
               <a href="#aquapark" className="hover:text-[#00b5d5] transition-colors">{t.nav.aquapark}</a>
               <a href="#restoran" className="hover:text-[#00b5d5] transition-colors">{t.nav.restoran}</a>
@@ -100,9 +87,9 @@ export default function Footer() {
           <div className="space-y-3">
             <h4 className="text-[9px] font-bold uppercase tracking-widest text-stone-400">Experience</h4>
             <div className="flex flex-col space-y-2 font-light text-stone-600">
-              <a href="#aquapark" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Su Atvasiya', en: 'Water Slides', ru: 'Водные Горки' }[currentLang] }</a>
-              <a href="#restoran" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Hovuz barları', en: 'Poolside Bars', ru: 'Бары у Бассейна' }[currentLang] }</a>
-              <a href="#contacts" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Şəxsi Çimərlik', en: 'Private Beach', ru: 'Частный Пляж' }[currentLang] }</a>
+              <a href="#aquapark" className="hover:text-[#00b5d5] transition-colors">{t.footer.waterSlides}</a>
+              <a href="#restoran" className="hover:text-[#00b5d5] transition-colors">{t.footer.poolsideBars}</a>
+              <a href="#contacts" className="hover:text-[#00b5d5] transition-colors">{t.footer.privateBeach}</a>
             </div>
           </div>
 
@@ -130,7 +117,7 @@ export default function Footer() {
         </ScrollReveal>
 
         <div className="pt-4 mt-6 border-t border-cyan-100/60 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-stone-500 font-mono tracking-wider">
-          <p>© {new Date().getFullYear()} {((settings?.hotelName as any)?.[currentLang] || "AF HOTEL & AQUA PARK").toUpperCase()}. {content.rights}</p>
+          <p>© {new Date().getFullYear()} {((settings?.hotelName as any)?.[currentLang] || "AF HOTEL & AQUA PARK").toUpperCase()}. {t.footer.rights}</p>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-4">
               {settings?.instagram && (
@@ -182,11 +169,11 @@ export default function Footer() {
                 </MagneticButton>
               )}
             </div>
-            <div className="flex flex-wrap gap-4 uppercase font-bold border-l border-stone-200/40 pl-5 lg:max-w-md">
-              <Link href="/privacy" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Məxfilik Siyasəti', en: 'Privacy Policy', ru: 'Конфиденциальность' }[currentLang] }</Link>
-              <Link href="/terms" className="hover:text-[#00b5d5] transition-colors">{ { az: 'İstifadə Şərtləri', en: 'Terms of Use', ru: 'Условия Использования' }[currentLang] }</Link>
-              <Link href="/booking-policy" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Rezervasiya Qaydaları', en: 'Booking Policy', ru: 'Правила Бронирования' }[currentLang] }</Link>
-              <Link href="/cookie-policy" className="hover:text-[#00b5d5] transition-colors">{ { az: 'Cookie Siyasəti', en: 'Cookie Policy', ru: 'Политика Cookie' }[currentLang] }</Link>
+            <div className="flex flex-wrap justify-center gap-4 uppercase font-bold md:border-l border-stone-200/40 md:pl-5 lg:max-w-md">
+              <Link href="/privacy" className="hover:text-[#00b5d5] transition-colors">{t.footer.privacyPolicy}</Link>
+              <Link href="/terms" className="hover:text-[#00b5d5] transition-colors">{t.footer.termsOfUse}</Link>
+              <Link href="/booking-policy" className="hover:text-[#00b5d5] transition-colors">{t.footer.bookingPolicy}</Link>
+              <Link href="/cookie-policy" className="hover:text-[#00b5d5] transition-colors">{t.footer.cookiePolicy}</Link>
             </div>
           </div>
         </div>

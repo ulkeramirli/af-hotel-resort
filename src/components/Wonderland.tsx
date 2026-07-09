@@ -168,7 +168,7 @@ export default function Wonderland() {
             <div className="overflow-hidden -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16" ref={emblaRef}>
               <div className="flex gap-6 md:gap-10 py-6">
                 {active?.games?.map((game: any, i: number) => (
-                  <div key={i} className="flex-none w-[85vw] sm:w-[50vw] md:w-[40vw] lg:w-[32vw] group relative rounded-[2.5rem] cursor-grab active:cursor-grabbing hover:-translate-y-4 transition-all duration-500 ease-out perspective-1000">
+                  <div key={i} className="flex-none w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[32vw] group relative rounded-[2.5rem] cursor-grab active:cursor-grabbing hover:-translate-y-4 transition-all duration-500 ease-out perspective-1000">
                     <div className="absolute inset-0 bg-[#ff6c02]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl scale-95 -z-10" />
                     
                     <div className="relative bg-white rounded-[2.5rem] border border-stone-100 shadow-[0_10px_30px_rgba(30,50,92,0.08)] group-hover:shadow-[0_30px_60px_rgba(0,181,213,0.15)] h-full flex flex-col overflow-hidden transition-all duration-500 transform-gpu group-hover:rotate-y-2 group-hover:rotate-x-2">
@@ -205,12 +205,12 @@ export default function Wonderland() {
         {/* Tickets & Info Area */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
           {/* Tickets */}
-          <ScrollReveal type="slideRight" delay={0.3} className="xl:col-span-7 bg-white border border-stone-100 rounded-[3rem] p-8 md:p-12 relative overflow-hidden group shadow-[0_15px_50px_rgba(30,50,92,0.05)]">
+          <ScrollReveal type="slideRight" delay={0.3} className="xl:col-span-7 bg-white border border-stone-100 rounded-3xl p-6 md:p-8 relative overflow-hidden group shadow-[0_15px_50px_rgba(30,50,92,0.05)]">
             <div className="absolute top-0 right-0 w-80 h-80 bg-[#00b5d5]/5 rounded-full blur-3xl group-hover:bg-[#00b5d5]/15 transition-colors duration-1000" />
             
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 relative z-10 border-b border-stone-100 pb-6">
-              <h3 className="font-serif text-3xl text-[#1e325c] flex items-center gap-3 font-semibold">
-                <Ticket className="w-8 h-8 text-[#ff6c02]" />
+              <h3 className="font-serif text-2xl text-[#1e325c] flex items-center gap-3 font-semibold">
+                <Ticket className="w-6 h-6 text-[#ff6c02]" />
                 {c.tickets}
               </h3>
             </div>
@@ -223,11 +223,11 @@ export default function Wonderland() {
                   <div className="absolute top-1/2 -left-2.5 -translate-y-1/2 w-5 h-5 bg-white rounded-full border-r border-stone-200 group-hover/ticket:border-[#00b5d5] transition-colors" />
                   <div className="absolute top-1/2 -right-2.5 -translate-y-1/2 w-5 h-5 bg-white rounded-full border-l border-stone-200 group-hover/ticket:border-[#00b5d5] transition-colors" />
                   
-                  <div className="flex justify-between items-center px-6 py-4 border-l-2 border-dashed border-stone-200 group-hover/ticket:border-[#ff6c02]/50 ml-3 transition-colors">
-                    <span className="text-sm md:text-base font-bold text-[#1e325c] pr-4">
+                  <div className="flex justify-between items-center px-4 py-3 border-l-2 border-dashed border-stone-200 group-hover/ticket:border-[#ff6c02]/50 ml-3 transition-colors">
+                    <span className="text-sm font-bold text-[#1e325c] pr-4">
                       {(ticket.name as any)?.[l] || (ticket.name as any)?.az || ticket.name || "Ticket"}
                     </span>
-                    <span className="text-lg md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff6c02] to-[#e55f00] drop-shadow-sm whitespace-nowrap">
+                    <span className="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff6c02] to-[#e55f00] drop-shadow-sm whitespace-nowrap">
                       {ticket.price}
                     </span>
                   </div>
@@ -238,9 +238,9 @@ export default function Wonderland() {
 
           {/* Special Offer & Info */}
           <ScrollReveal type="slideLeft" delay={0.4} className="xl:col-span-5 flex flex-col gap-8">
-            <div className="bg-white rounded-[3rem] p-8 md:p-10 border border-stone-100 flex items-center gap-6 shadow-[0_15px_50px_rgba(30,50,92,0.05)] hover:shadow-[0_20px_60px_rgba(0,181,213,0.1)] hover:border-[#00b5d5]/30 transition-all duration-500 group">
-              <div className="w-20 h-20 rounded-[1.5rem] bg-[#1e325c]/5 flex items-center justify-center text-[#1e325c] shrink-0 border border-[#1e325c]/10 group-hover:bg-[#1e325c] group-hover:text-white transition-colors duration-500">
-                <Clock className="w-10 h-10" />
+            <div className="bg-white rounded-3xl p-6 md:p-8 border border-stone-100 flex items-center gap-6 shadow-[0_15px_50px_rgba(30,50,92,0.05)] hover:shadow-[0_20px_60px_rgba(0,181,213,0.1)] hover:border-[#00b5d5]/30 transition-all duration-500 group">
+              <div className="w-16 h-16 rounded-xl bg-[#1e325c]/5 flex items-center justify-center text-[#1e325c] shrink-0 border border-[#1e325c]/10 group-hover:bg-[#1e325c] group-hover:text-white transition-colors duration-500">
+                <Clock className="w-8 h-8" />
               </div>
               <div>
                 <p className="text-[11px] uppercase tracking-[0.2em] text-[#00b5d5] font-black mb-1">İş Saatları</p>
@@ -249,7 +249,7 @@ export default function Wonderland() {
             </div>
 
             {wonderland?.discount?.enabled && (
-              <div className="flex-1 rounded-[3rem] p-10 md:p-12 relative overflow-hidden bg-gradient-to-br from-[#1e325c] via-[#162545] to-[#0a1628] shadow-[0_25px_50px_rgba(30,50,92,0.4)] group cursor-default border border-[#00b5d5]/20">
+              <div className="flex-1 rounded-3xl p-8 md:p-10 relative overflow-hidden bg-gradient-to-br from-[#1e325c] via-[#162545] to-[#0a1628] shadow-[0_25px_50px_rgba(30,50,92,0.4)] group cursor-default border border-[#00b5d5]/20">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-[#00b5d5]/15 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#ff6c02]/10 rounded-full blur-3xl" />
                 <Sparkles className="absolute -bottom-10 -right-10 w-56 h-56 text-[#00b5d5]/10 rotate-12 group-hover:rotate-45 transition-transform duration-1000" />

@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function WonderlandPage() {
   const { language } = useLanguage();
-  const l = (language as 'az' | 'en' | 'ru') || 'az';
+  const l = language;
   const titles = { az: 'Wonderland', en: 'Wonderland', ru: 'Вондерлэнд' };
   const subs = { az: 'SEHRLI ALƏM — AİLƏ ÜÇÜN', en: 'MAGICAL WORLD — FOR FAMILIES', ru: 'ВОЛШЕБНЫЙ МИР — ДЛЯ СЕМЬИ' };
   return (

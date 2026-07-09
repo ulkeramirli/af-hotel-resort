@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function AquaparkPage() {
   const { language } = useLanguage();
-  const l = (language as 'az' | 'en' | 'ru') || 'az';
+  const l = language;
   const titles = { az: 'Aqua Park', en: 'Aqua Park', ru: 'Аквапарк' };
   const subs = { az: '25+ SU ƏYLƏNCƏSİ', en: '25+ WATER ATTRACTIONS', ru: '25+ ВОДНЫХ АТТРАКЦИОНОВ' };
   return (

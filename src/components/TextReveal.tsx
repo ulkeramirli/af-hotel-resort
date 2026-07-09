@@ -25,12 +25,7 @@ export default function TextReveal({ text, className = '', delay = 0 }: TextReve
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        type: 'spring' as const,
-        damping: 20,
-        stiffness: 100,
-        mass: 1,
-      },
+      transition: { ease: "easeOut" as const, duration: 0.45 },
     },
     hidden: {
       opacity: 0,

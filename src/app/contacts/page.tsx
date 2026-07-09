@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function ContactsPage() {
   const { language } = useLanguage();
-  const l = (language as 'az' | 'en' | 'ru') || 'az';
+  const l = language;
   const titles = { az: 'Əlaqə', en: 'Contact Us', ru: 'Контакты' };
   const subs = { az: 'BİZİMLƏ ƏLAQƏ SAXLAYIN', en: "LET'S STAY IN TOUCH", ru: 'СВЯЖИТЕСЬ С НАМИ' };
   return (

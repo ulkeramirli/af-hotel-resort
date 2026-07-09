@@ -4,11 +4,13 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { createReview } from '@/services/api';
 import { Loader2 } from 'lucide-react';
-import ReCAPTCHA from "react-google-recaptcha";
+import dynamic from 'next/dynamic';
+
+const ReCAPTCHA = dynamic(() => import('react-google-recaptcha'), { ssr: false });
 
 export default function Contacts() {
   const { language } = useLanguage();
-  const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const currentLang = language;
   const { settings } = useSettings();
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);

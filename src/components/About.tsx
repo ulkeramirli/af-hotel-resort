@@ -10,7 +10,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 
 export default function About() {
   const { language } = useLanguage();
-  const l = (language as 'az' | 'en' | 'ru') || 'az';
+  const l = language;
 
   const ABOUT = {
     az: { 

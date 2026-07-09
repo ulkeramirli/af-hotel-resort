@@ -64,7 +64,7 @@ const decorativeElements: Record<string, React.ReactNode> = {
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.4, type: 'spring' }}
+      transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
       className="absolute top-1/2 right-16 -translate-y-1/2 text-6xl select-none pointer-events-none hidden lg:block"
     >
       <motion.span
@@ -132,7 +132,7 @@ export default function PageHero({ title, subtitle, imagePath, variant = 'defaul
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+            transition={{ duration: 0.8, ease: "easeOut" as const, delay: 0.3 }}
             className={`flex items-center gap-3 mb-5`}
           >
             <div className={`w-10 h-[1px] border-t ${accent}`} />
@@ -156,7 +156,7 @@ export default function PageHero({ title, subtitle, imagePath, variant = 'defaul
         <motion.div
           initial={{ scaleX: 0, originX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }}
+          transition={{ duration: 0.8, ease: "easeOut" as const, delay: 0.6 }}
           className={`mt-6 w-16 h-[2px] ${accent.split(' ')[0].replace('text-', 'bg-')}`}
           style={{ background: variant === 'wonderland' ? '#a855f7' : variant === 'restoran' ? '#f59e0b' : '#00b5d5' }}
         />

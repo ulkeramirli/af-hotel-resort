@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Montserrat, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import FloatingActions from "@/components/FloatingActions";
 
 const cormorant = Cormorant_Garamond({ 
   subsets: ["latin", "cyrillic"], 
@@ -93,16 +96,8 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  verification: {
-    google: "google-site-verification-placeholder",
-  },
   category: "travel",
 };
-
-
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import FloatingActions from "@/components/FloatingActions";
 
 export default function RootLayout({
   children,

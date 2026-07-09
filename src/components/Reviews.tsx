@@ -21,7 +21,7 @@ const fallbackReviews: ApiReview[] = [
 
 export default function Reviews() {
   const { language } = useLanguage();
-  const l = (language as 'az' | 'en' | 'ru') || 'az';
+  const l = language;
   const c = content[l];
   const [reviews, setReviews] = useState<ApiReview[]>([]);
   const [loading, setLoading] = useState(true);

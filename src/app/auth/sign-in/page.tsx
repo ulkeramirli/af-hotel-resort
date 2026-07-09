@@ -103,7 +103,7 @@ function SignInContent() {
 
   const [langOpen, setLangOpen] = useState(false);
 
-  const l = (language as LangType) || "az";
+  const l = language || "az";
   const t = translations[l];
 
   const [email, setEmail] = useState(searchParams.get("email")?.trim() || "");

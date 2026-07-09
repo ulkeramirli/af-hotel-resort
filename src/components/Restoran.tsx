@@ -94,7 +94,7 @@ const labels: Record<LangType, LanguageLabels> = {
 
 export default function Restoran() {
   const { language } = useLanguage();
-  const l = (language as LangType) || "az";
+  const l = language || "az";
   const c = labels[l] || labels.az;
 
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -187,7 +187,7 @@ export default function Restoran() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ type: 'spring', stiffness: 80, damping: 18 }}
+            transition={{ ease: 'easeOut', duration: 0.45 }}
             className="space-y-4 flex flex-col items-center max-w-3xl"
           >
             <div className="flex items-center justify-center gap-4">
@@ -207,7 +207,7 @@ export default function Restoran() {
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ type: 'spring', stiffness: 80, damping: 18, delay: 0.15 }}
+            transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
             className="flex justify-center w-full mt-4"
           >
             <div className="grid grid-cols-2 gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">

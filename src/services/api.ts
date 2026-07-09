@@ -977,22 +977,10 @@ export async function uploadImage(file: File) {
 }
 export async function getCurrentUser() {
   const token = getToken();
-
-  console.log("TOKEN =", token);
-
   const headers = authHeaders();
-
-  console.log("HEADERS =", headers);
-
   const res = await fetch(`${BASE}/auth/me`, {
     headers,
   });
-
-  console.log("STATUS =", res.status);
-
   const data = await res.json();
-
-  console.log("DATA =", data);
-
   return data.success ? data.data : null;
 }

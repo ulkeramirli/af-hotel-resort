@@ -342,7 +342,7 @@ export default function Aquapark() {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-60px' }}
-            transition={{ type: 'spring', stiffness: 80, damping: 18, delay: 0.05 }}
+            transition={{ ease: 'easeOut', duration: 0.45, delay: 0.05 }}
             className="space-y-4 text-left"
           >
             <div className="flex items-center gap-4">
@@ -384,16 +384,16 @@ export default function Aquapark() {
               key={i}
               initial={{ opacity: 0, y: 30, scale: 0.94 }}
               animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{ type: 'spring', stiffness: 110, damping: 18, delay: i * 0.1 }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className="bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl md:rounded-[2rem] p-4 md:p-8 flex flex-col items-center text-center gap-2 transition-shadow hover:shadow-[0_12px_40px_rgba(0,181,213,0.10)]"
+              transition={{ ease: 'easeOut', duration: 0.45, delay: i * 0.1 }}
+              whileHover={{ y: -3, scale: 1.015 }}
+              className="bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col items-center text-center gap-2 transition-shadow hover:shadow-[0_12px_40px_rgba(0,181,213,0.10)]"
             >
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#00b5d5]/10 flex items-center justify-center mb-1">
-                <s.icon className="w-5 h-5 md:w-7 md:h-7 text-[#00b5d5]" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#00b5d5]/10 flex items-center justify-center mb-1">
+                <s.icon className="w-5 h-5 md:w-6 md:h-6 text-[#00b5d5]" />
               </div>
-              <span className="text-lg md:text-3xl font-bold text-[#1e325c] tracking-tight">{s.label}</span>
-              <span className="text-[10px] md:text-xs text-stone-500 font-semibold tracking-widest uppercase">{s.sub1}</span>
-              {s.sub2 && <span className="text-[9px] md:text-[10px] text-stone-400 font-medium tracking-wide mt-1">{s.sub2}</span>}
+              <span className="text-lg md:text-2xl font-bold text-[#1e325c] tracking-tight">{s.label}</span>
+              <span className="text-[10px] md:text-[11px] text-stone-500 font-semibold tracking-widest uppercase">{s.sub1}</span>
+              {s.sub2 && <span className="text-[9px] text-stone-400 font-medium tracking-wide mt-1">{s.sub2}</span>}
             </motion.div>
           ))}
         </div>
@@ -403,7 +403,7 @@ export default function Aquapark() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ type: 'spring', stiffness: 90, damping: 20, delay: 0.15 }}
+          transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
           className="w-full pt-4"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 bg-white/40 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-white/60 backdrop-blur-md shadow-sm">
@@ -471,7 +471,7 @@ export default function Aquapark() {
                 return (
                   <div
                     key={i}
-                    className="snap-center shrink-0 w-[85vw] bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-xs flex flex-col"
+                    className="snap-center shrink-0 w-[75vw] sm:w-[50vw] bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-xs flex flex-col"
                   >
                     <div className="relative h-48 overflow-hidden bg-stone-100">
                       <Image src={item.img} alt={itemName} fill sizes="85vw" className="object-cover" />
@@ -530,13 +530,13 @@ export default function Aquapark() {
                       initial={{ opacity: 0, y: 24, scale: 0.96 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.94, y: -10 }}
-                      transition={{ type: 'spring', stiffness: 120, damping: 20, delay: i * 0.08 }}
+                      transition={{ ease: 'easeOut', duration: 0.45, delay: i * 0.08 }}
                       className="h-full"
                     >
                       <TiltCard tiltAmount={5} className="h-full">
                       <motion.div
                         whileHover={{ y: -4, boxShadow: '0 20px 50px rgba(0,181,213,0.13)' }}
-                        transition={{ type: 'spring', stiffness: 200, damping: 22 }}
+                        transition={{ ease: 'easeOut', duration: 0.45 }}
                         className="group rounded-2xl overflow-hidden border border-stone-100 bg-white shadow-sm flex flex-col h-full cursor-pointer"
                       >
                         <div className="relative h-40 overflow-hidden bg-stone-100">

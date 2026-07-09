@@ -12,9 +12,11 @@ import {
   AlertCircle,
   Calendar,
 } from "lucide-react";
-import ReCAPTCHA from "react-google-recaptcha";
+import dynamic from "next/dynamic";
 import { getPublicRooms, createPayment, getBookedDates } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
+
+const ReCAPTCHA = dynamic(() => import("react-google-recaptcha"), { ssr: false });
 
 interface AuthUser {
   id: string;
@@ -79,32 +81,32 @@ function CustomDatePicker({
   };
 
   return (
-    <div className="relative w-full">
-      <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
+    <div className="relative w-full group">
+      <label className="text-[10px] font-bold text-stone-500 uppercase tracking-widest block mb-2 ml-1 transition-colors group-focus-within:text-[#00b5d5]">
         {label}
       </label>
       <div
         onClick={() => setOpen(!open)}
-        className="w-full border border-stone-200 rounded-xl px-4 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 cursor-pointer h-12 flex items-center justify-between shadow-sm"
+        className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#00b5d5]/50 rounded-2xl px-5 h-14 text-sm outline-none focus:border-[#00b5d5] focus:ring-4 focus:ring-[#00b5d5]/10 text-slate-800 cursor-pointer flex items-center justify-between shadow-sm transition-all duration-300"
       >
-        <span>{value || "Seçin / Select"}</span>
-        <Calendar className="w-4 h-4 text-stone-400" />
+        <span className="font-medium text-slate-700">{value || "Seçin / Select"}</span>
+        <Calendar className="w-5 h-5 text-stone-400 group-hover:text-[#00b5d5] transition-colors duration-300" />
       </div>
       {open && (
-        <div className="absolute top-full left-0 mt-2 bg-white border border-stone-200 rounded-xl shadow-xl z-50 p-4 w-72">
-          <div className="flex justify-between items-center mb-4">
-            <button onClick={handlePrev} className="px-2 py-1 bg-stone-100 rounded hover:bg-stone-200 text-stone-600 font-bold">&lt;</button>
-            <span className="font-bold text-sm text-[#1e325c]">
+        <div className="absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-0 bg-white/95 backdrop-blur-xl border border-stone-200/60 rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-5 z-50 w-[calc(100vw-4rem)] sm:w-[340px] max-w-[340px] animate-in zoom-in-95 duration-200">
+          <div className="flex justify-between items-center mb-5 px-1">
+            <button onClick={handlePrev} className="w-8 h-8 flex items-center justify-center bg-stone-100/50 hover:bg-[#00b5d5]/10 hover:text-[#00b5d5] rounded-full text-stone-600 font-bold transition-colors">&lt;</button>
+            <span className="font-bold text-[15px] text-[#1e325c] tracking-tight">
               {currentMonth.toLocaleString("default", { month: "long", year: "numeric" })}
             </span>
-            <button onClick={handleNext} className="px-2 py-1 bg-stone-100 rounded hover:bg-stone-200 text-stone-600 font-bold">&gt;</button>
+            <button onClick={handleNext} className="w-8 h-8 flex items-center justify-center bg-stone-100/50 hover:bg-[#00b5d5]/10 hover:text-[#00b5d5] rounded-full text-stone-600 font-bold transition-colors">&gt;</button>
           </div>
-          <div className="grid grid-cols-7 gap-1 text-center mb-2">
+          <div className="grid grid-cols-7 gap-1.5 text-center mb-3">
             {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
-              <div key={d} className="text-[10px] font-bold text-stone-400">{d}</div>
+              <div key={d} className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">{d}</div>
             ))}
           </div>
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-1.5">
             {Array.from({ length: startDay }).map((_, i) => <div key={`empty-${i}`} />)}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
@@ -123,8 +125,10 @@ function CustomDatePicker({
                     if (!disabled) { onChange(dateStr); setOpen(false); }
                   }}
                   disabled={disabled}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold
-                    ${disabled ? "bg-stone-100 text-stone-300 cursor-not-allowed" : selected ? "bg-[#00b5d5] text-white shadow-md" : "hover:bg-stone-100 text-stone-700 cursor-pointer"}
+                  className={`w-9 h-9 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center text-[13px] font-semibold transition-all duration-200
+                    ${disabled ? "bg-stone-50/50 text-stone-300 cursor-not-allowed line-through decoration-stone-300/50" 
+                      : selected ? "bg-[#00b5d5] text-white shadow-lg shadow-[#00b5d5]/30 scale-110" 
+                      : "hover:bg-[#00b5d5]/10 text-stone-700 cursor-pointer hover:scale-105"}
                   `}
                 >
                   {day}
@@ -191,13 +195,9 @@ function BookingContent() {
       const rt = searchParams.get("roomType");
       const rId = searchParams.get("roomId");
 
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (ci) setCheckIn(ci);
-
       if (co) setCheckOut(co);
-
       if (a) setAdults(Number(a));
-
       if (k) setKids(Number(k));
       if (rId && rooms.length > 0) {
         const match = rooms.find((r) => r.id === rId);
@@ -224,11 +224,9 @@ function BookingContent() {
         })
         .catch(console.error);
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBookedDates([]);
     }
 
-    // Adjust capacity
     const match = rooms.find((r) => r.id === selectedRoomId);
     if (match) {
       const cap = match.rawCapacity || 4;
@@ -383,14 +381,14 @@ function BookingContent() {
 
   if (success) {
     return (
-      <div
-        className="py-12 bg-transparent text-center flex flex-col items-center justify-center px-4 animate-in fade-in duration-500"
-      >
-        <CheckCircle className="w-16 h-16 text-emerald-500 mb-4" />
-        <h3 className="text-2xl font-bold text-slate-800">
+      <div className="py-16 bg-white/80 backdrop-blur-2xl rounded-[3rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] border border-white text-center flex flex-col items-center justify-center px-6 animate-in zoom-in-95 duration-500 max-w-2xl mx-auto">
+        <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mb-8">
+          <CheckCircle className="w-12 h-12 text-emerald-500" />
+        </div>
+        <h3 className="text-3xl font-bold text-[#1e325c] mb-3">
           {dict.successTitle}
         </h3>
-        <p className="text-sm text-stone-500 mt-2 max-w-md">
+        <p className="text-base text-stone-500 max-w-md">
           {dict.successDesc}
         </p>
       </div>
@@ -398,37 +396,37 @@ function BookingContent() {
   }
 
   return (
-    <div
-      className="w-full relative scroll-mt-20"
-    >
+    <div className="w-full relative scroll-mt-20">
       <div className="w-full mx-auto px-0 md:px-2">
-        <div className="flex justify-center items-center gap-4 mb-10 text-xs font-bold tracking-widest text-stone-400">
-          <span className={step === 1 ? "text-[#00b5d5]" : "text-emerald-500"}>
-            1. DETAILS
-          </span>
-          <div className="w-12 h-px bg-stone-300" />
-          <span className={step === 2 ? "text-[#00b5d5]" : ""}>
-            2. SECURE PAYMENT
-          </span>
+        <div className="flex justify-center items-center gap-2 sm:gap-4 mb-10 sm:mb-14 relative z-10">
+          <div className={`flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest transition-all duration-500 ${step === 1 ? "bg-[#00b5d5] text-white shadow-[0_10px_20px_-10px_rgba(0,181,213,0.5)] scale-105" : "bg-white text-stone-400 hover:bg-stone-50 border border-stone-100 shadow-sm"}`}>
+            <span className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full text-[10px] sm:text-[11px] ${step === 1 ? "bg-white/20" : "bg-stone-100"}`}>1</span>
+            <span className="hidden sm:inline">DETAILS</span>
+          </div>
+          <div className="w-6 sm:w-12 h-px bg-stone-300" />
+          <div className={`flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest transition-all duration-500 ${step === 2 ? "bg-[#00b5d5] text-white shadow-[0_10px_20px_-10px_rgba(0,181,213,0.5)] scale-105" : "bg-white text-stone-400 hover:bg-stone-50 border border-stone-100 shadow-sm"}`}>
+            <span className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full text-[10px] sm:text-[11px] ${step === 2 ? "bg-white/20" : "bg-stone-100"}`}>2</span>
+            <span className="hidden sm:inline">PAYMENT</span>
+          </div>
         </div>
 
         {error && (
-          <div className="flex items-start gap-2 p-4 bg-rose-50 border border-rose-100 rounded-2xl mb-6 shadow-sm">
-            <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />
-            <p className="text-sm text-rose-700 font-medium">{error}</p>
+          <div className="flex items-start gap-3 p-4 bg-rose-50 border border-rose-100 rounded-2xl mb-8 shadow-sm animate-in fade-in slide-in-from-top-4">
+            <AlertCircle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
+            <p className="text-sm text-rose-700 font-medium leading-relaxed">{error}</p>
           </div>
         )}
 
         {step === 1 ? (
           <form
             onSubmit={handleNextStep}
-            className="bg-white border border-stone-200/80 p-6 md:p-10 rounded-3xl shadow-xl space-y-6"
+            className="bg-white/90 backdrop-blur-2xl border border-stone-100 p-6 sm:p-10 md:p-12 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] space-y-6 sm:space-y-8 relative overflow-hidden"
           >
-            <h2 className="text-xl font-bold text-[#1e325c] border-b border-stone-100 pb-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1e325c] border-b border-stone-100 pb-6 text-center sm:text-left tracking-tight">
               {dict.title1}
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
               <CustomDatePicker
                 label="Check-In"
                 value={checkIn}
@@ -443,15 +441,16 @@ function BookingContent() {
               />
             </div>
 
-            <div>
-              <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
+            <div className="group">
+              <label className="text-[10px] font-bold text-stone-500 uppercase tracking-widest block mb-2 ml-1 transition-colors group-focus-within:text-[#00b5d5]">
                 {dict.roomLabel}
               </label>
               <select
                 required
                 value={selectedRoomId}
                 onChange={(e) => setSelectedRoomId(e.target.value)}
-                className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 cursor-pointer shadow-sm"
+                className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#00b5d5]/50 rounded-2xl px-5 h-14 text-sm outline-none focus:border-[#00b5d5] focus:ring-4 focus:ring-[#00b5d5]/10 text-slate-800 cursor-pointer shadow-sm transition-all duration-300 font-medium appearance-none"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.2rem center', backgroundSize: '1.2em 1.2em' }}
               >
                 {loadingRooms && <option value="">Loading...</option>}
                 {!loadingRooms &&
@@ -463,9 +462,9 @@ function BookingContent() {
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
+            <div className="grid grid-cols-2 gap-5 sm:gap-6">
+              <div className="group">
+                <label className="text-[10px] font-bold text-stone-500 uppercase tracking-widest block mb-2 ml-1 transition-colors group-focus-within:text-[#00b5d5]">
                   {dict.adultsLabel}
                 </label>
                 <select
@@ -477,7 +476,8 @@ function BookingContent() {
                       setKids(maxCapacity - val);
                     }
                   }}
-                  className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm bg-white text-slate-800 outline-none shadow-sm cursor-pointer"
+                  className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#00b5d5]/50 rounded-2xl px-5 h-14 text-sm outline-none focus:border-[#00b5d5] focus:ring-4 focus:ring-[#00b5d5]/10 text-slate-800 cursor-pointer shadow-sm transition-all duration-300 font-medium appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.2rem center', backgroundSize: '1.2em 1.2em' }}
                 >
                   {adultsOptions.map((n) => (
                     <option key={`adult-${n}`} value={n}>
@@ -486,14 +486,15 @@ function BookingContent() {
                   ))}
                 </select>
               </div>
-              <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
+              <div className="group">
+                <label className="text-[10px] font-bold text-stone-500 uppercase tracking-widest block mb-2 ml-1 transition-colors group-focus-within:text-[#00b5d5]">
                   {dict.kidsLabel}
                 </label>
                 <select
                   value={kids}
                   onChange={(e) => setKids(Number(e.target.value))}
-                  className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm bg-white text-slate-800 outline-none shadow-sm cursor-pointer"
+                  className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#00b5d5]/50 rounded-2xl px-5 h-14 text-sm outline-none focus:border-[#00b5d5] focus:ring-4 focus:ring-[#00b5d5]/10 text-slate-800 cursor-pointer shadow-sm transition-all duration-300 font-medium appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.2rem center', backgroundSize: '1.2em 1.2em' }}
                 >
                   {kidsOptions.map((n) => (
                     <option key={`kid-${n}`} value={n}>
@@ -504,9 +505,9 @@ function BookingContent() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+              <div className="group">
+                <label className="text-[10px] font-bold text-stone-500 uppercase tracking-widest block mb-2 ml-1 transition-colors group-focus-within:text-[#00b5d5]">
                   {dict.emailLabel}
                 </label>
                 <input
@@ -515,11 +516,11 @@ function BookingContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="example@mail.com"
-                  className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 shadow-sm"
+                  className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#00b5d5]/50 rounded-2xl px-5 h-14 text-sm outline-none focus:border-[#00b5d5] focus:ring-4 focus:ring-[#00b5d5]/10 text-slate-800 shadow-sm transition-all duration-300 placeholder:text-stone-300 font-medium"
                 />
               </div>
-              <div>
-                <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5 h-3.5">
+              <div className="group">
+                <label className="text-[10px] font-bold text-stone-500 uppercase tracking-widest block mb-2 ml-1 transition-colors group-focus-within:text-[#00b5d5]">
                   {dict.phoneLabel}
                 </label>
                 <input
@@ -528,24 +529,26 @@ function BookingContent() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+994"
-                  className="w-full border border-stone-200 rounded-xl px-4 h-12 text-sm outline-none focus:border-[#00b5d5] bg-white text-slate-800 shadow-sm"
+                  className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#00b5d5]/50 rounded-2xl px-5 h-14 text-sm outline-none focus:border-[#00b5d5] focus:ring-4 focus:ring-[#00b5d5]/10 text-slate-800 shadow-sm transition-all duration-300 placeholder:text-stone-300 font-medium"
                 />
               </div>
             </div>
 
-            <div className="flex justify-center my-4">
-              <ReCAPTCHA
-                sitekey={
-                  process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
-                  "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                }
-                onChange={(val) => setCaptchaValue(val)}
-              />
+            <div className="flex justify-center my-6">
+              <div className="bg-white p-2 rounded-2xl shadow-sm border border-stone-100">
+                <ReCAPTCHA
+                  sitekey={
+                    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
+                    "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                  }
+                  onChange={(val) => setCaptchaValue(val)}
+                />
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-[#00b5d5] hover:bg-[#009cae] text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl shadow-md transition-transform duration-150 active:scale-[0.98] cursor-pointer mt-4"
+              className="w-full bg-[#00b5d5] hover:bg-[#00a0bc] text-white font-bold text-sm uppercase tracking-widest py-4 sm:py-5 rounded-2xl shadow-[0_10px_20px_-10px_rgba(0,181,213,0.6)] transition-all duration-200 active:scale-[0.98] mt-6 flex justify-center items-center group"
             >
               {dict.nextBtn}
             </button>
@@ -553,55 +556,49 @@ function BookingContent() {
         ) : (
           <form
             onSubmit={handleFinalSubmit}
-            className="bg-white border border-stone-200/80 p-6 md:p-10 rounded-3xl shadow-xl space-y-6 animate-in fade-in slide-in-from-right-4 duration-300"
+            className="bg-white/90 backdrop-blur-2xl border border-stone-100 p-6 sm:p-10 md:p-12 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-right-4 duration-300"
           >
-            <div className="flex justify-between items-center border-b border-stone-100 pb-3">
-              <h2 className="text-xl font-bold text-[#1e325c] flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-[#00b5d5]" /> {dict.title2}
+            <div className="flex justify-between items-center border-b border-stone-100 pb-5">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#1e325c] flex items-center gap-3">
+                <CreditCard className="w-6 h-6 text-[#00b5d5]" /> {dict.title2}
               </h2>
-              <span className="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-2.5 py-1 rounded-md flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" /> SSL Secured
+              <span className="text-[10px] sm:text-xs bg-emerald-50 text-emerald-600 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4" /> SSL Secured
               </span>
             </div>
 
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-semibold text-slate-600">
+            <div className="bg-gradient-to-br from-slate-50 to-stone-50 border border-slate-200/60 rounded-[1.5rem] p-6 mb-6 shadow-inner">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">
                   {dict.totalPrice}
                 </span>
-                <span className="text-xl font-bold text-slate-800">
+                <span className="text-3xl font-extrabold text-slate-800 tracking-tight">
                   {currency === "USD" 
                     ? `$${(rooms.find((r) => r.id === selectedRoomId)?.priceUsd || 0) * (checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1)}`
                     : `${(rooms.find((r) => r.id === selectedRoomId)?.price || 0) * (checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1)} ₼`
                   }
-                  <span className="text-xs text-slate-400 font-normal ml-1">
+                  <span className="text-sm text-slate-400 font-medium ml-2 uppercase tracking-wider">
                     ({checkIn && checkOut ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 1} {currentLang === 'az' ? 'gecə' : currentLang === 'ru' ? 'ночей' : 'nights'})
                   </span>
                 </span>
               </div>
             </div>
 
-            <div>
-              <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1.5">
-                {dict.confirmBtn}
-              </label>
-            </div>
-
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-4 pt-4">
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="w-1/3 bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold text-xs uppercase tracking-widest py-4 rounded-xl transition-colors cursor-pointer"
+                className="w-1/3 bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold text-xs sm:text-sm uppercase tracking-widest py-4 sm:py-5 rounded-2xl transition-colors"
               >
                 {dict.backBtn}
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-2/3 bg-[#ff6c02] hover:bg-[#e55f00] disabled:bg-stone-300 text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl shadow-md transition-all duration-150 active:scale-[0.98] flex justify-center items-center gap-2 cursor-pointer"
+                className="w-2/3 bg-gradient-to-r from-[#ff6c02] to-[#ff8c3a] hover:from-[#e55f00] hover:to-[#ff6c02] disabled:from-stone-300 disabled:to-stone-400 text-white font-bold text-xs sm:text-sm uppercase tracking-widest py-4 sm:py-5 rounded-2xl shadow-[0_10px_20px_-10px_rgba(255,108,2,0.6)] transition-all duration-200 active:scale-[0.98] flex justify-center items-center gap-2"
               >
                 {loading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   dict.confirmBtn
                 )}
@@ -616,22 +613,14 @@ function BookingContent() {
 
 export default function Booking({ standalone = false }: { standalone?: boolean }) {
   return (
-    <div id="booking" className={`w-full relative z-30 px-4 md:px-6 max-w-6xl mx-auto ${standalone ? "py-16" : "-mt-32 pb-16"}`}>
-      <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.12)] border border-white p-6 md:p-8 lg:p-12 relative overflow-hidden">
-        {/* Subtle decorative background blur */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#00b5d5]/5 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#ff6c02]/5 rounded-full blur-3xl -z-10 -translate-x-1/2 translate-y-1/2" />
-
-        <Suspense
-          fallback={
-            <div className="min-h-[30vh] flex items-center justify-center">
-              <Loader2 className="w-8 h-8 animate-spin text-[#00b5d5]" />
-            </div>
-          }
-        >
-          <BookingContent />
-        </Suspense>
-      </div>
+    <div id="booking" className={`w-full relative z-30 px-3 sm:px-4 md:px-8 max-w-5xl mx-auto ${standalone ? "py-20" : "-mt-32 pb-20"}`}>
+      <Suspense fallback={
+        <div className="min-h-[30vh] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#00b5d5]" />
+        </div>
+      }>
+        <BookingContent />
+      </Suspense>
     </div>
   );
 }

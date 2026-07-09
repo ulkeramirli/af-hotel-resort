@@ -81,7 +81,7 @@ export default function Header() {
   const { user, signOut } = useAuth();
   const currentUser = user as AuthUser | null;
   const { language, setLanguage, t } = useLanguage();
-  const currentLang = (language as LangType) || "az";
+  const currentLang = language || "az";
   const { settings } = useSettings();
   const { currency, setCurrency } = useCurrency();
 
@@ -138,12 +138,12 @@ export default function Header() {
 
   const navLinks = [
     { id: "/", href: "/", label: t.nav.home },
-    { id: "/about", href: isDesktop ? "/#about" : "/about", label: t.nav.about },
-    { id: "/rooms", href: isDesktop ? "/#rooms" : "/rooms", label: t.nav.rooms },
-    { id: "/aquapark", href: isDesktop ? "/#aquapark" : "/aquapark", label: t.nav.aquapark },
-    { id: "/wonderland", href: isDesktop ? "/#wonderland" : "/wonderland", label: t.nav.wonderland },
-    { id: "/restoran", href: isDesktop ? "/#restoran" : "/restoran", label: t.nav.restoran },
-    { id: "/contacts", href: isDesktop ? "/#contacts" : "/contacts", label: t.nav.contacts },
+    { id: "/about", href: isDesktop && pathname === '/' ? "/#about" : "/about", label: t.nav.about },
+    { id: "/rooms", href: isDesktop && pathname === '/' ? "/#rooms" : "/rooms", label: t.nav.rooms },
+    { id: "/aquapark", href: isDesktop && pathname === '/' ? "/#aquapark" : "/aquapark", label: t.nav.aquapark },
+    { id: "/wonderland", href: isDesktop && pathname === '/' ? "/#wonderland" : "/wonderland", label: t.nav.wonderland },
+    { id: "/restoran", href: isDesktop && pathname === '/' ? "/#restoran" : "/restoran", label: t.nav.restoran },
+    { id: "/contacts", href: isDesktop && pathname === '/' ? "/#contacts" : "/contacts", label: t.nav.contacts },
   ];
 
   return (
@@ -157,7 +157,7 @@ export default function Header() {
             y: 0, opacity: 1, 
             transition: { 
               duration: 0.5, 
-              ease: "easeOut",
+              ease: "easeOut" as const,
               staggerChildren: 0.1,
               delayChildren: 0.2
             } 
@@ -170,7 +170,7 @@ export default function Header() {
         }`}
       >
         <MagneticButton>
-          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 200 } } }} className="flex items-center select-none transition-transform duration-300 hover:scale-[1.02]">
+          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { ease: "easeOut" as const, duration: 0.45 } } }} className="flex items-center select-none transition-transform duration-300 hover:scale-[1.02]">
             <Image
               src="/loqo-af.png"
               alt="AF Hotel & Resort"
@@ -187,7 +187,7 @@ export default function Header() {
           {navLinks.map((item) => {
             const isActive = pathname === item.href || (pathname === '/' && item.href === '/');
             return (
-              <motion.div key={item.id} variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300 } } }} className="relative py-2 group">
+              <motion.div key={item.id} variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0, transition: { ease: "easeOut" as const, duration: 0.45 } } }} className="relative py-2 group">
                 <Link
                   href={item.href}
                   onClick={handleNavClick}
@@ -228,7 +228,7 @@ export default function Header() {
             </button>
 
             {currOpen && (
-              <div className="absolute right-0 mt-2 w-20 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute right-0 mt-2 w-20 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-200 animate-in fade-in slide-in-from-top-2 duration-200">
                 {(["AZN", "USD"] as const).map((curr) => (
                   <button
                     key={curr}
@@ -255,7 +255,7 @@ export default function Header() {
             </button>
 
             {langOpen && (
-              <div className="absolute right-0 mt-2 w-28 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute right-0 mt-2 w-28 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-200 animate-in fade-in slide-in-from-top-2 duration-200">
                 {(["az", "en", "ru"] as LangType[]).map((lng) => (
                   <button
                     key={lng}
@@ -273,7 +273,7 @@ export default function Header() {
             )}
           </div>
 
-          <MagneticButton>
+          <MagneticButton> 
             <Link
               href="/booking"
               className="hidden sm:flex items-center text-[11px] font-bold uppercase tracking-widest px-4.5 py-2.5 bg-[#ff6c02] text-white hover:bg-[#e55f00] rounded-xl shadow-xs transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
@@ -296,7 +296,7 @@ export default function Header() {
                   </span>
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-stone-200/80 shadow-xl py-1 z-50 overflow-hidden">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-stone-200/80 shadow-xl py-1 z-200 overflow-hidden">
                     <div className="px-4 py-2.5 bg-stone-50 border-b border-stone-100">
                       <p className="text-xs font-bold text-stone-800 truncate">{currentUser?.name}</p>
                       <p className="text-[10px] text-stone-500 truncate">{currentUser?.email}</p>
@@ -381,7 +381,7 @@ export default function Header() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.3, ease: "easeOut" as const }}
             className="fixed inset-0 top-15 bg-white z-40 lg:hidden flex flex-col justify-between p-6 border-t border-stone-100"
           >
             <motion.nav 

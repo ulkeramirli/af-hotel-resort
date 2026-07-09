@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function AboutPage() {
   const { language } = useLanguage();
-  const l = (language as 'az' | 'en' | 'ru') || 'az';
+  const l = language;
   const titles = { az: 'Haqqımızda', en: 'About Us', ru: 'О нас' };
   const subs = { az: 'AF HOTEL & AQUA PARK KOMPLEKSİ', en: 'AF HOTEL & AQUA PARK COMPLEX', ru: 'AF HOTEL & AQUA PARK КОМПЛЕКС' };
   return (

@@ -173,18 +173,17 @@ export default function RoomDetailPage({
 
   return (
     <div className="min-h-screen bg-stone-50/40 text-stone-800 antialiased font-sans selection:bg-stone-100 pb-20 pt-28 relative">
-      {/* Кнопка Назад - Фиксированная слева на больших экранах */}
-      <motion.button
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        onClick={() => router.push('/#rooms')}
-        className="fixed left-4 sm:left-6 lg:left-8 top-24 z-40 inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-stone-200 shadow-sm rounded-xl text-sm font-semibold text-stone-600 hover:text-[#1e325c] hover:border-[#1e325c]/30 hover:bg-stone-50 transition-all cursor-pointer"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        {c.back}
-      </motion.button>
-
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        {/* Кнопка Назад */}
+        <motion.button
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          onClick={() => router.push('/#rooms')}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-stone-200 shadow-sm rounded-xl text-sm font-semibold text-stone-600 hover:text-[#1e325c] hover:border-[#1e325c]/30 hover:bg-stone-50 transition-all cursor-pointer mb-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {c.back}
+        </motion.button>
 
         {/* СЕТКА ГАЛЕРЕИ */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

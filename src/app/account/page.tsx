@@ -186,7 +186,7 @@ function AccountContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const l = (language as LangType) || "az";
+  const l = language || "az";
   const tx = t[l];
 
   const initialTab = (searchParams.get("tab") as Tab) || "profile";
@@ -520,7 +520,7 @@ function AccountContent() {
                     </div>
                     <p className="text-sm text-stone-400">{tx.noBookings}</p>
                     <button
-                      onClick={() => router.push("/#rooms")}
+                      onClick={() => router.push("/rooms")}
                       className="text-sm font-bold text-[#00b5d5] hover:underline"
                     >
                       {tx.bookNow}
@@ -574,7 +574,7 @@ function AccountContent() {
                     </div>
                     <p className="text-sm text-stone-400">{tx.noFavorites}</p>
                     <button
-                      onClick={() => router.push("/#rooms")}
+                      onClick={() => router.push("/rooms")}
                       className="text-sm font-bold text-[#00b5d5] hover:underline"
                     >
                       {tx.bookNow}
