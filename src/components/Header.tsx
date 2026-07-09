@@ -224,12 +224,12 @@ export default function Header() {
               className="flex items-center space-x-1.5 font-bold text-[11px] tracking-wider text-slate-700 outline-none uppercase p-2 hover:bg-stone-50 rounded-xl transition-all duration-300 border-none bg-transparent cursor-pointer"
             >
               <span className="hidden sm:inline font-bold text-[#1e325c] bg-stone-100 px-2 py-1 rounded-md">{currency}</span>
-              <span className="sm:hidden font-bold text-[#1e325c] bg-stone-100 px-2 py-1 rounded-md">{currency === "AZN" ? "₼" : "$"}</span>
+              <span className="sm:hidden font-bold text-[#1e325c] bg-stone-100 px-2 py-1 rounded-md">{currency === "AZN" ? "₼" : currency === "EUR" ? "€" : "$"}</span>
             </button>
 
             {currOpen && (
-              <div className="absolute right-0 mt-2 w-20 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-200 animate-in fade-in slide-in-from-top-2 duration-200">
-                {(["AZN", "USD"] as const).map((curr) => (
+              <div className="absolute right-0 mt-2 w-20 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                {(["AZN", "USD", "EUR"] as const).map((curr) => (
                   <button
                     key={curr}
                     onClick={() => {

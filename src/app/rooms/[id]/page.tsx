@@ -331,7 +331,7 @@ export default function RoomDetailPage({
                   {c.pricePerNight}
                 </span>
                 <div className="text-2xl md:text-3xl font-bold text-stone-900">
-                  {currency === "USD" ? `$${room.priceUsd || 0}` : `${room.price} ₼`}
+                  {currency === "USD" ? `$${room.priceUsd || 0}` : currency === "EUR" ? `€${room.priceEur || 0}` : `${room.price} ₼`}
                   <span className="text-xs text-stone-400 font-normal ml-2">
                     / {c.night}
                   </span>

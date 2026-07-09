@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-type Currency = "AZN" | "USD";
+type Currency = "AZN" | "USD" | "EUR";
 
 interface CurrencyContextType {
   currency: Currency;
@@ -21,7 +21,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem("af_currency") as Currency;
-    if (saved === "AZN" || saved === "USD") {
+    if (saved === "AZN" || saved === "USD" || saved === "EUR") {
       setCurrencyState(saved);
     }
   }, []);

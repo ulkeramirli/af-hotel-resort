@@ -126,7 +126,7 @@ function RoomCard({
   onFavorite: (id: string) => void;
   onBook: (id: string) => void;
   compact?: boolean;
-  currency: "AZN" | "USD";
+  currency: "AZN" | "USD" | "EUR";
 }) {
   return (
     <div className="h-full">
@@ -170,13 +170,16 @@ function RoomCard({
           </div>
         </div>
 
+
+        {/* Bottom: price + buttons */}
         <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
           <div className="flex justify-between items-center">
             <div>
               <span className="text-lg font-bold text-stone-900">
-                {currency === "USD" ? `$${room.priceUsd || 0}` : `${room.price} ₼`}
+                {currency === "USD" ? `$${room.priceUsd || 0}` : currency === "EUR" ? `€${room.priceEur || 0}` : `${room.price} ₼`}
               </span>
               <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
+
             </div>
             <Link
               href={`/rooms/${room.id}`}

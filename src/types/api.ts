@@ -45,6 +45,7 @@ export interface Room {
   description: any;
   price: number;
   priceUsd?: number;
+  priceEur?: number;
   capacity: number;
   amenities: any[];
   images: string[];
@@ -73,7 +74,7 @@ export interface Booking {
   paymentStatus?: "pending" | "paid" | "failed" | "refunded";
   paymentTransaction?: string;
   amount?: number;
-  currency?: "AZN" | "USD";
+  currency?: "AZN" | "USD" | "EUR";
   notes?: string;
   createdAt?: string;
   updatedAt?: string;

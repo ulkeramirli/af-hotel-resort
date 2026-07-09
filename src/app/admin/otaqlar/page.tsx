@@ -20,6 +20,7 @@ const emptyRoomForm = {
   description: { az: "", en: "", ru: "" },
   price: 0,
   priceUsd: 0,
+  priceEur: 0,
   capacity: 2,
   amenities: { az: "", en: "", ru: "" },
   beds: 1,
@@ -133,6 +134,7 @@ export default function AdminRoomsPage() {
       description: roomForm.description,
       price: Number(roomForm.price),
       priceUsd: Number(roomForm.priceUsd) || 0,
+      priceEur: Number(roomForm.priceEur) || 0,
       capacity: Number(roomForm.capacity),
       amenities: mappedAmenities,
       isAvailable: roomForm.isAvailable,
@@ -173,6 +175,7 @@ export default function AdminRoomsPage() {
       description: typeof room.description === 'object' ? room.description : { az: room.description, en: room.description, ru: room.description },
       price: room.price,
       priceUsd: room.priceUsd || 0,
+      priceEur: room.priceEur || 0,
       capacity: room.capacity,
       amenities: { az: amAz, en: amEn, ru: amRu },
       isAvailable: room.isAvailable,
@@ -330,20 +333,27 @@ export default function AdminRoomsPage() {
                     <option key={t._id} value={t._id}>{loc(t.name)}</option>
                   ))}
                 </select>
-                <div className="flex gap-2">
+                <div className="flex gap-2 md:col-span-2 lg:col-span-3">
                   <input
                     type="number"
                     placeholder="Qiymət (AZN)"
                     value={roomForm.price || ""}
                     onChange={(e) => setRoomForm({ ...roomForm, price: Number(e.target.value) })}
-                    className="w-1/2 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                    className="flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                   />
                   <input
                     type="number"
                     placeholder="Qiymət (USD)"
                     value={roomForm.priceUsd || ""}
                     onChange={(e) => setRoomForm({ ...roomForm, priceUsd: Number(e.target.value) })}
-                    className="w-1/2 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                    className="flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Qiymət (EUR)"
+                    value={roomForm.priceEur || ""}
+                    onChange={(e) => setRoomForm({ ...roomForm, priceEur: Number(e.target.value) })}
+                    className="flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                   />
                 </div>
                 <input

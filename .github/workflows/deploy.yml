@@ -1,0 +1,38 @@
+name: Deploy AFHotel
+
+on:
+  push:
+    branches:
+      - Ali-backend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+
+            node -v
+            npm -v
+            pm2 -v
+
+            cd /var/www/afhotel
+
+            git pull origin Ali-backend
+
+            npm install
+
+            npm run build
+
+            pm2 restart afhotel
+
+            pm2 save
