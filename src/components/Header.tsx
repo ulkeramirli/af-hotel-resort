@@ -183,7 +183,7 @@ export default function Header() {
           </motion.div>
         </MagneticButton>
 
-        <nav className="hidden lg:flex items-center space-x-3 xl:space-x-5 text-[11px] font-bold uppercase tracking-widest text-slate-700">
+        <nav className="hidden lg:flex items-center space-x-1 xl:space-x-3 text-[10.5px] font-medium uppercase tracking-[0.18em] text-slate-600">
           {navLinks.map((item) => {
             const isActive = pathname === item.href || (pathname === '/' && item.href === '/');
             return (
@@ -210,11 +210,11 @@ export default function Header() {
 
         <div className="flex items-center space-x-2 md:space-x-4">
           <a
-            href={`tel:${settings?.phone || "+994124480000"}`}
-            className="hidden xl:flex items-center gap-1.5 text-[11px] font-bold text-slate-600 hover:text-[#00b5d5] transition-colors border border-stone-200/80 px-3 py-2 rounded-xl bg-stone-50/40"
+            href={`tel:${settings?.phone || "+994124483030"}`}
+            className="hidden xl:flex items-center gap-1.5 text-[10px] font-medium text-slate-500 hover:text-[#ff6c02] transition-colors border border-stone-200/60 px-3 py-1.5 rounded-lg bg-stone-50/50"
           >
             <Phone className="w-3.5 h-3.5 text-[#00b5d5]" />
-            <span>{settings?.phone || "+994 (12) 448-00-00"}</span>
+            <span>{settings?.phone || "+994 (12) 448-30-30"}</span>
           </a>
 
           {/* Currency Switcher */}
@@ -276,7 +276,7 @@ export default function Header() {
           <MagneticButton> 
             <Link
               href="/booking"
-              className="hidden sm:flex items-center text-[11px] font-bold uppercase tracking-widest px-4.5 py-2.5 bg-[#ff6c02] text-white hover:bg-[#e55f00] rounded-xl shadow-xs transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="hidden sm:flex items-center text-[10px] font-bold uppercase tracking-[0.15em] px-5 py-2.5 bg-linear-to-r from-[#ff6c02] to-[#e55f00] text-white hover:from-[#e55f00] hover:to-[#cc5500] hover:shadow-lg hover:shadow-[#ff6c02]/20 rounded-lg shadow-sm transition-all duration-300"
             >
               {t.nav.book}
             </Link>
@@ -418,10 +418,10 @@ export default function Header() {
             </motion.nav>
           <div className="space-y-4">
             <a
-              href={`tel:${settings?.phone || "+994124480000"}`}
+              href={`tel:${settings?.phone || "+994124483030"}`}
               className="flex items-center justify-center gap-2 text-xs font-bold text-slate-700 py-3.5 border border-stone-200 rounded-xl"
             >
-              <Phone className="w-4 h-4 text-[#00b5d5]" /> {settings?.phone || "+994 (12) 448-00-00"}
+              <Phone className="w-4 h-4 text-[#00b5d5]" /> {settings?.phone || "+994 (12) 448-30-30"}
             </a>
             <Link
               href="/booking"

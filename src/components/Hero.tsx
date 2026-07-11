@@ -78,20 +78,20 @@ const itemVariants = {
             {/* Small elegant badge */}
             <div className="inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-sm lg:bg-[#00b5d5]/10 border border-white/30 lg:border-[#00b5d5]/20 px-4 py-1.5 rounded-full">
               <span className="w-1.5 h-1.5 rounded-full bg-[#ff6c02] animate-pulse shrink-0" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white lg:text-[#00b5d5]">
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-white lg:text-[#00b5d5]">
                 {t.hero.line1}
               </span>
             </div>
 
             {/* Main heading */}
             <div>
-              <h1 className="text-[38px] sm:text-5xl md:text-[58px] lg:text-[68px] font-serif font-semibold leading-[1.1] tracking-tight text-white lg:text-[#1e325c] [text-shadow:_0_4px_24px_rgba(0,0,0,0.7)] lg:[text-shadow:_none]">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-medium leading-[1.1] tracking-wide text-white lg:text-[#1e325c] [text-shadow:_0_4px_24px_rgba(0,0,0,0.7)] lg:[text-shadow:_none]">
                 <TextReveal text={t.hero.line2} delay={0.2} />
               </h1>
             </div>
 
             {/* Subtitle */}
-            <p className="text-[11px] sm:text-xs font-medium uppercase tracking-[0.22em] text-white/80 lg:text-stone-400 [text-shadow:_0_2px_8px_rgba(0,0,0,0.6)] lg:[text-shadow:_none]">
+            <p className="text-xs font-light uppercase tracking-[0.15em] text-white/90 lg:text-stone-500 [text-shadow:_0_2px_8px_rgba(0,0,0,0.6)] lg:[text-shadow:_none]">
               {t.hero.sub}
             </p>
           </motion.div>
@@ -103,7 +103,7 @@ const itemVariants = {
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
                   <Image src="/bed.png" alt="Rooms" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{t.hero.f1}</p>
+                <p className="text-xs text-stone-700 font-medium leading-snug tracking-wide">{t.hero.f1}</p>
               </motion.button>
             </TiltCard>
             <TiltCard tiltAmount={10}>
@@ -111,7 +111,7 @@ const itemVariants = {
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
                   <Image src="/aqua-park1.png" alt="Aquapark" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{t.hero.f2}</p>
+                <p className="text-xs text-stone-700 font-medium leading-snug tracking-wide">{t.hero.f2}</p>
               </motion.button>
             </TiltCard>
             <TiltCard tiltAmount={10}>
@@ -119,7 +119,7 @@ const itemVariants = {
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
                   <Image src="/carousel.png" alt="Lunapark" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{t.hero.f4}</p>
+                <p className="text-xs text-stone-700 font-medium leading-snug tracking-wide">{t.hero.f4}</p>
               </motion.button>
             </TiltCard>
             <TiltCard tiltAmount={10}>
@@ -127,7 +127,7 @@ const itemVariants = {
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
                   <Image src="/spoon.png" alt="Restaurant" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{t.hero.f3}</p>
+                <p className="text-xs text-stone-700 font-medium leading-snug tracking-wide">{t.hero.f3}</p>
               </motion.button>
             </TiltCard>
           </motion.div>
@@ -140,30 +140,30 @@ const itemVariants = {
           transition={{ ease: "easeOut" as const, duration: 0.6, delay: 0.3 }}
           className="lg:col-span-5 w-full flex justify-center lg:justify-end mt-4 lg:mt-0"
         >
-          <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-5 sm:p-8 w-full max-w-md shadow-[0_20px_50px_rgba(30,50,92,0.12)] border border-white/80 space-y-4 sm:space-y-6">
+          <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-5 sm:p-7 w-full max-w-md shadow-[0_16px_40px_rgba(30,50,92,0.10)] border border-white/60 space-y-4 sm:space-y-5">
 
             {/* Stats row */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 pb-4 sm:pb-6 border-b border-stone-100">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 pb-4 sm:pb-5 border-b border-stone-100/70">
               <div className="text-center space-y-1">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#00b5d5]/10 rounded-xl flex items-center justify-center mx-auto">
                   <BedDouble className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b5d5]" />
                 </div>
-                <p className="text-xl sm:text-2xl font-black text-[#1e325c]">500+</p>
-                <p className="text-[9px] sm:text-[10px] font-bold text-stone-400 uppercase tracking-wider">{t.hero.statRooms}</p>
+                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">500+</p>
+                <p className="text-[10px] font-medium text-stone-500 uppercase tracking-widest">{t.hero.statRooms}</p>
               </div>
               <div className="text-center space-y-1">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#00b5d5]/10 rounded-xl flex items-center justify-center mx-auto">
                   <Waves className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b5d5]" />
                 </div>
-                <p className="text-xl sm:text-2xl font-black text-[#1e325c]">20+</p>
-                <p className="text-[9px] sm:text-[10px] font-bold text-stone-400 uppercase tracking-wider">{t.hero.statAqua}</p>
+                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">20+</p>
+                <p className="text-[10px] font-medium text-stone-500 uppercase tracking-widest">{t.hero.statAqua}</p>
               </div>
               <div className="text-center space-y-1">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-50 rounded-xl flex items-center justify-center mx-auto">
                   <Star className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 fill-amber-400" />
                 </div>
-                <p className="text-xl sm:text-2xl font-black text-[#1e325c]">4.9</p>
-                <p className="text-[9px] sm:text-[10px] font-bold text-stone-400 uppercase tracking-wider">{t.hero.statRating}</p>
+                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">4.9</p>
+                <p className="text-[10px] font-medium text-stone-500 uppercase tracking-widest">{t.hero.statRating}</p>
               </div>
             </div>
 
@@ -192,7 +192,7 @@ const itemVariants = {
                 onClick={() => router.push('/booking')}
                 className="w-full block"
               >
-                <div className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-bold uppercase tracking-[0.1em] py-4 rounded-2xl transition-all shadow-md shadow-[#ff6c02]/30 cursor-pointer">
+                <div className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-semibold uppercase tracking-[0.1em] py-4 rounded-2xl transition-all shadow-md shadow-[#ff6c02]/30 cursor-pointer">
                   <CalendarCheck className="w-4 h-4" />
                   {t.hero.bookBtn}
                 </div>

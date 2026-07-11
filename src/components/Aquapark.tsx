@@ -359,12 +359,12 @@ export default function Aquapark() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]"
+                className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5]"
               >
                 {displayTag}
               </motion.span>
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none break-words whitespace-normal">
+            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight break-words whitespace-normal">
               <TextReveal text={displayTitle} delay={0.1} />
             </h2>
             <motion.div
@@ -430,12 +430,12 @@ export default function Aquapark() {
                       <IconComponent className={`w-3 h-3 md:w-4 md:h-4 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
                     ) : null}
 
-                    <span className={`text-[11px] md:text-xs font-semibold tracking-tight ${activeTab === i ? "text-[#1e325c]" : "text-stone-500"}`}>
+                    <span className={`text-[11px] md:text-xs font-medium tracking-wide ${activeTab === i ? "text-[#1e325c]" : "text-stone-500"}`}>
                       {zoneName}
                     </span>
 
                     {zone.isSoon && (
-                      <span className="text-[6px] md:text-[8px] bg-amber-500 text-white font-extrabold px-1 py-0.5 rounded-sm uppercase tracking-wider">
+                      <span className="text-[6px] md:text-[8px] bg-amber-500 text-white font-bold px-1.5 py-0.5 rounded-sm uppercase tracking-wider">
                         {c.soonTag || "Soon"}
                       </span>
                     )}
@@ -483,7 +483,7 @@ export default function Aquapark() {
                     </div>
                     <div className="p-4 grow flex flex-col justify-between space-y-2">
                       <div>
-                        <h4 className="font-bold text-[#1e325c] text-sm leading-snug">{itemName}</h4>
+                        <h4 className="font-semibold text-[#1e325c] text-sm leading-snug">{itemName}</h4>
                         <div className="text-[11px] text-stone-500 leading-relaxed line-clamp-3 prose prose-stone" dangerouslySetInnerHTML={{ __html: itemDesc }} />
                       </div>
                       <div className="pt-2.5 border-t border-stone-50 flex items-center gap-1 text-stone-400">
@@ -577,9 +577,9 @@ export default function Aquapark() {
                 🎟️ {c.tickets}
               </h3>
               {tickets.length > 0 ? tickets.map((t) => (
-                <div key={t._id} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100">
-                  <span className="text-sm font-semibold text-stone-600">{loc(t.name)}</span>
-                  <span className="text-lg font-bold" style={{ color: "var(--color-hotel-blue)" }}>
+                <div key={t._id} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100 shadow-sm">
+                  <span className="text-sm font-medium text-stone-600">{loc(t.name)}</span>
+                  <span className="text-base font-semibold" style={{ color: "var(--color-hotel-blue)" }}>
                     {t.price} ₼
                   </span>
                 </div>
@@ -588,9 +588,9 @@ export default function Aquapark() {
                 { label: c.child, price: c.childPrice },
                 { label: c.infant, price: c.infantPrice },
               ].map((t) => (
-                <div key={t.label} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100">
-                  <span className="text-sm font-semibold text-stone-600">{t.label}</span>
-                  <span className="text-lg font-bold" style={{ color: "var(--color-hotel-blue)" }}>
+                <div key={t.label} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100 shadow-sm">
+                  <span className="text-sm font-medium text-stone-600">{t.label}</span>
+                  <span className="text-base font-semibold" style={{ color: "var(--color-hotel-blue)" }}>
                     {t.price}
                   </span>
                 </div>
@@ -620,7 +620,7 @@ export default function Aquapark() {
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                     className="w-full flex justify-between items-center p-4 text-left cursor-pointer"
                   >
-                    <span className="text-xs md:text-sm font-bold text-[#1e325c] pr-4">{faqQuestion}</span>
+                    <span className="text-xs md:text-sm font-semibold text-[#1e325c] pr-4">{faqQuestion}</span>
                     {openFaq === i ? (
                       <ChevronUp className="w-4 h-4 text-stone-400 shrink-0" />
                     ) : (

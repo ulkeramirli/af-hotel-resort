@@ -93,7 +93,7 @@ function CustomDatePicker({
         <Calendar className="w-5 h-5 text-stone-400 group-hover:text-[#00b5d5] transition-colors duration-300" />
       </div>
       {open && (
-        <div className="absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-0 bg-white/95 backdrop-blur-xl border border-stone-200/60 rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-5 z-50 w-[calc(100vw-4rem)] sm:w-[340px] max-w-[340px] animate-in zoom-in-95 duration-200">
+        <div className="absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-0 bg-white/95 backdrop-blur-xl border border-stone-200/60 rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-5 z-50 w-[calc(100vw-4rem)] sm:w-85 max-w-85 animate-in zoom-in-95 duration-200">
           <div className="flex justify-between items-center mb-5 px-1">
             <button onClick={handlePrev} className="w-8 h-8 flex items-center justify-center bg-stone-100/50 hover:bg-[#00b5d5]/10 hover:text-[#00b5d5] rounded-full text-stone-600 font-bold transition-colors">&lt;</button>
             <span className="font-bold text-[15px] text-[#1e325c] tracking-tight">
@@ -586,7 +586,7 @@ function BookingContent() {
               </span>
             </div>
 
-            <div className="bg-gradient-to-br from-slate-50 to-stone-50 border border-slate-200/60 rounded-[1.5rem] p-6 mb-6 shadow-inner">
+            <div className="bg-linear-to-br from-slate-50 to-stone-50 border border-slate-200/60 rounded-3xl p-6 mb-6 shadow-inner">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">
                   {dict.totalPrice}
@@ -623,7 +623,7 @@ function BookingContent() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-2/3 bg-gradient-to-r from-[#ff6c02] to-[#ff8c3a] hover:from-[#e55f00] hover:to-[#ff6c02] disabled:from-stone-300 disabled:to-stone-400 text-white font-bold text-xs sm:text-sm uppercase tracking-widest py-4 sm:py-5 rounded-2xl shadow-[0_10px_20px_-10px_rgba(255,108,2,0.6)] transition-all duration-200 active:scale-[0.98] flex justify-center items-center gap-2"
+                className="w-2/3 bg-linear-to-r from-[#ff6c02] to-[#ff8c3a] hover:from-[#e55f00] hover:to-[#ff6c02] disabled:from-stone-300 disabled:to-stone-400 text-white font-bold text-xs sm:text-sm uppercase tracking-widest py-4 sm:py-5 rounded-2xl shadow-[0_10px_20px_-10px_rgba(255,108,2,0.6)] transition-all duration-200 active:scale-[0.98] flex justify-center items-center gap-2"
               >
                 {loading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />

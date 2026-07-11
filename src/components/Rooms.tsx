@@ -149,7 +149,7 @@ function RoomCard({
       {/* Content */}
       <div className="p-4 space-y-3 flex flex-col flex-1 justify-between">
         <div className="space-y-1.5 min-w-0 overflow-hidden">
-          <h3 className="font-bold text-stone-900 text-base tracking-tight group-hover:text-stone-700 transition-colors">
+          <h3 className="font-semibold text-stone-800 text-base group-hover:text-stone-600 transition-colors">
             {(room.title as any)?.[l] || (room.title as any)?.az || ""}
           </h3>
           <p
@@ -175,7 +175,7 @@ function RoomCard({
         <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
           <div className="flex justify-between items-center">
             <div>
-              <span className="text-lg font-bold text-stone-900">
+              <span className="text-lg font-bold text-stone-800">
                 {currency === "USD" ? `$${room.priceUsd || 0}` : currency === "EUR" ? `€${room.priceEur || 0}` : `${room.price} ₼`}
               </span>
               <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
@@ -183,7 +183,7 @@ function RoomCard({
             </div>
             <Link
               href={`/rooms/${room.id}`}
-              className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-semibold rounded-xl transition-colors"
+              className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-medium rounded-xl transition-colors shadow-sm"
             >
               <span>{c.details}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -192,7 +192,7 @@ function RoomCard({
           
           <button
             onClick={() => onBook(room.id)}
-            className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 text-white text-xs font-medium rounded-xl shadow-sm transition-colors cursor-pointer"
             style={{ background: "linear-gradient(135deg, #ff8c00, #ff5f00)" }}
           >
             <CalendarCheck className="w-3.5 h-3.5" />
@@ -309,16 +309,16 @@ export default function Rooms() {
             className="space-y-4 flex flex-col items-center max-w-3xl"
           >
             <div className="flex items-center gap-4 justify-center">
-              <div className="w-8 h-[1px] bg-[#00b5d5]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
+              <div className="w-8 h-px bg-[#00b5d5]" />
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5]">
                 {settings?.tag || c.tag}
               </span>
-              <div className="w-8 h-[1px] bg-[#00b5d5]" />
+              <div className="w-8 h-px bg-[#00b5d5]" />
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none">
+            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight">
               <TextReveal text={settings?.title || c.title} delay={0.1} />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto wrap-break-word whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
           </motion.div>
 
           <motion.div
@@ -383,7 +383,7 @@ export default function Rooms() {
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ ease: "easeOut" as const, duration: 0.45 }}
                         key={room.id}
-                        className="min-w-[calc(100vw-2.5rem)] xs:min-w-[80vw] sm:min-w-0 flex-shrink-0 sm:flex-shrink h-full overflow-hidden"
+                        className="min-w-[calc(100vw-2.5rem)] xs:min-w-[80vw] sm:min-w-0 flex-shri lex-shrink h-full overflow-hidden"
                       >
                         <RoomCard
                         room={room}

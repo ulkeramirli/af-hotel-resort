@@ -75,26 +75,26 @@ export default function Wonderland() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10 space-y-20 md:space-y-28">
         
         {/* Header Section */}
-        <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-6">
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-4">
           <ScrollReveal type="dropIn" delay={0.1}>
-            <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white border border-[#00b5d5]/20 shadow-[0_4px_20px_rgba(0,181,213,0.15)] relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#00b5d5]/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
-              <Wand2 className="w-5 h-5 text-[#ff6c02] animate-pulse" />
-              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-[#1e325c]">
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-stone-200 shadow-sm relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-stone-100 to-transparent -translate-x-full group-hover:animate-shimmer" />
+              <Wand2 className="w-4 h-4 text-[#ff6c02] animate-pulse" />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#1e325c]">
                 {(wonderland?.tag as any)?.[l] || (wonderland?.tag as any)?.name || wonderland?.tag || "WONDERLAND"}
               </span>
             </div>
           </ScrollReveal>
 
           <ScrollReveal type="flipUp" delay={0.2}>
-            <h2 className="text-4xl md:text-5xl lg:text-7xl font-semibold text-[#1e325c] tracking-tight font-serif leading-tight relative inline-block">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight relative inline-block mt-2">
               {(wonderland?.title as any)?.[l] || (wonderland?.title as any)?.name || wonderland?.title || "Əyləncə Mərkəzi"}
-              <Sparkles className="absolute -top-5 -right-7 w-10 h-10 text-[#ff6c02] opacity-70" />
+              <Sparkles className="absolute -top-4 -right-6 w-8 h-8 text-[#ff6c02] opacity-70" />
             </h2>
           </ScrollReveal>
 
           <ScrollReveal type="zoomIn" delay={0.3}>
-            <div className="text-sm md:text-lg text-stone-500 font-medium leading-relaxed prose prose-stone max-w-2xl mx-auto [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: (wonderland?.description as any)?.[l] || (wonderland?.description as any)?.name || wonderland?.description || "Description" }} />
+            <div className="text-sm md:text-base text-stone-500 font-light leading-relaxed prose prose-stone max-w-2xl mx-auto [&>p]:mb-2 mt-4" dangerouslySetInnerHTML={{ __html: (wonderland?.description as any)?.[l] || (wonderland?.description as any)?.name || wonderland?.description || "Description" }} />
           </ScrollReveal>
         </div>
 
@@ -203,31 +203,31 @@ export default function Wonderland() {
         </ScrollReveal>
 
         {/* Tickets & Info Area */}
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
           {/* Tickets */}
-          <ScrollReveal type="slideRight" delay={0.3} className="xl:col-span-7 bg-white border border-stone-100 rounded-3xl p-6 md:p-8 relative overflow-hidden group shadow-[0_15px_50px_rgba(30,50,92,0.05)]">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-[#00b5d5]/5 rounded-full blur-3xl group-hover:bg-[#00b5d5]/15 transition-colors duration-1000" />
+          <ScrollReveal type="slideRight" delay={0.3} className="xl:col-span-7 bg-white border border-stone-100 rounded-[2rem] p-5 md:p-6 relative overflow-hidden group shadow-sm">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-stone-50 rounded-full blur-3xl group-hover:bg-[#00b5d5]/5 transition-colors duration-1000" />
             
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 relative z-10 border-b border-stone-100 pb-6">
-              <h3 className="font-serif text-2xl text-[#1e325c] flex items-center gap-3 font-semibold">
-                <Ticket className="w-6 h-6 text-[#ff6c02]" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 relative z-10 border-b border-stone-100 pb-4">
+              <h3 className="font-serif text-xl md:text-2xl text-[#1e325c] flex items-center gap-2.5 font-medium">
+                <Ticket className="w-5 h-5 text-[#ff6c02]" />
                 {c.tickets}
               </h3>
             </div>
             
-            <div className="flex flex-col gap-4 relative z-10">
+            <div className="flex flex-col gap-3 relative z-10">
               {wonderland?.tickets?.map((ticket: any) => (
-                <div key={ticket._id} className="relative bg-stone-50 rounded-2xl border border-stone-200 hover:border-[#00b5d5] transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 overflow-hidden group/ticket flex flex-col justify-center min-h-[70px]">
+                <div key={ticket._id} className="relative bg-stone-50/50 rounded-xl border border-stone-200 hover:border-[#00b5d5]/50 transition-all duration-300 hover:shadow-sm overflow-hidden group/ticket flex flex-col justify-center min-h-[50px]">
                   
                   {/* Perforations for real ticket look */}
-                  <div className="absolute top-1/2 -left-2.5 -translate-y-1/2 w-5 h-5 bg-white rounded-full border-r border-stone-200 group-hover/ticket:border-[#00b5d5] transition-colors" />
-                  <div className="absolute top-1/2 -right-2.5 -translate-y-1/2 w-5 h-5 bg-white rounded-full border-l border-stone-200 group-hover/ticket:border-[#00b5d5] transition-colors" />
+                  <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-r border-stone-200 group-hover/ticket:border-[#00b5d5]/50 transition-colors" />
+                  <div className="absolute top-1/2 -right-2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-l border-stone-200 group-hover/ticket:border-[#00b5d5]/50 transition-colors" />
                   
-                  <div className="flex justify-between items-center px-4 py-3 border-l-2 border-dashed border-stone-200 group-hover/ticket:border-[#ff6c02]/50 ml-3 transition-colors">
-                    <span className="text-sm font-bold text-[#1e325c] pr-4">
+                  <div className="flex justify-between items-center px-4 py-2 border-l-2 border-dashed border-stone-200 group-hover/ticket:border-[#ff6c02]/40 ml-3 transition-colors">
+                    <span className="text-sm font-medium text-stone-700 pr-4">
                       {(ticket.name as any)?.[l] || (ticket.name as any)?.az || ticket.name || "Ticket"}
                     </span>
-                    <span className="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff6c02] to-[#e55f00] drop-shadow-sm whitespace-nowrap">
+                    <span className="text-sm md:text-base font-bold text-[#ff6c02] whitespace-nowrap">
                       {ticket.price}
                     </span>
                   </div>
@@ -237,36 +237,35 @@ export default function Wonderland() {
           </ScrollReveal>
 
           {/* Special Offer & Info */}
-          <ScrollReveal type="slideLeft" delay={0.4} className="xl:col-span-5 flex flex-col gap-8">
-            <div className="bg-white rounded-3xl p-6 md:p-8 border border-stone-100 flex items-center gap-6 shadow-[0_15px_50px_rgba(30,50,92,0.05)] hover:shadow-[0_20px_60px_rgba(0,181,213,0.1)] hover:border-[#00b5d5]/30 transition-all duration-500 group">
-              <div className="w-16 h-16 rounded-xl bg-[#1e325c]/5 flex items-center justify-center text-[#1e325c] shrink-0 border border-[#1e325c]/10 group-hover:bg-[#1e325c] group-hover:text-white transition-colors duration-500">
-                <Clock className="w-8 h-8" />
+          <ScrollReveal type="slideLeft" delay={0.4} className="xl:col-span-5 flex flex-col gap-6">
+            <div className="bg-white rounded-[2rem] p-5 md:p-6 border border-stone-100 flex items-center gap-5 shadow-sm hover:shadow-md transition-all duration-500 group">
+              <div className="w-12 h-12 rounded-xl bg-stone-50 flex items-center justify-center text-stone-600 shrink-0 border border-stone-100 group-hover:bg-[#1e325c] group-hover:text-white transition-colors duration-500">
+                <Clock className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[11px] uppercase tracking-[0.2em] text-[#00b5d5] font-black mb-1">İş Saatları</p>
-                <p className="text-xl font-semibold text-[#1e325c] tracking-tight">{wonderland?.workingHours}</p>
+                <p className="text-[10px] uppercase tracking-[0.15em] text-stone-500 font-semibold mb-0.5">İş Saatları</p>
+                <p className="text-lg font-medium text-[#1e325c] tracking-wide">{wonderland?.workingHours}</p>
               </div>
             </div>
 
             {wonderland?.discount?.enabled && (
-              <div className="flex-1 rounded-3xl p-8 md:p-10 relative overflow-hidden bg-gradient-to-br from-[#1e325c] via-[#162545] to-[#0a1628] shadow-[0_25px_50px_rgba(30,50,92,0.4)] group cursor-default border border-[#00b5d5]/20">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#00b5d5]/15 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#ff6c02]/10 rounded-full blur-3xl" />
-                <Sparkles className="absolute -bottom-10 -right-10 w-56 h-56 text-[#00b5d5]/10 rotate-12 group-hover:rotate-45 transition-transform duration-1000" />
+              <div className="flex-1 rounded-[2rem] p-6 md:p-8 relative overflow-hidden bg-[#1e325c] shadow-md group cursor-default border border-[#1e325c]">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#00b5d5]/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#ff6c02]/5 rounded-full blur-3xl" />
                 
                 <div className="relative z-10 flex flex-col h-full justify-center text-white">
-                  <span className="inline-block px-5 py-2 bg-white/10 text-white text-[11px] font-black uppercase tracking-widest rounded-full w-fit mb-6 shadow-sm backdrop-blur-md border border-white/20">
+                  <span className="inline-block px-4 py-1.5 bg-white/10 text-white text-[10px] font-medium uppercase tracking-[0.15em] rounded-full w-fit mb-4 border border-white/10">
                     Xüsusi Təklif
                   </span>
-                  <h4 className="text-white text-5xl md:text-6xl font-black tracking-tight mb-4 drop-shadow-lg">
+                  <h4 className="font-serif text-white text-4xl md:text-5xl font-medium tracking-wide mb-3 drop-shadow-sm">
                     {wonderland.discount.percentage}% Endirim
                   </h4>
-                  <p className="text-white text-sm font-medium mb-8 max-w-[200px] leading-relaxed">
+                  <p className="text-white/80 text-sm font-light mb-6 max-w-[220px] leading-relaxed">
                     {(wonderland as any)?.specialOffer?.text?.[l] || "Xüsusi təklif mətni"}
                   </p>
                   <MagneticButton>
-                    <button className="flex items-center gap-2 bg-[#00b5d5] hover:bg-[#009ab8] text-white px-8 py-4 rounded-2xl font-bold uppercase tracking-wider text-sm transition-all shadow-lg shadow-[#00b5d5]/30 hover:shadow-[#00b5d5]/50 hover:-translate-y-1 mt-2">
-                      <Ticket className="w-5 h-5" />
+                    <button className="flex items-center gap-2 bg-white text-[#1e325c] hover:bg-stone-50 px-6 py-3 rounded-xl font-medium uppercase tracking-wider text-xs transition-all shadow-sm mt-1">
+                      <Ticket className="w-4 h-4 text-[#ff6c02]" />
                       {(wonderland as any)?.specialOffer?.btnText?.[l] || "Buy Tickets"}
                     </button>
                   </MagneticButton>
