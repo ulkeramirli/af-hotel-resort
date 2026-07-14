@@ -15,29 +15,29 @@ export default function About() {
   const ABOUT = {
     az: { 
       tag: "Haqqımızda",
-      title: "AF Hotel & Aqua Park – Dəniz Kənarında Unudulmaz İstirahət",
-      p1: "AF Hotel & Aqua Park Bakı şəhərinin Novxanı qəsəbəsində yerləşən müasir və geniş istirahət kompleksidir. Otel Xəzər dənizinin sahilində yerləşərək qonaqlara təmiz hava, gözəl dəniz mənzərəsi və rahat istirahət mühiti təqdim edir.",
-      p2: "Kompleksdə müxtəlif kateqoriyalı otaqlar, lüks villalar, nəhəng Aqua Park, beynəlxalq mətbəxə malik restoranlar, müasir spa mərkəzi, idman meydançaları və uşaqlar üçün xüsusi əyləncə zonaları mövcuddur. Füsunkar çimərliyimiz qızılı qumu və büllur kimi təmiz suyu ilə yay aylarının əvəzolunmaz məkanıdır.",
-      p3: "Ailənizlə birlikdə həm dincəlib, həm də adrenalin dolu anlar yaşaya biləcəyiniz nadir ünvanlardan biriyik. Biz hər bir qonağımıza fərdi yanaşaraq onların məmnuniyyətini ən yüksək səviyyədə təmin etməyə çalışırıq.",
-      p4: "AF Hotel yalnız bir otel deyil, həm də tam istirahət təcrübəsidir — burada sakitlik, əyləncə və yüksək xidmət bir aradadır.",
+      title: "Sadəcə Otel Deyil. Tam Bir Dünya.",
+      p1: "Novxanıda, Xəzər dənizinin sahilindəki AF Hotel & Aqua Park — bu, Bakının ən gözəl künclərindən birindəki dünya standartlı kurortdur. Qızılı çimərliyi, saf havası və panoramik dəniz mənzərəsi ilə hər gün yeni bir sehir yaradırıq.",
+      p2: "Geniş otaqlar, lüks villalar, bölgənin ən böyük Aqua Parkı, çoxmütbəxli restoranlar, spa mərkəzi, uşaq klubu, idman meydançaları — hamısı bir ərazidə. Burada hər yaş üçün öz möcüzəli anı var.",
+      p3: "Hər qonağımıza fərdi yanaşırıq, çünki inanırıq ki, mükəmməl istirahət ümumi deyil — şəxsidir. Komandamız 24/7 sizin xidmətinizdədir.",
+      p4: "Xəzər sahilinin ən dəyərli ünvanına xoş gəlmisiniz — burada hər an xatirəyə çevrilir.",
       more: "Otaqlara Bax"
     },
     en: {
       tag: "About Us",
-      title: "AF Hotel & Aqua Park – Unforgettable Seaside Experience",
-      p1: "AF Hotel & Aqua Park is a modern resort complex located in Novkhany near Baku, offering fresh sea air and beautiful views of the Caspian Sea. Our private beach features golden sands and crystal-clear waters, making it an essential summer destination.",
-      p2: "The resort includes various room types, luxury villas, a giant Aqua Park, international restaurants, a modern spa center, sports areas, and special entertainment zones for children. It's a rare place where you can relax and experience adrenaline-filled moments with your family.",
-      p3: "We strive to ensure the highest level of guest satisfaction by providing a personalized approach to each and every guest. Our team is dedicated to making your stay as comfortable and enjoyable as possible.",
-      p4: "AF Hotel is more than a hotel — it is a complete resort experience combining comfort, entertainment, and premium service.",
+      title: "Not Just a Hotel. An Entire World.",
+      p1: "Perched on the golden shores of the Caspian Sea in Novkhani, AF Hotel & Aqua Park is a world-class resort unlike any other near Baku. Every day here is shaped by sea breezes, golden sand, and panoramic horizons that stretch to infinity.",
+      p2: "Spacious rooms, luxury villas, the region's largest Aqua Park, multi-cuisine restaurants, a full-service spa, kids' club, and sports facilities — all within a single breathtaking destination. Every age finds its own kind of magic here.",
+      p3: "We treat every guest as an individual, because we believe perfect rest is not one-size-fits-all — it's personal. Our team is at your service around the clock.",
+      p4: "Welcome to the most cherished address on the Caspian coast — where every moment becomes a memory.",
       more: "Explore Rooms"
     },
     ru: {
       tag: "О нас",
-      title: "AF Hotel & Aqua Park – Незабываемый отдых у моря",
-      p1: "AF Hotel & Aqua Park — современный курортный комплекс в Новханы, расположенный на берегу Каспийского моря. Наш частный пляж с золотым песком и кристально чистой водой является незаменимым местом для летнего отдыха.",
-      p2: "На территории есть номера различных категорий, роскошные виллы, гигантский аквапарк, рестораны международной кухни, современный спа-центр, спортивные и детские развлекательные зоны. Это редкое место, где вы можете расслабиться и получить заряд адреналина вместе с семьей.",
-      p3: "Мы стремимся обеспечить высочайший уровень удовлетворенности гостей, применяя индивидуальный подход к каждому из них. Наша команда делает все возможное, чтобы ваше пребывание было максимально комфортным.",
-      p4: "AF Hotel — это не просто отель, а полноценный курорт с комфортом, развлечениями и высоким уровнем сервиса.",
+      title: "Не просто отель. Целый мир.",
+      p1: "Расположенный на золотом берегу Каспия в Новханы, AF Hotel & Aqua Park — это курорт мирового класса, которому нет аналогов вблизи Баку. Каждый день здесь наполнен морским бризом, тёплым песком и горизонтом, уходящим в бесконечность.",
+      p2: "Просторные номера, роскошные виллы, крупнейший в регионе аквапарк, рестораны с несколькими кухнями мира, спа, детский клуб и спортивные площадки — всё в одном месте. Каждый возраст находит здесь своё волшебство.",
+      p3: "Мы относимся к каждому гостю индивидуально, потому что убеждены: идеальный отдых — это не универсальный шаблон, это персональная история. Наша команда к вашим услугам круглосуточно.",
+      p4: "Добро пожаловать на самый ценный адрес каспийского побережья — здесь каждый момент превращается в воспоминание.",
       more: "Посмотреть Номера"
     }
   };

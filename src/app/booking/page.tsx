@@ -26,7 +26,7 @@ export default function BookingPage() {
       </div>
 
       {/* Hero Banner */}
-      <div className="relative h-64 md:h-80 w-full overflow-hidden">
+      <div className="relative h-[400px] md:h-[480px] w-full overflow-hidden">
         <motion.div 
           initial={{ scale: 1.05 }}
           animate={{ scale: 1 }}
@@ -44,20 +44,20 @@ export default function BookingPage() {
         </motion.div>
         
         {/* Subtle Luxury Gradients for Left-Aligned Text */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1e]/90 via-[#0a0f1e]/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1e]/95 via-[#0a0f1e]/60 to-transparent pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f1e]/10 to-[#f7f5f0] pointer-events-none" />
         
-        <div className="relative z-10 w-full h-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-end pb-12 md:pb-16">
+        <div className="relative z-10 w-full h-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-end pb-16 md:pb-20 pt-32 md:pt-40">
           {/* Minimalist Back Button */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            className="mb-8"
+            className="mb-6 sm:mb-8"
           >
              <button
               onClick={() => router.back()}
-              className="group inline-flex items-center gap-2 text-white/70 hover:text-white text-xs sm:text-sm font-semibold tracking-wide transition-colors cursor-pointer"
+              className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white/90 hover:text-white text-xs sm:text-sm font-bold tracking-wide border border-white/10 hover:border-white/30 shadow-[0_8px_16px_-6px_rgba(0,0,0,0.4)] transition-all cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
               {texts.back}
@@ -65,25 +65,27 @@ export default function BookingPage() {
           </motion.div>
 
           {/* Left-Aligned Typography Block */}
-          <div className="flex flex-col items-start space-y-2 md:space-y-3">
+          <div className="flex flex-col items-start space-y-2 md:space-y-4">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
               className="flex items-center gap-3"
             >
-              <CalendarCheck className="w-3.5 h-3.5 text-[#c5a880]" />
-              <span className="text-[10px] md:text-xs font-bold tracking-[0.25em] text-[#c5a880] uppercase">
+              <span className="flex items-center justify-center w-6 h-6 md:w-7 md:h-7 rounded-full bg-[#c5a880]/20 border border-[#c5a880]/30 backdrop-blur-sm shadow-sm">
+                <CalendarCheck className="w-3 h-3 md:w-3.5 md:h-3.5 text-[#c5a880]" />
+              </span>
+              <span className="text-[10px] md:text-xs font-bold tracking-[0.25em] text-[#c5a880] uppercase drop-shadow-md">
                 {texts.tag}
               </span>
-              <div className="w-12 h-px bg-[#c5a880]/50 hidden sm:block" />
+              <div className="w-16 h-px bg-gradient-to-r from-[#c5a880]/50 to-transparent hidden sm:block" />
             </motion.div>
             
             <motion.h1 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-              className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-md"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight drop-shadow-2xl"
             >
               {texts.title}
             </motion.h1>
@@ -92,7 +94,7 @@ export default function BookingPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-              className="text-white/70 text-xs sm:text-sm md:text-base font-medium tracking-wide"
+              className="text-white/80 text-sm md:text-lg font-medium tracking-wide max-w-lg leading-relaxed drop-shadow-lg"
             >
               {texts.sub}
             </motion.p>

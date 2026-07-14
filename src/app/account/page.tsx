@@ -625,7 +625,7 @@ function AccountContent() {
                                   {room.title[l]}
                                 </h3>
                                 <p className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2">
-                                  {room.desc[l]}
+                                  {room.desc[l]?.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')}
                                 </p>
                                 <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
                                   <span className="flex items-center gap-1">

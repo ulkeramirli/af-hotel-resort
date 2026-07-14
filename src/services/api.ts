@@ -279,9 +279,15 @@ export async function updateRoomSettings(
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
-  if (!data.success)
-    throw new Error(data.message || "Tənzimləmələr yenilənmədi");
+  let data: any = {};
+  try {
+    const text = await res.text();
+    if (text) data = JSON.parse(text);
+  } catch {
+    throw new Error("Тензimləmələr yenilənmədi: server cavabı oxunmadı");
+  }
+  if (!res.ok || !data.success)
+    throw new Error(data.message || "Tənziməmələr yenilənmədi");
   return data.settings;
 }
 

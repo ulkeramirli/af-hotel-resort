@@ -291,9 +291,9 @@ export default function RoomDetailPage({
                   <h1 className="text-xl md:text-3xl font-bold text-stone-900 tracking-tight">
                     {roomTitle}
                   </h1>
-                  <span className="bg-stone-900 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">
+                  {/* <span className="bg-stone-900 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">
                     {c.luxuryBadge}
-                  </span>
+                  </span> */}
                 </div>
                 <p className="text-xs text-stone-400 flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5" /> AF Hotel & Aqua Park, Novkhani, Azerbaijan
@@ -352,12 +352,12 @@ export default function RoomDetailPage({
           </div>
 
           {/* Описание (Overview) */}
-          <div className="space-y-3 px-1">
+          <div className="space-y-3 px-1 overflow-hidden">
             <h3 className="text-xs font-bold uppercase tracking-widest text-stone-400">
               {c.overview}
             </h3>
             <div 
-              className="text-xs md:text-sm text-stone-600 leading-relaxed font-light text-justify prose prose-sm prose-stone max-w-none"
+              className="text-sm text-stone-600 leading-relaxed font-light prose prose-stone max-w-full wrap-break-word overflow-hidden"
               dangerouslySetInnerHTML={{ __html: roomDesc }}
             />
           </div>
@@ -367,14 +367,14 @@ export default function RoomDetailPage({
             <h3 className="text-xs font-bold uppercase tracking-widest text-stone-400">
               {c.amenities}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 items-start">
               {roomIncludes.map((item) => (
                 <div
                   key={item}
-                  className="flex items-center gap-3 border border-stone-200/40 rounded-xl p-3 bg-white text-xs text-stone-600 font-medium"
+                  className="flex items-start gap-3 border border-stone-200/40 rounded-xl p-3 bg-white text-xs text-stone-600 font-medium"
                 >
-                  <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span className="truncate">{item}</span>
+                  <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span className="wrap-break-word min-w-0">{item}</span>
                 </div>
               ))}
             </div>

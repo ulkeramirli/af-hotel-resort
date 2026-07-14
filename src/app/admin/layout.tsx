@@ -63,7 +63,7 @@ export default function AdminLayout({
     { name: "Otaqlar", href: "/admin/otaqlar", icon: BedDouble },
     { name: "Bronlar", href: "/admin/bronlar", icon: CalendarCheck },
     { name: "Fəaliyyətlər", href: "/admin/activities", icon: Palmtree },
-    { name: "Wonderland", href: "/admin/wonderland", icon: Castle },
+    { name: "AF Park", href: "/admin/wonderland", icon: Castle },
     { name: "Restoranlar", href: "/admin/restaurants", icon: UtensilsCrossed },
     { name: "Biletlər", href: "/admin/tickets", icon: TicketIcon },
     { name: "Rəylər", href: "/admin/reviews", icon: Star },

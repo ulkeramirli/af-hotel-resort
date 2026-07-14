@@ -88,9 +88,23 @@ export default function Wonderland() {
 
           <ScrollReveal type="flipUp" delay={0.2}>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight relative inline-block mt-2">
-              {(wonderland?.title as any)?.[l] || (wonderland?.title as any)?.name || wonderland?.title || "Əyləncə Mərkəzi"}
+              AF PARK
               <Sparkles className="absolute -top-4 -right-6 w-8 h-8 text-[#ff6c02] opacity-70" />
             </h2>
+            <div className="mt-6 flex justify-center">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#ff6c02] to-[#ff9800] rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity duration-500 animate-pulse" />
+                <div className="relative flex items-center gap-2.5 px-6 py-2.5 bg-white/90 backdrop-blur-md border border-[#ff6c02]/30 rounded-full shadow-[0_8px_20px_rgba(255,108,2,0.1)]">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff6c02] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#ff6c02]"></span>
+                  </span>
+                  <span className="text-[11px] sm:text-[12px] font-extrabold uppercase tracking-[0.2em] text-[#ff6c02]">
+                    {l === 'az' ? 'Tezliklə açılacaq' : l === 'ru' ? 'Скоро откроется' : 'Opening Soon'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </ScrollReveal>
 
           <ScrollReveal type="zoomIn" delay={0.3}>
@@ -108,25 +122,49 @@ export default function Wonderland() {
             <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#ff6c02]/60 to-transparent" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            {wonderland?.smallAttractions?.map((h:any, i:any) => (
-              <TiltCard key={i} tiltAmount={3}>
-                <ScrollReveal type="zoomIn" delay={i * 0.15}
-                  className="h-full relative group bg-white rounded-3xl p-5 sm:p-7 border border-stone-100 hover:border-[#00b5d5]/30 shadow-[0_4px_20px_rgba(30,50,92,0.03)] overflow-hidden transition-all duration-700 hover:shadow-[0_16px_40px_rgba(0,181,213,0.08)]"
-                >
-                <div className="absolute -right-8 -top-8 w-32 h-32 bg-gradient-to-br from-[#00b5d5]/10 to-transparent rounded-full blur-2xl group-hover:bg-[#ff6c02]/10 transition-colors duration-700" />
-                <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-5">
-                  <div className="w-14 h-14 shrink-0 rounded-[1.25rem] bg-stone-50 flex items-center justify-center text-2xl border border-stone-100 shadow-inner group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-gradient-to-br group-hover:from-[#00b5d5]/10 group-hover:to-transparent transition-all duration-500">
-                    {h?.icon}
-                  </div>
-                  <div className="flex-1 sm:pt-1">
-                    <h4 className="text-base sm:text-lg font-bold text-[#1e325c] mb-1.5 group-hover:text-[#00b5d5] transition-colors leading-tight">{(h?.name as any)?.[l] || (h?.name as any)?.az || "Name"}</h4>
-                    <div className="text-[13px] text-stone-500 font-medium leading-relaxed prose prose-stone [&>p]:mb-0 line-clamp-2" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || "Desc" }} />
-                  </div>
-                </div>
-                </ScrollReveal>
-              </TiltCard>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {wonderland?.smallAttractions?.map((h:any, i:any) => {
+              const gradients = [
+                { bg: 'from-[#00b5d5]/10 to-[#00b5d5]/5', border: 'hover:border-[#00b5d5]/40', accent: '#00b5d5', num: 'bg-[#00b5d5]' },
+                { bg: 'from-[#ff6c02]/10 to-[#ff6c02]/5', border: 'hover:border-[#ff6c02]/40', accent: '#ff6c02', num: 'bg-[#ff6c02]' },
+                { bg: 'from-[#1e325c]/10 to-[#1e325c]/5', border: 'hover:border-[#1e325c]/40', accent: '#1e325c', num: 'bg-[#1e325c]' },
+              ];
+              const g = gradients[i % 3];
+              return (
+                <TiltCard key={i} tiltAmount={4}>
+                  <ScrollReveal type="zoomIn" delay={i * 0.12}
+                    className={`h-full relative group bg-white rounded-3xl border border-stone-100 ${g.border} shadow-[0_4px_24px_rgba(30,50,92,0.04)] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_48px_rgba(30,50,92,0.10)] hover:-translate-y-1 flex flex-col`}
+                  >
+                    {/* Top gradient stripe */}
+                    <div className={`h-1.5 w-full bg-gradient-to-r ${g.bg.replace('/10', '').replace('/5', '')} bg-gradient-to-r from-current to-current`} style={{ background: `linear-gradient(90deg, ${g.accent}99, ${g.accent}33)` }} />
+
+                    {/* Blurred background blob */}
+                    <div className={`absolute -right-6 -top-6 w-28 h-28 rounded-full bg-gradient-to-br ${g.bg} blur-2xl group-hover:scale-125 transition-transform duration-700`} />
+
+                    <div className="relative z-10 p-6 sm:p-7 flex flex-col flex-1">
+                      {/* Top row: icon + number badge */}
+                      <div className="flex items-start justify-between mb-5">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center text-3xl border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500">
+                          {h?.icon}
+                        </div>
+                        <span className={`${g.num} text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center shadow-md`}>{i + 1}</span>
+                      </div>
+
+                      {/* Text */}
+                      <h4 className="text-base sm:text-[17px] font-bold text-[#1e325c] mb-2 leading-snug group-hover:text-[#00b5d5] transition-colors duration-300">
+                        {(h?.name as any)?.[l] || (h?.name as any)?.az || 'Name'}
+                      </h4>
+                      <div className="text-[13px] text-stone-500 leading-relaxed prose prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || 'Desc' }} />
+
+                      {/* Bottom accent line */}
+                      <div className="mt-5 pt-4 border-t border-stone-100">
+                        <div className="w-8 h-[2px] rounded-full transition-all duration-500 group-hover:w-16" style={{ background: g.accent }} />
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                </TiltCard>
+              );
+            })}
           </div>
         </div>
 
@@ -155,12 +193,26 @@ export default function Wonderland() {
                 </div>
               )}
 
-              <div className="flex gap-2 shrink-0">
-                <button onClick={scrollPrev} disabled={!prevBtnEnabled} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${prevBtnEnabled ? "bg-white border border-stone-200 hover:border-[#1e325c] text-stone-500 hover:text-[#1e325c] shadow-sm hover:scale-105" : "bg-stone-50/50 text-stone-200 border border-stone-100 cursor-not-allowed"}`}>
-                  <ArrowLeft className="w-4 h-4" />
+              <div className="flex gap-3 shrink-0">
+                <button
+                  onClick={scrollPrev}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-2 shadow-md hover:scale-110 active:scale-95 ${
+                    prevBtnEnabled
+                      ? 'bg-white border-[#1e325c] text-[#1e325c] hover:bg-[#1e325c] hover:text-white shadow-[0_4px_16px_rgba(30,50,92,0.18)]'
+                      : 'bg-stone-50 border-stone-200 text-stone-300 cursor-not-allowed opacity-50'
+                  }`}
+                >
+                  <ArrowLeft className="w-5 h-5" />
                 </button>
-                <button onClick={scrollNext} disabled={!nextBtnEnabled} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${nextBtnEnabled ? "bg-[#1e325c] hover:bg-[#162545] text-white shadow-md hover:scale-105" : "bg-stone-50/50 text-stone-200 border border-stone-100 cursor-not-allowed"}`}>
-                  <ArrowRight className="w-4 h-4" />
+                <button
+                  onClick={scrollNext}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-2 shadow-md hover:scale-110 active:scale-95 ${
+                    nextBtnEnabled
+                      ? 'bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e05e00] hover:border-[#e05e00] shadow-[0_4px_16px_rgba(255,108,2,0.35)]'
+                      : 'bg-stone-50 border-stone-200 text-stone-300 cursor-not-allowed opacity-50'
+                  }`}
+                >
+                  <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
             </div>

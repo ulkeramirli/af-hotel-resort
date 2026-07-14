@@ -170,8 +170,8 @@ export default function Contacts() {
                   ))
                 ) : (
                   <>
-                    <a href="tel:+994124483030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 12 448 3030</a>
-                    <a href="tel:+994502253030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 50 225 3030</a>
+                    <a href="tel:+994502233285" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 50 223 32 85</a>
+                    <a href="tel:+994517895555" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 51 789 55 55</a>
                   </>
                 )}
               </div>

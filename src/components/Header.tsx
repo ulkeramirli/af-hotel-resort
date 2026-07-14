@@ -138,12 +138,12 @@ export default function Header() {
 
   const navLinks = [
     { id: "/", href: "/", label: t.nav.home },
-    { id: "/about", href: isDesktop && pathname === '/' ? "/#about" : "/about", label: t.nav.about },
-    { id: "/rooms", href: isDesktop && pathname === '/' ? "/#rooms" : "/rooms", label: t.nav.rooms },
-    { id: "/aquapark", href: isDesktop && pathname === '/' ? "/#aquapark" : "/aquapark", label: t.nav.aquapark },
-    { id: "/wonderland", href: isDesktop && pathname === '/' ? "/#wonderland" : "/wonderland", label: t.nav.wonderland },
-    { id: "/restoran", href: isDesktop && pathname === '/' ? "/#restoran" : "/restoran", label: t.nav.restoran },
-    { id: "/contacts", href: isDesktop && pathname === '/' ? "/#contacts" : "/contacts", label: t.nav.contacts },
+    { id: "/about", href: isDesktop ? "/#about" : "/about", label: t.nav.about },
+    { id: "/rooms", href: isDesktop ? "/#rooms" : "/rooms", label: t.nav.rooms },
+    { id: "/aquapark", href: isDesktop ? "/#aquapark" : "/aquapark", label: t.nav.aquapark },
+    { id: "/wonderland", href: isDesktop ? "/#wonderland" : "/wonderland", label: t.nav.wonderland },
+    { id: "/restoran", href: isDesktop ? "/#restoran" : "/restoran", label: t.nav.restoran },
+    { id: "/contacts", href: isDesktop ? "/#contacts" : "/contacts", label: t.nav.contacts },
   ];
 
   return (
@@ -183,7 +183,7 @@ export default function Header() {
           </motion.div>
         </MagneticButton>
 
-        <nav className="hidden lg:flex items-center space-x-1 xl:space-x-3 text-[10.5px] font-medium uppercase tracking-[0.18em] text-slate-600">
+        <nav className="hidden lg:flex items-center space-x-1 xl:space-x-3 text-[10.5px] font-bold uppercase tracking-[0.18em] text-slate-600">
           {navLinks.map((item) => {
             const isActive = pathname === item.href || (pathname === '/' && item.href === '/');
             return (
@@ -209,13 +209,15 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center space-x-2 md:space-x-4">
-          <a
-            href={`tel:${settings?.phone || "+994124483030"}`}
-            className="hidden xl:flex items-center gap-1.5 text-[10px] font-medium text-slate-500 hover:text-[#ff6c02] transition-colors border border-stone-200/60 px-3 py-1.5 rounded-lg bg-stone-50/50"
-          >
-            <Phone className="w-3.5 h-3.5 text-[#00b5d5]" />
-            <span>{settings?.phone || "+994 (12) 448-30-30"}</span>
-          </a>
+          <div className="hidden xl:flex flex-col gap-1.5">
+            <a
+              href={`tel:+994502233285`}
+              className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 hover:text-[#ff6c02] transition-colors border border-stone-200/60 px-3 py-1.5 rounded-lg bg-stone-50/50"
+            >
+              <Phone className="w-3.5 h-3.5 text-[#00b5d5]" />
+              <span>+994 50 223 32 85</span>
+            </a>
+          </div>
 
           {/* Currency Switcher */}
           <div className="relative" ref={currRef}>
@@ -418,10 +420,10 @@ export default function Header() {
             </motion.nav>
           <div className="space-y-4">
             <a
-              href={`tel:${settings?.phone || "+994124483030"}`}
+              href={`tel:+994502233285`}
               className="flex items-center justify-center gap-2 text-xs font-bold text-slate-700 py-3.5 border border-stone-200 rounded-xl"
             >
-              <Phone className="w-4 h-4 text-[#00b5d5]" /> {settings?.phone || "+994 (12) 448-30-30"}
+              <Phone className="w-4 h-4 text-[#00b5d5]" /> +994 50 223 32 85
             </a>
             <Link
               href="/booking"

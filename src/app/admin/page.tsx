@@ -134,7 +134,7 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl border border-stone-100 shadow-sm p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-              <h3 className="font-bold text-[#1e325c]">Son bronlar</h3>
+              <h3 className="font-bold text-[#1e325c] text-lg">Son bronlar</h3>
               <div className="flex gap-1.5 bg-stone-50 p-1 rounded-xl overflow-x-auto whitespace-nowrap">
                 {["Hamısı", "Gözləyir", "Təsdiqlənib", "Ləğv edilib"].map((tab) => (
                   <button
@@ -160,7 +160,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm min-w-[500px]">
+                <table className="w-full text-left text-sm min-w-125">
                   <thead>
                     <tr className="border-b border-stone-100 text-xs text-stone-400 uppercase">
                       <th className="pb-3">Qonaq</th>
@@ -177,7 +177,7 @@ export default function DashboardPage() {
                             <User className="w-3.5 h-3.5 text-stone-400" />
                             {b.guestName}
                           </td>
-                          <td className="py-3 text-stone-500">{typeof b.room?.name === 'object' ? ((b.room.name as any)?.az || "Bilinmir") : (b.room?.name || "Bilinmir")}</td>
+                          <td className="py-3 text-stone-500">{typeof b.room?.name === 'object' ? ((b.room.name as any)?.az || "Silinmiş Otaq") : (b.room?.name || "Silinmiş Otaq")}</td>
                           <td className="py-3 text-stone-500 text-xs">
                             {new Date(b.checkIn).toLocaleDateString("az-AZ")} → {new Date(b.checkOut).toLocaleDateString("az-AZ")}
                           </td>

@@ -120,7 +120,7 @@ export default function RootLayout({
     url: 'https://afhotel.az',
     logo: 'https://afhotel.az/loqo-af.png',
     image: 'https://afhotel.az/AF-hero.jpg',
-    telephone: '+994124483030',
+    telephone: '+994502233285',
     priceRange: '$$$',
     starRating: { '@type': 'Rating', ratingValue: '5' },
     address: {

@@ -15,6 +15,7 @@ import {
 import dynamic from "next/dynamic";
 import { getPublicRooms, createPayment, getBookedDates } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const ReCAPTCHA = dynamic(() => import("react-google-recaptcha"), { ssr: false });
 
@@ -30,11 +31,13 @@ function CustomDatePicker({
   onChange,
   bookedDates,
   label,
+  lang,
 }: {
   value: string;
   onChange: (d: string) => void;
   bookedDates: { checkIn: Date; checkOut: Date }[];
   label: string;
+  lang: string;
 }) {
   const [open, setOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -80,6 +83,13 @@ function CustomDatePicker({
     return d < today;
   };
 
+  const localeStr = lang === 'ru' ? 'ru-RU' : lang === 'az' ? 'az-AZ' : 'en-US';
+  const weekDays = {
+    az: ["B", "Be", "Ça", "Ç", "Ca", "C", "Ş"],
+    ru: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+    en: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+  }[lang as "az" | "en" | "ru"] || ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
   return (
     <div className="relative w-full group">
       <label className="text-[10px] font-bold text-stone-500 uppercase tracking-widest block mb-2 ml-1 transition-colors group-focus-within:text-[#00b5d5]">
@@ -89,20 +99,20 @@ function CustomDatePicker({
         onClick={() => setOpen(!open)}
         className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#00b5d5]/50 rounded-2xl px-5 h-14 text-sm outline-none focus:border-[#00b5d5] focus:ring-4 focus:ring-[#00b5d5]/10 text-slate-800 cursor-pointer flex items-center justify-between shadow-sm transition-all duration-300"
       >
-        <span className="font-medium text-slate-700">{value || "Seçin / Select"}</span>
+        <span className="font-medium text-slate-700">{value || (lang === 'ru' ? "Выберите" : lang === 'az' ? "Seçin" : "Select")}</span>
         <Calendar className="w-5 h-5 text-stone-400 group-hover:text-[#00b5d5] transition-colors duration-300" />
       </div>
       {open && (
         <div className="absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-0 bg-white/95 backdrop-blur-xl border border-stone-200/60 rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-5 z-50 w-[calc(100vw-4rem)] sm:w-85 max-w-85 animate-in zoom-in-95 duration-200">
           <div className="flex justify-between items-center mb-5 px-1">
             <button onClick={handlePrev} className="w-8 h-8 flex items-center justify-center bg-stone-100/50 hover:bg-[#00b5d5]/10 hover:text-[#00b5d5] rounded-full text-stone-600 font-bold transition-colors">&lt;</button>
-            <span className="font-bold text-[15px] text-[#1e325c] tracking-tight">
-              {currentMonth.toLocaleString("default", { month: "long", year: "numeric" })}
+            <span className="font-bold text-[15px] text-[#1e325c] tracking-tight capitalize">
+              {currentMonth.toLocaleString(localeStr, { month: "long", year: "numeric" })}
             </span>
             <button onClick={handleNext} className="w-8 h-8 flex items-center justify-center bg-stone-100/50 hover:bg-[#00b5d5]/10 hover:text-[#00b5d5] rounded-full text-stone-600 font-bold transition-colors">&gt;</button>
           </div>
           <div className="grid grid-cols-7 gap-1.5 text-center mb-3">
-            {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
+            {weekDays.map((d) => (
               <div key={d} className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">{d}</div>
             ))}
           </div>
@@ -327,6 +337,16 @@ function BookingContent() {
       en: "Total Price:",
       ru: "Итоговая цена:",
     }[currentLang],
+    checkIn: {
+      az: "Giriş Tarixi",
+      en: "Check-In Date",
+      ru: "Дата заезда",
+    }[currentLang],
+    checkOut: {
+      az: "Çıxış Tarixi",
+      en: "Check-Out Date",
+      ru: "Дата выезда",
+    }[currentLang],
   };
 
   const handleNextStep = (e: React.FormEvent) => {
@@ -447,16 +467,18 @@ function BookingContent() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
               <CustomDatePicker
-                label="Check-In"
+                label={dict.checkIn || "Check-In"}
                 value={checkIn}
                 onChange={setCheckIn}
                 bookedDates={bookedDates}
+                lang={currentLang}
               />
               <CustomDatePicker
-                label="Check-Out"
+                label={dict.checkOut || "Check-Out"}
                 value={checkOut}
                 onChange={setCheckOut}
                 bookedDates={bookedDates}
+                lang={currentLang}
               />
             </div>
 
@@ -481,7 +503,7 @@ function BookingContent() {
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-5 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
               <div className="group">
                 <label className="text-[10px] font-bold text-stone-500 uppercase tracking-widest block mb-2 ml-1 transition-colors group-focus-within:text-[#00b5d5]">
                   {dict.adultsLabel}
@@ -546,7 +568,7 @@ function BookingContent() {
                   type="tel"
                   required
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(e.target.value.replace(/[^\d+]/g, ''))}
                   placeholder="+994"
                   className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#00b5d5]/50 rounded-2xl px-5 h-14 text-sm outline-none focus:border-[#00b5d5] focus:ring-4 focus:ring-[#00b5d5]/10 text-slate-800 shadow-sm transition-all duration-300 placeholder:text-stone-300 font-medium"
                 />
@@ -555,13 +577,15 @@ function BookingContent() {
 
             <div className="flex justify-center my-6">
               <div className="bg-white p-2 rounded-2xl shadow-sm border border-stone-100">
-                <ReCAPTCHA
-                  sitekey={
-                    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
-                    "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                  }
-                  onChange={(val) => setCaptchaValue(val)}
-                />
+                <ErrorBoundary fallback={<div className="text-red-500 text-sm">reCAPTCHA yüklənə bilmədi. Səhifəni yeniləyin.</div>}>
+                  <ReCAPTCHA
+                    sitekey={
+                      process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
+                      "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                    }
+                    onChange={(val) => setCaptchaValue(val)}
+                  />
+                </ErrorBoundary>
               </div>
             </div>
 

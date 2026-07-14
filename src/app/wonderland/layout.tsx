@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Wonderland Baku | Möhtəşəm Lunapark',
-  description: 'AF Hotel daxilində Wonderland ailəvi əyləncə parkı və lunapark. Uşaqlar və böyüklər üçün karusellər, oyun aparatları və unudulmaz vaxt.',
-  keywords: ['Wonderland Baku', 'Lunapark AF Hotel', 'uşaq əyləncə mərkəzi', 'karusellər Bakı', 'Wonderland Novxanı'],
+  title: 'AF Park | Yaxında açılır',
+  description: 'AF Hotel daxilində AF Park — yeni əyləncə mərkəzi tezliklə açılır. Karusellər, attraksionlar, uşaq oyun zonaları.',
+  keywords: ['AF Park Baku', 'Lunapark AF Hotel', 'uşaq əyləncə mərkəzi', 'attraksionlar Bakı', 'AF Park Novxanı'],
   openGraph: {
-    title: 'Wonderland Baku | Möhtəşəm Lunapark',
-    description: 'AF Hotel daxilində Wonderland ailəvi əyləncə parkı. Karusellər və oyun aparatları.',
+    title: 'AF Park | Yaxında açılır',
+    description: 'AF Hotel daxilində AF Park tezliklə açılır. Attraksionlar və oyun zonaları.',
     url: 'https://af-hotel.az/wonderland',
     images: [{ url: '/AF-aqua2.jpg', width: 1200, height: 630 }],
   }

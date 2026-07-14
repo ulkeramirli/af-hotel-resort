@@ -58,11 +58,11 @@ const sections = [
     accent: "#f59e0b",
     glow: "rgba(245,158,11,0.25)",
     labels: {
-      az: { title: "Wonderland", sub: "İl boyu açıq lunapark" },
-      en: { title: "Wonderland", sub: "Year-round theme park" },
-      ru: { title: "Вондерленд", sub: "Парк открыт круглый год" },
+      az: { title: "AF Park", sub: "Tezliklə açılacaq" },
+      en: { title: "AF Park", sub: "Coming soon" },
+      ru: { title: "AF Park", sub: "Скоро откроется" },
     },
-    badge: { az: "İl boyu", en: "Year-round", ru: "Круглый год" },
+    badge: { az: "Tezliklə", en: "Coming Soon", ru: "Скоро" },
     large: false,
   },
   {

@@ -289,7 +289,7 @@ export default function Aquapark() {
             emoji: cat.emoji || "",
             icon: Waves,
             items: acts
-              .filter(a => (typeof a.category === 'object' ? (a.category as any)._id : a.category) === cat._id)
+              .filter(a => a.category && (typeof a.category === 'object' ? (a.category as any)._id : a.category) === cat._id)
               .map(a => ({
                 name: a.title,
                 icon: "✨",
@@ -337,34 +337,42 @@ export default function Aquapark() {
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-10 md:space-y-16">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="flex flex-col items-center justify-center relative z-10">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ ease: 'easeOut', duration: 0.45, delay: 0.05 }}
-            className="space-y-4 text-left"
+            className="space-y-4 text-center flex flex-col items-center"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-center gap-4">
               <motion.div
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-                style={{ originX: 0 }}
-                className="w-8 h-[1px] bg-[#00b5d5]"
+                style={{ originX: 0.5 }}
+                className="w-12 h-[1px] bg-[#00b5d5]"
               />
               <motion.span
                 initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5]"
+                className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-[#00b5d5]"
               >
                 {displayTag}
               </motion.span>
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+                style={{ originX: 0.5 }}
+                className="w-12 h-[1px] bg-[#00b5d5]"
+              />
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight break-words whitespace-normal">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight break-words whitespace-normal text-center max-w-3xl">
               <TextReveal text={displayTitle} delay={0.1} />
             </h2>
             <motion.div
@@ -372,28 +380,31 @@ export default function Aquapark() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: displaySubtitle }}
+              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal text-center [&>p]:mb-0 mx-auto" dangerouslySetInnerHTML={{ __html: displaySubtitle }}
             />
           </motion.div>
         </div>
 
         {/* Stats */}
-        <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+        <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 relative z-10">
           {dynamicStats.map((s, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 30, scale: 0.94 }}
               animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{ ease: 'easeOut', duration: 0.45, delay: i * 0.1 }}
-              whileHover={{ y: -3, scale: 1.015 }}
-              className="bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl md:rounded-3xl p-4 md:p-6 flex flex-col items-center text-center gap-2 transition-shadow hover:shadow-[0_12px_40px_rgba(0,181,213,0.10)]"
+              transition={{ ease: 'easeOut', duration: 0.5, delay: i * 0.12 }}
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="bg-white/70 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem] p-5 md:p-7 flex flex-col items-center text-center gap-3 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)] group relative overflow-hidden"
             >
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#00b5d5]/10 flex items-center justify-center mb-1">
+              {/* Hover Glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#00b5d5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center mb-0 md:mb-1 border border-stone-100 shadow-inner group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-gradient-to-br group-hover:from-[#00b5d5]/10 group-hover:to-transparent transition-all duration-500">
                 <s.icon className="w-5 h-5 md:w-6 md:h-6 text-[#00b5d5]" />
               </div>
-              <span className="text-lg md:text-2xl font-bold text-[#1e325c] tracking-tight">{s.label}</span>
-              <span className="text-[10px] md:text-[11px] text-stone-500 font-semibold tracking-widest uppercase">{s.sub1}</span>
-              {s.sub2 && <span className="text-[9px] text-stone-400 font-medium tracking-wide mt-1">{s.sub2}</span>}
+              <span className="text-lg md:text-2xl font-extrabold text-[#1e325c] tracking-tight group-hover:text-[#00b5d5] transition-colors">{s.label}</span>
+              <span className="text-[10px] md:text-[11px] text-stone-500 font-bold tracking-widest uppercase">{s.sub1}</span>
+              {s.sub2 && <span className="text-[9px] text-stone-400 font-medium tracking-wide mt-0.5">{s.sub2}</span>}
             </motion.div>
           ))}
         </div>
@@ -404,9 +415,9 @@ export default function Aquapark() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
-          className="w-full pt-4"
+          className="w-full pt-4 relative z-10"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 bg-white/40 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-white/60 backdrop-blur-md shadow-sm">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 bg-white/70 p-3 rounded-[2rem] border border-white/60 backdrop-blur-xl shadow-sm">
             {activeZones.map((zone, i) => {
               const IconComponent = zone.icon;
               const zoneName = loc(zone.name);
@@ -417,32 +428,32 @@ export default function Aquapark() {
                   key={zone.id || i}
                   onClick={() => setActiveTab(i)}
                   whileTap={{ scale: 0.97 }}
-                  className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer ${
+                  className={`relative p-4 md:p-5 rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-2 transition-all cursor-pointer ${
                     activeTab === i
-                      ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
-                      : "hover:bg-white/60 border border-transparent"
+                      ? "bg-white shadow-[0_8px_30px_rgba(0,181,213,0.12)] border border-[#00b5d5]/20 scale-[1.02]"
+                      : "hover:bg-white/80 border border-transparent"
                   }`}
                 >
-                  <div className="flex items-center gap-1 md:gap-1.5 whitespace-nowrap">
+                  <div className="flex items-center gap-1.5 md:gap-2 whitespace-nowrap mb-1">
                     {zone.emoji ? (
-                      <span className="text-xs md:text-sm">{zone.emoji}</span>
+                      <span className="text-lg md:text-xl">{zone.emoji}</span>
                     ) : IconComponent ? (
-                      <IconComponent className={`w-3 h-3 md:w-4 md:h-4 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
+                      <IconComponent className={`w-4 h-4 md:w-5 md:h-5 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
                     ) : null}
 
-                    <span className={`text-[11px] md:text-xs font-medium tracking-wide ${activeTab === i ? "text-[#1e325c]" : "text-stone-500"}`}>
+                    <span className={`text-xs md:text-sm font-bold tracking-wide ${activeTab === i ? "text-[#00b5d5]" : "text-stone-600"}`}>
                       {zoneName}
                     </span>
 
                     {zone.isSoon && (
-                      <span className="text-[6px] md:text-[8px] bg-amber-500 text-white font-bold px-1.5 py-0.5 rounded-sm uppercase tracking-wider">
+                      <span className="text-[8px] md:text-[9px] bg-amber-500 text-white font-extrabold px-2 py-0.5 rounded-full uppercase tracking-widest shadow-sm">
                         {c.soonTag || "Soon"}
                       </span>
                     )}
                   </div>
 
                   {zoneDesc && (
-                    <span className="text-[9px] md:text-[10px] text-stone-400 font-medium line-clamp-1 w-full text-center md:text-left">
+                    <span className="text-[10px] md:text-[11px] text-stone-500 font-medium line-clamp-1 w-full text-center md:text-left">
                       {stripHtml(zoneDesc)}
                     </span>
                   )}
@@ -452,16 +463,14 @@ export default function Aquapark() {
           </div>
         </motion.div>
 
-        {/* НИЖНИЕ КАРТОЧКИ С ФОТОГРАФИЯМИ */}
+        {/* НИЖНИЕ КАРТОЧКИ С ФОТОГРАФИЯМИ (УНИВЕРСАЛЬНЫЙ СЛАЙДЕР) */}
         <div className="space-y-4">
           
-          {/* Мобильная версия: Слайдер строго по стрелкам */}
-          <div className="block md:hidden relative">
-            
+          <div className="relative">
             {/* Сама лента слайдера */}
             <div 
               ref={photoSliderRef}
-              className="overflow-x-auto snap-x snap-mandatory flex gap-4 pb-2 scrollbar-none [&::-webkit-scrollbar]:hidden"
+              className="overflow-x-auto snap-x snap-mandatory flex gap-4 md:gap-6 pb-4 pt-2 scrollbar-none [&::-webkit-scrollbar]:hidden"
             >
               {activeZone?.items.map((item: any, i: number) => {
                 const itemName = loc(item.name);
@@ -471,24 +480,27 @@ export default function Aquapark() {
                 return (
                   <div
                     key={i}
-                    className="snap-center shrink-0 w-[75vw] sm:w-[50vw] bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-xs flex flex-col"
+                    className="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] group rounded-[2rem] overflow-hidden border border-white/60 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col cursor-pointer relative transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)]"
                   >
-                    <div className="relative h-48 overflow-hidden bg-stone-100">
-                      <Image src={item.img} alt={itemName} fill sizes="85vw" className="object-cover" />
-                      <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/80 via-[#1e325c]/10 to-transparent opacity-90" />
-                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-full text-[11px] font-bold text-[#1e325c] flex items-center gap-1">
-                        <span>{item.icon}</span>
+                    {/* Subtle glow overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#00b5d5]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" />
+                    
+                    <div className="relative h-56 md:h-64 overflow-hidden bg-stone-100">
+                      <Image src={item.img} alt={itemName} fill sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#1e325c] shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center gap-1.5 z-20">
+                        <span className="text-sm">{item.icon}</span>
                         <span>{itemName}</span>
                       </div>
                     </div>
-                    <div className="p-4 grow flex flex-col justify-between space-y-2">
+                    <div className="p-5 md:p-6 grow flex flex-col justify-between space-y-3 relative z-20">
                       <div>
-                        <h4 className="font-semibold text-[#1e325c] text-sm leading-snug">{itemName}</h4>
-                        <div className="text-[11px] text-stone-500 leading-relaxed line-clamp-3 prose prose-stone" dangerouslySetInnerHTML={{ __html: itemDesc }} />
+                        <h4 className="font-extrabold text-[#1e325c] text-base md:text-lg leading-tight mb-2 group-hover:text-[#00b5d5] transition-colors">{itemName}</h4>
+                        <div className="text-[11px] md:text-xs text-stone-500 font-medium leading-relaxed line-clamp-3 prose prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: itemDesc }} />
                       </div>
-                      <div className="pt-2.5 border-t border-stone-50 flex items-center gap-1 text-stone-400">
-                        <MapPin className="w-3 h-3 text-[#00b5d5]" />
-                        <span className="text-[9px] font-bold uppercase tracking-wider">{activeZoneName}</span>
+                      <div className="pt-3 border-t border-stone-200/50 flex items-center gap-1.5 text-stone-400 group-hover:text-[#00b5d5]/80 transition-colors">
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-widest">{activeZoneName}</span>
                       </div>
                     </div>
                   </div>
@@ -496,111 +508,69 @@ export default function Aquapark() {
               })}
             </div>
 
-            {/* Блок навигации со стрелками (Вынесен вниз по центру, чтобы не перекрывать фото) */}
+            {/* Блок навигации со стрелками */}
             {activeZone?.items.length > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-3">
+              <div className="flex justify-center items-center gap-4 mt-6">
                 <button 
                   onClick={() => scrollSlider("left")}
-                  className="w-9 h-9 rounded-full bg-stone-100 active:bg-stone-200 border border-stone-200/50 flex items-center justify-center text-[#1e325c] transition-colors"
+                  className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white active:bg-stone-50 hover:bg-stone-50 border border-stone-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex items-center justify-center text-[#1e325c] transition-all hover:scale-105 active:scale-95"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-6 h-6 md:w-7 md:h-7" />
                 </button>
                 <button 
                   onClick={() => scrollSlider("right")}
-                  className="w-9 h-9 rounded-full bg-stone-100 active:bg-stone-200 border border-stone-200/50 flex items-center justify-center text-[#1e325c] transition-colors"
+                  className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white active:bg-stone-50 hover:bg-stone-50 border border-stone-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex items-center justify-center text-[#1e325c] transition-all hover:scale-105 active:scale-95"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-6 h-6 md:w-7 md:h-7" />
                 </button>
               </div>
             )}
           </div>
-
-          {/* Desktop: Premium staggered grid */}
-          <div className="hidden md:block">
-            <motion.div layout className="grid grid-cols-3 gap-4">
-              <AnimatePresence mode="popLayout">
-                {activeZone?.items.map((item: any, i: number) => {
-                  const itemName = loc(item.name);
-                  const itemDesc = loc(item.desc);
-                  const activeZoneName = loc(activeZone.name);
-
-                  return (
-                    <motion.div
-                      key={itemName || i}
-                      initial={{ opacity: 0, y: 24, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.94, y: -10 }}
-                      transition={{ ease: 'easeOut', duration: 0.45, delay: i * 0.08 }}
-                      className="h-full"
-                    >
-                      <TiltCard tiltAmount={5} className="h-full">
-                      <motion.div
-                        whileHover={{ y: -4, boxShadow: '0 20px 50px rgba(0,181,213,0.13)' }}
-                        transition={{ ease: 'easeOut', duration: 0.45 }}
-                        className="group rounded-2xl overflow-hidden border border-stone-100 bg-white shadow-sm flex flex-col h-full cursor-pointer"
-                      >
-                        <div className="relative h-40 overflow-hidden bg-stone-100">
-                          <Image src={item.img} alt={itemName} fill sizes="400px" className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                          <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/70 via-[#1e325c]/10 to-transparent" />
-                          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-full text-[11px] font-semibold text-[#1e325c] shadow-xs flex items-center gap-1">
-                            <span>{item.icon}</span>
-                            <span>{itemName}</span>
-                          </div>
-                        </div>
-                        <div className="p-4 grow flex flex-col justify-between space-y-1.5">
-                          <div>
-                            <h4 className="font-semibold text-[#1e325c] text-sm leading-snug">{itemName}</h4>
-                            <div className="text-[11px] text-stone-500 leading-relaxed line-clamp-2 prose prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: itemDesc }} />
-                          </div>
-                          <div className="pt-2 border-t border-stone-50 flex items-center gap-1 text-stone-400">
-                            <MapPin className="w-3 h-3 text-[#00b5d5]" />
-                            <span className="text-[10px] font-medium uppercase tracking-wider">{activeZoneName}</span>
-                          </div>
-                        </div>
-                      </motion.div>
-                      </TiltCard>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-            </motion.div>
-          </div>
-
         </div>
 
         {/* Tickets + FAQ */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 pt-4">
           {/* Tickets */}
-          <div className="bg-[#f9f8f4] rounded-3xl p-6 md:p-8 space-y-5 flex flex-col justify-between border border-stone-100">
-            <div className="space-y-4">
-              <h3 className="font-bold text-lg md:text-xl text-[#1e325c] font-serif flex items-center gap-2">
-                🎟️ {c.tickets}
+          {/* Tickets */}
+          <div className="bg-white border border-stone-100 rounded-[2rem] p-6 md:p-8 relative overflow-hidden group shadow-sm flex flex-col justify-between">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-stone-50 rounded-full blur-3xl group-hover:bg-[#00b5d5]/5 transition-colors duration-1000" />
+            
+            <div className="flex flex-col mb-6 relative z-10 border-b border-stone-100 pb-4">
+              <h3 className="font-serif text-xl md:text-2xl text-[#1e325c] flex items-center gap-2.5 font-medium">
+                <span className="text-xl">🎟️</span>
+                {c.tickets}
               </h3>
-              {tickets.length > 0 ? tickets.map((t) => (
-                <div key={t._id} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100 shadow-sm">
-                  <span className="text-sm font-medium text-stone-600">{loc(t.name)}</span>
-                  <span className="text-base font-semibold" style={{ color: "var(--color-hotel-blue)" }}>
-                    {t.price} ₼
-                  </span>
-                </div>
-              )) : [
-                { label: c.adult, price: c.adultPrice },
-                { label: c.child, price: c.childPrice },
-                { label: c.infant, price: c.infantPrice },
-              ].map((t) => (
-                <div key={t.label} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100 shadow-sm">
-                  <span className="text-sm font-medium text-stone-600">{t.label}</span>
-                  <span className="text-base font-semibold" style={{ color: "var(--color-hotel-blue)" }}>
-                    {t.price}
-                  </span>
+            </div>
+            
+            <div className="flex flex-col gap-3 relative z-10 flex-1">
+              {(tickets.length > 0 ? tickets.map((t) => ({ label: loc(t.name), price: t.price + " ₼", _id: t._id })) : [
+                { label: c.adult, price: c.adultPrice, _id: "adult" },
+                { label: c.child, price: c.childPrice, _id: "child" },
+                { label: c.infant, price: c.infantPrice, _id: "infant" },
+              ]).map((t) => (
+                <div key={t._id} className="relative bg-stone-50/50 rounded-xl border border-stone-200 hover:border-[#00b5d5]/50 transition-all duration-300 hover:shadow-sm overflow-hidden group/ticket flex flex-col justify-center min-h-[50px]">
+                  
+                  {/* Perforations for real ticket look */}
+                  <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-r border-stone-200 group-hover/ticket:border-[#00b5d5]/50 transition-colors" />
+                  <div className="absolute top-1/2 -right-2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-l border-stone-200 group-hover/ticket:border-[#00b5d5]/50 transition-colors" />
+                  
+                  <div className="flex justify-between items-center px-4 py-2 border-l-2 border-dashed border-stone-200 group-hover/ticket:border-[#00b5d5]/40 ml-3 transition-colors">
+                    <span className="text-sm font-medium text-stone-700 pr-4">
+                      {t.label}
+                    </span>
+                    <span className="text-sm md:text-base font-bold text-[#00b5d5] whitespace-nowrap">
+                      {t.price}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
-            <MagneticButton className="w-full block">
+            
+            <MagneticButton className="w-full block relative z-10 mt-6">
               <a
-                href="tel:+994123456789"
-                className="flex items-center justify-center gap-2 w-full py-3.5 text-white text-sm font-bold rounded-2xl transition-all active:scale-[0.99] shadow-md shadow-[#00406a]/10"
-                style={{ background: "var(--color-hotel-blue)" }}
+                href="tel:+994502233285"
+                className="flex items-center justify-center gap-2 w-full py-3.5 text-white text-sm font-bold rounded-xl transition-all shadow-md hover:shadow-lg"
+                style={{ background: "var(--color-hotel-blue, #00b5d5)" }}
               >
                 {c.orderTicket}
               </a>

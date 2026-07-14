@@ -120,7 +120,7 @@ export default function AdminWonderlandPage() {
     try {
       setSaving(true);
       await updateWonderland(form);
-      alert("Wonderland uğurla yeniləndi!");
+      alert("AF Park uğurla yeniləndi!");
       loadData();
     } catch (err: any) {
       alert(err.message || "Yadda saxlanılarkən xəta baş verdi");
@@ -263,9 +263,9 @@ export default function AdminWonderlandPage() {
         <div>
           <h2 className="text-xl font-bold text-[#1e325c] flex items-center gap-2">
             <Castle className="w-5 h-5" style={{ color: "var(--color-hotel-gold)" }} />
-            Wonderland İdarə
+            AF Park İdarə
           </h2>
-          <p className="text-xs text-stone-400 mt-1">Wonderland attraksion parkının bütün məlumatlarını idarə edin</p>
+          <p className="text-xs text-stone-400 mt-1">AF Park attraksion parkının bütün məlumatlarını idarə edin</p>
         </div>
         <button
           onClick={handleSave}
@@ -321,7 +321,7 @@ export default function AdminWonderlandPage() {
             <div>
               <label className="block text-xs font-bold text-stone-600 mb-1">Başlıq [{formLang.toUpperCase()}]</label>
               <input
-                placeholder="Wonderland Aqua Park"
+                placeholder="AF Park"
                 value={form.title[formLang]}
                 onChange={(e) => setForm({ ...form, title: { ...form.title, [formLang]: e.target.value } })}
                 className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
@@ -355,7 +355,7 @@ export default function AdminWonderlandPage() {
           <div>
             <label className="block text-xs font-bold text-stone-600 mb-1">Təsvir [{formLang.toUpperCase()}]</label>
             <RichTextEditor
-              placeholder="Wonderland haqqında geniş məlumat daxil edin..."
+              placeholder="AF Park haqqında geniş məlumat daxil edin..."
               value={form.description[formLang]}
               onChange={(val) => setForm({ ...form, description: { ...form.description, [formLang]: val } })}
             />
