@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import ExchangeRate from "@/models/ExchangeRate";
-
+import Room from "@/models/Room";
 export async function GET() {
   await connectDB();
   try {
@@ -75,10 +75,20 @@ export async function POST() {
       });
     }
 
+    // Bütün otaqların qiymətlərini yeni məzənnəyə uyğun yeniləyirik
+    const allRooms = await Room.find({});
+    for (const room of allRooms) {
+      if (room.price) {
+        room.priceUsd = Number((room.price / usdRate).toFixed(2));
+        room.priceEur = Number((room.price / eurRate).toFixed(2));
+        await room.save();
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: rate,
-      message: "Məzənnələr uğurla yeniləndi!",
+      message: "Məzənnələr və otaq qiymətləri uğurla yeniləndi!",
     });
   } catch (error) {
     return NextResponse.json(
