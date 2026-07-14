@@ -62,6 +62,7 @@ export default function AdminRoomsPage() {
   const [activeTab, setActiveTab] = useState<"rooms" | "types" | "settings">("rooms");
 
   const [formLang, setFormLang] = useState<"az" | "en" | "ru">("az");
+  const [exchangeRates, setExchangeRates] = useState<{ usd: number; eur: number }>({ usd: 1.7, eur: 1.85 });
 
   const loc = (obj: any) => {
     if (!obj) return "";
@@ -106,6 +107,14 @@ export default function AdminRoomsPage() {
 
   useEffect(() => {
     loadData();
+    fetch("/api/exchange-rates")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && json.data) {
+          setExchangeRates(json.data);
+        }
+      })
+      .catch((err) => console.error("Failed to load exchange rates", err));
   }, []);
 
   // ─── ROOM ACTIONS ───
@@ -338,23 +347,23 @@ export default function AdminRoomsPage() {
                     type="number"
                     placeholder="Qiymət (AZN)"
                     value={roomForm.price || ""}
-                    onChange={(e) => setRoomForm({ ...roomForm, price: Number(e.target.value) })}
+                    onChange={(e) => {
+                      const azn = Number(e.target.value);
+                      setRoomForm({ 
+                        ...roomForm, 
+                        price: azn,
+                        priceUsd: Number((azn / exchangeRates.usd).toFixed(2)),
+                        priceEur: Number((azn / exchangeRates.eur).toFixed(2))
+                      });
+                    }}
                     className="flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                   />
-                  <input
-                    type="number"
-                    placeholder="Qiymət (USD)"
-                    value={roomForm.priceUsd || ""}
-                    onChange={(e) => setRoomForm({ ...roomForm, priceUsd: Number(e.target.value) })}
-                    className="flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Qiymət (EUR)"
-                    value={roomForm.priceEur || ""}
-                    onChange={(e) => setRoomForm({ ...roomForm, priceEur: Number(e.target.value) })}
-                    className="flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
-                  />
+                  <div className="flex-1 px-3 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs text-stone-500 flex items-center">
+                    {roomForm.priceUsd ? `~ $${roomForm.priceUsd}` : "USD"}
+                  </div>
+                  <div className="flex-1 px-3 py-2 bg-stone-100 border border-stone-200 rounded-xl text-xs text-stone-500 flex items-center">
+                    {roomForm.priceEur ? `~ €${roomForm.priceEur}` : "EUR"}
+                  </div>
                 </div>
                 <input
                   type="number"
