@@ -25,21 +25,16 @@ const greatVibes = Great_Vibes({
 
 export const metadata: Metadata = {
   title: {
-    default: "AF Hotel & Aqua Park Complex | Bakı, Novxanı — Lüks Ailəvi İstirahət Mərkəzi",
+    default: "AF Hotel & Aqua Park Complex | Bakı, Novxanı",
     template: "%s | AF Hotel & Aqua Park"
   },
-  description: "AF Hotel & Aqua Park Complex — Novxanı sahilindəki premium 5 ulduzlu lüks ailəvi istirahət mərkəzi. Ən yaxşı istirahət üçün 20+ sürüşkənli aquapark, Wonderland lunapark, hovuzlar, restoranlar və Xəzər dənizi mənzərəsi. Birbaşa bron edin!",
+  description: "AF Hotel & Aqua Park ; Otaqlar & Koteclər. Lüks & rahat yaşayış ; Aqua Park. 20+ sürüşkən & hovuz ; Wonderland. İl boyu açıq AF PARK ; Restoran. Azərbaycan mətbəxi.",
   keywords: [
-    "istirahət", "istirahət mərkəzi", "ailəvi istirahət", "istirahet", "novxani istirahet",
-    "AF Hotel", "AF Hotel Baku", "AF Aqua Park", "Wonderland Baku", "Wonderland Novxanı",
-    "hotel Baku Azerbaijan", "Novkhani resort", "luxury hotel Baku", "aqua park Baku", 
-    "Xəzər sahili hotel", "5 star hotel Azerbaijan", "family resort Baku", "əyləncə mərkəzi",
-    "ən yaxşı istirahət", "aquapark", "lunapark Baku", "AF Hotel Aqua Park Complex",
-    "best hotel Baku", "Caspian Sea resort", "hotel Novkhani", "бронирование отель Баку",
-    "AF Hotel qiymətlər", "Novxanı otel", "Bakı kurort", "su parkı Bakı",
-    "AF Hotel Novxanı", "Xəzər dənizi otel", "ailə istirahəti Bakı",
-    "Azərbaycan kurort", "otel rezervasiya", "AF Hotel telefon",
-    "отель Баку Новханы", "аквапарк Баку цены", "отдых Новханы Баку", "отдых в Баку"
+    "AF Hotel & Aqua Park", "AF Hotel", "Aqua Park", "Bakı", "Novxanı",
+    "istirahət", "istirahet", "istirahət mərkəzi", "ailəvi istirahət",
+    "AF PARK", "Wonderland", "lunapark Baku", "su parkı Bakı",
+    "aquapark", "hovuz", "restoran", "otel rezervasiya", "hotel Baku Azerbaijan",
+    "Novkhani resort", "luxury hotel Baku", "əyləncə mərkəzi"
   ],
   authors: [{ name: "AF Hotel & Aqua Park Complex", url: "https://afhotel.az" }],
   creator: "AF Hotel & Aqua Park Complex",

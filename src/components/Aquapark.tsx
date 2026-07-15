@@ -11,6 +11,50 @@ import TextReveal from "./TextReveal";
 import { getActivities, getActivityCategories, getActivitySettings, getTickets, getFaqs } from "@/services/api";
 import type { Activity, ActivityCategory, ActivitySettings, Ticket, Faq } from "@/types/api";
 
+const CardImageSlider = ({ images, itemName }: { images: string[], itemName: string }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3000); // 3 seconds per slide
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  if (!images || images.length === 0) return null;
+
+  return (
+    <>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0.5 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0.5 }}
+          transition={{ duration: 0.8 }}
+          className="absolute inset-0"
+        >
+          <Image src={images[currentIndex]} alt={itemName} fill sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
+        </motion.div>
+      </AnimatePresence>
+      {/* Slider dots */}
+      {images.length > 1 && (
+        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-20">
+          {images.map((_, idx) => (
+            <div
+              key={idx}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                idx === currentIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+};
+
 const content = {
   az: {
     tag: "AQUA & BEACH RESORT",
@@ -352,7 +396,7 @@ export default function Aquapark() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
                 style={{ originX: 0.5 }}
-                className="w-12 h-[1px] bg-[#00b5d5]"
+                className="w-12 h-px bg-[#00b5d5]"
               />
               <motion.span
                 initial={{ opacity: 0, y: 8 }}
@@ -369,10 +413,10 @@ export default function Aquapark() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
                 style={{ originX: 0.5 }}
-                className="w-12 h-[1px] bg-[#00b5d5]"
+                className="w-12 h-px bg-[#00b5d5]"
               />
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight break-words whitespace-normal text-center max-w-3xl">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight wrap-break-word whitespace-normal text-center max-w-3xl">
               <TextReveal text={displayTitle} delay={0.1} />
             </h2>
             <motion.div
@@ -380,7 +424,7 @@ export default function Aquapark() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal text-center [&>p]:mb-0 mx-auto" dangerouslySetInnerHTML={{ __html: displaySubtitle }}
+              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl wrap-break-word whitespace-normal text-center [&>p]:mb-0 mx-auto" dangerouslySetInnerHTML={{ __html: displaySubtitle }}
             />
           </motion.div>
         </div>
@@ -394,12 +438,12 @@ export default function Aquapark() {
               animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
               transition={{ ease: 'easeOut', duration: 0.5, delay: i * 0.12 }}
               whileHover={{ y: -5, scale: 1.02 }}
-              className="bg-white/70 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem] p-5 md:p-7 flex flex-col items-center text-center gap-3 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)] group relative overflow-hidden"
+              className="bg-white/70 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-4xl p-5 md:p-7 flex flex-col items-center text-center gap-3 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)] group relative overflow-hidden"
             >
               {/* Hover Glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#00b5d5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-[#00b5d5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center mb-0 md:mb-1 border border-stone-100 shadow-inner group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-gradient-to-br group-hover:from-[#00b5d5]/10 group-hover:to-transparent transition-all duration-500">
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-linear-to-br from-stone-50 to-stone-100 flex items-center justify-center mb-0 md:mb-1 border border-stone-100 shadow-inner group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-linear-to-br group-hover:from-[#00b5d5]/10 group-hover:to-transparent transition-all duration-500">
                 <s.icon className="w-5 h-5 md:w-6 md:h-6 text-[#00b5d5]" />
               </div>
               <span className="text-lg md:text-2xl font-extrabold text-[#1e325c] tracking-tight group-hover:text-[#00b5d5] transition-colors">{s.label}</span>
@@ -417,7 +461,7 @@ export default function Aquapark() {
           transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
           className="w-full pt-4 relative z-10"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 bg-white/70 p-3 rounded-[2rem] border border-white/60 backdrop-blur-xl shadow-sm">
+          <div className="flex md:grid md:grid-cols-4 gap-3 md:gap-5 overflow-x-auto snap-x snap-mandatory hide-scrollbar bg-white/70 p-3 rounded-4xl border border-white/60 backdrop-blur-xl shadow-sm [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
             {activeZones.map((zone, i) => {
               const IconComponent = zone.icon;
               const zoneName = loc(zone.name);
@@ -428,7 +472,7 @@ export default function Aquapark() {
                   key={zone.id || i}
                   onClick={() => setActiveTab(i)}
                   whileTap={{ scale: 0.97 }}
-                  className={`relative p-4 md:p-5 rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-2 transition-all cursor-pointer ${
+                  className={`relative shrink-0 snap-start min-w-55 md:min-w-0 md:w-auto p-4 md:p-5 rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-2 transition-all cursor-pointer ${
                     activeTab === i
                       ? "bg-white shadow-[0_8px_30px_rgba(0,181,213,0.12)] border border-[#00b5d5]/20 scale-[1.02]"
                       : "hover:bg-white/80 border border-transparent"
@@ -480,14 +524,18 @@ export default function Aquapark() {
                 return (
                   <div
                     key={i}
-                    className="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] group rounded-[2rem] overflow-hidden border border-white/60 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col cursor-pointer relative transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)]"
+                    className="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] group rounded-4xl overflow-hidden border border-white/60 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col cursor-pointer relative transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)]"
                   >
                     {/* Subtle glow overlay on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#00b5d5]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" />
+                    <div className="absolute inset-0 bg-linear-to-br from-[#00b5d5]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" />
                     
                     <div className="relative h-56 md:h-64 overflow-hidden bg-stone-100">
-                      <Image src={item.img} alt={itemName} fill sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
+                      {item.images && item.images.length > 1 ? (
+                        <CardImageSlider images={item.images} itemName={itemName} />
+                      ) : (
+                        <Image src={item.images?.[0] || item.img} alt={itemName} fill sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                      )}
+                      <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity z-10" />
                       <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#1e325c] shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center gap-1.5 z-20">
                         <span className="text-sm">{item.icon}</span>
                         <span>{itemName}</span>
@@ -532,7 +580,7 @@ export default function Aquapark() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 pt-4">
           {/* Tickets */}
           {/* Tickets */}
-          <div className="bg-white border border-stone-100 rounded-[2rem] p-6 md:p-8 relative overflow-hidden group shadow-sm flex flex-col justify-between">
+          <div className="bg-white border border-stone-100 rounded-4xl p-6 md:p-8 relative overflow-hidden group shadow-sm flex flex-col justify-between">
             <div className="absolute top-0 right-0 w-80 h-80 bg-stone-50 rounded-full blur-3xl group-hover:bg-[#00b5d5]/5 transition-colors duration-1000" />
             
             <div className="flex flex-col mb-6 relative z-10 border-b border-stone-100 pb-4">
@@ -548,7 +596,7 @@ export default function Aquapark() {
                 { label: c.child, price: c.childPrice, _id: "child" },
                 { label: c.infant, price: c.infantPrice, _id: "infant" },
               ]).map((t) => (
-                <div key={t._id} className="relative bg-stone-50/50 rounded-xl border border-stone-200 hover:border-[#00b5d5]/50 transition-all duration-300 hover:shadow-sm overflow-hidden group/ticket flex flex-col justify-center min-h-[50px]">
+                <div key={t._id} className="relative bg-stone-50/50 rounded-xl border border-stone-200 hover:border-[#00b5d5]/50 transition-all duration-300 hover:shadow-sm overflow-hidden group/ticket flex flex-col justify-center min-h-12.5">
                   
                   {/* Perforations for real ticket look */}
                   <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-r border-stone-200 group-hover/ticket:border-[#00b5d5]/50 transition-colors" />

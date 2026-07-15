@@ -48,7 +48,7 @@ export const en: TranslationSchema = {
     exploreBtn: "Discover",
     scrollDown: "Explore More",
     line1: "WHERE THE CASPIAN",
-    line2: "MEETS WONDER",
+    line2: "WELCOME TO AF HOTEL",
     sub: "Novkhani, Caspian Coastline • Baku",
     f1: "Rooms with sea views",
     f2: "Largest Aqua Resort",

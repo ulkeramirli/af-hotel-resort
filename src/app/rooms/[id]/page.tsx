@@ -197,7 +197,7 @@ export default function RoomDetailPage({
               <button
                 key={i}
                 onClick={() => setActiveImg(i)}
-                className={`relative aspect-4/3 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                className={`relative shrink-0 aspect-4/3 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
                   activeImg === i
                     ? "border-stone-800 scale-[0.98]"
                     : "border-transparent opacity-70 hover:opacity-100"
@@ -226,14 +226,24 @@ export default function RoomDetailPage({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0.6 }}
                 transition={{ duration: 0.2 }}
-                className="w-full h-full relative"
+                className="w-full h-full relative flex items-center justify-center overflow-hidden bg-stone-900"
               >
+                {/* Blurred background for premium look */}
+                <div className="absolute inset-0">
+                  <Image
+                    src={room.images[activeImg] || room.images[0] || "/AF-aqua.jpg"}
+                    alt=""
+                    fill
+                    className="object-cover opacity-40 blur-2xl scale-110"
+                  />
+                </div>
+                {/* Main Image */}
                 <Image
                   src={room.images[activeImg] || room.images[0] || "/AF-aqua.jpg"}
                   alt={roomTitle}
                   fill
                   sizes="(max-width: 1024px) 100vw, 75vw"
-                  className="object-cover"
+                  className="object-contain relative z-10"
                   priority
                 />
               </motion.div>

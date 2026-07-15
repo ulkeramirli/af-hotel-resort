@@ -12,10 +12,10 @@ const activitySchema = new mongoose.Schema(
       en: { type: String, required: true },
       ru: { type: String, required: true },
     },
-    image: {
+    images: [{
       type: String,
-      required: true,
-    },
+      required: false,
+    }],
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ActivityCategory",

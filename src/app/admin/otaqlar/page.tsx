@@ -86,7 +86,12 @@ export default function AdminRoomsPage() {
     try {
       setLoading(true);
       const [rData, tData, sData] = await Promise.all([getRooms(), getRoomTypes(), getRoomSettings()]);
-      setRooms(rData);
+      const sortedRooms = rData.slice().sort((a, b) => {
+        const aType = typeof a.type === 'object' && a.type ? (a.type as any)._id : String(a.type ?? '');
+        const bType = typeof b.type === 'object' && b.type ? (b.type as any)._id : String(b.type ?? '');
+        return aType.localeCompare(bType);
+      });
+      setRooms(sortedRooms);
       setRoomTypes(tData);
       if (sData) {
         setSettingsForm({

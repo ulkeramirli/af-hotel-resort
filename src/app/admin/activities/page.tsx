@@ -18,6 +18,7 @@ const emptyActivityForm = {
   category: "",
   description: { az: "", en: "", ru: "" },
   image: "",
+  images: [] as string[],
 };
 
 const LangSwitcher = ({ lang, setLang }: { lang: "az" | "en" | "ru"; setLang: (l: "az" | "en" | "ru") => void }) => (
@@ -151,6 +152,7 @@ export default function AdminActivitiesPage() {
       category: typeof activity.category === 'object' ? (activity.category as any)._id : activity.category,
       description: parseLoc(activity.description),
       image: activity.image || "",
+      images: activity.images || [],
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -374,36 +376,77 @@ export default function AdminActivitiesPage() {
                     <option key={c._id} value={c._id}>{typeof c.name === 'object' ? ((c.name as any)?.az || "") : c.name}</option>
                   ))}
                 </select>
-                <div className="md:col-span-2 flex items-center gap-4">
-                  <input
-                    placeholder="Şəkil URL (və ya kompüterdən seçin)"
-                    value={activityForm.image}
-                    onChange={(e) => setActivityForm({ ...activityForm, image: e.target.value })}
-                    className="flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
-                  />
-                  <div className="relative">
-                    <input 
-                      type="file" 
-                      accept="image/*"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        try {
-                          const data = await uploadImage(file);
-                          if (data.success) {
-                            setActivityForm(prev => ({ ...prev, image: data.url }));
-                          } else {
-                            alert(data.message || "Xəta baş verdi");
-                          }
-                        } catch (err: any) {
-                          alert("Şəkil yüklənərkən xəta: " + err.message);
+                <div className="md:col-span-2 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-[#1e325c]">Şəkillər <span className="text-stone-400 font-normal">({activityForm.images.length} şəkil)</span></p>
+                  </div>
+                  {activityForm.images.length > 0 && (
+                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                      {activityForm.images.map((img, idx) => (
+                        <div key={idx} className="relative aspect-square group rounded-xl overflow-hidden border border-stone-200 shadow-sm bg-stone-50">
+                          <img src={img} alt="" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => setActivityForm(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))}
+                            className="absolute inset-0 bg-black/55 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-4">
+                    <input
+                      placeholder="Şəkil URL (və ya kompüterdən seçin)"
+                      value={activityForm.image}
+                      onChange={(e) => setActivityForm({ ...activityForm, image: e.target.value })}
+                      className="flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (activityForm.image.trim()) {
+                          setActivityForm(prev => ({ ...prev, images: [...prev.images, activityForm.image], image: "" }));
                         }
                       }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                    <button type="button" className="px-4 py-2 bg-stone-100 text-[#1e325c] hover:bg-stone-200 text-xs font-bold rounded-xl whitespace-nowrap transition-colors flex items-center gap-2">
-                      <Palmtree className="w-4 h-4" /> Şəkil Seç
+                      className="px-4 py-2 bg-stone-100 text-stone-600 hover:bg-stone-200 text-xs font-bold rounded-xl whitespace-nowrap transition-colors flex items-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" /> URL Əlavə Et
                     </button>
+                    <div className="relative">
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        multiple
+                        onChange={async (e) => {
+                          const files = Array.from(e.target.files || []);
+                          if (!files.length) return;
+                          try {
+                            const newImages = [...activityForm.images];
+                            for (const file of files) {
+                              const data = await uploadImage(file);
+                              if (data.success) {
+                                newImages.push(data.url);
+                              } else {
+                                alert(`Xəta (${file.name}): ` + data.message);
+                              }
+                            }
+                            setActivityForm(prev => ({ 
+                              ...prev, 
+                              images: newImages,
+                              image: prev.image || newImages[0] || ""
+                            }));
+                          } catch (err: any) {
+                            alert("Şəkil yüklənərkən xəta: " + err.message);
+                          }
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      <button type="button" className="px-4 py-2 text-white hover:opacity-90 text-xs font-bold rounded-xl whitespace-nowrap transition-colors flex items-center gap-2" style={{ background: "var(--color-hotel-gold)" }}>
+                        <Palmtree className="w-4 h-4" /> Şəkillər Seç
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div className="md:col-span-2">

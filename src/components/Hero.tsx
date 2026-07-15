@@ -85,13 +85,13 @@ const itemVariants = {
 
             {/* Main heading */}
             <div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-medium leading-[1.1] tracking-wide text-white lg:text-[#1e325c] [text-shadow:_0_4px_24px_rgba(0,0,0,0.7)] lg:[text-shadow:_none]">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-medium leading-[1.1] tracking-wide text-white lg:text-[#1e325c] [text-shadow:0_4px_24px_rgba(0,0,0,0.7)] lg:text-shadow-none">
                 <TextReveal text={t.hero.line2} delay={0.2} />
               </h1>
             </div>
 
             {/* Subtitle */}
-            <p className="text-xs font-light uppercase tracking-[0.15em] text-white/90 lg:text-stone-500 [text-shadow:_0_2px_8px_rgba(0,0,0,0.6)] lg:[text-shadow:_none]">
+            <p className="text-xs font-light uppercase tracking-[0.15em] text-white/90 lg:text-stone-500 [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] lg:text-shadow-none">
               {t.hero.sub}
             </p>
           </motion.div>
@@ -148,14 +148,14 @@ const itemVariants = {
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#00b5d5]/10 rounded-xl flex items-center justify-center mx-auto">
                   <BedDouble className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b5d5]" />
                 </div>
-                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">500+</p>
+                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">350+</p>
                 <p className="text-[10px] font-medium text-stone-500 uppercase tracking-widest">{t.hero.statRooms}</p>
               </div>
               <div className="text-center space-y-1">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#00b5d5]/10 rounded-xl flex items-center justify-center mx-auto">
                   <Waves className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b5d5]" />
                 </div>
-                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">20+</p>
+                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">10+</p>
                 <p className="text-[10px] font-medium text-stone-500 uppercase tracking-widest">{t.hero.statAqua}</p>
               </div>
               <div className="text-center space-y-1">
@@ -192,7 +192,7 @@ const itemVariants = {
                 onClick={() => router.push('/booking')}
                 className="w-full block"
               >
-                <div className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-semibold uppercase tracking-[0.1em] py-4 rounded-2xl transition-all shadow-md shadow-[#ff6c02]/30 cursor-pointer">
+                <div className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-semibold uppercase tracking-widest py-4 rounded-2xl transition-all shadow-md shadow-[#ff6c02]/30 cursor-pointer">
                   <CalendarCheck className="w-4 h-4" />
                   {t.hero.bookBtn}
                 </div>
@@ -201,7 +201,7 @@ const itemVariants = {
                 onClick={() => router.push('/rooms')}
                 className="w-full block"
               >
-                <div className="flex items-center justify-center gap-2 w-full bg-white/90 border border-[#1e325c]/20 hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 text-[#1e325c] text-[13px] font-semibold uppercase tracking-[0.1em] py-3.5 rounded-2xl transition-all cursor-pointer">
+                <div className="flex items-center justify-center gap-2 w-full bg-white/90 border border-[#1e325c]/20 hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 text-[#1e325c] text-[13px] font-semibold uppercase tracking-widest py-3.5 rounded-2xl transition-all cursor-pointer">
                   {t.hero.btnRooms}
                   <ArrowRight className="w-4 h-4" />
                 </div>

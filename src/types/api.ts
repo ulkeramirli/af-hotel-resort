@@ -135,6 +135,7 @@ export interface Activity {
   title: any;
   description: any;
   image: string;
+  images?: string[];
   category: string;
   createdAt?: string;
   updatedAt?: string;

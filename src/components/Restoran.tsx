@@ -210,7 +210,7 @@ export default function Restoran() {
             transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
             className="flex justify-center w-full mt-4"
           >
-            <div className="grid grid-cols-2 gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
               {restaurants.map((r, i) => {
                 const isActive = activeRest === i;
                 const IconComponent = getCategoryIcon(loc(r.name));

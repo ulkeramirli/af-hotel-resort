@@ -536,7 +536,7 @@ function AccountContent() {
                           </div>
                           <div>
                             <p className="font-bold text-stone-800 text-sm">
-                              {typeof b.room === "object" && b.room !== null ? (b.room as any).name : tx.room}
+                              {typeof b.room === "object" && b.room !== null ? ((b.room as any).name?.[l] || (b.room as any).name?.az || String((b.room as any).name)) : tx.room}
                             </p>
                             <p className="text-xs text-stone-400 mt-0.5">
                               {b.guestName} · {b.email}
@@ -586,6 +586,7 @@ function AccountContent() {
                       .filter(id => !!roomsMap[id])
                       .map((id) => {
                         const room = roomsMap[id];
+                        console.log("Rendering room:", room.title[l], "category:", room.categoryName, "l:", l);
                         return (
                           <div key={id} className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
                             {/* Image */}
@@ -602,9 +603,11 @@ function AccountContent() {
                                   <BedDouble className="w-8 h-8 text-stone-300" />
                                 </div>
                               )}
-                              <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-sm text-stone-800 rounded-md shadow-sm border border-stone-100 z-10">
-                                {room.category}
-                              </span>
+                              {room.categoryName?.[l] && (
+                                <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-sm text-stone-800 rounded-md shadow-sm border border-stone-100 z-10">
+                                  {room.categoryName[l]}
+                                </span>
+                              )}
                               <button
                                 onClick={() => {
                                   const newFavs = getFavorites().filter(fid => fid !== id);
@@ -657,12 +660,12 @@ function AccountContent() {
                                   </a>
                                 </div>
                                 <button
-                                  onClick={() => router.push(`/?roomId=${room.id}#booking`)}
+                                  onClick={() => router.push(`/booking?roomId=${room.id}`)}
                                   className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer"
                                   style={{ background: "linear-gradient(135deg, #ff8c00, #ff5f00)" }}
                                 >
                                   <Calendar className="w-3.5 h-3.5" />
-                                  <span>{l === "az" ? "İndi Rezerv Et" : l === "ru" ? "Забронировать" : "Book Now"}</span>
+                                  <span>{l === "az" ? "Rezervasiya" : l === "ru" ? "Забронировать" : "Book"}</span>
                                 </button>
                               </div>
                             </div>

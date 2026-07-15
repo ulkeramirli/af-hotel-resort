@@ -193,7 +193,7 @@ export default function Wonderland() {
                 </div>
               )}
 
-              <div className="flex gap-3 shrink-0">
+              <div className="flex gap-3 shrink-0 w-full lg:w-auto justify-center lg:justify-end mt-4 lg:mt-0">
                 <button
                   onClick={scrollPrev}
                   className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-2 shadow-md hover:scale-110 active:scale-95 ${
@@ -219,7 +219,7 @@ export default function Wonderland() {
 
             <div className="overflow-hidden -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16" ref={emblaRef}>
               <div className="flex gap-6 md:gap-10 py-6">
-                {active?.games?.map((game: any, i: number) => (
+                {active?.items?.map((game: any, i: number) => (
                   <div key={i} className="flex-none w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[32vw] group relative rounded-[2.5rem] cursor-grab active:cursor-grabbing hover:-translate-y-4 transition-all duration-500 ease-out perspective-1000">
                     <div className="absolute inset-0 bg-[#ff6c02]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl scale-95 -z-10" />
                     

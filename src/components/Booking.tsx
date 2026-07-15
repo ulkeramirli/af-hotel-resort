@@ -17,8 +17,6 @@ import { getPublicRooms, createPayment, getBookedDates } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
-const ReCAPTCHA = dynamic(() => import("react-google-recaptcha"), { ssr: false });
-
 interface AuthUser {
   id: string;
   email: string;
@@ -195,7 +193,6 @@ function BookingContent() {
   const [email, setEmail] = useState(user?.email || "");
 
   const [cardName, setCardName] = useState(user?.name || "");
-  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
 
   useEffect(() => {
     getPublicRooms()
@@ -353,12 +350,6 @@ function BookingContent() {
     e.preventDefault();
     if (!checkIn || !checkOut || !selectedRoomId || !phone || !email) {
       setError("Zəhmət olmasa bütün xanaları doldurun.");
-      return;
-    }
-    if (!captchaValue) {
-      setError(
-        "Zəhmət olmasa robot olmadığınızı təsdiqləyin / Please verify you are not a robot",
-      );
       return;
     }
     setError("");
@@ -572,20 +563,6 @@ function BookingContent() {
                   placeholder="+994"
                   className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#00b5d5]/50 rounded-2xl px-5 h-14 text-sm outline-none focus:border-[#00b5d5] focus:ring-4 focus:ring-[#00b5d5]/10 text-slate-800 shadow-sm transition-all duration-300 placeholder:text-stone-300 font-medium"
                 />
-              </div>
-            </div>
-
-            <div className="flex justify-center my-6">
-              <div className="bg-white p-2 rounded-2xl shadow-sm border border-stone-100">
-                <ErrorBoundary fallback={<div className="text-red-500 text-sm">reCAPTCHA yüklənə bilmədi. Səhifəni yeniləyin.</div>}>
-                  <ReCAPTCHA
-                    sitekey={
-                      process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
-                      "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                    }
-                    onChange={(val) => setCaptchaValue(val)}
-                  />
-                </ErrorBoundary>
               </div>
             </div>
 
