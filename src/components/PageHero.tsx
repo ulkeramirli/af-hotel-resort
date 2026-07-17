@@ -89,7 +89,7 @@ const decorativeElements: Record<string, React.ReactNode> = {
   default: null,
 };
 
-export default function PageHero({ title, subtitle, imagePath, variant = 'default' }: PageHeroProps) {
+export default function PageHero({ title, subtitle, imagePath, variant = 'default', imageClassName = "object-cover object-center" }: PageHeroProps & { imageClassName?: string }) {
   const grad = gradients[variant] || gradients.default;
   const accent = accentColors[variant] || accentColors.default;
   const deco = decorativeElements[variant] || null;
@@ -110,7 +110,7 @@ export default function PageHero({ title, subtitle, imagePath, variant = 'defaul
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className={imageClassName}
           />
         </motion.div>
 

@@ -14,8 +14,9 @@ export default function AboutPage() {
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}
-        imagePath="/AF-hero.jpg"
+        imagePath="/AF-aqua.jpg"
         variant="about"
+        imageClassName="object-cover object-center"
       />
       <div className="py-12">
         <AboutComponent />

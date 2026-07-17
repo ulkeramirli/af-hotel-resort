@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { getAbout } from '@/services/api';
 import type { About as AboutType } from '@/types/api';
 import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 
 export default function About() {
   const { language } = useLanguage();
@@ -60,6 +61,17 @@ export default function About() {
     }
   };
 
+  const collageVariants: Variants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95, filter: 'blur(8px)' },
+    visible: (i: number) => ({
+      opacity: 1, 
+      y: 0, 
+      scale: 1, 
+      filter: 'blur(0px)',
+      transition: { delay: i * 0.15, duration: 1.2, ease: [0.16, 1, 0.3, 1] }
+    })
+  };
+
   const textVariants: Variants = {
     hidden: { opacity: 0, x: 60, filter: 'blur(12px)' },
     visible: {
@@ -84,51 +96,50 @@ export default function About() {
 
   const displayTitle = dbAbout ? (dbAbout.title as any)?.[l] || "" : about.title;
 
+  const images = dbAbout?.images?.length === 5 
+    ? dbAbout.images 
+    : [
+        "/about/about-1.jpg",
+        "/about/about-2.jpg",
+        "/about/about-3.jpg",
+        "/about/about-4.jpg",
+        "/about/about-5.jpg"
+      ];
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 3500, stopOnInteraction: false })]);
+
   return (
     <section id="about" className="py-16 md:py-32 bg-transparent scroll-mt-20 select-none overflow-hidden font-sans">
 
       <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 lg:gap-24 items-center">
 
-        {/* ЛЕВАЯ СТОРОНА: Панорамный, вытянутый в ширину коллаж */}
-        <div className="lg:col-span-7 relative h-112.5 sm:h-125 md:h-162.5 w-full flex items-center">
-          
-          {/* Большая левая картинка (Широкоформатная панорама, w-[90%] при h-[68%]) */}
-          <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={leftCardVariants}
-            className="absolute left-0 top-4 w-[90%] h-[68%] overflow-hidden shadow-2xl transform hover:scale-[1.01] transition-transform duration-700 ease-out z-10 rounded-2xl"
-          >
-            <Image 
-              src={dbAbout?.images?.[0] || "/AF-aqua.jpg"}
-              alt="Premium Living Space" 
-              fill
-              sizes="(max-width: 1024px) 85vw, 50vw"
-              className="object-cover object-[center_30%]"
-              priority
-            />
+        {/* УНИВЕРСАЛЬНЫЙ СТИЛЬ: Простая сетка без наложений, как было на мобильном */}
+        <div className="lg:col-span-7 flex flex-col items-center gap-4 lg:gap-6 w-full py-4">
+          <motion.div custom={0} variants={collageVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="w-full">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={images[0]} className="w-full h-auto rounded-2xl lg:rounded-[2rem] shadow-xl hover:scale-[1.02] transition-transform duration-700" alt="1" />
           </motion.div>
           
-          {/* Маленькая правая картинка (Тоже вытянута в ширину: w-[80%] при h-[50%]) */}
-          <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={rightCardVariants}
-            className="absolute right-0 bottom-4 w-[80%] h-[50%] overflow-hidden shadow-2xl border-8 border-[#fdfbf7] transform hover:scale-[1.03] transition-transform duration-700 ease-out z-20 rounded-2xl"
-          >
-            <Image 
-              src={dbAbout?.images?.[1] || "/AF-aqua2.jpg"}
-              alt="Luxury Suite Interior" 
-              fill
-              sizes="(max-width: 1024px) 65vw, 35vw"
-              className="object-cover object-center"
-              priority
-            />
-          </motion.div>
-
+          <div className="grid grid-cols-2 gap-3 lg:gap-5 w-full">
+             <motion.div custom={1} variants={collageVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={images[1]} className="w-full h-auto rounded-xl lg:rounded-2xl shadow-md hover:scale-105 transition-transform duration-700" alt="2" />
+             </motion.div>
+             <motion.div custom={2} variants={collageVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={images[2]} className="w-full h-auto rounded-xl lg:rounded-2xl shadow-md hover:scale-105 transition-transform duration-700" alt="3" />
+             </motion.div>
+             <motion.div custom={3} variants={collageVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={images[3]} className="w-full h-auto rounded-xl lg:rounded-2xl shadow-md hover:scale-105 transition-transform duration-700" alt="4" />
+             </motion.div>
+             <motion.div custom={4} variants={collageVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={images[4]} className="w-full h-auto rounded-xl lg:rounded-2xl shadow-md hover:scale-105 transition-transform duration-700" alt="5" />
+             </motion.div>
+          </div>
         </div>
+
 
         {/* RIGHT TEXT */}
         <motion.div
