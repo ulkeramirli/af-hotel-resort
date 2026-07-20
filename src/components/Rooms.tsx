@@ -293,7 +293,22 @@ export default function Rooms() {
     toggleFavorite(id);
   }, []);
 
-  const filtered = category === "all" ? rooms : rooms.filter((r) => r.category === category || (r.category as any)?._id === category || (r.category as any)?.id === category);
+  const filtered = category === "all" ? rooms : rooms.filter((r) => {
+    if (r.category === category) return true;
+    if ((r.category as any)?._id === category) return true;
+    if ((r.category as any)?.id === category) return true;
+    
+    // Fallback: If DB stored the name instead of the ID
+    const selectedType = types.find(t => t._id === category);
+    if (selectedType) {
+      if (r.category === selectedType.name) return true;
+      if (r.category === (selectedType.name as any)?.az) return true;
+      if (r.category === (selectedType.name as any)?.en) return true;
+      if (r.category === (selectedType.name as any)?.ru) return true;
+      if (r.categoryName?.az && r.categoryName.az === (selectedType.name as any)?.az) return true;
+    }
+    return false;
+  });
 
   const categories = [
     { id: "all", label: c.all },

@@ -191,7 +191,7 @@ export default function RoomDetailPage({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="hidden md:flex flex-col gap-3 col-span-1 max-h-105 overflow-y-auto pr-1"
+            className="hidden md:flex flex-col gap-3 col-span-1 md:h-[500px] overflow-y-auto pr-1"
           >
             {room.images.map((img, i) => (
               <button
@@ -217,7 +217,7 @@ export default function RoomDetailPage({
           {/* Главное изображение */}
           <motion.div
             layoutId="main-room-image"
-            className="col-span-1 md:col-span-3 relative aspect-16/10 md:h-105 rounded-2xl overflow-hidden bg-stone-100 border border-stone-200/30 shadow-sm"
+            className="col-span-1 md:col-span-3 relative rounded-2xl overflow-hidden bg-stone-100 border border-stone-200/30 shadow-sm h-[300px] md:h-[500px]"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -226,24 +226,15 @@ export default function RoomDetailPage({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0.6 }}
                 transition={{ duration: 0.2 }}
-                className="w-full h-full relative flex items-center justify-center overflow-hidden bg-stone-900"
+                className="w-full h-full"
               >
-                {/* Blurred background for premium look */}
-                <div className="absolute inset-0">
-                  <Image
-                    src={room.images[activeImg] || room.images[0] || "/AF-aqua.jpg"}
-                    alt=""
-                    fill
-                    className="object-cover opacity-40 blur-2xl scale-110"
-                  />
-                </div>
                 {/* Main Image */}
                 <Image
                   src={room.images[activeImg] || room.images[0] || "/AF-aqua.jpg"}
                   alt={roomTitle}
                   fill
                   sizes="(max-width: 1024px) 100vw, 75vw"
-                  className="object-contain relative z-10"
+                  className="object-cover"
                   priority
                 />
               </motion.div>
@@ -252,7 +243,7 @@ export default function RoomDetailPage({
             {/* Избранное */}
             <button
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleFav(); }}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-105 transition-transform cursor-pointer"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-105 transition-transform cursor-pointer z-10"
             >
               <Heart
                 className="w-4.5 h-4.5 transition-colors"
