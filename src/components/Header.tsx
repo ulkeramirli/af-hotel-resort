@@ -289,7 +289,7 @@ export default function Header() {
               <>
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex items-center justify-center gap-2 w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 bg-white border border-stone-200 rounded-xl hover:bg-stone-50 transition-all duration-300 cursor-pointer"
+                  className="flex items-center justify-center gap-2 p-2 sm:px-3 sm:py-2 text-slate-700 hover:bg-stone-50 rounded-xl transition-all duration-300 cursor-pointer border-none bg-transparent"
                 >
                   <User className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-600 shrink-0" />
                   
@@ -354,7 +354,7 @@ export default function Header() {
             ) : (
               <Link
                 href="/auth/sign-in"
-                className="flex items-center justify-center gap-2 w-9 h-9 sm:w-auto sm:h-auto sm:px-3 sm:py-2 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-50 text-slate-700 rounded-xl transition-all duration-300 cursor-pointer"
+                className="flex items-center justify-center gap-2 p-2 sm:px-3 sm:py-2 hover:bg-stone-50 text-slate-700 rounded-xl transition-all duration-300 cursor-pointer border-none bg-transparent"
               >
                 <User className="w-4 h-4 sm:w-3.5 sm:h-3.5 shrink-0" />
                 <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider text-slate-700">
