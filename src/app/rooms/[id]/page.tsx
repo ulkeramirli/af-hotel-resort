@@ -191,7 +191,7 @@ export default function RoomDetailPage({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="hidden md:flex flex-col gap-3 col-span-1 md:h-[500px] overflow-y-auto pr-1"
+            className="hidden md:flex flex-col gap-3 col-span-1 md:h-[500px] overflow-y-auto pr-1 gallery-scrollbar"
           >
             {room.images.map((img, i) => (
               <button
