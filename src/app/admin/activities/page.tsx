@@ -258,7 +258,7 @@ export default function AdminActivitiesPage() {
           {/* SETTINGS FORM */}
           <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+              <h3 className="font-bold text-[#1e325c] text-lg flex items-center gap-2">
                 <Tags className="w-4 h-4 text-[#00b5d5]" />
                 Səhifə Başlıqları və Statistikalar
               </h3>
@@ -348,7 +348,7 @@ export default function AdminActivitiesPage() {
           {/* ACTIVITY FORM */}
           <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+              <h3 className="font-bold text-[#1e325c] text-lg flex items-center gap-2">
                 <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
                 {editActivityId ? "Fəaliyyəti Redaktə Et" : "Yeni Fəaliyyət Əlavə Et"}
               </h3>
@@ -489,8 +489,8 @@ export default function AdminActivitiesPage() {
                <div className="col-span-full py-10 text-center text-stone-400 text-sm">Fəaliyyət tapılmadı</div>
             ) : activities.map((act) => (
               <div key={act._id} className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm hover:shadow-md transition-shadow">
-                {act.image && (
-                  <img src={act.image} alt="" className="w-full h-32 object-cover rounded-xl mb-3" />
+                {(act.image || (act.images && act.images.length > 0)) && (
+                  <img src={act.image || act.images?.[0]} alt="" className="w-full h-32 object-cover rounded-xl mb-3" />
                 )}
                 <div className="flex justify-between items-start mb-2">
                   <h4 className="font-bold text-sm text-[#1e325c]">{typeof act.title === 'object' ? ((act.title as any)?.az || "") : act.title}</h4>
@@ -506,7 +506,10 @@ export default function AdminActivitiesPage() {
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5] mb-2">
                   {typeof act.category === 'object' ? ((act.category as any).name?.az || "") : act.category}
                 </p>
-                <p className="text-xs text-stone-500 line-clamp-3">{typeof act.description === 'object' ? ((act.description as any)?.az || "") : act.description}</p>
+                <div 
+                  className="text-xs text-stone-500 line-clamp-3 [&>p]:m-0" 
+                  dangerouslySetInnerHTML={{ __html: typeof act.description === 'object' ? ((act.description as any)?.az || "") : act.description }} 
+                />
               </div>
             ))}
           </div>
@@ -518,7 +521,7 @@ export default function AdminActivitiesPage() {
           <div className="lg:col-span-1">
             <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-[#1e325c] text-sm">
+                <h3 className="font-bold text-[#1e325c] text-lg">
                   {editCategoryId ? "Kateqoriyanı Redaktə Et" : "Yeni Kateqoriya"}
                 </h3>
                 <LangSwitcher lang={formLang} setLang={setFormLang} />
@@ -567,7 +570,10 @@ export default function AdminActivitiesPage() {
                     <div>
                       <span className="font-bold text-sm text-[#1e325c] block">{typeof cat.name === 'object' ? ((cat.name as any)?.az || "") : cat.name}</span>
                       {(cat.description as any)?.az && (
-                        <p className="text-xs text-stone-500 mt-1 line-clamp-2">{(cat.description as any).az}</p>
+                        <div 
+                          className="text-xs text-stone-500 mt-1 line-clamp-2 [&>p]:m-0" 
+                          dangerouslySetInnerHTML={{ __html: (cat.description as any).az }} 
+                        />
                       )}
                     </div>
                   </div>

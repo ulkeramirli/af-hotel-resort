@@ -183,7 +183,8 @@ function RoomCard({
             </div>
             <Link
               href={`/rooms/${room.id}`}
-              className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-medium rounded-xl transition-colors shadow-sm"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-medium rounded-xl transition-colors shadow-sm relative z-10"
             >
               <span>{c.details}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -283,7 +284,7 @@ export default function Rooms() {
     toggleFavorite(id);
   }, []);
 
-  const filtered = category === "all" ? rooms : rooms.filter((r) => r.category === category);
+  const filtered = category === "all" ? rooms : rooms.filter((r) => r.category === category || (r.category as any)?._id === category || (r.category as any)?.id === category);
 
   const categories = [
     { id: "all", label: c.all },
@@ -383,7 +384,7 @@ export default function Rooms() {
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ ease: "easeOut" as const, duration: 0.45 }}
                         key={room.id}
-                        className="min-w-[calc(100vw-2.5rem)] xs:min-w-[80vw] sm:min-w-0 flex-shri lex-shrink h-full overflow-hidden"
+                        className="min-w-[calc(100vw-2.5rem)] xs:min-w-[80vw] sm:min-w-0 shrink-0 h-full overflow-hidden"
                       >
                         <RoomCard
                         room={room}

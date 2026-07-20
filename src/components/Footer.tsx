@@ -30,7 +30,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative bg-[#f4f9fa] text-[#1e325c] border-t border-[#00b5d5]/20 overflow-hidden select-none">
+    <footer className="relative bg-[#f4f9fa] text-[#1e325c] border-t border-stone-200/60 shadow-[0_-10px_30px_rgba(30,50,92,0.03)] overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-6 lg:px-16 relative z-10">
 
         {/* Main grid */}

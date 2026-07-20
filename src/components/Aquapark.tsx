@@ -11,47 +11,73 @@ import TextReveal from "./TextReveal";
 import { getActivities, getActivityCategories, getActivitySettings, getTickets, getFaqs } from "@/services/api";
 import type { Activity, ActivityCategory, ActivitySettings, Ticket, Faq } from "@/types/api";
 
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? "100%" : "-100%",
+  }),
+  center: {
+    x: 0,
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? "100%" : "-100%",
+  })
+};
+
 const CardImageSlider = ({ images, itemName }: { images: string[], itemName: string }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
 
-  useEffect(() => {
-    if (images.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3000); // 3 seconds per slide
-    return () => clearInterval(interval);
-  }, [images.length]);
+  const next = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDirection(1);
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prev = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
 
   if (!images || images.length === 0) return null;
 
   return (
-    <>
-      <AnimatePresence mode="wait">
+    <div className="w-full h-full relative overflow-hidden">
+      <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={currentIndex}
-          initial={{ opacity: 0.5 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0.5 }}
-          transition={{ duration: 0.8 }}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ x: { type: "spring", stiffness: 300, damping: 30 } }}
           className="absolute inset-0"
         >
           <Image src={images[currentIndex]} alt={itemName} fill sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
         </motion.div>
       </AnimatePresence>
-      {/* Slider dots */}
+      
       {images.length > 1 && (
-        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-20">
-          {images.map((_, idx) => (
-            <div
-              key={idx}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                idx === currentIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"
-              }`}
-            />
-          ))}
-        </div>
+        <>
+          {/* Navigation Arrows */}
+          <button 
+            onClick={prev} 
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-30 shadow-sm cursor-pointer transition-opacity"
+          >
+            <ChevronLeft className="w-5 h-5 text-stone-700" />
+          </button>
+          <button 
+            onClick={next} 
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-30 shadow-sm cursor-pointer transition-opacity"
+          >
+            <ChevronRight className="w-5 h-5 text-stone-700" />
+          </button>
+        </>
       )}
-    </>
+    </div>
   );
 };
 
@@ -79,9 +105,12 @@ const content = {
         desc: "Ekstremal sürüşmələr və uşaq su dünyası",
         icon: Waves,
         items: [
-          { name: "Kamikaze Sürüşməsi", icon: "⚡", desc: "80 km/s-ə çatan sürüşmə, adrenalin sevənlər üçün (14+ yaş)", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
-          { name: "Tornado", icon: "🌀", desc: "Dövrəvi sürüşmə tüneli, 4 nəfər eyni anda eniş", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
-          { name: "Uşaq Su Meydançası", icon: "🎠", desc: "Fıskiyələr, rəngli mini sürüşmələr və təhlükəsiz su oyunları", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "Böyüklər üçün aquapark lı hovuz", icon: "⚡", desc: "Əyləncəli sürüşmələr və böyük hovuz", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
+          { name: "Uşaqlar üçün hovuz", icon: "🎠", desc: "Balacalar üçün təhlükəsiz su oyunları", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "VIP hovuz", icon: "💎", desc: "Sakitlik və lüks axtaranlar üçün xüsusi hovuz", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "Böyüklər üçün bir digər hovuz", icon: "🏊", desc: "Professional üzgüçülük və istirahət üçün", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
+          { name: "Af Beach böyüklər üçün hovuz", icon: "🏖️", desc: "Dəniz mənzərəli böyüklər hovuzu", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "Af Beach uşaqlar üçün hovuz", icon: "🌊", desc: "Çimərlik zonasında uşaqlar üçün təhlükəsiz hovuz", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
         ]
       },
       {
@@ -148,9 +177,12 @@ const content = {
         desc: "Extreme slides and kids water world",
         icon: Waves,
         items: [
-          { name: "Kamikaze Slide", icon: "⚡", desc: "Adrenaline-pumping slide up to 80 km/h (Ages 14+)", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
-          { name: "Tornado", icon: "🌀", desc: "Circular tunnel slide for 4 people simultaneously", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
-          { name: "Kids Water Playground", icon: "🎠", desc: "Fountains, colorful mini slides, and safe water games", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "Adult pool with aquapark", icon: "⚡", desc: "Fun slides and a large pool", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
+          { name: "Kids pool", icon: "🎠", desc: "Safe water games for the little ones", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "VIP pool", icon: "💎", desc: "Special pool for those seeking peace and luxury", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "Another adult pool", icon: "🏊", desc: "For professional swimming and relaxation", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
+          { name: "AF Beach adult pool", icon: "🏖️", desc: "Adult pool with a sea view", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "AF Beach kids pool", icon: "🌊", desc: "Safe kids pool in the beach zone", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
         ]
       },
       {
@@ -217,9 +249,12 @@ const content = {
         desc: "Экстремальные горки и детский водный городок",
         icon: Waves,
         items: [
-          { name: "Горка Камикадзе", icon: "⚡", desc: "Захватывающий спуск на скорости до 80 км/ч (14+ лет)", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
-          { name: "Торнадо", icon: "🌀", desc: "Круговой закрытый туннель для 4 человек одновременно", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
-          { name: "Детская аква-площадка", icon: "🎠", desc: "Фонтаны, брызгалки, безопасные мини-горки и аттракционы", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "Взрослый бассейн с аквапарком", icon: "⚡", desc: "Веселые горки и большой бассейн", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
+          { name: "Детский бассейн", icon: "🎠", desc: "Безопасные водные игры для малышей", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "VIP бассейн", icon: "💎", desc: "Специальный бассейн для ищущих покой и роскошь", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "Еще один бассейн для взрослых", icon: "🏊", desc: "Для профессионального плавания и отдыха", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
+          { name: "AF Beach бассейн для взрослых", icon: "🏖️", desc: "Взрослый бассейн с видом на море", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "AF Beach детский бассейн", icon: "🌊", desc: "Безопасный детский бассейн в пляжной зоне", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
         ]
       },
       {
@@ -338,7 +373,8 @@ export default function Aquapark() {
                 name: a.title,
                 icon: "✨",
                 desc: a.description,
-                img: a.image || "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80",
+                img: a.image || (a.images && a.images.length > 0 ? a.images[0] : "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80"),
+                images: a.images || [],
               })),
           }));
           setDbZones(mappedZones);
@@ -431,26 +467,38 @@ export default function Aquapark() {
 
         {/* Stats */}
         <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 relative z-10">
-          {dynamicStats.map((s, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30, scale: 0.94 }}
-              animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{ ease: 'easeOut', duration: 0.5, delay: i * 0.12 }}
-              whileHover={{ y: -5, scale: 1.02 }}
-              className="bg-white/70 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-4xl p-5 md:p-7 flex flex-col items-center text-center gap-3 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)] group relative overflow-hidden"
-            >
-              {/* Hover Glow */}
-              <div className="absolute inset-0 bg-linear-to-br from-[#00b5d5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-linear-to-br from-stone-50 to-stone-100 flex items-center justify-center mb-0 md:mb-1 border border-stone-100 shadow-inner group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-linear-to-br group-hover:from-[#00b5d5]/10 group-hover:to-transparent transition-all duration-500">
-                <s.icon className="w-5 h-5 md:w-6 md:h-6 text-[#00b5d5]" />
-              </div>
-              <span className="text-lg md:text-2xl font-extrabold text-[#1e325c] tracking-tight group-hover:text-[#00b5d5] transition-colors">{s.label}</span>
-              <span className="text-[10px] md:text-[11px] text-stone-500 font-bold tracking-widest uppercase">{s.sub1}</span>
-              {s.sub2 && <span className="text-[9px] text-stone-400 font-medium tracking-wide mt-0.5">{s.sub2}</span>}
-            </motion.div>
-          ))}
+          {dynamicStats.map((s, i) => {
+            const val = s.label?.trim() || "";
+            // Check if the value is likely just an emoji (no letters/numbers and very short)
+            const isEmojiValue = val.length > 0 && val.length <= 4 && !/[a-zA-Z0-9]/.test(val);
+
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30, scale: 0.94 }}
+                animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                transition={{ ease: 'easeOut', duration: 0.5, delay: i * 0.12 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="bg-white/70 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-4xl p-5 md:p-7 flex flex-col items-center text-center gap-3 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)] group relative overflow-hidden"
+              >
+                {/* Hover Glow */}
+                <div className="absolute inset-0 bg-linear-to-br from-[#00b5d5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-linear-to-br from-stone-50 to-stone-100 flex items-center justify-center mb-0 md:mb-1 border border-stone-100 shadow-inner group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-linear-to-br group-hover:from-[#00b5d5]/10 group-hover:to-transparent transition-all duration-500">
+                  {isEmojiValue ? (
+                    <span className="text-xl md:text-2xl leading-none">{val}</span>
+                  ) : (
+                    <s.icon className="w-5 h-5 md:w-6 md:h-6 text-[#00b5d5]" />
+                  )}
+                </div>
+                {!isEmojiValue && (
+                  <span className="text-lg md:text-2xl font-extrabold text-[#1e325c] tracking-tight group-hover:text-[#00b5d5] transition-colors">{val}</span>
+                )}
+                <span className="text-[10px] md:text-[11px] text-stone-500 font-bold tracking-widest uppercase">{s.sub1}</span>
+                {s.sub2 && <span className="text-[9px] text-stone-400 font-medium tracking-wide mt-0.5">{s.sub2}</span>}
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Tabs */}
@@ -461,7 +509,7 @@ export default function Aquapark() {
           transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
           className="w-full pt-4 relative z-10"
         >
-          <div className="flex md:grid md:grid-cols-4 gap-3 md:gap-5 overflow-x-auto snap-x snap-mandatory hide-scrollbar bg-white/70 p-3 rounded-4xl border border-white/60 backdrop-blur-xl shadow-sm [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+          <div className="-mx-6 px-6 md:mx-0 md:px-0 flex md:grid md:grid-cols-4 gap-3 md:gap-5 overflow-x-auto snap-x snap-mandatory hide-scrollbar md:bg-white/70 md:p-3 md:rounded-4xl md:border border-white/60 md:backdrop-blur-xl md:shadow-sm [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
             {activeZones.map((zone, i) => {
               const IconComponent = zone.icon;
               const zoneName = loc(zone.name);
@@ -470,15 +518,18 @@ export default function Aquapark() {
               return (
                 <motion.button
                   key={zone.id || i}
-                  onClick={() => setActiveTab(i)}
+                  onClick={(e) => {
+                    setActiveTab(i);
+                    e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                  }}
                   whileTap={{ scale: 0.97 }}
-                  className={`relative shrink-0 snap-start min-w-55 md:min-w-0 md:w-auto p-4 md:p-5 rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-2 transition-all cursor-pointer ${
+                  className={`relative shrink-0 snap-center md:snap-start w-[75vw] sm:w-[260px] md:w-auto p-4 md:p-5 rounded-2xl md:rounded-3xl flex flex-col items-start text-left gap-1.5 md:gap-2 transition-all cursor-pointer ${
                     activeTab === i
                       ? "bg-white shadow-[0_8px_30px_rgba(0,181,213,0.12)] border border-[#00b5d5]/20 scale-[1.02]"
-                      : "hover:bg-white/80 border border-transparent"
+                      : "bg-white/60 md:bg-transparent md:hover:bg-white/80 border border-transparent"
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 md:gap-2 whitespace-nowrap mb-1">
+                  <div className="flex items-center gap-1.5 md:gap-2 whitespace-nowrap mb-0.5 md:mb-1">
                     {zone.emoji ? (
                       <span className="text-lg md:text-xl">{zone.emoji}</span>
                     ) : IconComponent ? (
@@ -497,7 +548,7 @@ export default function Aquapark() {
                   </div>
 
                   {zoneDesc && (
-                    <span className="text-[10px] md:text-[11px] text-stone-500 font-medium line-clamp-1 w-full text-center md:text-left">
+                    <span className="text-[10px] md:text-[11px] text-stone-500 font-medium line-clamp-1 w-full text-left">
                       {stripHtml(zoneDesc)}
                     </span>
                   )}
@@ -626,8 +677,8 @@ export default function Aquapark() {
           </div>
 
           {/* FAQ */}
-          <div className="space-y-3">
-            <h3 className="font-bold text-lg md:text-xl text-[#1e325c] font-serif pl-1">{c.faq}</h3>
+          <div className="space-y-3 pt-6 lg:pt-0">
+            <h3 className="font-bold text-xl md:text-2xl text-[#1e325c] font-serif pl-1 mb-5">{c.faq}</h3>
             {(faqs.length > 0 ? faqs : c.faqs).map((faq: any, i) => {
               const faqQuestion = loc(faq.question) || faq.q;
               const faqAnswer = loc(faq.answer) || faq.a;

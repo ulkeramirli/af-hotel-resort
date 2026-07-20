@@ -120,36 +120,36 @@ export default function Reviews() {
                   transition={{ duration: 0.5, delay: idx * 0.08, ease: 'easeOut' }}
                   className="min-w-[80vw] sm:min-w-[55vw] md:min-w-0 flex-none bg-white rounded-2xl p-6 border border-stone-100/80 shadow-sm hover:shadow-md transition-all duration-300 snap-start md:snap-align-none mr-4 md:mr-0 last:mr-0 flex flex-col"
                 >
-                  {/* Quote icon */}
-                  <Quote className="w-6 h-6 text-[#00b5d5]/20 mb-4 shrink-0" />
+                  {/* Header: Avatar, Info, and Quote */}
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      {/* Avatar */}
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0"
+                        style={{ background: palette.bg, color: palette.text }}
+                      >
+                        {review.fullName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-[#1e325c] truncate">{review.fullName}</p>
+                        <div className="flex gap-0.5 mt-0.5">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <Star key={i} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <Quote className="w-6 h-6 text-[#00b5d5]/20 shrink-0" />
+                  </div>
 
                   {/* Review text */}
                   <p className="text-sm text-stone-600 leading-relaxed font-light line-clamp-4 flex-1">
                     {review.message}
                   </p>
 
-                  {/* Divider */}
-                  <div className="border-t border-stone-50 mt-5 pt-4 flex items-center gap-3">
-                    {/* Avatar */}
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0"
-                      style={{ background: palette.bg, color: palette.text }}
-                    >
-                      {review.fullName.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-[#1e325c] truncate">{review.fullName}</p>
-                      <div className="flex gap-0.5 mt-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star key={i} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Hotel reply */}
                   {review.adminReply && (
-                    <div className="mt-3 bg-[#f8fafb] border border-[#00b5d5]/10 rounded-xl p-3">
+                    <div className="mt-4 bg-[#f8fafb] border border-[#00b5d5]/10 rounded-xl p-3">
                       <span className="text-[9px] font-semibold text-[#00b5d5] uppercase tracking-[0.15em] block mb-1">
                         {c.hotelReply}
                       </span>
