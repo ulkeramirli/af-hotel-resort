@@ -116,6 +116,7 @@ function RoomCard({
   isFav,
   onFavorite,
   onBook,
+  onDetails,
   compact = false,
   currency,
 }: {
