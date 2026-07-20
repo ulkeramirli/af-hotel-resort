@@ -125,6 +125,7 @@ function RoomCard({
   isFav: boolean;
   onFavorite: (id: string) => void;
   onBook: (id: string) => void;
+  onDetails: (id: string) => void;
   compact?: boolean;
   currency: "AZN" | "USD" | "EUR";
 }) {
@@ -132,7 +133,7 @@ function RoomCard({
     <div className="h-full">
       <div className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col h-full">
       {/* Image */}
-      <div className="relative aspect-16/11 overflow-hidden bg-stone-100 border-b border-stone-100">
+      <div className="relative aspect-video overflow-hidden bg-stone-100 border-b border-stone-100">
         <RoomCarousel images={room.images} alt={(room.title as any)?.[l] || ""} />
         {/* Fav button */}
         <button
@@ -147,9 +148,9 @@ function RoomCard({
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-3 flex flex-col flex-1 justify-between">
+      <div className="p-3.5 space-y-2.5 flex flex-col flex-1 justify-between">
         <div className="space-y-1.5 min-w-0 overflow-hidden">
-          <h3 className="font-semibold text-stone-800 text-base group-hover:text-stone-600 transition-colors">
+          <h3 className="font-semibold text-stone-800 text-[15px] group-hover:text-stone-600 transition-colors">
             {(room.title as any)?.[l] || (room.title as any)?.az || ""}
           </h3>
           <p
@@ -181,19 +182,26 @@ function RoomCard({
               <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
 
             </div>
-            <Link
-              href={`/rooms/${room.id}`}
-              onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-medium rounded-xl transition-colors shadow-sm relative z-10"
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDetails(room.id);
+              }}
+              className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-medium rounded-xl transition-colors shadow-sm relative z-10 cursor-pointer"
             >
               <span>{c.details}</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            </button>
           </div>
           
           <button
-            onClick={() => onBook(room.id)}
-            className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 text-white text-xs font-medium rounded-xl shadow-sm transition-colors cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onBook(room.id);
+            }}
+            className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 text-white text-xs font-medium rounded-xl shadow-sm transition-colors cursor-pointer relative z-10"
             style={{ background: "linear-gradient(135deg, #ff8c00, #ff5f00)" }}
           >
             <CalendarCheck className="w-3.5 h-3.5" />
@@ -225,7 +233,7 @@ export default function Rooms() {
     containScroll: "trimSnaps",
     dragFree: true,
     breakpoints: {
-      '(min-width: 640px)': { active: false }, // disable on sm and up
+      '(min-width: 768px)': { active: false }, // disable on md and up
     }
   });
 
@@ -354,82 +362,54 @@ export default function Rooms() {
           </motion.div>
         ) : (
           <>
-            <div className="relative md:hidden">
+            <div className="relative w-full">
               {/* Mobile arrow buttons */}
               <button
                 onClick={scrollRoomsPrev}
-                className="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 z-20 w-10 h-10 bg-white border border-stone-200 rounded-full shadow-md flex items-center justify-center text-[#1e325c] hover:bg-[#1e325c] hover:text-white transition-all active:scale-90"
+                className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 z-20 w-10 h-10 bg-white border border-stone-200 rounded-full shadow-md flex items-center justify-center text-[#1e325c] hover:bg-[#1e325c] hover:text-white transition-all active:scale-90"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={scrollRoomsNext}
-                className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 z-20 w-10 h-10 bg-[#ff6c02] border border-[#ff6c02] rounded-full shadow-md flex items-center justify-center text-white hover:bg-[#e55f00] transition-all active:scale-90"
+                className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 z-20 w-10 h-10 bg-[#ff6c02] border border-[#ff6c02] rounded-full shadow-md flex items-center justify-center text-white hover:bg-[#e55f00] transition-all active:scale-90"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
 
-              <div className="overflow-hidden sm:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0" ref={emblaRef}>
+              <div className="overflow-hidden md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0" ref={emblaRef}>
                 <motion.div
                   layout
-                  className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 cursor-grab active:cursor-grabbing sm:cursor-auto"
+                  className="flex md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6 cursor-grab active:cursor-grabbing md:cursor-auto"
                 >
                   <AnimatePresence mode="popLayout">
                     {filtered.map((room) => (
                       <motion.div
                         layout
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-50px" }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ ease: "easeOut" as const, duration: 0.45 }}
                         key={room.id}
-                        className="min-w-[calc(100vw-2.5rem)] xs:min-w-[80vw] sm:min-w-0 shrink-0 h-full overflow-hidden"
+                        className="min-w-[75vw] sm:min-w-[45vw] md:min-w-0 w-full shrink-0 h-full"
                       >
                         <RoomCard
-                        room={room}
-                        l={l}
-                        c={c}
-                        isFav={favorites.has(room.id)}
-                        onFavorite={handleFavorite}
-                        onBook={(id) => router.push(`/booking?roomId=${id}`)}
-                        currency={currency}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </motion.div>
+                          room={room}
+                          l={l}
+                          c={c}
+                          isFav={favorites.has(room.id)}
+                          onFavorite={handleFavorite}
+                          onBook={(id) => router.push(`/booking?roomId=${id}`)}
+                          onDetails={(id) => router.push(`/rooms/${id}`)}
+                          currency={currency}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
               </div>
             </div>
-            {/* ── DESKTOP: grid ── */}
-            <motion.div
-              layout
-              className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
-            >
-              <AnimatePresence mode="popLayout">
-                {filtered.map((room) => (
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    exit={{ opacity: 0, y: 30 }}
-                    transition={{ ease: "easeOut" as const, duration: 0.45 }}
-                    key={room.id}
-                  >
-                    <RoomCard
-                      room={room}
-                      l={l}
-                      c={c}
-                      isFav={favorites.has(room.id)}
-                      onFavorite={handleFavorite}
-                      onBook={(id) => router.push(`/booking?roomId=${id}`)}
-                      currency={currency}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
           </>
          )}
       </div>
