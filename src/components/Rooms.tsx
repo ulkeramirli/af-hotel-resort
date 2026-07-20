@@ -183,17 +183,14 @@ function RoomCard({
               <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
 
             </div>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onDetails(room.id);
-              }}
+            <Link
+              href={`/rooms/${room.id}`}
+              onClick={(e) => e.stopPropagation()}
               className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-medium rounded-xl transition-colors shadow-sm relative z-10 cursor-pointer"
             >
               <span>{c.details}</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            </Link>
           </div>
           
           <button
@@ -408,7 +405,7 @@ export default function Rooms() {
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ ease: "easeOut" as const, duration: 0.45 }}
                         key={room.id}
-                        className="min-w-[75vw] sm:min-w-[45vw] md:min-w-0 w-full shrink-0 h-full"
+                        className="w-[80vw] sm:w-[320px] md:w-full shrink-0 h-full"
                       >
                         <RoomCard
                           room={room}

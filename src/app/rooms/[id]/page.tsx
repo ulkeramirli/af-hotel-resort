@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, use } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -155,12 +156,12 @@ export default function RoomDetailPage({
     return (
       <div className="min-h-screen flex flex-col justify-center items-center gap-4 text-stone-400 bg-white">
         <p className="text-sm font-semibold text-stone-500">{c.notFound}</p>
-        <button
-          onClick={() => router.push("/#rooms")}
+        <Link
+          href="/#rooms"
           className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1e325c] text-white rounded-xl shadow-md hover:bg-[#1e325c]/90 transition-all font-semibold text-sm cursor-pointer"
         >
           {c.back}
-        </button>
+        </Link>
       </div>
     );
   }
@@ -175,15 +176,13 @@ export default function RoomDetailPage({
     <div className="min-h-screen bg-stone-50/40 text-stone-800 antialiased font-sans selection:bg-stone-100 pb-20 pt-28 relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Кнопка Назад */}
-        <motion.button
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          onClick={() => router.push('/#rooms')}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-stone-200 shadow-sm rounded-xl text-sm font-semibold text-stone-600 hover:text-[#1e325c] hover:border-[#1e325c]/30 hover:bg-stone-50 transition-all cursor-pointer mb-2"
+        <Link
+          href="/#rooms"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-stone-200 shadow-sm rounded-xl text-sm font-semibold text-stone-600 hover:text-[#1e325c] hover:border-[#1e325c]/30 hover:bg-stone-50 transition-all cursor-pointer mb-2 w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           {c.back}
-        </motion.button>
+        </Link>
 
         {/* СЕТКА ГАЛЕРЕИ */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -191,7 +190,7 @@ export default function RoomDetailPage({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="hidden md:flex flex-col gap-3 col-span-1 md:h-[500px] overflow-y-auto pr-1 gallery-scrollbar"
+            className="hidden md:flex flex-col gap-3 col-span-1 md:h-125 overflow-y-auto pr-1 gallery-scrollbar"
           >
             {room.images.map((img, i) => (
               <button
@@ -217,7 +216,7 @@ export default function RoomDetailPage({
           {/* Главное изображение */}
           <motion.div
             layoutId="main-room-image"
-            className="col-span-1 md:col-span-3 relative rounded-2xl overflow-hidden bg-stone-100 border border-stone-200/30 shadow-sm h-[300px] md:h-[500px]"
+            className="col-span-1 md:col-span-3 relative rounded-2xl overflow-hidden bg-stone-100 border border-stone-200/30 shadow-sm h-75 md:h-125"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -289,7 +288,7 @@ export default function RoomDetailPage({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-xl md:text-3xl font-bold text-stone-900 tracking-tight">
+                  <h1 className="text-2xl md:text-3xl font-bold text-stone-900 tracking-tight">
                     {roomTitle}
                   </h1>
                   {/* <span className="bg-stone-900 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">
