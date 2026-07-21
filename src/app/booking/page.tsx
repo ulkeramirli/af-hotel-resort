@@ -43,7 +43,7 @@ export default function BookingPage() {
           />
         </motion.div>
         
-        {/* Subtle Luxury Gradients for Left-Aligned Text */}
+        {/* Subtle Gradients for Left-Aligned Text */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1e]/95 via-[#0a0f1e]/60 to-transparent pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f1e]/10 to-[#f7f5f0] pointer-events-none" />
         

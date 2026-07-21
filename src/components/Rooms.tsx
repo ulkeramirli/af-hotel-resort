@@ -58,11 +58,11 @@ function RoomCarousel({ images, alt, priority = false }: { images: string[]; alt
   );
 }
 
-const content = {
+export const content = {
   az: {
     tag: "OTAQLAR & KOTECLƏR",
-    title: "Rahatlığın Yeni Səviyyəsi",
-    subtitle: "Hər zövqə uyğun lüks otaqlar",
+    title: "Mükəmməl İstirahət Məkanı",
+    subtitle: "Hər zövqə uyğun rahat otaqlar",
     all: "Hamısı",
     single: "Single",
     double: "Standard Double",
@@ -77,7 +77,7 @@ const content = {
   en: {
     tag: "ROOMS & COTTAGES",
     title: "A New Level of Comfort",
-    subtitle: "Luxury rooms for every taste",
+    subtitle: "Comfortable rooms for every taste",
     all: "All",
     single: "Single",
     double: "Standard Double",
@@ -92,7 +92,7 @@ const content = {
   ru: {
     tag: "НОМЕРА И КОТТЕДЖИ",
     title: "Новый Уровень Комфорта",
-    subtitle: "Номера класса люкс на любой вкус",
+    subtitle: "Комфортные номера на любой вкус",
     all: "Все",
     single: "Single",
     double: "Standard Double",
@@ -109,7 +109,7 @@ const content = {
 type Category = string;
 
 // Single room card component
-function RoomCard({
+export function RoomCard({
   room,
   l,
   c,
@@ -153,15 +153,12 @@ function RoomCard({
       {/* Content */}
       <div className="p-3.5 space-y-2.5 flex flex-col flex-1 justify-between">
         <div className="space-y-1.5 min-w-0 overflow-hidden">
-          <h3 className="font-semibold text-stone-800 text-[15px] group-hover:text-stone-600 transition-colors">
+          <h3 className="font-semibold text-stone-800 text-xl group-hover:text-stone-600 transition-colors">
             {(room.title as any)?.[l] || (room.title as any)?.az || ""}
           </h3>
-          <p
-            className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2"
-            dangerouslySetInnerHTML={{
-              __html: (room.desc as any)?.[l] || (room.desc as any)?.az || ""
-            }}
-          />
+          <p className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2">
+            {String((room.desc as any)?.[l] || (room.desc as any)?.az || "").replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')}
+          </p>
           <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
             <span className="flex items-center gap-1">
               <Users className="w-3.5 h-3.5 text-stone-300" />
@@ -239,6 +236,25 @@ export default function Rooms() {
 
   const scrollRoomsPrev = useCallback(() => emblaRoomsApi && emblaRoomsApi.scrollPrev(), [emblaRoomsApi]);
   const scrollRoomsNext = useCallback(() => emblaRoomsApi && emblaRoomsApi.scrollNext(), [emblaRoomsApi]);
+
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(true);
+
+  const onSelectRooms = useCallback((api: any) => {
+    setPrevBtnEnabled(api.canScrollPrev());
+    setNextBtnEnabled(api.canScrollNext());
+  }, []);
+
+  useEffect(() => {
+    if (!emblaRoomsApi) return;
+    onSelectRooms(emblaRoomsApi);
+    emblaRoomsApi.on("reInit", onSelectRooms);
+    emblaRoomsApi.on("select", onSelectRooms);
+    return () => {
+      emblaRoomsApi.off("reInit", onSelectRooms);
+      emblaRoomsApi.off("select", onSelectRooms);
+    };
+  }, [emblaRoomsApi, onSelectRooms]);
 
   useEffect(() => {
     let cancelled = false;
@@ -381,13 +397,23 @@ export default function Rooms() {
               {/* Mobile arrow buttons */}
               <button
                 onClick={scrollRoomsPrev}
-                className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 z-20 w-10 h-10 bg-white border border-stone-200 rounded-full shadow-md flex items-center justify-center text-[#1e325c] hover:bg-[#1e325c] hover:text-white transition-all active:scale-90"
+                disabled={!prevBtnEnabled}
+                className={`md:hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 z-20 w-10 h-10 rounded-full shadow-md flex items-center justify-center transition-all active:scale-90 ${
+                  !prevBtnEnabled
+                    ? "bg-white border border-stone-200 text-stone-300 cursor-not-allowed opacity-80"
+                    : "bg-[#ff6c02] border border-[#ff6c02] text-white hover:bg-[#e55f00]"
+                }`}
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={scrollRoomsNext}
-                className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 z-20 w-10 h-10 bg-[#ff6c02] border border-[#ff6c02] rounded-full shadow-md flex items-center justify-center text-white hover:bg-[#e55f00] transition-all active:scale-90"
+                disabled={!nextBtnEnabled}
+                className={`md:hidden absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 z-20 w-10 h-10 rounded-full shadow-md flex items-center justify-center transition-all active:scale-90 ${
+                  !nextBtnEnabled
+                    ? "bg-white border border-stone-200 text-stone-300 cursor-not-allowed opacity-80"
+                    : "bg-[#ff6c02] border border-[#ff6c02] text-white hover:bg-[#e55f00]"
+                }`}
               >
                 <ChevronRight className="w-5 h-5" />
               </button>

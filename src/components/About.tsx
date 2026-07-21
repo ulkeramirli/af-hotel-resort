@@ -18,7 +18,7 @@ export default function About() {
       tag: "Haqqımızda",
       title: "Sadəcə Otel Deyil. Tam Bir Dünya.",
       p1: "Novxanıda, Xəzər dənizinin sahilindəki AF Hotel & Aqua Park — bu, Bakının ən gözəl künclərindən birindəki dünya standartlı kurortdur. Qızılı çimərliyi, saf havası və panoramik dəniz mənzərəsi ilə hər gün yeni bir sehir yaradırıq.",
-      p2: "Geniş otaqlar, lüks villalar, bölgənin ən böyük Aqua Parkı, çoxmütbəxli restoranlar, spa mərkəzi, uşaq klubu, idman meydançaları — hamısı bir ərazidə. Burada hər yaş üçün öz möcüzəli anı var.",
+      p2: "Geniş otaqlar, rahat villalar, bölgənin ən böyük Aqua Parkı, çoxmütbəxli restoranlar, spa mərkəzi, uşaq klubu, idman meydançaları — hamısı bir ərazidə. Burada hər yaş üçün öz möcüzəli anı var.",
       p3: "Hər qonağımıza fərdi yanaşırıq, çünki inanırıq ki, mükəmməl istirahət ümumi deyil — şəxsidir. Komandamız 24/7 sizin xidmətinizdədir.",
       p4: "Xəzər sahilinin ən dəyərli ünvanına xoş gəlmisiniz — burada hər an xatirəyə çevrilir.",
       more: "Otaqlara Bax"
@@ -27,7 +27,7 @@ export default function About() {
       tag: "About Us",
       title: "Not Just a Hotel. An Entire World.",
       p1: "Perched on the golden shores of the Caspian Sea in Novkhani, AF Hotel & Aqua Park is a world-class resort unlike any other near Baku. Every day here is shaped by sea breezes, golden sand, and panoramic horizons that stretch to infinity.",
-      p2: "Spacious rooms, luxury villas, the region's largest Aqua Park, multi-cuisine restaurants, a full-service spa, kids' club, and sports facilities — all within a single breathtaking destination. Every age finds its own kind of magic here.",
+      p2: "Spacious rooms, comfortable villas, the region's largest Aqua Park, multi-cuisine restaurants, a full-service spa, kids' club, and sports facilities — all within a single breathtaking destination. Every age finds its own kind of magic here.",
       p3: "We treat every guest as an individual, because we believe perfect rest is not one-size-fits-all — it's personal. Our team is at your service around the clock.",
       p4: "Welcome to the most cherished address on the Caspian coast — where every moment becomes a memory.",
       more: "Explore Rooms"
@@ -36,7 +36,7 @@ export default function About() {
       tag: "О нас",
       title: "Не просто отель. Целый мир.",
       p1: "Расположенный на золотом берегу Каспия в Новханы, AF Hotel & Aqua Park — это курорт мирового класса, которому нет аналогов вблизи Баку. Каждый день здесь наполнен морским бризом, тёплым песком и горизонтом, уходящим в бесконечность.",
-      p2: "Просторные номера, роскошные виллы, крупнейший в регионе аквапарк, рестораны с несколькими кухнями мира, спа, детский клуб и спортивные площадки — всё в одном месте. Каждый возраст находит здесь своё волшебство.",
+      p2: "Просторные номера, комфортные виллы, крупнейший в регионе аквапарк, рестораны с несколькими кухнями мира, спа, детский клуб и спортивные площадки — всё в одном месте. Каждый возраст находит здесь своё волшебство.",
       p3: "Мы относимся к каждому гостю индивидуально, потому что убеждены: идеальный отдых — это не универсальный шаблон, это персональная история. Наша команда к вашим услугам круглосуточно.",
       p4: "Добро пожаловать на самый ценный адрес каспийского побережья — здесь каждый момент превращается в воспоминание.",
       more: "Посмотреть Номера"

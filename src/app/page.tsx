@@ -31,7 +31,7 @@ export default function Home() {
   }, [isDesktop]);
 
   return (
-    <div className="w-full relative bg-stone-50">
+    <main className="w-full relative bg-stone-50">
       <Hero />
 
       {/* Mobile-only: beautiful overview of all hotel sections */}
@@ -78,6 +78,6 @@ export default function Home() {
           <Contacts />
         </div>
       )}
-    </div>
+    </main>
   );
 }

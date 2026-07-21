@@ -34,7 +34,7 @@ const content = {
     location: "Ünvan",
     share: "Paylaş",
     reviews: "Rəy",
-    luxuryBadge: "Lüks Otaqlar",
+    roomBadge: "Gözəl Otaqlar",
     notFound: "Tapılmadı",
     bed: "Yataq",
     bath: "Hamam",
@@ -57,7 +57,7 @@ const content = {
     location: "Location",
     share: "Share",
     reviews: "Reviews",
-    luxuryBadge: "Luxury Rooms",
+    roomBadge: "Comfortable Rooms",
     notFound: "Not found",
     bed: "Bed",
     bath: "Bath",
@@ -80,7 +80,7 @@ const content = {
     location: "Локация",
     share: "Поделиться",
     reviews: "Отзывов",
-    luxuryBadge: "Люкс Номера",
+    roomBadge: "Красивые Номера",
     notFound: "Не найдено",
     bed: "Кровать",
     bath: "Ванная",
@@ -174,6 +174,32 @@ export default function RoomDetailPage({
 
   return (
     <div className="min-h-screen bg-stone-50/40 text-stone-800 antialiased font-sans selection:bg-stone-100 pb-20 pt-28 relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "HotelRoom",
+            "name": roomTitle,
+            "description": roomDesc,
+            "image": room.images,
+            "occupancy": {
+              "@type": "QuantitativeValue",
+              "value": room.capacity?.az?.match(/\d+/) ? parseInt(room.capacity.az.match(/\d+/)[0]) : 2
+            },
+            "amenityFeature": roomIncludes.map(inc => ({
+              "@type": "LocationFeatureSpecification",
+              "name": inc,
+              "value": true
+            })),
+            "offers": {
+              "@type": "Offer",
+              "price": room.price,
+              "priceCurrency": "AZN"
+            }
+          })
+        }}
+      />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Кнопка Назад */}
         <Link
@@ -204,7 +230,7 @@ export default function RoomDetailPage({
               >
                 <Image
                   src={img || "/AF-aqua.jpg"}
-                  alt=""
+                  alt={`Room preview ${i + 1}`}
                   fill
                   sizes="250px"
                   className="object-cover"
@@ -292,7 +318,7 @@ export default function RoomDetailPage({
                     {roomTitle}
                   </h1>
                   {/* <span className="bg-stone-900 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">
-                    {c.luxuryBadge}
+                    {c.roomBadge}
                   </span> */}
                 </div>
                 <p className="text-xs text-stone-400 flex items-center gap-1">

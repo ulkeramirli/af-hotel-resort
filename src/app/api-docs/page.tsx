@@ -74,7 +74,7 @@ export default function ApiDocs() {
 
   return (
     <div style={{ backgroundColor: '#fafafa', minHeight: '100vh', paddingBottom: '40px' }}>
-      {/* Premium Header */}
+      {/* Header */}
       <div style={{
         background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
         color: '#ffffff',

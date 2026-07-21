@@ -34,7 +34,7 @@ type LangType = "az" | "en" | "ru";
 
 const translations = {
   az: {
-    heroTitle: "Xəzər sahilinin\nən lüks istirahəti",
+    heroTitle: "Xəzər sahilinin\nən gözəl istirahəti",
     heroDesc: "5 ulduzlu otel, akvapak, 3 restoran və özəl çimərlik ilə unudulmaz istirahət yaşayın.",
     statRoom: "Otaq",
     statRest: "Restoran",

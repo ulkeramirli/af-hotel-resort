@@ -30,7 +30,7 @@ const sections = [
       en: { title: "Rooms & Cottages", sub: "Comfortable stay" },
       ru: { title: "Номера & Коттеджи", sub: "Комфортный отдых" },
     },
-    badge: { az: "5★ Lüks", en: "5★ Luxury", ru: "5★ Люкс" },
+    badge: { az: "4★ Komfort", en: "4★ Comfort", ru: "4★ Комфорт" },
     large: true,
   },
   {
@@ -120,9 +120,9 @@ export default function MobileOverview() {
   const l = (language as "az" | "en" | "ru") || "az";
 
   const heading = {
-    az: { tag: "XOŞ GƏLMİŞSİNİZ", title: "AF Hotel & Aqua Park", sub: "Lüks, əyləncə və rahat istirahət — hamısı bir yerdə" },
-    en: { tag: "WELCOME TO", title: "AF Hotel & Aqua Park", sub: "Luxury, fun and relaxation — all in one place" },
-    ru: { tag: "ДОБРО ПОЖАЛОВАТЬ", title: "AF Hotel & Aqua Park", sub: "Роскошь, веселье и отдых — всё в одном месте" },
+    az: { tag: "XOŞ GƏLMİŞSİNİZ", title: "AF Hotel & Aqua Park", sub: "Gözəl, əyləncə və rahat istirahət — hamısı bir yerdə" },
+    en: { tag: "WELCOME TO", title: "AF Hotel & Aqua Park", sub: "Comfort, fun and relaxation — all in one place" },
+    ru: { tag: "ДОБРО ПОЖАЛОВАТЬ", title: "AF Hotel & Aqua Park", sub: "Комфорт, веселье и отдых — всё в одном месте" },
   }[l];
 
   return (

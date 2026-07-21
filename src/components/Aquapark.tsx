@@ -23,7 +23,7 @@ const variants = {
   })
 };
 
-const CardImageSlider = ({ images, itemName }: { images: string[], itemName: string }) => {
+const CardImageSlider = ({ images, itemName, priority = false }: { images: string[], itemName: string, priority?: boolean }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
@@ -56,7 +56,7 @@ const CardImageSlider = ({ images, itemName }: { images: string[], itemName: str
           transition={{ x: { type: "spring", stiffness: 300, damping: 30 } }}
           className="absolute inset-0"
         >
-          <Image src={images[currentIndex]} alt={itemName} fill sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
+          <Image src={images[currentIndex]} alt={itemName} fill priority={priority && currentIndex === 0} sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
         </motion.div>
       </AnimatePresence>
       
@@ -85,7 +85,7 @@ const content = {
   az: {
     tag: "AQUA & BEACH RESORT",
     title: "Eksklüziv Su Dünyası",
-    subtitle: "Xəzər sahilində bölgənin ən böyük əyləncə, hovuz və özəl çimərlik kompleksi",
+    subtitle: "Xəzər sahilində ailənizlə unudulmaz anlar yaşayacağınız gözəl əyləncə, hovuz və özəl çimərlik kompleksi",
     openHours: "10:00 – 20:00",
     season: "Yay mövsümü: May – Oktyabr",
     tickets: "Bilet qiymətləri",
@@ -107,7 +107,7 @@ const content = {
         items: [
           { name: "Böyüklər üçün aquapark lı hovuz", icon: "⚡", desc: "Əyləncəli sürüşmələr və böyük hovuz", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
           { name: "Uşaqlar üçün hovuz", icon: "🎠", desc: "Balacalar üçün təhlükəsiz su oyunları", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
-          { name: "VIP hovuz", icon: "💎", desc: "Sakitlik və lüks axtaranlar üçün xüsusi hovuz", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "VIP hovuz", icon: "💎", desc: "Sakitlik və rahatlıq axtaranlar üçün xüsusi hovuz", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
           { name: "Böyüklər üçün bir digər hovuz", icon: "🏊", desc: "Professional üzgüçülük və istirahət üçün", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
           { name: "Af Beach böyüklər üçün hovuz", icon: "🏖️", desc: "Dəniz mənzərəli böyüklər hovuzu", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
           { name: "Af Beach uşaqlar üçün hovuz", icon: "🌊", desc: "Çimərlik zonasında uşaqlar üçün təhlükəsiz hovuz", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
@@ -127,10 +127,10 @@ const content = {
       {
         id: "beach",
         name: "Özəl Çimərlik",
-        desc: "Qızılı qum və dəniz kənarında lüks",
+        desc: "Qızılı qum və dəniz kənarında rahatlıq",
         icon: Palmtree,
         items: [
-          { name: "Premium Sahil Zonası", icon: "🏖️", desc: "Rahat şezlonqlar, VIP növ çadırlar və təmiz dəniz sahili", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "Sahil Zonası", icon: "🏖️", desc: "Rahat şezlonqlar, VIP növ çadırlar və təmiz dəniz sahili", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
           { name: "Beach Bar & Lounge", icon: "🍹", desc: "Sərinləşdirici kokteyllər, tropik içkilər və canlı musiqi", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
           { name: "Su İdman Əyləncələri", icon: "🛥️", desc: "Jet-ski, skuter və dəniz kənarında aktiv əyləncə növləri", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=600&q=80" },
         ]
@@ -157,7 +157,7 @@ const content = {
   en: {
     tag: "AQUA & BEACH RESORT",
     title: "Exclusive Water World",
-    subtitle: "The region's largest entertainment, pool, and private beach complex on the Caspian coast",
+    subtitle: "A beautiful entertainment, pool, and private beach complex on the Caspian coast for an unforgettable family vacation",
     openHours: "10:00 – 20:00",
     season: "Summer season: May – October",
     tickets: "Ticket prices",
@@ -179,7 +179,7 @@ const content = {
         items: [
           { name: "Adult pool with aquapark", icon: "⚡", desc: "Fun slides and a large pool", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
           { name: "Kids pool", icon: "🎠", desc: "Safe water games for the little ones", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
-          { name: "VIP pool", icon: "💎", desc: "Special pool for those seeking peace and luxury", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "VIP pool", icon: "💎", desc: "Special pool for those seeking peace and comfort", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
           { name: "Another adult pool", icon: "🏊", desc: "For professional swimming and relaxation", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
           { name: "AF Beach adult pool", icon: "🏖️", desc: "Adult pool with a sea view", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
           { name: "AF Beach kids pool", icon: "🌊", desc: "Safe kids pool in the beach zone", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
@@ -199,10 +199,10 @@ const content = {
       {
         id: "beach",
         name: "Private Beach",
-        desc: "Golden sand and seaside luxury",
+        desc: "Golden sand and seaside comfort",
         icon: Palmtree,
         items: [
-          { name: "Premium Coast Zone", icon: "🏖️", desc: "Comfortable sunbeds, VIP bungalows, and a clean coast", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "Coast Zone", icon: "🏖️", desc: "Comfortable sunbeds, VIP bungalows, and a clean coast", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
           { name: "Beach Bar & Lounge", icon: "🍹", desc: "Refreshing cocktails, tropical drinks, and live music", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
           { name: "Water Sports", icon: "🛥️", desc: "Jet-skiing, scooters, and active seaside entertainment", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=600&q=80" },
         ]
@@ -229,7 +229,7 @@ const content = {
   ru: {
     tag: "AQUA & BEACH RESORT",
     title: "Эксклюзивный Водный Мир",
-    subtitle: "Крупнейший комплекс развлечений, бассейнов и частного пляжа на побережье Каспия",
+    subtitle: "Премиальный комплекс развлечений, бассейнов и частного пляжа на побережье Каспия для всей семьи",
     openHours: "10:00 – 20:00",
     season: "Летний сезон: Май – Октябрь",
     tickets: "Стоимость билетов",
@@ -386,6 +386,23 @@ export default function Aquapark() {
     fetchActivities();
   }, []);
 
+  const [isAtStart, setIsAtStart] = useState(true);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+
+  const handleScroll = () => {
+    if (photoSliderRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = photoSliderRef.current;
+      setIsAtStart(scrollLeft <= 0);
+      setIsAtEnd(Math.ceil(scrollLeft + clientWidth) >= scrollWidth);
+    }
+  };
+
+  useEffect(() => {
+    handleScroll();
+    window.addEventListener('resize', handleScroll);
+    return () => window.removeEventListener('resize', handleScroll);
+  }, [activeTab]);
+
   const activeZones = dbZones.length > 0 ? dbZones : c.zones;
   const activeZone = activeZones[activeTab] || activeZones[0];
 
@@ -397,7 +414,7 @@ export default function Aquapark() {
     { icon: Waves, label: loc(settings?.stats?.[0]?.value) || "25+", sub1: loc(settings?.stats?.[0]?.label) || (l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов"), sub2: loc(settings?.stats?.[0]?.sub) },
     { icon: Users, label: loc(settings?.stats?.[1]?.value) || "2500+", sub1: loc(settings?.stats?.[1]?.label) || (l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день"), sub2: loc(settings?.stats?.[1]?.sub) },
     { icon: Clock, label: loc(settings?.stats?.[2]?.value) || c.openHours, sub1: loc(settings?.stats?.[2]?.label) || c.season, sub2: loc(settings?.stats?.[2]?.sub) },
-    { icon: Star, label: loc(settings?.stats?.[3]?.value) || "5.0", sub1: loc(settings?.stats?.[3]?.label) || (l === "az" ? "Lüks Premium Xidmət" : l === "en" ? "Luxury Premium Service" : "Люкс Премиум Сервис"), sub2: loc(settings?.stats?.[3]?.sub) },
+    { icon: Star, label: loc(settings?.stats?.[3]?.value) || "5.0", sub1: loc(settings?.stats?.[3]?.label) || (l === "az" ? "Yüksək Xidmət" : l === "en" ? "High Quality Service" : "Высокий Сервис"), sub2: loc(settings?.stats?.[3]?.sub) },
   ];
 
   // Функции для управления слайдером по стрелкам
@@ -460,7 +477,7 @@ export default function Aquapark() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl wrap-break-word whitespace-normal text-center [&>p]:mb-0 mx-auto" dangerouslySetInnerHTML={{ __html: displaySubtitle }}
+              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl text-center [&>p]:mb-0 mx-auto px-4 w-full [&_*]:!whitespace-normal [&_*]:!break-words" dangerouslySetInnerHTML={{ __html: displaySubtitle.replace(/&nbsp;/g, ' ') }}
             />
           </motion.div>
         </div>
@@ -509,7 +526,7 @@ export default function Aquapark() {
           transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
           className="w-full pt-4 relative z-10"
         >
-          <div className="-mx-6 px-6 md:mx-0 md:px-0 flex md:grid md:grid-cols-4 gap-3 md:gap-5 overflow-x-auto snap-x snap-mandatory hide-scrollbar md:bg-white/70 md:p-3 md:rounded-4xl md:border border-white/60 md:backdrop-blur-xl md:shadow-sm [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 bg-white/70 p-3 rounded-3xl md:rounded-4xl border border-white/60 backdrop-blur-xl shadow-sm">
             {activeZones.map((zone, i) => {
               const IconComponent = zone.icon;
               const zoneName = loc(zone.name);
@@ -518,37 +535,36 @@ export default function Aquapark() {
               return (
                 <motion.button
                   key={zone.id || i}
-                  onClick={(e) => {
-                    setActiveTab(i);
-                    e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                  }}
+                  onClick={() => setActiveTab(i)}
                   whileTap={{ scale: 0.97 }}
-                  className={`relative shrink-0 snap-center md:snap-start w-[75vw] sm:w-[260px] md:w-auto p-4 md:p-5 rounded-2xl md:rounded-3xl flex flex-col items-start text-left gap-1.5 md:gap-2 transition-all cursor-pointer ${
+                  className={`relative w-full p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1.5 md:gap-2 transition-all cursor-pointer ${
                     activeTab === i
                       ? "bg-white shadow-[0_8px_30px_rgba(0,181,213,0.12)] border border-[#00b5d5]/20 scale-[1.02]"
                       : "bg-white/60 md:bg-transparent md:hover:bg-white/80 border border-transparent"
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 md:gap-2 whitespace-nowrap mb-0.5 md:mb-1">
-                    {zone.emoji ? (
-                      <span className="text-lg md:text-xl">{zone.emoji}</span>
-                    ) : IconComponent ? (
-                      <IconComponent className={`w-4 h-4 md:w-5 md:h-5 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
-                    ) : null}
+                  <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-1.5 md:gap-2 mb-0.5 md:mb-1 text-center md:text-left w-full">
+                    <div className="flex items-center gap-1.5">
+                      {zone.emoji ? (
+                        <span className="text-xl md:text-xl">{zone.emoji}</span>
+                      ) : IconComponent ? (
+                        <IconComponent className={`w-5 h-5 md:w-5 md:h-5 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
+                      ) : null}
+                    </div>
 
-                    <span className={`text-xs md:text-sm font-bold tracking-wide ${activeTab === i ? "text-[#00b5d5]" : "text-stone-600"}`}>
+                    <span className={`text-[11px] md:text-sm font-bold tracking-wide leading-tight ${activeTab === i ? "text-[#00b5d5]" : "text-stone-600"}`}>
                       {zoneName}
                     </span>
 
                     {zone.isSoon && (
-                      <span className="text-[8px] md:text-[9px] bg-amber-500 text-white font-extrabold px-2 py-0.5 rounded-full uppercase tracking-widest shadow-sm">
+                      <span className="text-[8px] md:text-[9px] bg-amber-500 text-white font-extrabold px-2 py-0.5 rounded-full uppercase tracking-widest shadow-sm mt-1 md:mt-0">
                         {c.soonTag || "Soon"}
                       </span>
                     )}
                   </div>
 
                   {zoneDesc && (
-                    <span className="text-[10px] md:text-[11px] text-stone-500 font-medium line-clamp-1 w-full text-left">
+                    <span className="text-[10px] md:text-[11px] text-stone-500 font-medium line-clamp-1 w-full text-center md:text-left mt-1 md:mt-0">
                       {stripHtml(zoneDesc)}
                     </span>
                   )}
@@ -565,7 +581,9 @@ export default function Aquapark() {
             {/* Сама лента слайдера */}
             <div 
               ref={photoSliderRef}
-              className="overflow-x-auto snap-x snap-mandatory flex gap-4 md:gap-6 pb-4 pt-2 scrollbar-none [&::-webkit-scrollbar]:hidden"
+              onScroll={handleScroll}
+              className="flex overflow-x-auto snap-x snap-mandatory gap-5 md:gap-6 pb-8 pt-2 gallery-scrollbar hide-scrollbar"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {activeZone?.items.map((item: any, i: number) => {
                 const itemName = loc(item.name);
@@ -575,16 +593,16 @@ export default function Aquapark() {
                 return (
                   <div
                     key={i}
-                    className="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] group rounded-4xl overflow-hidden border border-white/60 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col cursor-pointer relative transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)]"
+                    className="group w-[85vw] sm:w-[45vw] lg:w-[calc(33.333%-16px)] flex-none snap-center rounded-3xl md:rounded-4xl overflow-hidden border border-white/60 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col cursor-pointer relative transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)]"
                   >
                     {/* Subtle glow overlay on hover */}
                     <div className="absolute inset-0 bg-linear-to-br from-[#00b5d5]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" />
                     
                     <div className="relative h-56 md:h-64 overflow-hidden bg-stone-100">
                       {item.images && item.images.length > 1 ? (
-                        <CardImageSlider images={item.images} itemName={itemName} />
+                        <CardImageSlider images={item.images} itemName={itemName} priority={i < 2} />
                       ) : (
-                        <Image src={item.images?.[0] || item.img} alt={itemName} fill sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <Image src={item.images?.[0] || item.img} alt={itemName} fill priority={i < 2} sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
                       )}
                       <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity z-10" />
                       <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#1e325c] shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center gap-1.5 z-20">
@@ -607,23 +625,32 @@ export default function Aquapark() {
               })}
             </div>
 
-            {/* Блок навигации со стрелками */}
-            {activeZone?.items.length > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-6">
-                <button 
-                  onClick={() => scrollSlider("left")}
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white active:bg-stone-50 hover:bg-stone-50 border border-stone-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex items-center justify-center text-[#1e325c] transition-all hover:scale-105 active:scale-95"
-                >
-                  <ChevronLeft className="w-6 h-6 md:w-7 md:h-7" />
-                </button>
-                <button 
-                  onClick={() => scrollSlider("right")}
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white active:bg-stone-50 hover:bg-stone-50 border border-stone-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex items-center justify-center text-[#1e325c] transition-all hover:scale-105 active:scale-95"
-                >
-                  <ChevronRight className="w-6 h-6 md:w-7 md:h-7" />
-                </button>
-              </div>
-            )}
+            
+            {/* Навигационные стрелки */}
+            <div className="flex justify-center gap-4 mt-2">
+              <button
+                onClick={() => scrollSlider("left")}
+                disabled={isAtStart}
+                className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${
+                  isAtStart 
+                    ? "bg-white border-stone-200 text-stone-300 cursor-not-allowed" 
+                    : "bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e55f00]"
+                }`}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => scrollSlider("right")}
+                disabled={isAtEnd}
+                className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${
+                  isAtEnd 
+                    ? "bg-white border-stone-200 text-stone-300 cursor-not-allowed" 
+                    : "bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e55f00]"
+                }`}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
 

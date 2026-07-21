@@ -18,8 +18,8 @@ async function run() {
   await RoomSettings.updateMany({}, {
     '$set': {
       tag: { az: 'OTAQLAR VƏ KOTECLƏR', en: 'ROOMS & COTTAGES', ru: 'НОМЕРА И КОТТЕДЖИ' },
-      title: { az: 'Rahatlığın Yeni Səviyyəsi', en: 'A New Level of Comfort', ru: 'Новый Уровень Комфорта' },
-      subtitle: { az: 'Hər zövqə uyğun lüks otaqlar və koteclər', en: 'Luxury rooms and cottages for every taste', ru: 'Роскошные номера и коттеджи на любой вкус' }
+      title: { az: 'Mükəmməl İstirahət Məkanı', en: 'Perfect Vacation Spot', ru: 'Идеальное Место для Отдыха' },
+      subtitle: { az: 'Hər zövqə uyğun rahat otaqlar və koteclər', en: 'Comfortable rooms and cottages for every taste', ru: 'Комфортные номера и коттеджи на любой вкус' }
     }
   });
 

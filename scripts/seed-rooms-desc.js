@@ -40,7 +40,7 @@ async function seed() {
     {
       id: "6a50a62dffa40279b7407595", // Deluxe Sea View
       description: {
-        en: "Wake up to breathtaking ocean views in our beautifully appointed Deluxe room. Experience ultimate relaxation with premium bedding, elegant decor, and a private balcony.",
+        en: "Wake up to breathtaking ocean views in our beautifully appointed Deluxe room. Experience ultimate relaxation with comfortable bedding, elegant decor, and a private balcony.",
         ru: "Просыпайтесь под захватывающий вид на море в нашем элегантном номере Делюкс. Подарите себе абсолютное расслабление: премиальное постельное белье, стильный декор и собственный балкон.",
         az: "Zərif tərtibatlı Deluks otağımızda nəfəskəsici dəniz mənzərəsi ilə oyanın. Yüksək keyfiyyətli yataq dəsti, zərif dekor və şəxsi balkonla tam rahatlığı kəşf edin."
       }
@@ -54,11 +54,11 @@ async function seed() {
       }
     },
     {
-      id: "6a50a62dffa40279b740759f", // Luxury Cottage
+      id: "6a50a62dffa40279b740759f", // Family Cottage
       description: {
-        en: "An exclusive sanctuary offering unparalleled privacy and luxury. Set amidst serene surroundings, this spacious cottage features upscale amenities and personalized touches for an unforgettable escape.",
-        ru: "Эксклюзивное убежище, предлагающее непревзойденное уединение и роскошь. Этот просторный коттедж, окруженный спокойствием, оснащен первоклассными удобствами для незабываемого отдыха.",
-        az: "Bənzərsiz məxfilik və lüks təklif edən eksklüziv məkan. Sakitliklə əhatə olunmuş bu geniş kottec unudulmaz qaçış üçün yüksək səviyyəli şərait və fərdi toxunuşlara malikdir."
+        en: "An exclusive sanctuary offering unparalleled privacy and comfort. Set amidst serene surroundings, this spacious cottage features upscale amenities and personalized touches for an unforgettable escape.",
+        ru: "Эксклюзивное убежище, предлагающее беспрецедентную конфиденциальность и комфорт. Расположенный среди безмятежных окрестностей, этот просторный коттедж отличается высококлассными удобствами и индивидуальными штрихами для незабываемого отдыха.",
+        az: "Bənzərsiz məxfilik və rahatlıq təklif edən eksklüziv məkan. Sakitliklə əhatə olunmuş bu geniş kottec unudulmaz qaçış üçün yüksək səviyyəli şərait və fərdi toxunuşlara malikdir."
       }
     }
   ];
@@ -66,7 +66,7 @@ async function seed() {
   const commonAmenities = [
     { en: "High-Speed Wi-Fi", ru: "Быстрый Wi-Fi", az: "Sürətli Wi-Fi" },
     { en: "Flat-Screen TV", ru: "Телевизор с плоским экраном", az: "Yastı ekranlı televizor" },
-    { en: "Premium Bedding", ru: "Премиальное постельное белье", az: "Premium yataq dəsti" },
+    { en: "Comfortable Bedding", ru: "Комфортное постельное белье", az: "Rahat yataq dəsti" },
     { en: "Room Service", ru: "Обслуживание номеров", az: "Otaq xidməti" }
   ];
 

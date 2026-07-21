@@ -20,9 +20,9 @@ async function main() {
     ru: 'СОВЕРШЕНСТВО И ЭЛЕГАНТНОСТЬ',
   };
   about.description = {
-    az: '<p>AF Hotel & Aqua Park Resort, Xəzər sahilində lüks və rahatlığın unikal sintezini təqdim edir. Bənzərsiz xidmət səviyyəmiz və eksklüziv imkanlarımızla unudulmaz bir istirahət vəd edirik.</p>',
-    en: '<p>AF Hotel & Aqua Park Resort offers a unique synthesis of luxury and comfort on the shores of the Caspian Sea. With our unparalleled service and exclusive facilities, we promise an unforgettable stay.</p>',
-    ru: '<p>AF Hotel & Aqua Park Resort предлагает уникальный синтез роскоши и комфорта на берегу Каспийского моря. Благодаря безупречному сервису и эксклюзивным возможностям, мы гарантируем незабываемый отдых.</p>',
+    az: '<p>AF Hotel & Aqua Park Resort, Xəzər sahilində gözəllik və rahatlığın unikal sintezini təqdim edir. Bənzərsiz xidmət səviyyəmiz və eksklüziv imkanlarımızla unudulmaz bir istirahət vəd edirik.</p>',
+    en: '<p>AF Hotel & Aqua Park Resort offers a unique synthesis of beauty and comfort on the shores of the Caspian Sea. With our unparalleled service and exclusive facilities, we promise an unforgettable stay.</p>',
+    ru: '<p>Курорт AF Hotel & Aqua Park предлагает уникальный синтез красоты и комфорта на берегу Каспийского моря. Благодаря непревзойденному сервису и эксклюзивным удобствам мы обещаем незабываемый отдых.</p>',
   };
   await about.save();
   console.log('Updated/Created About');
@@ -32,8 +32,8 @@ async function main() {
   if (!roomSettings) {
     roomSettings = new RoomSettings();
   }
-  roomSettings.tag = 'EKSKLÜZİV OTAQLAR & LÜKS KOTECLƏR';
-  roomSettings.title = 'Rahatlığın Premium Təcrübəsi';
+  roomSettings.tag = 'EKSKLÜZİV OTAQLAR & AİLƏVİ KOTECLƏR';
+  roomSettings.title = 'Rahatlığın Gözəl Təcrübəsi';
   roomSettings.subtitle = 'Xüsusi dizayn edilmiş, yüksək komfortlu otaqlar və koteclərlə xidmətinizdəyik';
   await roomSettings.save();
   console.log('Updated/Created RoomSettings');
@@ -43,7 +43,7 @@ async function main() {
   if (!activitySettings) {
     activitySettings = new ActivitySettings();
   }
-  activitySettings.tag = 'PREMIUM İSTİRAHƏT & AQUA PARK';
+  activitySettings.tag = 'GÖZƏL İSTİRAHƏT & AQUA PARK';
   activitySettings.title = 'Sonsuz Əyləncə və Rahatlıq';
   activitySettings.subtitle = 'Mükəmməl su attraksionları və geniş istirahət zonaları ilə unudulmaz anlar yaşayın';
   await activitySettings.save();

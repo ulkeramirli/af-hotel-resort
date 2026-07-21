@@ -54,8 +54,8 @@ const seedSettings = async () => {
     console.log("Seeding Room Settings...");
     await RoomSettings.create({
       tag: "OTAQLAR & KOTECLƏR",
-      title: "Rahatlığın Yeni Səviyyəsi",
-      subtitle: "Hər zövqə uyğun lüks otaqlar. Xəzər dənizinə açılan möhtəşəm mənzərə və 24/7 premium xidmət."
+      title: "Mükəmməl İstirahət Məkanı",
+      subtitle: "Hər zövqə uyğun rahat otaqlar. Xəzər dənizinə açılan möhtəşəm mənzərə və 24/7 yüksək xidmət."
     });
 
     // 3. RESTAURANT SETTINGS

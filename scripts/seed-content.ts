@@ -80,9 +80,9 @@ const seedData = async () => {
         name: { az: "Deluks Dəniz Mənzərəli", en: "Deluxe Sea View Room", ru: "Делюкс с Видом на Море" },
         type: typeDeluxe._id,
         description: {
-          az: "Balkonlu, Xəzər dənizinə açılan möhtəşəm panoram mənzərəli, xüsusi dizaynlı lüks otaq. Romantik istirahət və xüsusi günlər üçün ideal seçimdir.",
-          en: "A uniquely designed luxury room with a balcony offering a magnificent panoramic view of the Caspian Sea. Ideal for romantic getaways and special occasions.",
-          ru: "Роскошный номер с уникальным дизайном и балконом, с которого открывается великолепный панорамный вид на Каспийское море. Идеальный выбор для романтического отдыха."
+          az: "Balkonlu, Xəzər dənizinə açılan möhtəşəm panoram mənzərəli, xüsusi dizaynlı rahat otaq. Romantik istirahət və xüsusi günlər üçün ideal seçimdir.",
+          en: "A uniquely designed beautiful room with a balcony offering a magnificent panoramic view of the Caspian Sea. Ideal for romantic getaways and special occasions.",
+          ru: "Уникальный и красивый номер с балконом, предлагающий великолепный панорамный вид на Каспийское море. Идеально подходит для романтического отдыха и особых случаев."
         },
         price: 140,
         priceUsd: 82,
@@ -125,7 +125,7 @@ const seedData = async () => {
         isAvailable: true
       },
       {
-        name: { az: "Lüks Kottec", en: "Luxury Cottage", ru: "Роскошный Коттедж" },
+        name: { az: "Ailəvi Kottec", en: "Family Cottage", ru: "Семейный Коттедж" },
         type: typeCottage._id,
         description: {
           az: "Təbiətlə iç-içə, dəniz kənarında tam fərdi və VIP səviyyəli istirahət üçün kotteclərimiz sizə özəl bağçası və geniş interyeri ilə fərqlənir.",

@@ -47,12 +47,12 @@ export async function GET() {
     });
 
     await Room.create({
-      name: { az: "Lüks Cüt Nəfərlik Otaq", en: "Deluxe Double Room", ru: "Люкс Двухместный Номер" },
+      name: { az: "Standart Cüt Nəfərlik Otaq", en: "Deluxe Double Room", ru: "Стандартный Двухместный Номер" },
       type: rtDouble._id,
       description: {
-        az: "Dəniz mənzərəli lüks otaq, ailə və cütlüklər üçün əla seçimdir.",
-        en: "Luxury room with a sea view, an excellent choice for couples and families.",
-        ru: "Роскошный номер с видом на море, отличный выбор для пар и семей."
+        az: "Dəniz mənzərəli rahat otaq, ailə və cütlüklər üçün əla seçimdir.",
+        en: "Comfortable room with a sea view, an excellent choice for couples and families.",
+        ru: "Комфортный номер с видом на море, отличный выбор для пар и семей."
       },
       price: 250,
       capacity: 2,

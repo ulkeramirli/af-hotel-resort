@@ -196,9 +196,10 @@ export default function Wonderland() {
               <div className="flex gap-3 shrink-0 w-full lg:w-auto justify-center lg:justify-end mt-4 lg:mt-0">
                 <button
                   onClick={scrollPrev}
+                  disabled={!prevBtnEnabled}
                   className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-2 shadow-md hover:scale-110 active:scale-95 ${
                     prevBtnEnabled
-                      ? 'bg-white border-[#1e325c] text-[#1e325c] hover:bg-[#1e325c] hover:text-white shadow-[0_4px_16px_rgba(30,50,92,0.18)]'
+                      ? 'bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e05e00] hover:border-[#e05e00] shadow-[0_4px_16px_rgba(255,108,2,0.35)]'
                       : 'bg-stone-50 border-stone-200 text-stone-300 cursor-not-allowed opacity-50'
                   }`}
                 >
@@ -206,6 +207,7 @@ export default function Wonderland() {
                 </button>
                 <button
                   onClick={scrollNext}
+                  disabled={!nextBtnEnabled}
                   className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-2 shadow-md hover:scale-110 active:scale-95 ${
                     nextBtnEnabled
                       ? 'bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e05e00] hover:border-[#e05e00] shadow-[0_4px_16px_rgba(255,108,2,0.35)]'
