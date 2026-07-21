@@ -17,7 +17,7 @@ import MagneticButton from "./MagneticButton";
 import TextReveal from "./TextReveal";
 import useEmblaCarousel from "embla-carousel-react";
 
-function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
+function RoomCarousel({ images, alt, priority = false }: { images: string[]; alt: string; priority?: boolean }) {
   const [active, setActive] = useState(0);
   const [err, setErr] = useState(false);
 
@@ -38,7 +38,7 @@ function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   return (
     <div className="w-full h-full relative group/carousel">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <Image src={src} alt={alt} fill sizes="(max-width: 768px) 100vw, 33vw" onError={() => setErr(true)} className="object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+      <Image src={src} alt={alt} fill priority={priority && active === 0} sizes="(max-width: 768px) 100vw, 33vw" onError={() => setErr(true)} className="object-cover group-hover:scale-[1.02] transition-transform duration-500" />
       {images.length > 1 && (
         <>
           <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 shadow-sm cursor-pointer">
@@ -119,6 +119,7 @@ function RoomCard({
   onDetails,
   compact = false,
   currency,
+  priority = false,
 }: {
   room: PublicRoom;
   l: "az" | "en" | "ru";
@@ -129,13 +130,14 @@ function RoomCard({
   onDetails: (id: string) => void;
   compact?: boolean;
   currency: "AZN" | "USD" | "EUR";
+  priority?: boolean;
 }) {
   return (
     <div className="h-full">
       <div className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col h-full">
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-stone-100 border-b border-stone-100">
-        <RoomCarousel images={room.images} alt={(room.title as any)?.[l] || ""} />
+        <RoomCarousel images={room.images} alt={(room.title as any)?.[l] || ""} priority={priority} />
         {/* Fav button */}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavorite(room.id); }}
@@ -396,7 +398,7 @@ export default function Rooms() {
                   className="flex md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6 cursor-grab active:cursor-grabbing md:cursor-auto"
                 >
                   <AnimatePresence mode="popLayout">
-                    {filtered.map((room) => (
+                    {filtered.map((room, index) => (
                       <motion.div
                         layout
                         initial={{ opacity: 0, y: 30 }}
@@ -416,6 +418,7 @@ export default function Rooms() {
                           onBook={(id) => router.push(`/booking?roomId=${id}`)}
                           onDetails={(id) => router.push(`/rooms/${id}`)}
                           currency={currency}
+                          priority={index < 3}
                         />
                       </motion.div>
                     ))}

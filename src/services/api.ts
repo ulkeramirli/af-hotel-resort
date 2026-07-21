@@ -165,6 +165,8 @@ export async function loginWithGoogle(
 }
 
 // ─── PUBLIC ROOM TYPES (for frontend pages) ───
+const publicRoomsCache = new Map<string, PublicRoom>();
+
 export interface PublicRoom {
   id: string;
   category: string; // The ID of the category
@@ -212,7 +214,7 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
     const data = await res.json();
     if (!data.success) return [];
     const rooms: Room[] = data.rooms ?? [];
-    return rooms.map(
+    const publicRooms = rooms.map(
       (r): PublicRoom => ({
         id: r._id,
         category:
@@ -256,6 +258,10 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
         rulesCheckOut: r.rulesCheckOut as any,
       }),
     );
+    if (typeof window !== "undefined") {
+      publicRooms.forEach(r => publicRoomsCache.set(r.id, r));
+    }
+    return publicRooms;
   } catch {
     return [];
   }
@@ -294,6 +300,9 @@ export async function updateRoomSettings(
 export async function getPublicRoomById(
   id: string,
 ): Promise<PublicRoom | null> {
+  if (typeof window !== "undefined" && publicRoomsCache.has(id)) {
+    return publicRoomsCache.get(id) || null;
+  }
   try {
     const res = await fetch(`${BASE}/rooms/${id}`);
     const data = await res.json();
@@ -393,11 +402,18 @@ export async function deleteRoom(id: string) {
 // ─── ROOM TYPES ───
 // GET /api/room-types → { success, roomTypes[] }
 export async function getRoomTypes(): Promise<RoomType[]> {
-  const res = await fetch(`${BASE}/room-types`, { headers: authHeaders() });
-  const data = await res.json();
-  if (!data.success)
-    throw new Error(data.message || "Kateqoriyalar yüklənmədi");
-  return data.roomTypes ?? [];
+  try {
+    const res = await fetch(`${BASE}/room-types`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    const text = await res.text();
+    if (!text) return [];
+    const data = JSON.parse(text);
+    if (!data.success) return [];
+    return data.roomTypes ?? [];
+  } catch (error) {
+    console.error("Failed to parse roomTypes JSON:", error);
+    return [];
+  }
 }
 
 // POST /api/room-types → { success, roomType }
@@ -438,10 +454,18 @@ export async function deleteRoomType(id: string) {
 // ─── ACTIVITIES ───
 // GET /api/activities → { success, activities[] }
 export async function getActivities(): Promise<Activity[]> {
-  const res = await fetch(`${BASE}/activities`, { headers: authHeaders() });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Fəaliyyətlər yüklənmədi");
-  return data.activities ?? [];
+  try {
+    const res = await fetch(`${BASE}/activities`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    const text = await res.text();
+    if (!text) return [];
+    const data = JSON.parse(text);
+    if (!data.success) return [];
+    return data.activities ?? [];
+  } catch (error) {
+    console.error("Failed to parse activities JSON:", error);
+    return [];
+  }
 }
 
 // POST /api/activities → { success, activity }
