@@ -66,7 +66,7 @@ export function adminBookingNotification(
               </div>
               
               <div style="text-align: center; margin-top: 30px;">
-                <a href="https://af-hotel-resort.vercel.app/admin/bronlar" style="background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; display: inline-block;">Admin Panelə Keç</a>
+                <a href="https://afhotel.az/admin/bronlar" style="background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; display: inline-block;">Admin Panelə Keç</a>
               </div>
             </td>
           </tr>
