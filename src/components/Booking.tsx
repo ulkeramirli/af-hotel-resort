@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
@@ -153,6 +153,7 @@ function CustomDatePicker({
 function BookingContent() {
   const { user } = useAuth() as { user: AuthUser | null };
   const searchParams = useSearchParams();
+  const router = useRouter();
   const { language } = useLanguage();
   const { currency } = useCurrency();
   const currentLang = (language as "az" | "en" | "ru") || "az";
@@ -344,10 +345,19 @@ function BookingContent() {
       en: "Check-Out Date",
       ru: "Дата выезда",
     }[currentLang],
+    loginToBook: {
+      az: "Rezervasiya etmək üçün daxil olun",
+      en: "Log in to book",
+      ru: "Войдите, чтобы забронировать",
+    }[currentLang],
   };
 
   const handleNextStep = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     if (!checkIn || !checkOut || !selectedRoomId || !phone || !email) {
       setError("Zəhmət olmasa bütün xanaları doldurun.");
       return;
@@ -567,10 +577,11 @@ function BookingContent() {
             </div>
 
             <button
-              type="submit"
+              type={user ? "submit" : "button"}
+              onClick={!user ? (e) => { e.preventDefault(); router.push("/login"); } : undefined}
               className="w-full bg-[#00b5d5] hover:bg-[#00a0bc] text-white font-bold text-sm uppercase tracking-widest py-4 sm:py-5 rounded-2xl shadow-[0_10px_20px_-10px_rgba(0,181,213,0.6)] transition-all duration-200 active:scale-[0.98] mt-6 flex justify-center items-center group"
             >
-              {dict.nextBtn}
+              {!user ? dict.loginToBook : dict.nextBtn}
             </button>
           </form>
         ) : (
