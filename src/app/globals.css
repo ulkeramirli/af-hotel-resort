@@ -1,79 +1,68 @@
 @import "tailwindcss";
 
-
-
 :root {
-
-  /* firmenniye cveta */
-
-    --color-hotel-blue: #00b5d5;
+  /* Brand colors */
+  --color-hotel-blue: #00b5d5;
   --color-hotel-blue-dark: #00406a;
   --color-hotel-orange: #e55f00;
+  --color-hotel-gold: #c9a84c;
   --color-hotel-gold-hover: #bfa030;
   --color-hotel-dark: #121212;
   --color-hotel-light: #fcfbf7;
 
-
-  /* kastomniy shrift */
-
+  /* Custom fonts */
   --font-serif: var(--font-cormorant), serif;
   --font-sans: var(--font-montserrat), sans-serif;
   --font-script: var(--font-great-vibes), cursive;
-
 }
-
-
-
-
 
 html, body {
-
   background-color: var(--color-hotel-light);
-
   color: var(--color-hotel-dark);
-
   font-family: var(--font-sans);
-
   min-height: 100vh;
-
   scroll-behavior: smooth;
-
 }
-
-@layer base {
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-serif);
-  }
-}
-
-@layer utilities {
-
-  /* prachet skrollbar v chrome */
-
-  .no-scrollbar::-webkit-scrollbar {
-
-    display: none;
-
-  }
-
-  .no-scrollbar {
-
-    -ms-overflow-style: none;
-
-    scrollbar-width: none;
-
-  }
-
-} 
 
 @layer base {
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
     color: var(--color-hotel-dark);
   }
-  
+
   h1, h2 {
     color: #1e325c;
     text-shadow: 0px 2px 4px rgba(30, 50, 92, 0.05);
+  }
+
+  button, [role="button"], a {
+    cursor: pointer;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar in Chrome/Safari */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Custom scrollbar for gallery thumbnails */
+  .gallery-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .gallery-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .gallery-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+  .gallery-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
   }
 }

@@ -26,11 +26,11 @@ const sections = [
     accent: "#c5a880",
     glow: "rgba(197,168,128,0.25)",
     labels: {
-      az: { title: "Otaqlar & Koteclər", sub: "Lüks & rahat yaşayış" },
-      en: { title: "Rooms & Cottages", sub: "Luxury & comfortable stay" },
-      ru: { title: "Номера & Коттеджи", sub: "Роскошь и комфорт" },
+      az: { title: "Otaqlar & Koteclər", sub: "Rahat istirahət" },
+      en: { title: "Rooms & Cottages", sub: "Comfortable stay" },
+      ru: { title: "Номера & Коттеджи", sub: "Комфортный отдых" },
     },
-    badge: { az: "5★ Lüks", en: "5★ Luxury", ru: "5★ Люкс" },
+    badge: { az: "4★ Komfort", en: "4★ Comfort", ru: "4★ Комфорт" },
     large: true,
   },
   {
@@ -42,9 +42,9 @@ const sections = [
     accent: "#5dd8f4",
     glow: "rgba(0,181,213,0.3)",
     labels: {
-      az: { title: "Aqua Park", sub: "20+ sürüşkən & hovuz" },
-      en: { title: "Aqua Park", sub: "20+ slides & pools" },
-      ru: { title: "Аква-Парк", sub: "20+ горок и бассейнов" },
+      az: { title: "Aqua Park", sub: "Su əyləncəsi" },
+      en: { title: "Aqua Park", sub: "Water fun" },
+      ru: { title: "Аква-Парк", sub: "Водные развлечения" },
     },
     badge: { az: "Açıqdır", en: "Open", ru: "Открыто" },
     large: false,
@@ -58,11 +58,11 @@ const sections = [
     accent: "#f59e0b",
     glow: "rgba(245,158,11,0.25)",
     labels: {
-      az: { title: "Wonderland", sub: "İl boyu açıq lunapark" },
-      en: { title: "Wonderland", sub: "Year-round theme park" },
-      ru: { title: "Вондерленд", sub: "Парк открыт круглый год" },
+      az: { title: "AF Park", sub: "Tezliklə açılacaq" },
+      en: { title: "AF Park", sub: "Coming soon" },
+      ru: { title: "AF Park", sub: "Скоро откроется" },
     },
-    badge: { az: "İl boyu", en: "Year-round", ru: "Круглый год" },
+    badge: { az: "Tezliklə", en: "Coming Soon", ru: "Скоро" },
     large: false,
   },
   {
@@ -74,9 +74,9 @@ const sections = [
     accent: "#fb923c",
     glow: "rgba(249,115,22,0.25)",
     labels: {
-      az: { title: "Restoran", sub: "Azərbaycan mətbəxi" },
-      en: { title: "Restaurant", sub: "Azerbaijani cuisine" },
-      ru: { title: "Ресторан", sub: "Азербайджанская кухня" },
+      az: { title: "Restoran", sub: "Ləziz təamlar" },
+      en: { title: "Restaurant", sub: "Delicious meals" },
+      ru: { title: "Ресторан", sub: "Вкусные блюда" },
     },
     badge: { az: "Açıqdır", en: "Open", ru: "Открыто" },
     large: false,
@@ -101,7 +101,7 @@ const sections = [
 
 const stats = [
   { icon: Star, value: "4.9", key: "rating", label: { az: "Reytinq", en: "Rating", ru: "Рейтинг" } },
-  { icon: BedDouble, value: "50+", key: "rooms", label: { az: "Otaq", en: "Rooms", ru: "Номеров" } },
+  { icon: BedDouble, value: "350+", key: "rooms", label: { az: "Otaq", en: "Rooms", ru: "Номеров" } },
   { icon: Users, value: "500+", key: "guests", label: { az: "Qonaq", en: "Guests", ru: "Гостей" } },
   { icon: Clock, value: "24/7", key: "service", label: { az: "Servis", en: "Service", ru: "Сервис" } },
   { icon: MapPin, value: "Novxanı", key: "loc", label: { az: "Ünvan", en: "Location", ru: "Адрес" } },
@@ -111,7 +111,7 @@ const cardVariants = {
   hidden: { opacity: 0, y: 24 },
   show: (i: number) => ({
     opacity: 1, y: 0,
-    transition: { type: "spring" as const, bounce: 0.25, duration: 0.6, delay: i * 0.07 },
+    transition: { ease: "easeOut" as const, duration: 0.6, delay: i * 0.07 },
   }),
 };
 
@@ -120,32 +120,32 @@ export default function MobileOverview() {
   const l = (language as "az" | "en" | "ru") || "az";
 
   const heading = {
-    az: { tag: "XOŞ GƏLMİŞSİNİZ", title: "AF Hotel & Aqua Park", sub: "Lüks, əyləncə və rahat istirahət — hamısı bir yerdə" },
-    en: { tag: "WELCOME TO", title: "AF Hotel & Aqua Park", sub: "Luxury, fun and relaxation — all in one place" },
-    ru: { tag: "ДОБРО ПОЖАЛОВАТЬ", title: "AF Hotel & Aqua Park", sub: "Роскошь, веселье и отдых — всё в одном месте" },
+    az: { tag: "XOŞ GƏLMİŞSİNİZ", title: "AF Hotel & Aqua Park", sub: "Gözəl, əyləncə və rahat istirahət — hamısı bir yerdə" },
+    en: { tag: "WELCOME TO", title: "AF Hotel & Aqua Park", sub: "Comfort, fun and relaxation — all in one place" },
+    ru: { tag: "ДОБРО ПОЖАЛОВАТЬ", title: "AF Hotel & Aqua Park", sub: "Комфорт, веселье и отдых — всё в одном месте" },
   }[l];
 
   return (
-    <section className="block lg:hidden relative overflow-hidden bg-[#fcfbf7] pb-12 pt-8">
+    <section className="block lg:hidden relative overflow-hidden bg-[#fcfbf7] pb-16 pt-12">
       {/* Decorative blobs */}
       <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-[#00b5d5]/8 blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 -left-10 w-48 h-48 rounded-full bg-[#c5a880]/8 blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 px-4">
+      <div className="relative z-10 px-4 sm:px-6 md:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-6 space-y-1.5"
+          className="mb-10 space-y-3 md:space-y-4"
         >
           <div className="flex items-center gap-3">
-            <div className="w-5 h-[1.5px] bg-[#00b5d5]" />
-            <p className="text-[9px] font-bold tracking-[0.3em] text-[#00b5d5] uppercase">{heading.tag}</p>
+            <div className="w-10 h-[2px] bg-[#00b5d5]" />
+            <p className="text-sm sm:text-base font-bold tracking-[0.3em] text-[#00b5d5] uppercase">{heading.tag}</p>
           </div>
-          <h2 className="text-2xl font-bold text-[#1e325c] leading-tight tracking-tight">{heading.title}</h2>
-          <p className="text-xs text-stone-400 font-light">{heading.sub}</p>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#1e325c] leading-tight tracking-tight drop-shadow-sm">{heading.title}</h2>
+          <p className="text-base sm:text-lg text-stone-500 font-medium leading-relaxed max-w-lg">{heading.sub}</p>
         </motion.div>
 
         {/* Stats row */}
@@ -154,16 +154,16 @@ export default function MobileOverview() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex gap-2.5 overflow-x-auto no-scrollbar mb-7 pb-0.5"
+          className="flex gap-3 overflow-x-auto no-scrollbar mb-8 pb-1"
         >
           {stats.map((s) => (
             <div
               key={s.key}
-              className="flex-none flex flex-col items-center gap-1 bg-white border border-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] rounded-2xl px-3.5 py-3 min-w-[70px]"
+              className="flex-none flex flex-col items-center gap-1.5 bg-white border border-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] rounded-[20px] px-5 py-4 min-w-[85px]"
             >
-              <s.icon className="w-3.5 h-3.5 text-[#00b5d5]" />
-              <span className="text-sm font-black text-[#1e325c]">{s.value}</span>
-              <span className="text-[8px] font-semibold text-stone-400 uppercase tracking-wider text-center leading-tight">{s.label[l]}</span>
+              <s.icon className="w-5 h-5 text-[#00b5d5]" />
+              <span className="text-base font-black text-[#1e325c]">{s.value}</span>
+              <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest text-center leading-tight">{s.label[l]}</span>
             </div>
           ))}
         </motion.div>
@@ -205,32 +205,32 @@ export default function MobileOverview() {
                   />
 
                   {/* Content */}
-                  <div className={`relative z-10 flex flex-col justify-between ${sec.large ? "p-5 min-h-[160px]" : "p-4 min-h-[130px]"}`}>
+                  <div className={`relative z-10 flex flex-col justify-between ${sec.large ? "p-6 min-h-[220px]" : "p-5 min-h-[170px]"}`}>
                     {/* Top */}
                     <div className="flex items-start justify-between">
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center"
+                        className="w-10 h-10 rounded-xl flex items-center justify-center"
                         style={{ backgroundColor: `${sec.accent}33`, border: `1px solid ${sec.accent}55` }}
                       >
-                        <Icon className="w-4.5 h-4.5" style={{ color: sec.accent }} />
+                        <Icon className="w-5 h-5" style={{ color: sec.accent }} />
                       </div>
-                      <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/25 transition-all">
-                        <ArrowUpRight className="w-3 h-3 text-white/70 group-hover:text-white transition-colors" />
+                      <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/25 transition-all">
+                        <ArrowUpRight className="w-3.5 h-3.5 text-white/70 group-hover:text-white transition-colors" />
                       </div>
                     </div>
 
                     {/* Bottom */}
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       <span
-                        className={`inline-flex items-center font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${sec.large ? "text-[9px]" : "text-[8px]"}`}
+                        className={`inline-flex items-center font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full ${sec.large ? "text-[10px]" : "text-[9px]"}`}
                         style={{ backgroundColor: `${sec.accent}30`, color: sec.accent }}
                       >
                         {badgeText}
                       </span>
-                      <h3 className={`font-bold text-white leading-tight [text-shadow:_0_2px_8px_rgba(0,0,0,0.8)] ${sec.large ? "text-lg" : "text-sm"}`}>
+                      <h3 className={`font-bold text-white leading-tight [text-shadow:_0_2px_8px_rgba(0,0,0,0.8)] ${sec.large ? "text-xl sm:text-2xl" : "text-base sm:text-lg"}`}>
                         {label.title}
                       </h3>
-                      <p className={`text-white/90 font-light leading-snug [text-shadow:_0_1px_4px_rgba(0,0,0,0.8)] ${sec.large ? "text-xs" : "text-[11px]"}`}>
+                      <p className={`text-white/90 font-medium leading-snug [text-shadow:_0_1px_4px_rgba(0,0,0,0.8)] ${sec.large ? "text-sm" : "text-xs"}`}>
                         {label.sub}
                       </p>
                     </div>

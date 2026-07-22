@@ -86,7 +86,12 @@ export default function AdminRoomsPage() {
     try {
       setLoading(true);
       const [rData, tData, sData] = await Promise.all([getRooms(), getRoomTypes(), getRoomSettings()]);
-      setRooms(rData);
+      const sortedRooms = rData.slice().sort((a, b) => {
+        const aType = typeof a.type === 'object' && a.type ? (a.type as any)._id : String(a.type ?? '');
+        const bType = typeof b.type === 'object' && b.type ? (b.type as any)._id : String(b.type ?? '');
+        return aType.localeCompare(bType);
+      });
+      setRooms(sortedRooms);
       setRoomTypes(tData);
       if (sData) {
         setSettingsForm({
@@ -314,7 +319,7 @@ export default function AdminRoomsPage() {
           {/* ROOM FORM */}
           <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-[#1e325c] text-sm flex items-center gap-2">
+              <h3 className="font-bold text-[#1e325c] text-lg flex items-center gap-2">
                 <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
                 {editRoomId ? "Otağı Redaktə Et" : "Yeni Otaq Əlavə Et"}
               </h3>
@@ -532,7 +537,7 @@ export default function AdminRoomsPage() {
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5] mb-1">
                   {room.type ? (typeof room.type === 'object' ? loc((room.type as any).name) : room.type) : "Kateqoriya silinib"}
                 </p>
-                <p className="text-xs text-stone-500 line-clamp-2 mb-3">{loc(room.description)}</p>
+                <p className="text-xs text-stone-500 line-clamp-2 mb-3">{loc(room.description)?.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')}</p>
                 </div>
               </div>
             ))}
@@ -545,7 +550,7 @@ export default function AdminRoomsPage() {
           <div className="lg:col-span-1">
             <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-[#1e325c] text-sm">
+                <h3 className="font-bold text-[#1e325c] text-lg flex items-center gap-2">
                   {editTypeId ? "Kateqoriyanı Redaktə Et" : "Yeni Kateqoriya"}
                 </h3>
                 <LangSwitcher lang={formLang} setLang={setFormLang} />

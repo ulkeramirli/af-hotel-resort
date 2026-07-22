@@ -2,14 +2,14 @@
   "nav": {
     "rooms": "Rooms",
     "aquapark": "Aqua Park",
-    "restoran": "Restoran",
+    "restoran": "Restaurant",
     "spa": "SPA",
     "events": "Events",
     "button": "Book Online"
   },
   "hero": {
     "title": "The Seaside Holiday of Your Dreams",
-    "subtitle": "A luxury hotel in Novkhani, a magnificent Aqua Park, and an unforgettable family vacation all in one place.",
+    "subtitle": "A beautiful hotel in Novkhani, a magnificent Aqua Park, and an unforgettable family vacation all in one place.",
     "checkIn": "Check-in Date",
     "checkOut": "Check-out Date",
     "guests": "Guests",
@@ -39,7 +39,7 @@
       { "id": 2, "title": "Deluxe Room", "price": "140 AZN", "size": "42 m²", "capacity": "2 Adults + 1 Child" },
       { "id": 3, "title": "Family Apartment", "price": "220 AZN", "size": "65 m²", "capacity": "4 Adults" },
       { "id": 4, "title": "VIP Apartment", "price": "350 AZN", "size": "90 m²", "capacity": "4+ Adults" },
-      { "id": 5, "title": "Luxury Cottage", "price": "280 AZN", "size": "80 m²", "capacity": "Family (5-6 Pers.)" }
+      { "id": 5, "title": "Family Cottage", "price": "280 AZN", "size": "80 m²", "capacity": "Family (5-6 Pers.)" }
     ]
   },
   "features": {
@@ -69,7 +69,7 @@
     "success": "Congratulations! Your request has been received. We will contact you shortly."
   },
   "footer": {
-    "desc": "Premium family resort and Aqua Park right on the seashore in Novkhani.",
+    "desc": "Beautiful family resort and Aqua Park right on the seashore in Novkhani.",
     "linksTitle": "Useful Links",
     "contactsTitle": "Contact Us",
     "address": "Sahil street, Novkhani settlement, Baku, Azerbaijan",

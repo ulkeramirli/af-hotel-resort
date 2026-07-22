@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
 import MobileOverview from "@/components/MobileOverview";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const About = dynamic(() => import("@/components/About"), { ssr: true });
 const Rooms = dynamic(() => import("@/components/Rooms"), { ssr: true });
@@ -13,8 +15,23 @@ const Reviews = dynamic(() => import("@/components/Reviews"), { ssr: true });
 const Contacts = dynamic(() => import("@/components/Contacts"), { ssr: true });
 
 export default function Home() {
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+
+  useEffect(() => {
+    if (isDesktop && window.location.hash) {
+      const id = window.location.hash.substring(1);
+      // Give dynamic components a moment to mount
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+    }
+  }, [isDesktop]);
+
   return (
-    <div className="w-full relative bg-stone-50">
+    <main className="w-full relative bg-stone-50">
       <Hero />
 
       {/* Mobile-only: beautiful overview of all hotel sections */}
@@ -23,42 +40,44 @@ export default function Home() {
       {/* 
         Hybrid Architecture: 
         These sections are hidden on mobile devices (where they have their own pages).
-        They are only visible on desktop (lg:block), restoring the single-page experience.
+        They are only rendered on desktop.
       */}
-      <div className="hidden lg:block">
-        <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-hero.jpg')" }}>
-          <div className="bg-white">
-            <About />
+      {isDesktop && (
+        <div>
+          <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-hero.jpg')" }}>
+            <div className="bg-white">
+              <About />
+            </div>
           </div>
-        </div>
-        
-        <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-hotel.jpg')" }}>
-          <div className="bg-stone-50">
-            <Rooms />
+          
+          <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-hotel.jpg')" }}>
+            <div className="bg-stone-50">
+              <Rooms />
+            </div>
           </div>
-        </div>
 
-        <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-aqua.jpg')" }}>
-          <div className="bg-white">
-            <Aquapark />
+          <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-aqua.jpg')" }}>
+            <div className="bg-white">
+              <Aquapark />
+            </div>
           </div>
-        </div>
 
-        <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-aqua2.jpg')" }}>
-          <div className="bg-stone-900">
-            <Wonderland />
+          <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-aqua2.jpg')" }}>
+            <div className="bg-stone-900">
+              <Wonderland />
+            </div>
           </div>
-        </div>
 
-        <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-hotel.jpg')" }}>
-          <div className="bg-white">
-            <Restoran />
+          <div className="relative bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/AF-hotel.jpg')" }}>
+            <div className="bg-white">
+              <Restoran />
+            </div>
           </div>
-        </div>
 
-        <Reviews />
-        <Contacts />
-      </div>
-    </div>
+          <Reviews />
+          <Contacts />
+        </div>
+      )}
+    </main>
   );
 }

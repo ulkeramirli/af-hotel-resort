@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AF Hotel & Aqua Park | Otaqlar & Lüks Villalar',
-  description: 'Xəzər dənizi sahilində, Novxanıda ən yaxşı otaqlar, lüks villalar və ailəvi koteclər. Rezervasiya üçün AF Hotel Baku rəsmi saytı.',
-  keywords: ['AF Hotel otaqlar', 'Novxanı lüks villalar', 'Baku hotel reservation', 'AF Hotel Baku qiymətlər', 'Caspian sea hotel rooms'],
+  title: 'AF Hotel & Aqua Park | Otaqlar & Villalar',
+  description: 'Xəzər dənizi sahilində, Novxanıda ən yaxşı otaqlar, villalar və ailəvi koteclər. Rezervasiya üçün AF Hotel Baku rəsmi saytı.',
+  keywords: ['AF Hotel otaqlar', 'Novxanı villalar', 'Baku hotel reservation', 'AF Hotel Baku qiymətlər', 'Caspian sea hotel rooms'],
   openGraph: {
-    title: 'AF Hotel & Aqua Park | Otaqlar & Lüks Villalar',
-    description: 'Xəzər dənizi sahilində, Novxanıda ən yaxşı otaqlar və lüks villalar. Dəniz mənzərəli nömrələr.',
+    title: 'AF Hotel & Aqua Park | Otaqlar & Villalar',
+    description: 'Xəzər dənizi sahilində, Novxanıda ən yaxşı otaqlar və villalar. Dəniz mənzərəli nömrələr.',
     url: 'https://af-hotel.az/rooms',
     images: [{ url: '/AF-hotel.jpg', width: 1200, height: 630 }],
   }

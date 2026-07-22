@@ -14,9 +14,9 @@ export default function TiltCard({ children, className = '', tiltAmount = 15 }: 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Smooth springs for a very premium feel, not too fast
-  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
-  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
+  // Smooth springs for a smooth feel, not too fast
+  const mouseXSpring = useSpring(x, { stiffness: 60, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 60, damping: 20 });
 
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], [tiltAmount, -tiltAmount]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-tiltAmount, tiltAmount]);

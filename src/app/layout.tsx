@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Montserrat, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import FloatingActions from "@/components/FloatingActions";
 
 const cormorant = Cormorant_Garamond({ 
   subsets: ["latin", "cyrillic"], 
@@ -22,24 +25,19 @@ const greatVibes = Great_Vibes({
 
 export const metadata: Metadata = {
   title: {
-    default: "AF Hotel & Aqua Park Complex | Bakı, Novxanı — Lüks Kurort",
-    template: "%s | AF Hotel & Aqua Park"
+    default: "AF Hotel, Aqua Park & AF Park Complex | İstirahət Mərkəzi - Bakı, Novxanı",
+    template: "%s | AF Hotel, Aqua Park & AF Park Complex"
   },
-  description: "AF Hotel & Aqua Park Complex — Novxanı sahilindəki premium 5 ulduzlu kurort. Lüks otaqlar, 20+ sürüşkənli aquapark, Wonderland lunapark, restoranlar və Xəzər dənizi mənzərəsi. Birbaşa bron edin!",
+  description: "AF Hotel & Aqua Park, eləcə də möhtəşəm AF Park ilə əyləncə və rahat istirahət — hamısı bir yerdə! Ən yaxşı qiymətlərlə rahat otaqlar. 4.9 Reytinq, 50+ Otaq, 500+ Qonaq, 24/7 Servis. Novxanı Ünvan. Otaqlar və Koteclər.",
   keywords: [
-    "AF Hotel Baku", "AF Aqua Park", "hotel Baku Azerbaijan", "Novkhani resort",
-    "luxury hotel Baku", "aqua park Baku", "Xəzər sahili hotel", "5 star hotel Azerbaijan",
-    "family resort Baku", "Wonderland Baku", "AF Hotel Aqua Park Complex",
-    "best hotel Baku", "Caspian Sea resort", "hotel Novkhani", "бронирование отель Баку",
-    "AF Hotel qiymətlər", "Novxanı otel", "Bakı kurort", "su parkı Bakı",
-    "AF Hotel Novxanı", "Xəzər dənizi otel", "ailə istirahəti Bakı",
-    "Azərbaycan kurort", "otel rezervasiya", "AF Hotel telefon",
-    "отель Баку Новханы", "аквапарк Баку цены", "отдых Новханы Баку"
+    "AF Park", "AF Park Novxanı", "AF PARK Wonderland", "AF Hotel", "AF Hotel & Aqua Park", "Aqua Park Baku",
+    "Bakı əyləncə mərkəzi", "Novxanı", "lunapark Baku", "istirahət mərkəzi", "su parkı Bakı", "aquapark", 
+    "ailəvi istirahət", "otel rezervasiya", "hotel Baku", "Novkhani resort", "restoran", "hovuz", "atraksionlar"
   ],
-  authors: [{ name: "AF Hotel & Aqua Park Complex", url: "https://af-hotel.az" }],
-  creator: "AF Hotel & Aqua Park Complex",
-  publisher: "AF Hotel & Aqua Park Complex",
-  metadataBase: new URL("https://af-hotel.az"),
+  authors: [{ name: "AF Hotel, Aqua Park & AF Park Complex", url: "https://afhotel.az" }],
+  creator: "AF Hotel, Aqua Park & AF Park Complex",
+  publisher: "AF Hotel, Aqua Park & AF Park Complex",
+  metadataBase: new URL("https://afhotel.az"),
   alternates: {
     canonical: "/",
     languages: {
@@ -52,29 +50,29 @@ export const metadata: Metadata = {
     type: "website",
     locale: "az_AZ",
     alternateLocale: ["en_US", "ru_RU"],
-    url: "https://af-hotel.az",
-    siteName: "AF Hotel & Aqua Park Complex",
-    title: "AF Hotel & Aqua Park | Bakı Novxanı — Lüks 5 Ulduzlu Kurort",
-    description: "Novxanı sahilindəki 5 ulduzlu lüks kurort. Premium otaqlar, 20+ cihazlı aquapark, Wonderland lunapark, restoranlar. Ən yaxşı qiymətlə birbaşa bron edin.",
+    url: "https://afhotel.az",
+    siteName: "AF Hotel, Aqua Park & AF Park Complex | İstirahət və Əyləncə",
+    title: "AF Hotel, Aqua Park & AF Park Complex | İstirahət Mərkəzi - Bakı, Novxanı",
+    description: "AF Hotel & Aqua Park, eləcə də möhtəşəm AF Park ilə əyləncə və rahat istirahət — hamısı bir yerdə! Ən yaxşı qiymətlərlə rahat otaqlar. 4.9 Reytinq. 24/7 Servis.",
     images: [
       {
         url: "/AF-hero.jpg",
         width: 1200,
         height: 630,
-        alt: "AF Hotel & Aqua Park Complex — Premium Resort in Baku, Azerbaijan",
+        alt: "AF Hotel, Aqua Park & AF Park Complex — Resort and Amusement Park in Baku",
       },
       {
         url: "/AF-aqua.jpg",
         width: 1200,
         height: 630,
-        alt: "AF Aqua Park — Water Park in Novkhani Baku",
+        alt: "AF Aqua Park & AF Park — Water Park and Wonderland in Novkhani",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AF Hotel & Aqua Park | Bakı Novxanı Lüks Kurort",
-    description: "Novxanıda 5 ulduzlu lüks kurort. Premium otaqlar, aquapark, Wonderland lunapark & restoranlar.",
+    title: "AF Hotel, Aqua Park & AF Park Complex | İstirahət Mərkəzi",
+    description: "AF Hotel & Aqua Park, eləcə də möhtəşəm AF Park ilə əyləncə və rahat istirahət — hamısı bir yerdə!",
     images: ["/AF-hero.jpg"],
     creator: "@AFHotelBaku",
   },
@@ -90,19 +88,17 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
-  verification: {
-    google: "google-site-verification-placeholder",
+    icon: "/favicon-new.png",
+    shortcut: "/favicon-new.png",
+    apple: "/favicon-new.png",
   },
   category: "travel",
+  manifest: "/manifest.json",
+  verification: {
+    google: "google-site-verification=...", 
+    yandex: "yandex-verification=...", 
+  },
 };
-
-
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import FloatingActions from "@/components/FloatingActions";
 
 export default function RootLayout({
   children,
@@ -111,14 +107,15 @@ export default function RootLayout({
 }) {
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Hotel',
-    name: 'AF Hotel & Aqua Park Complex',
-    description: 'Premium 5-star resort in Novkhani, Baku with luxury rooms, aqua park, Wonderland theme park, and fine dining.',
-    url: 'https://af-hotel.az',
-    logo: 'https://af-hotel.az/loqo-af.png',
-    image: 'https://af-hotel.az/AF-hero.jpg',
-    telephone: '+994501234567',
-    starRating: { '@type': 'Rating', ratingValue: '5' },
+    '@type': ['Hotel', 'Resort', 'EntertainmentBusiness', 'AmusementPark'],
+    name: 'AF Hotel, Aqua Park & AF Park Complex',
+    description: 'Novxanıda mükəmməl ailəvi istirahət! 4-star resort in Novkhani, Baku with comfortable rooms, aqua park, AF Park Wonderland theme park, and fine dining.',
+    url: 'https://afhotel.az',
+    logo: 'https://afhotel.az/loqo-af.png',
+    image: 'https://afhotel.az/AF-hero.jpg',
+    telephone: '+994502233285',
+    priceRange: '$$$',
+    starRating: { '@type': 'Rating', ratingValue: '4' },
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Novkhani',
@@ -131,13 +128,15 @@ export default function RootLayout({
       longitude: '50.1000',
     },
     amenityFeature: [
+      { '@type': 'LocationFeatureSpecification', name: 'AF Park (Amusement Park)', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Aqua Park', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Wonderland Theme Park', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Istirahət Mərkəzi', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Restaurant', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Swimming Pool', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Free Parking', value: true },
     ],
-    sameAs: ['https://www.instagram.com/afhotel', 'https://www.facebook.com/afhotel'],
+    sameAs: ['https://www.instagram.com/afhotel.az', 'https://www.facebook.com/afhotel'],
   };
 
   return (

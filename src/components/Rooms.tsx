@@ -17,7 +17,7 @@ import MagneticButton from "./MagneticButton";
 import TextReveal from "./TextReveal";
 import useEmblaCarousel from "embla-carousel-react";
 
-function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
+function RoomCarousel({ images, alt, priority = false }: { images: string[]; alt: string; priority?: boolean }) {
   const [active, setActive] = useState(0);
   const [err, setErr] = useState(false);
 
@@ -38,7 +38,7 @@ function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   return (
     <div className="w-full h-full relative group/carousel">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <Image src={src} alt={alt} fill sizes="(max-width: 768px) 100vw, 33vw" onError={() => setErr(true)} className="object-cover group-hover:scale-[1.02] transition-transform duration-500" />
+      <Image src={src} alt={alt} fill priority={priority && active === 0} sizes="(max-width: 768px) 100vw, 33vw" onError={() => setErr(true)} className="object-cover group-hover:scale-[1.02] transition-transform duration-500" />
       {images.length > 1 && (
         <>
           <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 hover:bg-white rounded-full flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-20 shadow-sm cursor-pointer">
@@ -58,11 +58,11 @@ function RoomCarousel({ images, alt }: { images: string[]; alt: string }) {
   );
 }
 
-const content = {
+export const content = {
   az: {
     tag: "OTAQLAR & KOTECLƏR",
-    title: "Rahatlığın Yeni Səviyyəsi",
-    subtitle: "Hər zövqə uyğun lüks otaqlar",
+    title: "Mükəmməl İstirahət Məkanı",
+    subtitle: "Hər zövqə uyğun rahat otaqlar",
     all: "Hamısı",
     single: "Single",
     double: "Standard Double",
@@ -77,7 +77,7 @@ const content = {
   en: {
     tag: "ROOMS & COTTAGES",
     title: "A New Level of Comfort",
-    subtitle: "Luxury rooms for every taste",
+    subtitle: "Comfortable rooms for every taste",
     all: "All",
     single: "Single",
     double: "Standard Double",
@@ -92,7 +92,7 @@ const content = {
   ru: {
     tag: "НОМЕРА И КОТТЕДЖИ",
     title: "Новый Уровень Комфорта",
-    subtitle: "Номера класса люкс на любой вкус",
+    subtitle: "Комфортные номера на любой вкус",
     all: "Все",
     single: "Single",
     double: "Standard Double",
@@ -109,15 +109,17 @@ const content = {
 type Category = string;
 
 // Single room card component
-function RoomCard({
+export function RoomCard({
   room,
   l,
   c,
   isFav,
   onFavorite,
   onBook,
+  onDetails,
   compact = false,
   currency,
+  priority = false,
 }: {
   room: PublicRoom;
   l: "az" | "en" | "ru";
@@ -125,49 +127,47 @@ function RoomCard({
   isFav: boolean;
   onFavorite: (id: string) => void;
   onBook: (id: string) => void;
+  onDetails: (id: string) => void;
   compact?: boolean;
   currency: "AZN" | "USD" | "EUR";
+  priority?: boolean;
 }) {
   return (
-    <TiltCard tiltAmount={4} className="h-full">
-      <div className="group bg-white rounded-[2rem] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-500 flex flex-col h-full border border-stone-100/80">
+    <div className="h-full">
+      <div className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col h-full">
       {/* Image */}
-      <div className="relative overflow-hidden bg-stone-100 aspect-[16/10]">
-        <RoomCarousel images={room.images} alt={(room.title as any)?.[l] || ""} />
-        {/* Gradient overlay at bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10" />
-        {/* Category badge */}
-        <span className="absolute top-3 left-3 text-[9px] font-black uppercase tracking-wider px-2.5 py-1 bg-white/95 backdrop-blur-sm text-[#1e325c] rounded-xl shadow-sm border border-stone-100/60 z-20">
-          {(room.categoryName as any)?.[l] || (room.categoryName as any)?.az || "Otaq"}
-        </span>
+      <div className="relative aspect-video overflow-hidden bg-stone-100 border-b border-stone-100">
+        <RoomCarousel images={room.images} alt={(room.title as any)?.[l] || ""} priority={priority} />
         {/* Fav button */}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavorite(room.id); }}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition-transform cursor-pointer z-20"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-transform cursor-pointer z-10"
         >
           <Heart
             className="w-4 h-4 transition-colors"
             style={{ fill: isFav ? "#e11d48" : "none", color: isFav ? "#e11d48" : "#999" }}
           />
         </button>
-        {/* Number of photos badge */}
-        {room.images.length > 1 && (
-          <span className="absolute bottom-3 right-3 text-[9px] font-bold px-2 py-0.5 bg-black/50 backdrop-blur-sm text-white rounded-md z-20">
-            {room.images.length} photos
-          </span>
-        )}
       </div>
 
       {/* Content */}
-      <div className="p-5 flex flex-col flex-1 gap-3">
-        <div className="space-y-1">
-          <h3 className="text-base font-bold text-[#1e325c] leading-snug tracking-tight font-serif">
+      <div className="p-3.5 space-y-2.5 flex flex-col flex-1 justify-between">
+        <div className="space-y-1.5 min-w-0 overflow-hidden">
+          <h3 className="font-semibold text-stone-800 text-xl group-hover:text-stone-600 transition-colors">
             {(room.title as any)?.[l] || (room.title as any)?.az || ""}
           </h3>
-          <div className="flex items-center gap-3 text-[11px] font-medium text-stone-400">
-            <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5 text-stone-300" />{room.capacity[l]}</span>
-            <span className="w-1 h-1 rounded-full bg-stone-200" />
-            <span className="flex items-center gap-1.5"><Maximize2 className="w-3.5 h-3.5 text-stone-300" />{room.size || "350 sqft"}</span>
+          <p className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2">
+            {String((room.desc as any)?.[l] || (room.desc as any)?.az || "").replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')}
+          </p>
+          <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
+            <span className="flex items-center gap-1">
+              <Users className="w-3.5 h-3.5 text-stone-300" />
+              {room.capacity[l]}
+            </span>
+            <span className="flex items-center gap-1">
+              <Maximize2 className="w-3.5 h-3.5 text-stone-300" />
+              {room.size || "350 sqft"}
+            </span>
           </div>
         </div>
 
@@ -176,37 +176,38 @@ function RoomCard({
         <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
           <div className="flex justify-between items-center">
             <div>
-              <span className="text-lg font-bold text-stone-900">
+              <span className="text-lg font-bold text-stone-800">
                 {currency === "USD" ? `$${room.priceUsd || 0}` : currency === "EUR" ? `€${room.priceEur || 0}` : `${room.price} ₼`}
               </span>
               <span className="text-[11px] text-stone-400 font-light ml-1">{c.perNight}</span>
 
             </div>
-            <span className="text-[10px] text-stone-400 font-light">{c.perNight}</span>
+            <Link
+              href={`/rooms/${room.id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-medium rounded-xl transition-colors shadow-sm relative z-10 cursor-pointer"
+            >
+              <span>{c.details}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          <div className="flex flex-col gap-2 w-32">
-            <MagneticButton className="w-full block">
-              <Link
-                href={`/rooms/${room.id}`}
-                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-white text-[#00b5d5] hover:bg-[#00b5d5] hover:text-white text-[10px] sm:text-[11px] font-bold rounded-xl border-2 border-[#00b5d5] transition-all duration-300 cursor-pointer w-full"
-              >
-                <span>{c.details}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </MagneticButton>
-            <MagneticButton className="w-full block">
-              <button
-                onClick={() => onBook(room.id)}
-                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[10px] sm:text-[11px] font-bold rounded-xl shadow-sm shadow-[#ff6c02]/30 transition-all duration-200 cursor-pointer active:scale-[0.97] w-full"
-              >
-                {c.book as string}
-              </button>
-            </MagneticButton>
-          </div>
+          
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onBook(room.id);
+            }}
+            className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 text-white text-xs font-medium rounded-xl shadow-sm transition-colors cursor-pointer relative z-10"
+            style={{ background: "linear-gradient(135deg, #ff8c00, #ff5f00)" }}
+          >
+            <CalendarCheck className="w-3.5 h-3.5" />
+            <span>{c.book as string}</span>
+          </button>
         </div>
       </div>
     </div>
-    </TiltCard>
+    </div>
   );
 }
 
@@ -229,12 +230,31 @@ export default function Rooms() {
     containScroll: "trimSnaps",
     dragFree: true,
     breakpoints: {
-      '(min-width: 640px)': { active: false }, // disable on sm and up
+      '(min-width: 768px)': { active: false }, // disable on md and up
     }
   });
 
   const scrollRoomsPrev = useCallback(() => emblaRoomsApi && emblaRoomsApi.scrollPrev(), [emblaRoomsApi]);
   const scrollRoomsNext = useCallback(() => emblaRoomsApi && emblaRoomsApi.scrollNext(), [emblaRoomsApi]);
+
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(true);
+
+  const onSelectRooms = useCallback((api: any) => {
+    setPrevBtnEnabled(api.canScrollPrev());
+    setNextBtnEnabled(api.canScrollNext());
+  }, []);
+
+  useEffect(() => {
+    if (!emblaRoomsApi) return;
+    onSelectRooms(emblaRoomsApi);
+    emblaRoomsApi.on("reInit", onSelectRooms);
+    emblaRoomsApi.on("select", onSelectRooms);
+    return () => {
+      emblaRoomsApi.off("reInit", onSelectRooms);
+      emblaRoomsApi.off("select", onSelectRooms);
+    };
+  }, [emblaRoomsApi, onSelectRooms]);
 
   useEffect(() => {
     let cancelled = false;
@@ -273,11 +293,37 @@ export default function Rooms() {
     return () => window.removeEventListener("favoritesUpdated", onUpdate);
   }, [rooms, buildFavSet]);
 
-  const handleFavorite = (id: string) => {
+  const handleFavorite = useCallback((id: string) => {
+    // Optimistic update — flip state immediately for instant UI feedback
+    setFavorites(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+    // Persist to localStorage and notify other listeners
     toggleFavorite(id);
-  };
+  }, []);
 
-  const filtered = category === "all" ? rooms : rooms.filter((r) => r.category === category);
+  const filtered = category === "all" ? rooms : rooms.filter((r) => {
+    if (r.category === category) return true;
+    if ((r.category as any)?._id === category) return true;
+    if ((r.category as any)?.id === category) return true;
+    
+    // Fallback: If DB stored the name instead of the ID
+    const selectedType = types.find(t => t._id === category);
+    if (selectedType) {
+      if (r.category === selectedType.name) return true;
+      if (r.category === (selectedType.name as any)?.az) return true;
+      if (r.category === (selectedType.name as any)?.en) return true;
+      if (r.category === (selectedType.name as any)?.ru) return true;
+      if (r.categoryName?.az && r.categoryName.az === (selectedType.name as any)?.az) return true;
+    }
+    return false;
+  });
 
   const categories = [
     { id: "all", label: c.all },
@@ -299,27 +345,27 @@ export default function Rooms() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ type: 'spring', stiffness: 80, damping: 18 }}
+            transition={{ ease: 'easeOut', duration: 0.45 }}
             className="space-y-4 flex flex-col items-center max-w-3xl"
           >
             <div className="flex items-center gap-4 justify-center">
-              <div className="w-8 h-[1px] bg-[#00b5d5]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
+              <div className="w-8 h-px bg-[#00b5d5]" />
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5]">
                 {settings?.tag || c.tag}
               </span>
-              <div className="w-8 h-[1px] bg-[#00b5d5]" />
+              <div className="w-8 h-px bg-[#00b5d5]" />
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none">
+            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight">
               <TextReveal text={settings?.title || c.title} delay={0.1} />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto wrap-break-word whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ type: 'spring', stiffness: 80, damping: 18, delay: 0.15 }}
+            transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
             className="flex justify-center w-full mt-2"
           >
             <CategoryTabs
@@ -347,82 +393,65 @@ export default function Rooms() {
           </motion.div>
         ) : (
           <>
-            <div className="relative md:hidden">
+            <div className="relative w-full">
               {/* Mobile arrow buttons */}
               <button
                 onClick={scrollRoomsPrev}
-                className="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 z-20 w-10 h-10 bg-white border border-stone-200 rounded-full shadow-md flex items-center justify-center text-[#1e325c] hover:bg-[#1e325c] hover:text-white transition-all active:scale-90"
+                disabled={!prevBtnEnabled}
+                className={`md:hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 z-20 w-10 h-10 rounded-full shadow-md flex items-center justify-center transition-all active:scale-90 ${
+                  !prevBtnEnabled
+                    ? "bg-white border border-stone-200 text-stone-300 cursor-not-allowed opacity-80"
+                    : "bg-[#ff6c02] border border-[#ff6c02] text-white hover:bg-[#e55f00]"
+                }`}
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={scrollRoomsNext}
-                className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 z-20 w-10 h-10 bg-[#ff6c02] border border-[#ff6c02] rounded-full shadow-md flex items-center justify-center text-white hover:bg-[#e55f00] transition-all active:scale-90"
+                disabled={!nextBtnEnabled}
+                className={`md:hidden absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 z-20 w-10 h-10 rounded-full shadow-md flex items-center justify-center transition-all active:scale-90 ${
+                  !nextBtnEnabled
+                    ? "bg-white border border-stone-200 text-stone-300 cursor-not-allowed opacity-80"
+                    : "bg-[#ff6c02] border border-[#ff6c02] text-white hover:bg-[#e55f00]"
+                }`}
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
 
-              <div className="overflow-hidden sm:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0" ref={emblaRef}>
+              <div className="overflow-hidden md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0" ref={emblaRef}>
                 <motion.div
                   layout
-                  className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 cursor-grab active:cursor-grabbing sm:cursor-auto"
+                  className="flex md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6 cursor-grab active:cursor-grabbing md:cursor-auto"
                 >
                   <AnimatePresence mode="popLayout">
-                    {filtered.map((room) => (
+                    {filtered.map((room, index) => (
                       <motion.div
                         layout
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-50px" }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.35, type: "spring", stiffness: 120 }}
+                        transition={{ ease: "easeOut" as const, duration: 0.45 }}
                         key={room.id}
-                        className="min-w-[80vw] sm:min-w-0 flex-shrink-0 sm:flex-shrink h-full"
+                        className="w-[80vw] sm:w-[320px] md:w-full shrink-0 h-full"
                       >
                         <RoomCard
-                        room={room}
-                        l={l}
-                        c={c}
-                        isFav={favorites.has(room.id)}
-                        onFavorite={handleFavorite}
-                        onBook={(id) => router.push(`/booking?roomId=${id}`)}
-                        currency={currency}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </motion.div>
+                          room={room}
+                          l={l}
+                          c={c}
+                          isFav={favorites.has(room.id)}
+                          onFavorite={handleFavorite}
+                          onBook={(id) => router.push(`/booking?roomId=${id}`)}
+                          onDetails={(id) => router.push(`/rooms/${id}`)}
+                          currency={currency}
+                          priority={index < 3}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
               </div>
             </div>
-            {/* ── DESKTOP: grid ── */}
-            <motion.div
-              layout
-              className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
-            >
-              <AnimatePresence mode="popLayout">
-                {filtered.map((room) => (
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    exit={{ opacity: 0, y: 30 }}
-                    transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
-                    key={room.id}
-                  >
-                    <RoomCard
-                      room={room}
-                      l={l}
-                      c={c}
-                      isFav={favorites.has(room.id)}
-                      onFavorite={handleFavorite}
-                      onBook={(id) => router.push(`/booking?roomId=${id}`)}
-                      currency={currency}
-                    />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
           </>
          )}
       </div>

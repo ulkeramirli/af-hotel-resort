@@ -52,7 +52,7 @@ function ForgotPasswordForm() {
   const searchParams = useSearchParams();
   const initialEmail = searchParams.get("email") || "";
 
-  const l = (language as LangType) || "az";
+  const l = language || "az";
   const t = translations[l];
 
   const [email, setEmail] = useState(initialEmail);

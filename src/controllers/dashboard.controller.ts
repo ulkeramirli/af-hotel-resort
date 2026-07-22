@@ -71,7 +71,7 @@ export class DashboardController {
         },
       },
       {
-        $limit: 5,
+        $limit: 20,
       },
     ]);
 
@@ -79,6 +79,16 @@ export class DashboardController {
       path: "_id",
       select: "name type price",
     });
+
+    const formattedTopRooms = topRooms
+      .filter((t: any) => t._id != null)
+      .slice(0, 5)
+      .map((t: any) => ({
+        name: t._id.name,
+        type: t._id.type,
+        price: t._id.price || 0,
+        count: t.bookings || 0
+      }));
 
     return NextResponse.json({
       success: true,
@@ -105,7 +115,7 @@ export class DashboardController {
 
       recentBookings,
 
-      topRooms,
+      topRooms: formattedTopRooms,
     });
   }
 }

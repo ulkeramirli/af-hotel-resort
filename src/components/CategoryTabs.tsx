@@ -24,7 +24,7 @@ export default function CategoryTabs({
   if (!categories || categories.length === 0) return null;
 
   return (
-    <div className={`flex flex-wrap items-center gap-3 justify-center w-full ${className}`}>
+    <div className={`flex flex-nowrap overflow-x-auto items-center gap-2 sm:gap-3 justify-start lg:justify-center w-full pb-3 -mb-3 snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${className}`}>
       {categories.map((cat) => (
         <button
           key={cat.id}

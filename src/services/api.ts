@@ -165,6 +165,8 @@ export async function loginWithGoogle(
 }
 
 // ─── PUBLIC ROOM TYPES (for frontend pages) ───
+const publicRoomsCache = new Map<string, PublicRoom>();
+
 export interface PublicRoom {
   id: string;
   category: string; // The ID of the category
@@ -212,7 +214,7 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
     const data = await res.json();
     if (!data.success) return [];
     const rooms: Room[] = data.rooms ?? [];
-    return rooms.map(
+    const publicRooms = rooms.map(
       (r): PublicRoom => ({
         id: r._id,
         category:
@@ -256,17 +258,24 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
         rulesCheckOut: r.rulesCheckOut as any,
       }),
     );
+    if (typeof window !== "undefined") {
+      publicRooms.forEach(r => publicRoomsCache.set(r.id, r));
+    }
+    return publicRooms;
   } catch {
     return [];
   }
 }
 
 // GET /api/room-settings → { success, settings }
+let roomSettingsCache: RoomSettings | null = null;
 export async function getRoomSettings(): Promise<RoomSettings> {
+  if (typeof window !== "undefined" && roomSettingsCache) return roomSettingsCache;
   const res = await fetch(`${BASE}/room-settings`);
   const data = await res.json();
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yüklənmədi");
+  if (typeof window !== "undefined") roomSettingsCache = data.settings;
   return data.settings;
 }
 
@@ -279,15 +288,24 @@ export async function updateRoomSettings(
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
-  if (!data.success)
-    throw new Error(data.message || "Tənzimləmələr yenilənmədi");
+  let data: any = {};
+  try {
+    const text = await res.text();
+    if (text) data = JSON.parse(text);
+  } catch {
+    throw new Error("Тензimləmələr yenilənmədi: server cavabı oxunmadı");
+  }
+  if (!res.ok || !data.success)
+    throw new Error(data.message || "Tənziməmələr yenilənmədi");
   return data.settings;
 }
 
 export async function getPublicRoomById(
   id: string,
 ): Promise<PublicRoom | null> {
+  if (typeof window !== "undefined" && publicRoomsCache.has(id)) {
+    return publicRoomsCache.get(id) || null;
+  }
   try {
     const res = await fetch(`${BASE}/rooms/${id}`);
     const data = await res.json();
@@ -386,12 +404,22 @@ export async function deleteRoom(id: string) {
 
 // ─── ROOM TYPES ───
 // GET /api/room-types → { success, roomTypes[] }
+let roomTypesCache: RoomType[] | null = null;
 export async function getRoomTypes(): Promise<RoomType[]> {
-  const res = await fetch(`${BASE}/room-types`, { headers: authHeaders() });
-  const data = await res.json();
-  if (!data.success)
-    throw new Error(data.message || "Kateqoriyalar yüklənmədi");
-  return data.roomTypes ?? [];
+  if (typeof window !== "undefined" && roomTypesCache) return roomTypesCache;
+  try {
+    const res = await fetch(`${BASE}/room-types`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    const text = await res.text();
+    if (!text) return [];
+    const data = JSON.parse(text);
+    if (!data.success) return [];
+    if (typeof window !== "undefined") roomTypesCache = data.roomTypes ?? [];
+    return data.roomTypes ?? [];
+  } catch (error) {
+    console.error("Failed to parse roomTypes JSON:", error);
+    return [];
+  }
 }
 
 // POST /api/room-types → { success, roomType }
@@ -431,11 +459,22 @@ export async function deleteRoomType(id: string) {
 
 // ─── ACTIVITIES ───
 // GET /api/activities → { success, activities[] }
+let activitiesCache: Activity[] | null = null;
 export async function getActivities(): Promise<Activity[]> {
-  const res = await fetch(`${BASE}/activities`, { headers: authHeaders() });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.message || "Fəaliyyətlər yüklənmədi");
-  return data.activities ?? [];
+  if (typeof window !== "undefined" && activitiesCache) return activitiesCache;
+  try {
+    const res = await fetch(`${BASE}/activities`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    const text = await res.text();
+    if (!text) return [];
+    const data = JSON.parse(text);
+    if (!data.success) return [];
+    if (typeof window !== "undefined") activitiesCache = data.activities ?? [];
+    return data.activities ?? [];
+  } catch (error) {
+    console.error("Failed to parse activities JSON:", error);
+    return [];
+  }
 }
 
 // POST /api/activities → { success, activity }
@@ -475,13 +514,16 @@ export async function deleteActivity(id: string) {
 
 // ─── ACTIVITY CATEGORIES ───
 // GET /api/activity-categories → { success, categories[] }
+let activityCategoriesCache: ActivityCategory[] | null = null;
 export async function getActivityCategories(): Promise<ActivityCategory[]> {
+  if (typeof window !== "undefined" && activityCategoriesCache) return activityCategoriesCache;
   const res = await fetch(`${BASE}/activity-categories`, {
     headers: authHeaders(),
   });
   const data = await res.json();
   if (!data.success)
     throw new Error(data.message || "Kateqoriyalar yüklənmədi");
+  if (typeof window !== "undefined") activityCategoriesCache = data.categories ?? [];
   return data.categories ?? [];
 }
 
@@ -526,11 +568,14 @@ export async function deleteActivityCategory(id: string) {
 }
 
 // GET /api/activity-settings → { success, settings }
+let activitySettingsCache: ActivitySettings | null = null;
 export async function getActivitySettings(): Promise<ActivitySettings> {
+  if (typeof window !== "undefined" && activitySettingsCache) return activitySettingsCache;
   const res = await fetch(`${BASE}/activity-settings`);
   const data = await res.json();
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yüklənmədi");
+  if (typeof window !== "undefined") activitySettingsCache = data.settings;
   return data.settings;
 }
 
@@ -668,11 +713,14 @@ export async function deleteReview(id: string) {
 
 // ─── FAQS ───
 // GET /api/faqs → { success, faq[] }  ← KEY IS "faq" (singular)
+let faqsCache: Faq[] | null = null;
 export async function getFaqs(): Promise<Faq[]> {
+  if (typeof window !== "undefined" && faqsCache) return faqsCache;
   const res = await fetch(`${BASE}/faqs`, { headers: authHeaders() });
   const data = await res.json();
-  // Backend returns key "faq" (singular), not "faqs"
-  return data.faq ?? data.faqs ?? [];
+  const faqs = data.faq ?? data.faqs ?? [];
+  if (typeof window !== "undefined") faqsCache = faqs;
+  return faqs;
 }
 
 // POST /api/faqs → { success, faq }
@@ -712,10 +760,13 @@ export async function deleteFaq(id: string) {
 
 // ─── TICKETS ───
 // GET /api/tickets → { success, tickets[] }
+let ticketsCache: Ticket[] | null = null;
 export async function getTickets(): Promise<Ticket[]> {
+  if (typeof window !== "undefined" && ticketsCache) return ticketsCache;
   const res = await fetch(`${BASE}/tickets`, { headers: authHeaders() });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Biletlər yüklənmədi");
+  if (typeof window !== "undefined") ticketsCache = data.tickets ?? [];
   return data.tickets ?? [];
 }
 
@@ -756,11 +807,14 @@ export async function deleteTicket(id: string) {
 
 // ─── SETTINGS ───
 // GET /api/settings → { success, settings }
+let settingsCache: Settings | null = null;
 export async function getSettings(): Promise<Settings | null> {
+  if (typeof window !== "undefined" && settingsCache) return settingsCache;
   try {
     const res = await fetch(`${BASE}/settings`, { headers: authHeaders() });
     if (!res.ok) return null;
     const data = await res.json();
+    if (typeof window !== "undefined") settingsCache = data.settings ?? null;
     return data.settings ?? null;
   } catch (error) {
     console.error("Failed to parse settings JSON:", error);
@@ -783,11 +837,14 @@ export async function updateSettings(payload: Partial<Settings>) {
 
 // ─── ABOUT ───
 // GET /api/about → { success, about }
+let aboutCache: About | null = null;
 export async function getAbout(): Promise<About | null> {
+  if (typeof window !== "undefined" && aboutCache) return aboutCache;
   try {
     const res = await fetch(`${BASE}/about`, { headers: authHeaders() });
     if (!res.ok) return null;
     const data = await res.json();
+    if (typeof window !== "undefined") aboutCache = data.about ?? null;
     return data.about ?? null;
   } catch {
     return null;
@@ -980,22 +1037,10 @@ export async function uploadImage(file: File) {
 }
 export async function getCurrentUser() {
   const token = getToken();
-
-  console.log("TOKEN =", token);
-
   const headers = authHeaders();
-
-  console.log("HEADERS =", headers);
-
   const res = await fetch(`${BASE}/auth/me`, {
     headers,
   });
-
-  console.log("STATUS =", res.status);
-
   const data = await res.json();
-
-  console.log("DATA =", data);
-
   return data.success ? data.data : null;
 }

@@ -4,11 +4,13 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { createReview } from '@/services/api';
 import { Loader2 } from 'lucide-react';
-import ReCAPTCHA from "react-google-recaptcha";
+import dynamic from 'next/dynamic';
+
+const ReCAPTCHA = dynamic(() => import('react-google-recaptcha'), { ssr: false });
 
 export default function Contacts() {
   const { language } = useLanguage();
-  const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const currentLang = language;
   const { settings } = useSettings();
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -168,8 +170,8 @@ export default function Contacts() {
                   ))
                 ) : (
                   <>
-                    <a href="tel:+994124483030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 12 448 3030</a>
-                    <a href="tel:+994502253030" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 50 225 3030</a>
+                    <a href="tel:+994502233285" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 50 223 32 85</a>
+                    <a href="tel:+994517895555" className="text-stone-900 hover:text-[#00b5d5] transition-colors font-light text-sm">+994 51 789 55 55</a>
                   </>
                 )}
               </div>

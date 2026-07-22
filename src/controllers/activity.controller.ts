@@ -6,12 +6,13 @@ export class ActivityController {
   static async create(req: Request) {
     const body = await req.json();
 
-    const { title, description, image, category } = body;
+    const { title, description, image, images, category } = body;
 
     const activity = await Activity.create({
       title,
       description,
       image,
+      images,
       category,
     });
     return NextResponse.json(

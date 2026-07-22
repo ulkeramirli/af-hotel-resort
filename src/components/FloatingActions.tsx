@@ -123,7 +123,7 @@ export default function FloatingActions() {
 
       {/* WhatsApp */}
       <a
-        href={`https://wa.me/${(settings?.phone || "+994124483030").replace(/[^0-9]/g, "")}`}
+        href={`https://wa.me/994517895555`}
         target="_blank"
         rel="noopener noreferrer"
         className="bg-[#25D366] text-white border border-[#24a754] w-11 h-11 rounded-xl shadow-md flex items-center justify-center transition-all hover:bg-[#22c35d] hover:scale-105"
@@ -136,7 +136,7 @@ export default function FloatingActions() {
 
       {/* Phone */}
       <a
-        href={`tel:${settings?.phone || "+994124483030"}`}
+        href={`tel:+994502233285`}
         className="bg-white text-[#1e325c] border border-stone-200 w-11 h-11 rounded-xl shadow-md flex items-center justify-center transition-all hover:border-[#00b5d5] hover:text-[#00b5d5] hover:scale-105"
         title="Call"
       >

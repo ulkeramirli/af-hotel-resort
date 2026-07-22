@@ -81,7 +81,7 @@ export default function Header() {
   const { user, signOut } = useAuth();
   const currentUser = user as AuthUser | null;
   const { language, setLanguage, t } = useLanguage();
-  const currentLang = (language as LangType) || "az";
+  const currentLang = language || "az";
   const { settings } = useSettings();
   const { currency, setCurrency } = useCurrency();
 
@@ -157,7 +157,7 @@ export default function Header() {
             y: 0, opacity: 1, 
             transition: { 
               duration: 0.5, 
-              ease: "easeOut",
+              ease: "easeOut" as const,
               staggerChildren: 0.1,
               delayChildren: 0.2
             } 
@@ -170,7 +170,7 @@ export default function Header() {
         }`}
       >
         <MagneticButton>
-          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 200 } } }} className="flex items-center select-none transition-transform duration-300 hover:scale-[1.02]">
+          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1, transition: { ease: "easeOut" as const, duration: 0.45 } } }} className="flex items-center select-none transition-transform duration-300 hover:scale-[1.02]">
             <Image
               src="/loqo-af.png"
               alt="AF Hotel & Resort"
@@ -183,11 +183,11 @@ export default function Header() {
           </motion.div>
         </MagneticButton>
 
-        <nav className="hidden lg:flex items-center space-x-3 xl:space-x-5 text-[11px] font-bold uppercase tracking-widest text-slate-700">
+        <nav className="hidden lg:flex items-center space-x-1 xl:space-x-3 text-[10.5px] font-bold uppercase tracking-[0.18em] text-slate-600">
           {navLinks.map((item) => {
             const isActive = pathname === item.href || (pathname === '/' && item.href === '/');
             return (
-              <motion.div key={item.id} variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300 } } }} className="relative py-2 group">
+              <motion.div key={item.id} variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0, transition: { ease: "easeOut" as const, duration: 0.45 } } }} className="relative py-2 group">
                 <Link
                   href={item.href}
                   onClick={handleNavClick}
@@ -209,13 +209,15 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center space-x-2 md:space-x-4">
-          <a
-            href={`tel:${settings?.phone || "+994124480000"}`}
-            className="hidden xl:flex items-center gap-1.5 text-[11px] font-bold text-slate-600 hover:text-[#00b5d5] transition-colors border border-stone-200/80 px-3 py-2 rounded-xl bg-stone-50/40"
-          >
-            <Phone className="w-3.5 h-3.5 text-[#00b5d5]" />
-            <span>{settings?.phone || "+994 (12) 448-00-00"}</span>
-          </a>
+          <div className="hidden xl:flex flex-col gap-1.5">
+            <a
+              href={`tel:+994502233285`}
+              className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 hover:text-[#ff6c02] transition-colors border border-stone-200/60 px-3 py-1.5 rounded-lg bg-stone-50/50"
+            >
+              <Phone className="w-3.5 h-3.5 text-[#00b5d5]" />
+              <span>+994 50 223 32 85</span>
+            </a>
+          </div>
 
           {/* Currency Switcher */}
           <div className="relative" ref={currRef}>
@@ -255,7 +257,7 @@ export default function Header() {
             </button>
 
             {langOpen && (
-              <div className="absolute right-0 mt-2 w-28 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute right-0 mt-2 w-28 bg-white border border-stone-200/80 rounded-xl shadow-xl py-1 z-200 animate-in fade-in slide-in-from-top-2 duration-200">
                 {(["az", "en", "ru"] as LangType[]).map((lng) => (
                   <button
                     key={lng}
@@ -273,10 +275,10 @@ export default function Header() {
             )}
           </div>
 
-          <MagneticButton>
+          <MagneticButton> 
             <Link
               href="/booking"
-              className="hidden sm:flex items-center text-[11px] font-bold uppercase tracking-widest px-4.5 py-2.5 bg-[#ff6c02] text-white hover:bg-[#e55f00] rounded-xl shadow-xs transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="hidden sm:flex items-center text-[10px] font-bold uppercase tracking-[0.15em] px-5 py-2.5 bg-linear-to-r from-[#ff6c02] to-[#e55f00] text-white hover:from-[#e55f00] hover:to-[#cc5500] hover:shadow-lg hover:shadow-[#ff6c02]/20 rounded-lg shadow-sm transition-all duration-300"
             >
               {t.nav.book}
             </Link>
@@ -287,16 +289,18 @@ export default function Header() {
               <>
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex items-center gap-2 px-3 py-2 bg-white border border-stone-200 rounded-xl hover:bg-stone-50 transition-all duration-300 cursor-pointer"
+                  className="flex items-center justify-center gap-2 p-2 sm:px-3 sm:py-2 text-slate-700 hover:bg-stone-50 rounded-xl transition-all duration-300 cursor-pointer border-none bg-transparent"
                 >
-                  <User className="w-3.5 h-3.5 text-slate-600" />
+                  <span className="flex items-center justify-center w-8.5 h-8.5 bg-white border border-slate-300 shadow-xs rounded-[10px] sm:w-auto sm:h-auto sm:border-none sm:bg-transparent sm:shadow-none">
+                    <User className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-slate-600 shrink-0" />
+                  </span>
                   
-                  <span className="hidden md:inline text-[11px] font-bold uppercase tracking-wider text-slate-700 max-w-25 truncate">
+                  <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider text-slate-700 max-w-25 truncate">
                     {currentUser?.name || currentUser?.email}
                   </span>
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-stone-200/80 shadow-xl py-1 z-50 overflow-hidden">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-stone-200/80 shadow-xl py-1 z-200 overflow-hidden">
                     <div className="px-4 py-2.5 bg-stone-50 border-b border-stone-100">
                       <p className="text-xs font-bold text-stone-800 truncate">{currentUser?.name}</p>
                       <p className="text-[10px] text-stone-500 truncate">{currentUser?.email}</p>
@@ -352,9 +356,11 @@ export default function Header() {
             ) : (
               <Link
                 href="/auth/sign-in"
-                className="flex items-center space-x-2 px-3 py-2 bg-white border border-stone-200 hover:border-stone-400 hover:bg-stone-50 text-slate-700 rounded-xl transition-all duration-300 cursor-pointer"
+                className="flex items-center justify-center gap-2 p-2 sm:px-3 sm:py-2 text-slate-700 hover:bg-stone-50 rounded-xl transition-all duration-300 cursor-pointer border-none bg-transparent"
               >
-                <User className="w-3.5 h-3.5 shrink-0" />
+                <span className="flex items-center justify-center w-8.5 h-8.5 bg-white border border-slate-300 shadow-xs rounded-[10px] sm:w-auto sm:h-auto sm:border-none sm:bg-transparent sm:shadow-none">
+                  <User className="w-4 h-4 sm:w-3.5 sm:h-3.5 shrink-0" />
+                </span>
                 <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider text-slate-700">
                   {t.nav.login}
                 </span>
@@ -367,9 +373,9 @@ export default function Header() {
             className="flex lg:hidden p-2 text-slate-700 hover:bg-stone-50 rounded-xl transition-colors border-none bg-transparent cursor-pointer"
           >
             {mobileNavOpen ? (
-              <X className="w-5 h-5" />
+              <X className="w-6 h-6" />
             ) : (
-              <Menu className="w-5 h-5" />
+              <Menu className="w-6 h-6" />
             )}
           </button>
         </div>
@@ -381,7 +387,7 @@ export default function Header() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.3, ease: "easeOut" as const }}
             className="fixed inset-0 top-15 bg-white z-40 lg:hidden flex flex-col justify-between p-6 border-t border-stone-100"
           >
             <motion.nav 
@@ -418,10 +424,10 @@ export default function Header() {
             </motion.nav>
           <div className="space-y-4">
             <a
-              href={`tel:${settings?.phone || "+994124480000"}`}
+              href={`tel:+994502233285`}
               className="flex items-center justify-center gap-2 text-xs font-bold text-slate-700 py-3.5 border border-stone-200 rounded-xl"
             >
-              <Phone className="w-4 h-4 text-[#00b5d5]" /> {settings?.phone || "+994 (12) 448-00-00"}
+              <Phone className="w-4 h-4 text-[#00b5d5]" /> +994 50 223 32 85
             </a>
             <Link
               href="/booking"

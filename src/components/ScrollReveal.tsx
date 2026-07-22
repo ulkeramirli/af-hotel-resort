@@ -27,19 +27,19 @@ const getVariants = (type: AnimationType, direction: string): Variants => {
       return {
         hidden: { opacity: 0, scale: 0.82 },
         visible: { opacity: 1, scale: 1,
-          transition: { type: 'spring', stiffness: 130, damping: 18, mass: 0.8 } }
+          transition: { ease: "easeOut" as const, duration: 0.45 } }
       };
     case 'flipUp':
       return {
         hidden: { opacity: 0, rotateX: -90, y: 60, transformPerspective: 1200, scale: 0.9 },
         visible: { opacity: 1, rotateX: 0, y: 0, transformPerspective: 1200, scale: 1,
-          transition: { type: 'spring', stiffness: 100, damping: 15, mass: 1 } }
+          transition: { ease: "easeOut" as const, duration: 0.45 } }
       };
     case 'dropIn':
       return {
-        hidden: { opacity: 0, y: -100, scale: 1.1, rotateZ: 5 },
-        visible: { opacity: 1, y: 0, scale: 1, rotateZ: 0,
-          transition: { type: 'spring', stiffness: 250, damping: 15, bounce: 0.6 } }
+        hidden: { opacity: 0, y: -40, scale: 1.04 },
+        visible: { opacity: 1, y: 0, scale: 1,
+          transition: { ease: "easeOut" as const, duration: 0.5 } }
       };
     case 'slideLeft':
       return {
@@ -63,7 +63,7 @@ const getVariants = (type: AnimationType, direction: string): Variants => {
       return {
         hidden: { opacity: 0, y: -60, scale: 0.9, filter: 'blur(10px)' },
         visible: { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)',
-          transition: { type: 'spring', stiffness: 100, damping: 20 } }
+          transition: { ease: "easeOut" as const, duration: 0.45 } }
       };
     case 'none':
       return {
@@ -80,7 +80,7 @@ const getVariants = (type: AnimationType, direction: string): Variants => {
         },
         visible: {
           opacity: 1, y: 0, x: 0, scale: 1,
-          transition: { type: 'spring', stiffness: 90, damping: 18, mass: 0.9 }
+          transition: { ease: [0.25, 0.46, 0.45, 0.94], duration: 0.55 }
         }
       };
   }
@@ -112,7 +112,7 @@ const ScrollReveal = forwardRef<HTMLDivElement, ScrollRevealProps>(({
       ref={ref}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '0px' }}
+      viewport={{ once: true, margin: '-60px' }}
       variants={variants}
       className={className}
     >

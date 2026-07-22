@@ -1,14 +1,14 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'AF Hotel Rezervasiya | Online Otel Bron Et',
-  description: 'AF Hotel & Aqua Park Novxanıda online rezervasiya. Birbaşa saytdan ən yaxşı qiymətlə otaq seçin və anında bron edin.',
-  keywords: ['AF Hotel bron', 'Novxanı hotel reservation', 'online booking Baku', 'AF Hotel price', 'book AF Hotel'],
+  title: 'Onlayn Rezervasiya | AF Hotel & Aqua Park',
+  description: 'AF Hotel & Aqua Park-da otaq və ya kotecinizi onlayn rezervasiya edin. Ən yaxşı qiymətlər və rahat qeydiyyat prosesi ilə istirahətinizi planlaşdırın.',
+  keywords: ['Otel rezervasiyası', 'AF Hotel online booking', 'Novxani otel bron', 'book hotel Baku', 'rezervasiya', 'onlayn bron'],
   openGraph: {
-    title: 'AF Hotel Rezervasiya | Online Otel Bron Et',
-    description: 'Birbaşa saytdan ən yaxşı qiymətlə otaq seçin. Novxanı sahilindəki 5 ulduzlu kurort.',
-    url: 'https://af-hotel.az/booking',
-    images: [{ url: '/AF-hotel.jpg', width: 1200, height: 630 }],
+    title: 'Onlayn Rezervasiya | AF Hotel & Aqua Park',
+    description: 'AF Hotel & Aqua Park-da otaq və ya kotecinizi onlayn rezervasiya edin. Ən yaxşı qiymətlər.',
+    url: 'https://afhotel.az/booking',
+    images: [{ url: '/AF-hero.jpg', width: 1200, height: 630 }],
   }
 };
 

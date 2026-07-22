@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function RestoranPage() {
   const { language } = useLanguage();
-  const l = (language as 'az' | 'en' | 'ru') || 'az';
+  const l = language;
   const titles = { az: 'Restoranlar', en: 'Restaurants', ru: 'Рестораны' };
   const subs = { az: 'LƏZİZ MƏTBƏX & MÜKƏMMƏL XİDMƏT', en: 'FINE DINING & PERFECT SERVICE', ru: 'ИЗЫСКАННАЯ КУХНЯ & ПРЕМИУМ СЕРВИС' };
   return (

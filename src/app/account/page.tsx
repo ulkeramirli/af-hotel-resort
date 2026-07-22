@@ -3,6 +3,8 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { RoomCard, content as roomsContent } from "@/components/Rooms";
 import { getBookings, updateProfile, getPublicRooms } from "@/services/api";
 import type { PublicRoom } from "@/services/api";
 import { getFavorites, syncFavorites } from "@/lib/favorites";
@@ -183,10 +185,11 @@ type Tab = "profile" | "bookings" | "favorites";
 function AccountContent() {
   const { user, signOut } = useAuth();
   const { language } = useLanguage();
+  const { currency } = useCurrency();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const l = (language as LangType) || "az";
+  const l = language || "az";
   const tx = t[l];
 
   const initialTab = (searchParams.get("tab") as Tab) || "profile";
@@ -410,7 +413,7 @@ function AccountContent() {
                 </button>
                 
                 <div className="flex justify-between items-center">
-                  <h2 className="text-lg font-bold text-stone-900">{tx.profile}</h2>
+                  <h2 className="text-xl font-bold text-stone-900">{tx.profile}</h2>
                   {!isEditing && (
                     <button
                       onClick={() => setIsEditing(true)}
@@ -520,7 +523,7 @@ function AccountContent() {
                     </div>
                     <p className="text-sm text-stone-400">{tx.noBookings}</p>
                     <button
-                      onClick={() => router.push("/#rooms")}
+                      onClick={() => router.push("/rooms")}
                       className="text-sm font-bold text-[#00b5d5] hover:underline"
                     >
                       {tx.bookNow}
@@ -536,7 +539,7 @@ function AccountContent() {
                           </div>
                           <div>
                             <p className="font-bold text-stone-800 text-sm">
-                              {typeof b.room === "object" && b.room !== null ? (b.room as any).name : tx.room}
+                              {typeof b.room === "object" && b.room !== null ? ((b.room as any).name?.[l] || (b.room as any).name?.az || String((b.room as any).name)) : tx.room}
                             </p>
                             <p className="text-xs text-stone-400 mt-0.5">
                               {b.guestName} · {b.email}
@@ -574,7 +577,7 @@ function AccountContent() {
                     </div>
                     <p className="text-sm text-stone-400">{tx.noFavorites}</p>
                     <button
-                      onClick={() => router.push("/#rooms")}
+                      onClick={() => router.push("/rooms")}
                       className="text-sm font-bold text-[#00b5d5] hover:underline"
                     >
                       {tx.bookNow}
@@ -586,86 +589,23 @@ function AccountContent() {
                       .filter(id => !!roomsMap[id])
                       .map((id) => {
                         const room = roomsMap[id];
+                        console.log("Rendering room:", room.title[l], "category:", room.categoryName, "l:", l);
                         return (
-                          <div key={id} className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
-                            {/* Image */}
-                            <div className="relative aspect-16/11 overflow-hidden bg-stone-100 border-b border-stone-100">
-                              {room.images?.[0] ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                  src={room.images[0]}
-                                  alt={room.title[l]}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-stone-100">
-                                  <BedDouble className="w-8 h-8 text-stone-300" />
-                                </div>
-                              )}
-                              <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 bg-white/90 backdrop-blur-sm text-stone-800 rounded-md shadow-sm border border-stone-100 z-10">
-                                {room.category}
-                              </span>
-                              <button
-                                onClick={() => {
-                                  const newFavs = getFavorites().filter(fid => fid !== id);
-                                  localStorage.setItem("af_favorites", JSON.stringify(newFavs));
-                                  window.dispatchEvent(new Event("favoritesUpdated"));
-                                }}
-                                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-transform cursor-pointer z-20"
-                                title="Remove from favorites"
-                              >
-                                <Heart className="w-4 h-4" style={{ fill: "#e11d48", color: "#e11d48" }} />
-                              </button>
-                            </div>
-
-                            {/* Card Content */}
-                            <div className="p-4 space-y-3 flex flex-col flex-1 justify-between">
-                              <div className="space-y-1.5">
-                                <h3 className="font-bold text-stone-900 text-base tracking-tight group-hover:text-stone-700 transition-colors">
-                                  {room.title[l]}
-                                </h3>
-                                <p className="text-xs text-stone-500 font-light leading-relaxed line-clamp-2">
-                                  {room.desc[l]}
-                                </p>
-                                <div className="flex items-center gap-4 text-[11px] font-medium text-stone-400 pt-1">
-                                  <span className="flex items-center gap-1">
-                                    <Users className="w-3.5 h-3.5 text-stone-300" />
-                                    {room.capacity[l]}
-                                  </span>
-                                  <span className="flex items-center gap-1">
-                                    <Maximize2 className="w-3.5 h-3.5 text-stone-300" />
-                                    {room.size || "350 sqft"}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Bottom: price + buttons */}
-                              <div className="flex flex-col gap-2 pt-3 border-t border-stone-100 mt-auto">
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <span className="text-lg font-bold text-stone-900">${room.price}</span>
-                                    <span className="text-[11px] text-stone-400 font-light ml-1">
-                                      / {l === "az" ? "gecə" : l === "ru" ? "ночь" : "night"}
-                                    </span>
-                                  </div>
-                                  <a
-                                    href={`/rooms/${room.id}`}
-                                    className="inline-flex items-center gap-1 px-3.5 py-2 bg-[#00b5d5] hover:bg-[#06a1bc] text-white text-xs font-semibold rounded-xl transition-colors"
-                                  >
-                                    <span>{l === "az" ? "Ətraflı" : l === "ru" ? "Подробнее" : "Details"}</span>
-                                    <ArrowRight className="w-3.5 h-3.5" />
-                                  </a>
-                                </div>
-                                <button
-                                  onClick={() => router.push(`/?roomId=${room.id}#booking`)}
-                                  className="w-full flex items-center justify-center gap-1.5 px-3.5 py-2.5 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer"
-                                  style={{ background: "linear-gradient(135deg, #ff8c00, #ff5f00)" }}
-                                >
-                                  <Calendar className="w-3.5 h-3.5" />
-                                  <span>{l === "az" ? "İndi Rezerv Et" : l === "ru" ? "Забронировать" : "Book Now"}</span>
-                                </button>
-                              </div>
-                            </div>
+                          <div key={id}>
+                            <RoomCard
+                              room={room}
+                              l={l}
+                              c={roomsContent[l]}
+                              isFav={true}
+                              onFavorite={(favId) => {
+                                const newFavs = getFavorites().filter(fid => fid !== favId);
+                                localStorage.setItem("af_favorites", JSON.stringify(newFavs));
+                                window.dispatchEvent(new Event("favoritesUpdated"));
+                              }}
+                              onBook={(bookId) => router.push(`/booking?roomId=${bookId}`)}
+                              onDetails={(detailsId) => router.push(`/rooms/${detailsId}`)}
+                              currency={currency as any}
+                            />
                           </div>
                         );
                       })}

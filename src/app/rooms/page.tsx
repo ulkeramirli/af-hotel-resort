@@ -6,9 +6,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function RoomsPage() {
   const { language } = useLanguage();
-  const l = (language as 'az' | 'en' | 'ru') || 'az';
+  const l = language;
   const titles = { az: 'Otaqlar & Koteclər', en: 'Rooms & Cottages', ru: 'Номера и Коттеджи' };
-  const subs = { az: 'LÜKSİ YENİDƏN KƏŞF EDİN', en: 'REDEFINE LUXURY', ru: 'ПЕРЕОСМЫСЛИТЕ РОСКОШЬ' };
+  const subs = { az: 'RAHATLIĞI YENİDƏN KƏŞF EDİN', en: 'REDEFINE COMFORT', ru: 'ПЕРЕОСМЫСЛИТЕ КОМФОРТ' };
   return (
     <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
       <PageHero

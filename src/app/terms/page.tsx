@@ -5,7 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function TermsOfUse() {
   const { language } = useLanguage();
-  const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const currentLang = language;
 
   const content = {
     az: {

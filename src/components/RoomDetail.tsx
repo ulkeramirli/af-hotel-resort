@@ -32,7 +32,7 @@
 
 // export default function RoomDetail({ room, allRooms }: Props) {
 //   const { language } = useLanguage();
-//   const l = (language as 'az' | 'en' | 'ru') || 'az';
+//   const l = language;
 //   const lb = labels[l];
 
 //   const [activeImg, setActiveImg] = useState(0);

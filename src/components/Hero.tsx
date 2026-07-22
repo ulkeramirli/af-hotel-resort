@@ -9,26 +9,10 @@ import MagneticButton from './MagneticButton';
 import TextReveal from './TextReveal';
 
 export default function Hero() {
-  const { language } = useLanguage();
-  const currentLang = (language as 'az' | 'en' | 'ru') || 'az';
+  const { t } = useLanguage();
   const router = useRouter();
   const { scrollY } = useScroll();
   const yBg = useTransform(scrollY, [0, 1000], [0, 300]); // Parallax effect
-
-  const texts = {
-    line1: { az: 'ƏYLƏNCƏ DOLU', en: 'FULL OF FUN', ru: 'ПОЛНЫЙ ВЕСЕЛЬЯ' }[currentLang],
-    line2: { az: 'TƏTİL SİZİ GÖZLƏYİR!', en: 'HOLIDAY AWAITS YOU!', ru: 'ОТДЫХ ЖДЕТ ВАС!' }[currentLang],
-    sub:   { az: 'AF Hotel & Aqua Park Complex', en: 'AF Hotel & Aqua Park Complex', ru: 'AF Hotel & Aqua Park Complex' }[currentLang],
-    f1: { az: 'Rahat və geniş otaqlar', en: 'Comfortable & spacious rooms', ru: 'Уютные и просторные номера' }[currentLang],
-    f2: { az: 'Əyləncəli Aqua Park', en: 'Fun Aqua Park', ru: 'Веселый Аквапарк' }[currentLang],
-    f3: { az: 'Ləziz təamlar & mükəmməl servis', en: 'Delicious food & perfect service', ru: 'Вкусная еда и сервис' }[currentLang],
-    f4: { az: 'Möhtəşəm Lunapark', en: 'Amazing Lunapark', ru: 'Потрясающий Луна-парк' }[currentLang],
-    btnBook: { az: 'İndi Rezerv Et', en: 'Book Now', ru: 'Забронировать' }[currentLang],
-    btnRooms: { az: 'Otaqlara Bax', en: 'Explore Rooms', ru: 'Смотреть номера' }[currentLang],
-    statRooms: { az: 'Otaq', en: 'Rooms', ru: 'Номеров' }[currentLang],
-    statAqua: { az: 'Aqua Zonası', en: 'Aqua Zones', ru: 'Аква-зон' }[currentLang],
-    statRating: { az: 'Reytinq', en: 'Rating', ru: 'Рейтинг' }[currentLang],
-  };
 
   const handleNav = (path: string, hash: string) => {
     if (window.innerWidth >= 1024) {
@@ -47,16 +31,14 @@ export default function Hero() {
   };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.98 },
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
     transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 20,
-      mass: 0.8
+      ease: "easeOut" as const,
+      duration: 0.5,
     }
   }
 };
@@ -68,7 +50,7 @@ const itemVariants = {
         style={{ y: yBg }}
         initial={{ opacity: 0, scale: 1.1 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 2, ease: "easeOut" }}
+        transition={{ duration: 2, ease: "easeOut" as const }}
         className="absolute inset-0 z-0 w-full h-[120%]"
       >
         <Image
@@ -96,92 +78,95 @@ const itemVariants = {
             {/* Small elegant badge */}
             <div className="inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-sm lg:bg-[#00b5d5]/10 border border-white/30 lg:border-[#00b5d5]/20 px-4 py-1.5 rounded-full">
               <span className="w-1.5 h-1.5 rounded-full bg-[#ff6c02] animate-pulse shrink-0" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white lg:text-[#00b5d5]">
-                {texts.line1}
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-white lg:text-[#00b5d5]">
+                {t.hero.line1}
               </span>
             </div>
 
             {/* Main heading */}
             <div>
-              <h1 className="text-[38px] sm:text-5xl md:text-[58px] lg:text-[68px] font-serif font-semibold leading-[1.1] tracking-tight text-white lg:text-[#1e325c] [text-shadow:_0_4px_24px_rgba(0,0,0,0.7)] lg:[text-shadow:_none]">
-                <TextReveal text={texts.line2} delay={0.2} />
+              <h1 
+                className="text-4xl sm:text-5xl lg:text-6xl font-serif font-medium leading-[1.1] tracking-wide text-[#1e325c] filter-[drop-shadow(0_0_15px_rgba(255,255,255,0.8))_drop-shadow(0_0_30px_rgba(255,255,255,0.8))] lg:filter-none"
+                style={{ fontFamily: 'var(--font-cormorant), serif' }}
+              >
+                <TextReveal text={t.hero.line2} delay={0.2} />
               </h1>
             </div>
 
             {/* Subtitle */}
-            <p className="text-[11px] sm:text-xs font-medium uppercase tracking-[0.22em] text-white/80 lg:text-stone-400 [text-shadow:_0_2px_8px_rgba(0,0,0,0.6)] lg:[text-shadow:_none]">
-              {texts.sub}
+            <p className="text-xs font-light uppercase tracking-[0.15em] text-white/90 lg:text-stone-500 [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] lg:text-shadow-none">
+              {t.hero.sub}
             </p>
           </motion.div>
 
           {/* Feature cards — clickable, soft square shape */}
           <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3 sm:gap-4 pt-4 lg:pt-6 max-w-lg md:max-w-xl">
-            <TiltCard tiltAmount={10}>
-              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/rooms', 'rooms')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+            <TiltCard tiltAmount={10} className="h-full">
+              <motion.button whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/rooms', 'rooms')} className="w-full h-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
                   <Image src="/bed.png" alt="Rooms" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f1}</p>
+                <p className="text-xs text-stone-700 font-medium leading-snug tracking-wide">{t.hero.f1}</p>
               </motion.button>
             </TiltCard>
-            <TiltCard tiltAmount={10}>
-              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/aquapark', 'aquapark')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+            <TiltCard tiltAmount={10} className="h-full">
+              <motion.button whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/aquapark', 'aquapark')} className="w-full h-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
                   <Image src="/aqua-park1.png" alt="Aquapark" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f2}</p>
+                <p className="text-xs text-stone-700 font-medium leading-snug tracking-wide">{t.hero.f2}</p>
               </motion.button>
             </TiltCard>
-            <TiltCard tiltAmount={10}>
-              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/wonderland', 'wonderland')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+            <TiltCard tiltAmount={10} className="h-full">
+              <motion.button whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/wonderland', 'wonderland')} className="w-full h-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
                   <Image src="/carousel.png" alt="Lunapark" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f4}</p>
+                <p className="text-xs text-stone-700 font-medium leading-snug tracking-wide">{t.hero.f4}</p>
               </motion.button>
             </TiltCard>
-            <TiltCard tiltAmount={10}>
-              <motion.button whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/restoran', 'restoran')} className="w-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
+            <TiltCard tiltAmount={10} className="h-full">
+              <motion.button whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => handleNav('/restoran', 'restoran')} className="w-full h-full flex flex-row items-center space-x-3 bg-white/95 hover:bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)] cursor-pointer text-left transition-all hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)] group">
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#00b5d5]/10 flex items-center justify-center shrink-0 border border-[#00b5d5]/20 group-hover:scale-105 transition-transform">
                   <Image src="/spoon.png" alt="Restaurant" width={32} height={32} className="w-5 h-5 sm:w-6 sm:h-6 object-contain opacity-90" />
                 </div>
-                <p className="text-[11px] sm:text-xs text-[#1e325c] font-bold leading-snug tracking-wide">{texts.f3}</p>
+                <p className="text-xs text-stone-700 font-medium leading-snug tracking-wide">{t.hero.f3}</p>
               </motion.button>
             </TiltCard>
           </motion.div>
         </motion.div>
 
-        {/* Right: Premium Stats + CTA Panel */}
+        {/* Right: Stats + CTA Panel */}
         <motion.div 
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
+          transition={{ ease: "easeOut" as const, duration: 0.6, delay: 0.3 }}
           className="lg:col-span-5 w-full flex justify-center lg:justify-end mt-4 lg:mt-0"
         >
-          <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-5 sm:p-8 w-full max-w-md shadow-[0_20px_50px_rgba(30,50,92,0.12)] border border-white/80 space-y-4 sm:space-y-6">
+          <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-5 sm:p-7 w-full max-w-md shadow-[0_16px_40px_rgba(30,50,92,0.10)] border border-white/60 space-y-4 sm:space-y-5">
 
             {/* Stats row */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 pb-4 sm:pb-6 border-b border-stone-100">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 pb-4 sm:pb-5 border-b border-stone-100/70">
               <div className="text-center space-y-1">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#00b5d5]/10 rounded-xl flex items-center justify-center mx-auto">
                   <BedDouble className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b5d5]" />
                 </div>
-                <p className="text-xl sm:text-2xl font-black text-[#1e325c]">500+</p>
-                <p className="text-[9px] sm:text-[10px] font-bold text-stone-400 uppercase tracking-wider">{texts.statRooms}</p>
+                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">350+</p>
+                <p className="text-[10px] font-medium text-stone-500 uppercase tracking-widest">{t.hero.statRooms}</p>
               </div>
               <div className="text-center space-y-1">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#00b5d5]/10 rounded-xl flex items-center justify-center mx-auto">
                   <Waves className="w-4 h-4 sm:w-5 sm:h-5 text-[#00b5d5]" />
                 </div>
-                <p className="text-xl sm:text-2xl font-black text-[#1e325c]">20+</p>
-                <p className="text-[9px] sm:text-[10px] font-bold text-stone-400 uppercase tracking-wider">{texts.statAqua}</p>
+                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">10+</p>
+                <p className="text-[10px] font-medium text-stone-500 uppercase tracking-widest">{t.hero.statAqua}</p>
               </div>
               <div className="text-center space-y-1">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-50 rounded-xl flex items-center justify-center mx-auto">
                   <Star className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 fill-amber-400" />
                 </div>
-                <p className="text-xl sm:text-2xl font-black text-[#1e325c]">4.9</p>
-                <p className="text-[9px] sm:text-[10px] font-bold text-stone-400 uppercase tracking-wider">{texts.statRating}</p>
+                <p className="text-lg sm:text-xl font-bold text-[#1e325c]">4.9</p>
+                <p className="text-[10px] font-medium text-stone-500 uppercase tracking-widest">{t.hero.statRating}</p>
               </div>
             </div>
 
@@ -199,9 +184,7 @@ const itemVariants = {
                   {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
                 </div>
                 <p className="text-[11px] text-stone-500 leading-snug">
-                  {currentLang === 'az' ? '"Ailə ilə gəldik — hər şey mükəmməl idi!"' :
-                   currentLang === 'ru' ? '"Приехали семьей — всё было идеально!"' :
-                   '"Came with family — everything was perfect!"'}
+                  {t.hero.review}
                 </p>
               </div>
             </div>
@@ -212,17 +195,17 @@ const itemVariants = {
                 onClick={() => router.push('/booking')}
                 className="w-full block"
               >
-                <div className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-bold uppercase tracking-[0.1em] py-4 rounded-2xl transition-all shadow-md shadow-[#ff6c02]/30 cursor-pointer">
+                <div className="flex items-center justify-center gap-2 w-full bg-[#ff6c02] hover:bg-[#e55f00] text-white text-[13px] font-semibold uppercase tracking-widest py-4 rounded-2xl transition-all shadow-md shadow-[#ff6c02]/30 cursor-pointer">
                   <CalendarCheck className="w-4 h-4" />
-                  {texts.btnBook}
+                  {t.hero.bookBtn}
                 </div>
               </MagneticButton>
               <MagneticButton
                 onClick={() => router.push('/rooms')}
                 className="w-full block"
               >
-                <div className="flex items-center justify-center gap-2 w-full bg-white/90 border border-[#1e325c]/20 hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 text-[#1e325c] text-[13px] font-semibold uppercase tracking-[0.1em] py-3.5 rounded-2xl transition-all cursor-pointer">
-                  {texts.btnRooms}
+                <div className="flex items-center justify-center gap-2 w-full bg-white/90 border border-[#1e325c]/20 hover:border-[#00b5d5] hover:bg-[#00b5d5]/5 text-[#1e325c] text-[13px] font-semibold uppercase tracking-widest py-3.5 rounded-2xl transition-all cursor-pointer">
+                  {t.hero.btnRooms}
                   <ArrowRight className="w-4 h-4" />
                 </div>
               </MagneticButton>

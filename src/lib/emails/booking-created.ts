@@ -12,7 +12,7 @@ export function bookingCreatedEmail(
           <tr>
             <td align="center" style="background: linear-gradient(135deg, #00b5d5, #00406a); padding: 40px 20px;">
               <h1 style="color: #ffffff; margin: 0; font-size: 28px; letter-spacing: 2px;">AF HOTEL & RESORT</h1>
-              <p style="color: #e0f2fe; margin: 10px 0 0; font-size: 14px; font-weight: 300; letter-spacing: 1px;">SİZİN LÜKS İSTİRAHƏTİNİZ</p>
+              <p style="color: #e0f2fe; margin: 10px 0 0; font-size: 14px; font-weight: 300; letter-spacing: 1px;">SİZİN İSTİRAHƏTİNİZ</p>
             </td>
           </tr>
           <tr>

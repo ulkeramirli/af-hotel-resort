@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, use } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -33,7 +34,7 @@ const content = {
     location: "Ünvan",
     share: "Paylaş",
     reviews: "Rəy",
-    luxuryBadge: "Lüks Otaqlar",
+    roomBadge: "Gözəl Otaqlar",
     notFound: "Tapılmadı",
     bed: "Yataq",
     bath: "Hamam",
@@ -56,7 +57,7 @@ const content = {
     location: "Location",
     share: "Share",
     reviews: "Reviews",
-    luxuryBadge: "Luxury Rooms",
+    roomBadge: "Comfortable Rooms",
     notFound: "Not found",
     bed: "Bed",
     bath: "Bath",
@@ -79,7 +80,7 @@ const content = {
     location: "Локация",
     share: "Поделиться",
     reviews: "Отзывов",
-    luxuryBadge: "Люкс Номера",
+    roomBadge: "Красивые Номера",
     notFound: "Не найдено",
     bed: "Кровать",
     bath: "Ванная",
@@ -155,12 +156,12 @@ export default function RoomDetailPage({
     return (
       <div className="min-h-screen flex flex-col justify-center items-center gap-4 text-stone-400 bg-white">
         <p className="text-sm font-semibold text-stone-500">{c.notFound}</p>
-        <button
-          onClick={() => router.push("/#rooms")}
+        <Link
+          href="/#rooms"
           className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1e325c] text-white rounded-xl shadow-md hover:bg-[#1e325c]/90 transition-all font-semibold text-sm cursor-pointer"
         >
           {c.back}
-        </button>
+        </Link>
       </div>
     );
   }
@@ -173,18 +174,41 @@ export default function RoomDetailPage({
 
   return (
     <div className="min-h-screen bg-stone-50/40 text-stone-800 antialiased font-sans selection:bg-stone-100 pb-20 pt-28 relative">
-      {/* Кнопка Назад - Фиксированная слева на больших экранах */}
-      <motion.button
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        onClick={() => router.push('/#rooms')}
-        className="fixed left-4 sm:left-6 lg:left-8 top-24 z-40 inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-stone-200 shadow-sm rounded-xl text-sm font-semibold text-stone-600 hover:text-[#1e325c] hover:border-[#1e325c]/30 hover:bg-stone-50 transition-all cursor-pointer"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        {c.back}
-      </motion.button>
-
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "HotelRoom",
+            "name": roomTitle,
+            "description": roomDesc,
+            "image": room.images,
+            "occupancy": {
+              "@type": "QuantitativeValue",
+              "value": parseInt(room.capacity?.az?.match(/\d+/)?.[0] || "2", 10)
+            },
+            "amenityFeature": roomIncludes.map(inc => ({
+              "@type": "LocationFeatureSpecification",
+              "name": inc,
+              "value": true
+            })),
+            "offers": {
+              "@type": "Offer",
+              "price": room.price,
+              "priceCurrency": "AZN"
+            }
+          })
+        }}
+      />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        {/* Кнопка Назад */}
+        <Link
+          href="/#rooms"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-stone-200 shadow-sm rounded-xl text-sm font-semibold text-stone-600 hover:text-[#1e325c] hover:border-[#1e325c]/30 hover:bg-stone-50 transition-all cursor-pointer mb-2 w-fit"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {c.back}
+        </Link>
 
         {/* СЕТКА ГАЛЕРЕИ */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -192,13 +216,13 @@ export default function RoomDetailPage({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="hidden md:flex flex-col gap-3 col-span-1 max-h-105 overflow-y-auto pr-1"
+            className="hidden md:flex flex-col gap-3 col-span-1 md:h-125 overflow-y-auto pr-1 gallery-scrollbar"
           >
             {room.images.map((img, i) => (
               <button
                 key={i}
                 onClick={() => setActiveImg(i)}
-                className={`relative aspect-4/3 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                className={`relative shrink-0 aspect-4/3 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
                   activeImg === i
                     ? "border-stone-800 scale-[0.98]"
                     : "border-transparent opacity-70 hover:opacity-100"
@@ -206,7 +230,7 @@ export default function RoomDetailPage({
               >
                 <Image
                   src={img || "/AF-aqua.jpg"}
-                  alt=""
+                  alt={`Room preview ${i + 1}`}
                   fill
                   sizes="250px"
                   className="object-cover"
@@ -218,7 +242,7 @@ export default function RoomDetailPage({
           {/* Главное изображение */}
           <motion.div
             layoutId="main-room-image"
-            className="col-span-1 md:col-span-3 relative aspect-16/10 md:h-105 rounded-2xl overflow-hidden bg-stone-100 border border-stone-200/30 shadow-sm"
+            className="col-span-1 md:col-span-3 relative rounded-2xl overflow-hidden bg-stone-100 border border-stone-200/30 shadow-sm h-75 md:h-125"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -227,8 +251,9 @@ export default function RoomDetailPage({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0.6 }}
                 transition={{ duration: 0.2 }}
-                className="w-full h-full relative"
+                className="w-full h-full"
               >
+                {/* Main Image */}
                 <Image
                   src={room.images[activeImg] || room.images[0] || "/AF-aqua.jpg"}
                   alt={roomTitle}
@@ -243,7 +268,7 @@ export default function RoomDetailPage({
             {/* Избранное */}
             <button
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleFav(); }}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-105 transition-transform cursor-pointer"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-105 transition-transform cursor-pointer z-10"
             >
               <Heart
                 className="w-4.5 h-4.5 transition-colors"
@@ -289,12 +314,12 @@ export default function RoomDetailPage({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-xl md:text-3xl font-bold text-stone-900 tracking-tight">
+                  <h1 className="text-2xl md:text-3xl font-bold text-stone-900 tracking-tight">
                     {roomTitle}
                   </h1>
-                  <span className="bg-stone-900 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">
-                    {c.luxuryBadge}
-                  </span>
+                  {/* <span className="bg-stone-900 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">
+                    {c.roomBadge}
+                  </span> */}
                 </div>
                 <p className="text-xs text-stone-400 flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5" /> AF Hotel & Aqua Park, Novkhani, Azerbaijan
@@ -353,12 +378,12 @@ export default function RoomDetailPage({
           </div>
 
           {/* Описание (Overview) */}
-          <div className="space-y-3 px-1">
+          <div className="space-y-3 px-1 overflow-hidden">
             <h3 className="text-xs font-bold uppercase tracking-widest text-stone-400">
               {c.overview}
             </h3>
             <div 
-              className="text-xs md:text-sm text-stone-600 leading-relaxed font-light text-justify prose prose-sm prose-stone max-w-none"
+              className="text-sm text-stone-600 leading-relaxed font-light prose prose-stone max-w-full wrap-break-word overflow-hidden"
               dangerouslySetInnerHTML={{ __html: roomDesc }}
             />
           </div>
@@ -368,14 +393,14 @@ export default function RoomDetailPage({
             <h3 className="text-xs font-bold uppercase tracking-widest text-stone-400">
               {c.amenities}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 items-start">
               {roomIncludes.map((item) => (
                 <div
                   key={item}
-                  className="flex items-center gap-3 border border-stone-200/40 rounded-xl p-3 bg-white text-xs text-stone-600 font-medium"
+                  className="flex items-start gap-3 border border-stone-200/40 rounded-xl p-3 bg-white text-xs text-stone-600 font-medium"
                 >
-                  <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span className="truncate">{item}</span>
+                  <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span className="wrap-break-word min-w-0">{item}</span>
                 </div>
               ))}
             </div>

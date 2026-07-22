@@ -123,7 +123,7 @@ export default function SignUpPage() {
 
   const [langOpen, setLangOpen] = useState(false);
 
-  const l = (language as LangType) || "az";
+  const l = language || "az";
   const t = translations[l];
 
   const [name, setName] = useState("");

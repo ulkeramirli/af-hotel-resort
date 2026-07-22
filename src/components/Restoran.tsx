@@ -94,7 +94,7 @@ const labels: Record<LangType, LanguageLabels> = {
 
 export default function Restoran() {
   const { language } = useLanguage();
-  const l = (language as LangType) || "az";
+  const l = language || "az";
   const c = labels[l] || labels.az;
 
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -187,17 +187,17 @@ export default function Restoran() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ type: 'spring', stiffness: 80, damping: 18 }}
+            transition={{ ease: 'easeOut', duration: 0.45 }}
             className="space-y-4 flex flex-col items-center max-w-3xl"
           >
             <div className="flex items-center justify-center gap-4">
               <div className="w-8 h-[1px] bg-[#00b5d5]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]">
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5]">
                 {loc(settings?.tag) || c.tag}
               </span>
               <div className="w-8 h-[1px] bg-[#00b5d5]" />
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none break-words whitespace-normal">
+            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight break-words whitespace-normal">
               <TextReveal text={loc(settings?.title) || c.title} delay={0.1} />
             </h2>
             <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
@@ -207,10 +207,10 @@ export default function Restoran() {
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ type: 'spring', stiffness: 80, damping: 18, delay: 0.15 }}
+            transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
             className="flex justify-center w-full mt-4"
           >
-            <div className="grid grid-cols-2 gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
               {restaurants.map((r, i) => {
                 const isActive = activeRest === i;
                 const IconComponent = getCategoryIcon(loc(r.name));
@@ -226,7 +226,7 @@ export default function Restoran() {
                   >
                     <div className="flex items-center gap-1.5 md:gap-2">
                       <IconComponent className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isActive ? "text-[#00b5d5]" : "text-stone-400"}`} />
-                      <span className={`text-[12px] md:text-[13px] font-bold tracking-tight ${isActive ? "text-[#1e325c]" : "text-stone-500"}`}>
+                      <span className={`text-[12px] md:text-[13px] font-semibold tracking-wide ${isActive ? "text-[#1e325c]" : "text-stone-500"}`}>
                         {loc(r.name)}
                       </span>
                     </div>
@@ -273,7 +273,7 @@ export default function Restoran() {
               
               {schedule.length > 0 && (
                 <div className="space-y-3">
-                  <h4 className="font-bold text-xs uppercase tracking-wider text-[#1e325c] flex items-center gap-2">
+                  <h4 className="font-semibold text-xs uppercase tracking-widest text-[#1e325c] flex items-center gap-2">
                     <Clock className="w-3.5 h-3.5 text-[#00b5d5]" />
                     {c.hours}
                   </h4>
@@ -291,12 +291,12 @@ export default function Restoran() {
               {currentRestaurant.phone && (
                 <div className="grid grid-cols-2 gap-3 pt-2">
                   <MagneticButton className="w-full block">
-                    <a href={`tel:${currentRestaurant.phone.replace(/\s+/g, "")}`} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1e325c] hover:bg-[#162545] text-white text-xs font-bold rounded-xl transition-colors shadow-xs w-full">
+                    <a href={`tel:${currentRestaurant.phone.replace(/\s+/g, "")}`} className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1e325c] hover:bg-[#162545] text-white text-xs font-medium rounded-xl transition-colors shadow-xs w-full">
                       <Calendar className="w-3.5 h-3.5" /> {c.reserve}
                     </a>
                   </MagneticButton>
                   <MagneticButton className="w-full block">
-                    <a href={`tel:${currentRestaurant.phone.replace(/\s+/g, "")}`} className="flex items-center justify-center gap-2 px-4 py-3 bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 text-xs font-bold rounded-xl transition-colors w-full">
+                    <a href={`tel:${currentRestaurant.phone.replace(/\s+/g, "")}`} className="flex items-center justify-center gap-2 px-4 py-3 bg-white border border-stone-200 text-stone-600 hover:bg-stone-50 text-xs font-medium rounded-xl transition-colors w-full">
                       <Phone className="w-3.5 h-3.5 text-[#00b5d5]" /> {c.call}
                     </a>
                   </MagneticButton>
@@ -310,7 +310,7 @@ export default function Restoran() {
             {currentRestaurant.menu && currentRestaurant.menu.length > 0 ? (
               <>
                 <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center border-b border-stone-200/60 pb-3">
-                  <h3 className="text-lg font-serif font-bold text-[#1e325c] tracking-wide flex items-center gap-2">
+                  <h3 className="text-lg font-serif font-medium text-[#1e325c] tracking-wide flex items-center gap-2">
                     <Utensils className="w-4 h-4 text-[#00b5d5]" />
                     {c.viewMenu}
                   </h3>
@@ -366,10 +366,10 @@ export default function Restoran() {
                             <div className="bg-white p-3.5 rounded-2xl border border-stone-100/80 shadow-2xs hover:shadow-md hover:border-stone-200/60 transition-all duration-300 flex justify-between items-center gap-4 min-h-27.5">
                             <div className="space-y-1.5 flex-1">
                               <div className="flex flex-col gap-0.5">
-                                <h4 className="font-bold text-xs md:text-sm text-[#1e325c] leading-snug">
+                                <h4 className="font-semibold text-xs md:text-sm text-[#1e325c] leading-snug">
                                   {loc(item.name)}
                                 </h4>
-                                <span className="text-xs font-bold text-[#00b5d5] font-mono mt-0.5">
+                                <span className="text-xs font-semibold text-[#00b5d5] font-mono mt-0.5">
                                   {item.price} AZN
                                 </span>
                               </div>

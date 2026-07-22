@@ -11,11 +11,81 @@ import TextReveal from "./TextReveal";
 import { getActivities, getActivityCategories, getActivitySettings, getTickets, getFaqs } from "@/services/api";
 import type { Activity, ActivityCategory, ActivitySettings, Ticket, Faq } from "@/types/api";
 
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? "100%" : "-100%",
+  }),
+  center: {
+    x: 0,
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? "100%" : "-100%",
+  })
+};
+
+const CardImageSlider = ({ images, itemName, priority = false }: { images: string[], itemName: string, priority?: boolean }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  const next = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDirection(1);
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prev = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  if (!images || images.length === 0) return null;
+
+  return (
+    <div className="w-full h-full relative overflow-hidden">
+      <AnimatePresence initial={false} custom={direction}>
+        <motion.div
+          key={currentIndex}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ x: { type: "spring", stiffness: 300, damping: 30 } }}
+          className="absolute inset-0"
+        >
+          <Image src={images[currentIndex]} alt={itemName} fill priority={priority && currentIndex === 0} sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
+        </motion.div>
+      </AnimatePresence>
+      
+      {images.length > 1 && (
+        <>
+          {/* Navigation Arrows */}
+          <button 
+            onClick={prev} 
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-30 shadow-sm cursor-pointer transition-opacity"
+          >
+            <ChevronLeft className="w-5 h-5 text-stone-700" />
+          </button>
+          <button 
+            onClick={next} 
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 hover:bg-white rounded-full flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-30 shadow-sm cursor-pointer transition-opacity"
+          >
+            <ChevronRight className="w-5 h-5 text-stone-700" />
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
+
 const content = {
   az: {
     tag: "AQUA & BEACH RESORT",
     title: "Eksklüziv Su Dünyası",
-    subtitle: "Xəzər sahilində bölgənin ən böyük əyləncə, hovuz və özəl çimərlik kompleksi",
+    subtitle: "Xəzər sahilində ailənizlə unudulmaz anlar yaşayacağınız gözəl əyləncə, hovuz və özəl çimərlik kompleksi",
     openHours: "10:00 – 20:00",
     season: "Yay mövsümü: May – Oktyabr",
     tickets: "Bilet qiymətləri",
@@ -35,9 +105,12 @@ const content = {
         desc: "Ekstremal sürüşmələr və uşaq su dünyası",
         icon: Waves,
         items: [
-          { name: "Kamikaze Sürüşməsi", icon: "⚡", desc: "80 km/s-ə çatan sürüşmə, adrenalin sevənlər üçün (14+ yaş)", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
-          { name: "Tornado", icon: "🌀", desc: "Dövrəvi sürüşmə tüneli, 4 nəfər eyni anda eniş", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
-          { name: "Uşaq Su Meydançası", icon: "🎠", desc: "Fıskiyələr, rəngli mini sürüşmələr və təhlükəsiz su oyunları", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "Böyüklər üçün aquapark lı hovuz", icon: "⚡", desc: "Əyləncəli sürüşmələr və böyük hovuz", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
+          { name: "Uşaqlar üçün hovuz", icon: "🎠", desc: "Balacalar üçün təhlükəsiz su oyunları", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "VIP hovuz", icon: "💎", desc: "Sakitlik və rahatlıq axtaranlar üçün xüsusi hovuz", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "Böyüklər üçün bir digər hovuz", icon: "🏊", desc: "Professional üzgüçülük və istirahət üçün", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
+          { name: "Af Beach böyüklər üçün hovuz", icon: "🏖️", desc: "Dəniz mənzərəli böyüklər hovuzu", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "Af Beach uşaqlar üçün hovuz", icon: "🌊", desc: "Çimərlik zonasında uşaqlar üçün təhlükəsiz hovuz", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
         ]
       },
       {
@@ -54,10 +127,10 @@ const content = {
       {
         id: "beach",
         name: "Özəl Çimərlik",
-        desc: "Qızılı qum və dəniz kənarında lüks",
+        desc: "Qızılı qum və dəniz kənarında rahatlıq",
         icon: Palmtree,
         items: [
-          { name: "Premium Sahil Zonası", icon: "🏖️", desc: "Rahat şezlonqlar, VIP növ çadırlar və təmiz dəniz sahili", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "Sahil Zonası", icon: "🏖️", desc: "Rahat şezlonqlar, VIP növ çadırlar və təmiz dəniz sahili", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
           { name: "Beach Bar & Lounge", icon: "🍹", desc: "Sərinləşdirici kokteyllər, tropik içkilər və canlı musiqi", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
           { name: "Su İdman Əyləncələri", icon: "🛥️", desc: "Jet-ski, skuter və dəniz kənarında aktiv əyləncə növləri", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=600&q=80" },
         ]
@@ -84,7 +157,7 @@ const content = {
   en: {
     tag: "AQUA & BEACH RESORT",
     title: "Exclusive Water World",
-    subtitle: "The region's largest entertainment, pool, and private beach complex on the Caspian coast",
+    subtitle: "A beautiful entertainment, pool, and private beach complex on the Caspian coast for an unforgettable family vacation",
     openHours: "10:00 – 20:00",
     season: "Summer season: May – October",
     tickets: "Ticket prices",
@@ -104,9 +177,12 @@ const content = {
         desc: "Extreme slides and kids water world",
         icon: Waves,
         items: [
-          { name: "Kamikaze Slide", icon: "⚡", desc: "Adrenaline-pumping slide up to 80 km/h (Ages 14+)", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
-          { name: "Tornado", icon: "🌀", desc: "Circular tunnel slide for 4 people simultaneously", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
-          { name: "Kids Water Playground", icon: "🎠", desc: "Fountains, colorful mini slides, and safe water games", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "Adult pool with aquapark", icon: "⚡", desc: "Fun slides and a large pool", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
+          { name: "Kids pool", icon: "🎠", desc: "Safe water games for the little ones", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "VIP pool", icon: "💎", desc: "Special pool for those seeking peace and comfort", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "Another adult pool", icon: "🏊", desc: "For professional swimming and relaxation", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
+          { name: "AF Beach adult pool", icon: "🏖️", desc: "Adult pool with a sea view", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "AF Beach kids pool", icon: "🌊", desc: "Safe kids pool in the beach zone", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
         ]
       },
       {
@@ -123,10 +199,10 @@ const content = {
       {
         id: "beach",
         name: "Private Beach",
-        desc: "Golden sand and seaside luxury",
+        desc: "Golden sand and seaside comfort",
         icon: Palmtree,
         items: [
-          { name: "Premium Coast Zone", icon: "🏖️", desc: "Comfortable sunbeds, VIP bungalows, and a clean coast", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "Coast Zone", icon: "🏖️", desc: "Comfortable sunbeds, VIP bungalows, and a clean coast", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
           { name: "Beach Bar & Lounge", icon: "🍹", desc: "Refreshing cocktails, tropical drinks, and live music", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
           { name: "Water Sports", icon: "🛥️", desc: "Jet-skiing, scooters, and active seaside entertainment", img: "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?w=600&q=80" },
         ]
@@ -153,7 +229,7 @@ const content = {
   ru: {
     tag: "AQUA & BEACH RESORT",
     title: "Эксклюзивный Водный Мир",
-    subtitle: "Крупнейший комплекс развлечений, бассейнов и частного пляжа на побережье Каспия",
+    subtitle: "Премиальный комплекс развлечений, бассейнов и частного пляжа на побережье Каспия для всей семьи",
     openHours: "10:00 – 20:00",
     season: "Летний сезон: Май – Октябрь",
     tickets: "Стоимость билетов",
@@ -173,9 +249,12 @@ const content = {
         desc: "Экстремальные горки и детский водный городок",
         icon: Waves,
         items: [
-          { name: "Горка Камикадзе", icon: "⚡", desc: "Захватывающий спуск на скорости до 80 км/ч (14+ лет)", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
-          { name: "Торнадо", icon: "🌀", desc: "Круговой закрытый туннель для 4 человек одновременно", img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=600&q=80" },
-          { name: "Детская аква-площадка", icon: "🎠", desc: "Фонтаны, брызгалки, безопасные мини-горки и аттракционы", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "Взрослый бассейн с аквапарком", icon: "⚡", desc: "Веселые горки и большой бассейн", img: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80" },
+          { name: "Детский бассейн", icon: "🎠", desc: "Безопасные водные игры для малышей", img: "https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=600&q=80" },
+          { name: "VIP бассейн", icon: "💎", desc: "Специальный бассейн для ищущих покой и роскошь", img: "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=600&q=80" },
+          { name: "Еще один бассейн для взрослых", icon: "🏊", desc: "Для профессионального плавания и отдыха", img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" },
+          { name: "AF Beach бассейн для взрослых", icon: "🏖️", desc: "Взрослый бассейн с видом на море", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" },
+          { name: "AF Beach детский бассейн", icon: "🌊", desc: "Безопасный детский бассейн в пляжной зоне", img: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" },
         ]
       },
       {
@@ -289,12 +368,13 @@ export default function Aquapark() {
             emoji: cat.emoji || "",
             icon: Waves,
             items: acts
-              .filter(a => (typeof a.category === 'object' ? (a.category as any)._id : a.category) === cat._id)
+              .filter(a => a.category && (typeof a.category === 'object' ? (a.category as any)._id : a.category) === cat._id)
               .map(a => ({
                 name: a.title,
                 icon: "✨",
                 desc: a.description,
-                img: a.image || "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80",
+                img: a.image || (a.images && a.images.length > 0 ? a.images[0] : "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80"),
+                images: a.images || [],
               })),
           }));
           setDbZones(mappedZones);
@@ -305,6 +385,23 @@ export default function Aquapark() {
     };
     fetchActivities();
   }, []);
+
+  const [isAtStart, setIsAtStart] = useState(true);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+
+  const handleScroll = () => {
+    if (photoSliderRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = photoSliderRef.current;
+      setIsAtStart(scrollLeft <= 0);
+      setIsAtEnd(Math.ceil(scrollLeft + clientWidth) >= scrollWidth);
+    }
+  };
+
+  useEffect(() => {
+    handleScroll();
+    window.addEventListener('resize', handleScroll);
+    return () => window.removeEventListener('resize', handleScroll);
+  }, [activeTab]);
 
   const activeZones = dbZones.length > 0 ? dbZones : c.zones;
   const activeZone = activeZones[activeTab] || activeZones[0];
@@ -317,7 +414,7 @@ export default function Aquapark() {
     { icon: Waves, label: loc(settings?.stats?.[0]?.value) || "25+", sub1: loc(settings?.stats?.[0]?.label) || (l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов"), sub2: loc(settings?.stats?.[0]?.sub) },
     { icon: Users, label: loc(settings?.stats?.[1]?.value) || "2500+", sub1: loc(settings?.stats?.[1]?.label) || (l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день"), sub2: loc(settings?.stats?.[1]?.sub) },
     { icon: Clock, label: loc(settings?.stats?.[2]?.value) || c.openHours, sub1: loc(settings?.stats?.[2]?.label) || c.season, sub2: loc(settings?.stats?.[2]?.sub) },
-    { icon: Star, label: loc(settings?.stats?.[3]?.value) || "5.0", sub1: loc(settings?.stats?.[3]?.label) || (l === "az" ? "Lüks Premium Xidmət" : l === "en" ? "Luxury Premium Service" : "Люкс Премиум Сервис"), sub2: loc(settings?.stats?.[3]?.sub) },
+    { icon: Star, label: loc(settings?.stats?.[3]?.value) || "5.0", sub1: loc(settings?.stats?.[3]?.label) || (l === "az" ? "Yüksək Xidmət" : l === "en" ? "High Quality Service" : "Высокий Сервис"), sub2: loc(settings?.stats?.[3]?.sub) },
   ];
 
   // Функции для управления слайдером по стрелкам
@@ -337,34 +434,42 @@ export default function Aquapark() {
       <div className="max-w-7xl mx-auto px-6 lg:px-16 space-y-10 md:space-y-16">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="flex flex-col items-center justify-center relative z-10">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
-            transition={{ type: 'spring', stiffness: 80, damping: 18, delay: 0.05 }}
-            className="space-y-4 text-left"
+            transition={{ ease: 'easeOut', duration: 0.45, delay: 0.05 }}
+            className="space-y-4 text-center flex flex-col items-center"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-center gap-4">
               <motion.div
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-                style={{ originX: 0 }}
-                className="w-8 h-[1px] bg-[#00b5d5]"
+                style={{ originX: 0.5 }}
+                className="w-12 h-px bg-[#00b5d5]"
               />
               <motion.span
                 initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#00b5d5]"
+                className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-[#00b5d5]"
               >
                 {displayTag}
               </motion.span>
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+                style={{ originX: 0.5 }}
+                className="w-12 h-px bg-[#00b5d5]"
+              />
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-tight font-serif leading-none break-words whitespace-normal">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight wrap-break-word whitespace-normal text-center max-w-3xl">
               <TextReveal text={displayTitle} delay={0.1} />
             </h2>
             <motion.div
@@ -372,30 +477,45 @@ export default function Aquapark() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: displaySubtitle }}
+              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl text-center [&>p]:mb-0 mx-auto px-4 w-full [&_*]:!whitespace-normal [&_*]:!break-words" dangerouslySetInnerHTML={{ __html: displaySubtitle.replace(/&nbsp;/g, ' ') }}
             />
           </motion.div>
         </div>
 
         {/* Stats */}
-        <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-          {dynamicStats.map((s, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30, scale: 0.94 }}
-              animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{ type: 'spring', stiffness: 110, damping: 18, delay: i * 0.1 }}
-              whileHover={{ y: -4, scale: 1.02 }}
-              className="bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl md:rounded-[2rem] p-4 md:p-8 flex flex-col items-center text-center gap-2 transition-shadow hover:shadow-[0_12px_40px_rgba(0,181,213,0.10)]"
-            >
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#00b5d5]/10 flex items-center justify-center mb-1">
-                <s.icon className="w-5 h-5 md:w-7 md:h-7 text-[#00b5d5]" />
-              </div>
-              <span className="text-lg md:text-3xl font-bold text-[#1e325c] tracking-tight">{s.label}</span>
-              <span className="text-[10px] md:text-xs text-stone-500 font-semibold tracking-widest uppercase">{s.sub1}</span>
-              {s.sub2 && <span className="text-[9px] md:text-[10px] text-stone-400 font-medium tracking-wide mt-1">{s.sub2}</span>}
-            </motion.div>
-          ))}
+        <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 relative z-10">
+          {dynamicStats.map((s, i) => {
+            const val = s.label?.trim() || "";
+            // Check if the value is likely just an emoji (no letters/numbers and very short)
+            const isEmojiValue = val.length > 0 && val.length <= 4 && !/[a-zA-Z0-9]/.test(val);
+
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30, scale: 0.94 }}
+                animate={statsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                transition={{ ease: 'easeOut', duration: 0.5, delay: i * 0.12 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="bg-white/70 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-4xl p-5 md:p-7 flex flex-col items-center text-center gap-3 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)] group relative overflow-hidden"
+              >
+                {/* Hover Glow */}
+                <div className="absolute inset-0 bg-linear-to-br from-[#00b5d5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-linear-to-br from-stone-50 to-stone-100 flex items-center justify-center mb-0 md:mb-1 border border-stone-100 shadow-inner group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-linear-to-br group-hover:from-[#00b5d5]/10 group-hover:to-transparent transition-all duration-500">
+                  {isEmojiValue ? (
+                    <span className="text-xl md:text-2xl leading-none">{val}</span>
+                  ) : (
+                    <s.icon className="w-5 h-5 md:w-6 md:h-6 text-[#00b5d5]" />
+                  )}
+                </div>
+                {!isEmojiValue && (
+                  <span className="text-lg md:text-2xl font-extrabold text-[#1e325c] tracking-tight group-hover:text-[#00b5d5] transition-colors">{val}</span>
+                )}
+                <span className="text-[10px] md:text-[11px] text-stone-500 font-bold tracking-widest uppercase">{s.sub1}</span>
+                {s.sub2 && <span className="text-[9px] text-stone-400 font-medium tracking-wide mt-0.5">{s.sub2}</span>}
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Tabs */}
@@ -403,10 +523,10 @@ export default function Aquapark() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ type: 'spring', stiffness: 90, damping: 20, delay: 0.15 }}
-          className="w-full pt-4"
+          transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
+          className="w-full pt-4 relative z-10"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 bg-white/40 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-white/60 backdrop-blur-md shadow-sm">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 bg-white/70 p-3 rounded-3xl md:rounded-4xl border border-white/60 backdrop-blur-xl shadow-sm">
             {activeZones.map((zone, i) => {
               const IconComponent = zone.icon;
               const zoneName = loc(zone.name);
@@ -417,32 +537,34 @@ export default function Aquapark() {
                   key={zone.id || i}
                   onClick={() => setActiveTab(i)}
                   whileTap={{ scale: 0.97 }}
-                  className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer ${
+                  className={`relative w-full p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1.5 md:gap-2 transition-all cursor-pointer ${
                     activeTab === i
-                      ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
-                      : "hover:bg-white/60 border border-transparent"
+                      ? "bg-white shadow-[0_8px_30px_rgba(0,181,213,0.12)] border border-[#00b5d5]/20 scale-[1.02]"
+                      : "bg-white/60 md:bg-transparent md:hover:bg-white/80 border border-transparent"
                   }`}
                 >
-                  <div className="flex items-center gap-1 md:gap-1.5 whitespace-nowrap">
-                    {zone.emoji ? (
-                      <span className="text-xs md:text-sm">{zone.emoji}</span>
-                    ) : IconComponent ? (
-                      <IconComponent className={`w-3 h-3 md:w-4 md:h-4 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
-                    ) : null}
+                  <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-1.5 md:gap-2 mb-0.5 md:mb-1 text-center md:text-left w-full">
+                    <div className="flex items-center gap-1.5">
+                      {zone.emoji ? (
+                        <span className="text-xl md:text-xl">{zone.emoji}</span>
+                      ) : IconComponent ? (
+                        <IconComponent className={`w-5 h-5 md:w-5 md:h-5 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
+                      ) : null}
+                    </div>
 
-                    <span className={`text-[11px] md:text-xs font-semibold tracking-tight ${activeTab === i ? "text-[#1e325c]" : "text-stone-500"}`}>
+                    <span className={`text-[11px] md:text-sm font-bold tracking-wide leading-tight ${activeTab === i ? "text-[#00b5d5]" : "text-stone-600"}`}>
                       {zoneName}
                     </span>
 
                     {zone.isSoon && (
-                      <span className="text-[6px] md:text-[8px] bg-amber-500 text-white font-extrabold px-1 py-0.5 rounded-sm uppercase tracking-wider">
+                      <span className="text-[8px] md:text-[9px] bg-amber-500 text-white font-extrabold px-2 py-0.5 rounded-full uppercase tracking-widest shadow-sm mt-1 md:mt-0">
                         {c.soonTag || "Soon"}
                       </span>
                     )}
                   </div>
 
                   {zoneDesc && (
-                    <span className="text-[9px] md:text-[10px] text-stone-400 font-medium line-clamp-1 w-full text-center md:text-left">
+                    <span className="text-[10px] md:text-[11px] text-stone-500 font-medium line-clamp-1 w-full text-center md:text-left mt-1 md:mt-0">
                       {stripHtml(zoneDesc)}
                     </span>
                   )}
@@ -452,16 +574,16 @@ export default function Aquapark() {
           </div>
         </motion.div>
 
-        {/* НИЖНИЕ КАРТОЧКИ С ФОТОГРАФИЯМИ */}
+        {/* НИЖНИЕ КАРТОЧКИ С ФОТОГРАФИЯМИ (УНИВЕРСАЛЬНЫЙ СЛАЙДЕР) */}
         <div className="space-y-4">
           
-          {/* Мобильная версия: Слайдер строго по стрелкам */}
-          <div className="block md:hidden relative">
-            
+          <div className="relative">
             {/* Сама лента слайдера */}
             <div 
               ref={photoSliderRef}
-              className="overflow-x-auto snap-x snap-mandatory flex gap-4 pb-2 scrollbar-none [&::-webkit-scrollbar]:hidden"
+              onScroll={handleScroll}
+              className="flex overflow-x-auto snap-x snap-mandatory gap-5 md:gap-6 pb-8 pt-2 gallery-scrollbar hide-scrollbar"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {activeZone?.items.map((item: any, i: number) => {
                 const itemName = loc(item.name);
@@ -471,24 +593,31 @@ export default function Aquapark() {
                 return (
                   <div
                     key={i}
-                    className="snap-center shrink-0 w-[85vw] bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-xs flex flex-col"
+                    className="group w-[85vw] sm:w-[45vw] lg:w-[calc(33.333%-16px)] flex-none snap-center rounded-3xl md:rounded-4xl overflow-hidden border border-white/60 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col cursor-pointer relative transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,181,213,0.15)]"
                   >
-                    <div className="relative h-48 overflow-hidden bg-stone-100">
-                      <Image src={item.img} alt={itemName} fill sizes="85vw" className="object-cover" />
-                      <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/80 via-[#1e325c]/10 to-transparent opacity-90" />
-                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-full text-[11px] font-bold text-[#1e325c] flex items-center gap-1">
-                        <span>{item.icon}</span>
+                    {/* Subtle glow overlay on hover */}
+                    <div className="absolute inset-0 bg-linear-to-br from-[#00b5d5]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" />
+                    
+                    <div className="relative h-56 md:h-64 overflow-hidden bg-stone-100">
+                      {item.images && item.images.length > 1 ? (
+                        <CardImageSlider images={item.images} itemName={itemName} priority={i < 2} />
+                      ) : (
+                        <Image src={item.images?.[0] || item.img} alt={itemName} fill priority={i < 2} sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                      )}
+                      <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity z-10" />
+                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#1e325c] shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center gap-1.5 z-20">
+                        <span className="text-sm">{item.icon}</span>
                         <span>{itemName}</span>
                       </div>
                     </div>
-                    <div className="p-4 grow flex flex-col justify-between space-y-2">
+                    <div className="p-5 md:p-6 grow flex flex-col justify-between space-y-3 relative z-20">
                       <div>
-                        <h4 className="font-bold text-[#1e325c] text-sm leading-snug">{itemName}</h4>
-                        <div className="text-[11px] text-stone-500 leading-relaxed line-clamp-3 prose prose-stone" dangerouslySetInnerHTML={{ __html: itemDesc }} />
+                        <h4 className="font-extrabold text-[#1e325c] text-base md:text-lg leading-tight mb-2 group-hover:text-[#00b5d5] transition-colors">{itemName}</h4>
+                        <div className="text-[11px] md:text-xs text-stone-500 font-medium leading-relaxed line-clamp-3 prose prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: itemDesc }} />
                       </div>
-                      <div className="pt-2.5 border-t border-stone-50 flex items-center gap-1 text-stone-400">
-                        <MapPin className="w-3 h-3 text-[#00b5d5]" />
-                        <span className="text-[9px] font-bold uppercase tracking-wider">{activeZoneName}</span>
+                      <div className="pt-3 border-t border-stone-200/50 flex items-center gap-1.5 text-stone-400 group-hover:text-[#00b5d5]/80 transition-colors">
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-widest">{activeZoneName}</span>
                       </div>
                     </div>
                   </div>
@@ -496,111 +625,78 @@ export default function Aquapark() {
               })}
             </div>
 
-            {/* Блок навигации со стрелками (Вынесен вниз по центру, чтобы не перекрывать фото) */}
-            {activeZone?.items.length > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-3">
-                <button 
-                  onClick={() => scrollSlider("left")}
-                  className="w-9 h-9 rounded-full bg-stone-100 active:bg-stone-200 border border-stone-200/50 flex items-center justify-center text-[#1e325c] transition-colors"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button 
-                  onClick={() => scrollSlider("right")}
-                  className="w-9 h-9 rounded-full bg-stone-100 active:bg-stone-200 border border-stone-200/50 flex items-center justify-center text-[#1e325c] transition-colors"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            )}
+            
+            {/* Навигационные стрелки */}
+            <div className="flex justify-center gap-4 mt-2">
+              <button
+                onClick={() => scrollSlider("left")}
+                disabled={isAtStart}
+                className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${
+                  isAtStart 
+                    ? "bg-white border-stone-200 text-stone-300 cursor-not-allowed" 
+                    : "bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e55f00]"
+                }`}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => scrollSlider("right")}
+                disabled={isAtEnd}
+                className={`w-12 h-12 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${
+                  isAtEnd 
+                    ? "bg-white border-stone-200 text-stone-300 cursor-not-allowed" 
+                    : "bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e55f00]"
+                }`}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
-
-          {/* Desktop: Premium staggered grid */}
-          <div className="hidden md:block">
-            <motion.div layout className="grid grid-cols-3 gap-4">
-              <AnimatePresence mode="popLayout">
-                {activeZone?.items.map((item: any, i: number) => {
-                  const itemName = loc(item.name);
-                  const itemDesc = loc(item.desc);
-                  const activeZoneName = loc(activeZone.name);
-
-                  return (
-                    <motion.div
-                      key={itemName || i}
-                      initial={{ opacity: 0, y: 24, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.94, y: -10 }}
-                      transition={{ type: 'spring', stiffness: 120, damping: 20, delay: i * 0.08 }}
-                      className="h-full"
-                    >
-                      <TiltCard tiltAmount={5} className="h-full">
-                      <motion.div
-                        whileHover={{ y: -4, boxShadow: '0 20px 50px rgba(0,181,213,0.13)' }}
-                        transition={{ type: 'spring', stiffness: 200, damping: 22 }}
-                        className="group rounded-2xl overflow-hidden border border-stone-100 bg-white shadow-sm flex flex-col h-full cursor-pointer"
-                      >
-                        <div className="relative h-40 overflow-hidden bg-stone-100">
-                          <Image src={item.img} alt={itemName} fill sizes="400px" className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                          <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/70 via-[#1e325c]/10 to-transparent" />
-                          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded-full text-[11px] font-semibold text-[#1e325c] shadow-xs flex items-center gap-1">
-                            <span>{item.icon}</span>
-                            <span>{itemName}</span>
-                          </div>
-                        </div>
-                        <div className="p-4 grow flex flex-col justify-between space-y-1.5">
-                          <div>
-                            <h4 className="font-semibold text-[#1e325c] text-sm leading-snug">{itemName}</h4>
-                            <div className="text-[11px] text-stone-500 leading-relaxed line-clamp-2 prose prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: itemDesc }} />
-                          </div>
-                          <div className="pt-2 border-t border-stone-50 flex items-center gap-1 text-stone-400">
-                            <MapPin className="w-3 h-3 text-[#00b5d5]" />
-                            <span className="text-[10px] font-medium uppercase tracking-wider">{activeZoneName}</span>
-                          </div>
-                        </div>
-                      </motion.div>
-                      </TiltCard>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-            </motion.div>
-          </div>
-
         </div>
 
         {/* Tickets + FAQ */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 pt-4">
           {/* Tickets */}
-          <div className="bg-[#f9f8f4] rounded-3xl p-6 md:p-8 space-y-5 flex flex-col justify-between border border-stone-100">
-            <div className="space-y-4">
-              <h3 className="font-bold text-lg md:text-xl text-[#1e325c] font-serif flex items-center gap-2">
-                🎟️ {c.tickets}
+          {/* Tickets */}
+          <div className="bg-white border border-stone-100 rounded-4xl p-6 md:p-8 relative overflow-hidden group shadow-sm flex flex-col justify-between">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-stone-50 rounded-full blur-3xl group-hover:bg-[#00b5d5]/5 transition-colors duration-1000" />
+            
+            <div className="flex flex-col mb-6 relative z-10 border-b border-stone-100 pb-4">
+              <h3 className="font-serif text-xl md:text-2xl text-[#1e325c] flex items-center gap-2.5 font-medium">
+                <span className="text-xl">🎟️</span>
+                {c.tickets}
               </h3>
-              {tickets.length > 0 ? tickets.map((t) => (
-                <div key={t._id} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100">
-                  <span className="text-sm font-semibold text-stone-600">{loc(t.name)}</span>
-                  <span className="text-lg font-bold" style={{ color: "var(--color-hotel-blue)" }}>
-                    {t.price} ₼
-                  </span>
-                </div>
-              )) : [
-                { label: c.adult, price: c.adultPrice },
-                { label: c.child, price: c.childPrice },
-                { label: c.infant, price: c.infantPrice },
-              ].map((t) => (
-                <div key={t.label} className="flex justify-between items-center bg-white p-4 rounded-2xl border border-stone-100">
-                  <span className="text-sm font-semibold text-stone-600">{t.label}</span>
-                  <span className="text-lg font-bold" style={{ color: "var(--color-hotel-blue)" }}>
-                    {t.price}
-                  </span>
+            </div>
+            
+            <div className="flex flex-col gap-3 relative z-10 flex-1">
+              {(tickets.length > 0 ? tickets.map((t) => ({ label: loc(t.name), price: t.price + " ₼", _id: t._id })) : [
+                { label: c.adult, price: c.adultPrice, _id: "adult" },
+                { label: c.child, price: c.childPrice, _id: "child" },
+                { label: c.infant, price: c.infantPrice, _id: "infant" },
+              ]).map((t) => (
+                <div key={t._id} className="relative bg-stone-50/50 rounded-xl border border-stone-200 hover:border-[#00b5d5]/50 transition-all duration-300 hover:shadow-sm overflow-hidden group/ticket flex flex-col justify-center min-h-12.5">
+                  
+                  {/* Perforations for real ticket look */}
+                  <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-r border-stone-200 group-hover/ticket:border-[#00b5d5]/50 transition-colors" />
+                  <div className="absolute top-1/2 -right-2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-l border-stone-200 group-hover/ticket:border-[#00b5d5]/50 transition-colors" />
+                  
+                  <div className="flex justify-between items-center px-4 py-2 border-l-2 border-dashed border-stone-200 group-hover/ticket:border-[#00b5d5]/40 ml-3 transition-colors">
+                    <span className="text-sm font-medium text-stone-700 pr-4">
+                      {t.label}
+                    </span>
+                    <span className="text-sm md:text-base font-bold text-[#00b5d5] whitespace-nowrap">
+                      {t.price}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
-            <MagneticButton className="w-full block">
+            
+            <MagneticButton className="w-full block relative z-10 mt-6">
               <a
-                href="tel:+994123456789"
-                className="flex items-center justify-center gap-2 w-full py-3.5 text-white text-sm font-bold rounded-2xl transition-all active:scale-[0.99] shadow-md shadow-[#00406a]/10"
-                style={{ background: "var(--color-hotel-blue)" }}
+                href="tel:+994502233285"
+                className="flex items-center justify-center gap-2 w-full py-3.5 text-white text-sm font-bold rounded-xl transition-all shadow-md hover:shadow-lg"
+                style={{ background: "var(--color-hotel-blue, #00b5d5)" }}
               >
                 {c.orderTicket}
               </a>
@@ -608,8 +704,8 @@ export default function Aquapark() {
           </div>
 
           {/* FAQ */}
-          <div className="space-y-3">
-            <h3 className="font-bold text-lg md:text-xl text-[#1e325c] font-serif pl-1">{c.faq}</h3>
+          <div className="space-y-3 pt-6 lg:pt-0">
+            <h3 className="font-bold text-xl md:text-2xl text-[#1e325c] font-serif pl-1 mb-5">{c.faq}</h3>
             {(faqs.length > 0 ? faqs : c.faqs).map((faq: any, i) => {
               const faqQuestion = loc(faq.question) || faq.q;
               const faqAnswer = loc(faq.answer) || faq.a;
@@ -620,7 +716,7 @@ export default function Aquapark() {
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                     className="w-full flex justify-between items-center p-4 text-left cursor-pointer"
                   >
-                    <span className="text-xs md:text-sm font-bold text-[#1e325c] pr-4">{faqQuestion}</span>
+                    <span className="text-xs md:text-sm font-semibold text-[#1e325c] pr-4">{faqQuestion}</span>
                     {openFaq === i ? (
                       <ChevronUp className="w-4 h-4 text-stone-400 shrink-0" />
                     ) : (

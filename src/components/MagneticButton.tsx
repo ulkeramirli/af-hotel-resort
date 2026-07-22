@@ -16,8 +16,8 @@ export default function MagneticButton({ children, className = '', onClick, magn
   const y = useMotionValue(0);
 
   // Smooth elastic spring for magnetic pull
-  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15, mass: 0.5 });
-  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15, mass: 0.5 });
+  const mouseXSpring = useSpring(x, { stiffness: 80, damping: 20, mass: 0.4 });
+  const mouseYSpring = useSpring(y, { stiffness: 80, damping: 20, mass: 0.4 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;

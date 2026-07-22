@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'AF Hotel Restoranlar | Ləziz Təamlar',
-  description: 'AF Hotel & Aqua Park restoranlarında milli və Avropa mətbəxinin ən dadlı təamları. Açıq hava terrası, dəniz mənzərəsi və premium xidmət.',
+  description: 'AF Hotel & Aqua Park restoranlarında milli və Avropa mətbəxinin ən dadlı təamları. Açıq hava terrası, dəniz mənzərəsi və yüksək xidmət.',
   keywords: ['AF Hotel restoran', 'Novxanı restoranlar', 'dənizkənarı restoran', 'AF Hotel menu', 'Baku fine dining'],
   openGraph: {
     title: 'AF Hotel Restoranlar | Ləziz Təamlar',
