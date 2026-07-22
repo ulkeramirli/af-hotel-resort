@@ -185,7 +185,7 @@ export default function RoomDetailPage({
             "image": room.images,
             "occupancy": {
               "@type": "QuantitativeValue",
-              "value": room.capacity?.az?.match(/\d+/) ? parseInt(room.capacity.az.match(/\d+/)[0]) : 2
+              "value": parseInt(room.capacity?.az?.match(/\d+/)?.[0] || "2", 10)
             },
             "amenityFeature": roomIncludes.map(inc => ({
               "@type": "LocationFeatureSpecification",
