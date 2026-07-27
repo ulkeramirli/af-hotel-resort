@@ -66,14 +66,12 @@ export class PaymentController {
       status: "pending",
     });
     try {
-      let exchangeRates = await ExchangeRate.findOne();
-      if (!exchangeRates) {
-         exchangeRates = { usd: 1.7, eur: 1.85 };
-      }
+      const exchangeRates = await ExchangeRate.findOne();
+      const rates = exchangeRates || { usd: 1.7, eur: 1.85 };
       
       let epointAmount = amount;
-      if (currency === "USD") epointAmount = amount * exchangeRates.usd;
-      if (currency === "EUR") epointAmount = amount * exchangeRates.eur;
+      if (currency === "USD") epointAmount = amount * rates.usd;
+      if (currency === "EUR") epointAmount = amount * rates.eur;
 
       const payment = await createEpointPayment({
         amount: epointAmount,

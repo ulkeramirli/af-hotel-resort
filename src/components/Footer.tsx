@@ -55,11 +55,11 @@ export default function Footer() {
 
             {/* Contact info */}
             <div className="space-y-3 pt-1">
-              <a href={`tel:${settings?.phone || '+994502233285'}`} className="flex items-center gap-3 text-xs text-stone-600 hover:text-[#ff6c02] transition-colors group">
+              <a href="tel:+994502233285" className="flex items-center gap-3 text-xs text-stone-600 hover:text-[#ff6c02] transition-colors group">
                 <div className="w-7 h-7 rounded-full bg-[#00b5d5]/10 flex items-center justify-center group-hover:bg-[#ff6c02]/10 group-hover:scale-110 transition-all">
                   <Phone className="w-3 h-3 text-[#00b5d5] group-hover:text-[#ff6c02] transition-colors" />
                 </div>
-                <span className="font-medium tracking-wide">{settings?.phone || '+994 50 223 32 85'}</span>
+                <span className="font-medium tracking-wide">+994 50 223 32 85</span>
               </a>
               <div className="flex items-start gap-3 text-xs text-stone-600 group">
                 <div className="w-7 h-7 rounded-full bg-[#00b5d5]/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all">

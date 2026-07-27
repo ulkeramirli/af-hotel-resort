@@ -87,7 +87,7 @@ export class AuthService {
     if (user.otp !== otp) {
       throw new Error("Invalid OTP");
     }
-    if (user.otpExpires < new Date()) {
+    if (!user.otpExpires || user.otpExpires < new Date()) {
       throw new Error("OTP expired");
     }
     user.isVerified = true;
