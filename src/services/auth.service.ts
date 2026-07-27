@@ -123,7 +123,7 @@ export class AuthService {
     if (user.otp !== otp) {
       throw new Error("Invalid OTP");
     }
-    if (user.otpExpires < new Date()) {
+    if (!user.otpExpires || user.otpExpires < new Date()) {
       throw new Error("OTP expired");
     }
     const hashedPassword = await bcrypt.hash(newPassword, 10);
