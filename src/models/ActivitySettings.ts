@@ -18,5 +18,5 @@ const activitySettingsSchema = new mongoose.Schema(
   },
 );
 
-export default mongoose.models.ActivitySettings ||
-  mongoose.model("ActivitySettings", activitySettingsSchema);
+delete mongoose.models.ActivitySettings;
+export default mongoose.model("ActivitySettings", activitySettingsSchema);

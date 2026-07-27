@@ -11,7 +11,7 @@ export async function GET(
 
   const { id } = await params;
 
-  return ActivityCategoryController.getById(id);
+  return await ActivityCategoryController.getById(id);
 }
 
 export async function PUT(
@@ -30,7 +30,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
-    return ActivityCategoryController.update(id, body);
+    return await ActivityCategoryController.update(id, body);
   } catch (error: any) {
     return NextResponse.json(
       {
@@ -59,7 +59,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    return ActivityCategoryController.delete(id);
+    return await ActivityCategoryController.delete(id);
   } catch (error: any) {
     return NextResponse.json(
       {

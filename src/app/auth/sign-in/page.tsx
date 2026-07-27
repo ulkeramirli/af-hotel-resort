@@ -34,11 +34,11 @@ type LangType = "az" | "en" | "ru";
 
 const translations = {
   az: {
-    heroTitle: "Xəzər sahilinin\nən gözəl istirahəti",
-    heroDesc: "5 ulduzlu otel, akvapak, 3 restoran və özəl çimərlik ilə unudulmaz istirahət yaşayın.",
+    heroTitle: "AF Hotel & Aqua Park\nResort-a Xoş Gəlmisiniz",
+    heroDesc: "Novxanıda, Xəzər dənizi sahilində yerləşən unudulmaz ailəvi istirahət mərkəzi.",
     statRoom: "Otaq",
     statRest: "Restoran",
-    statRating: "Reytinq",
+    statPool: "Hovuz",
     welcome: "Xoş gəldiniz",
     subtitle: "Hesabınıza daxil olun",
     googleBtn: "Google ilə daxil ol",
@@ -54,11 +54,11 @@ const translations = {
     errorGoogle: "Google ilə daxil olma zamanı xəta baş verdi"
   },
   ru: {
-    heroTitle: "Самый роскошный\nотдых на Каспии",
-    heroDesc: "Испытайте незабываемый отдых в 5-звездочном отеле с аквапарком, 3 ресторанами и частным пляжем.",
+    heroTitle: "Добро пожаловать в\nAF Hotel & Aqua Park",
+    heroDesc: "Незабываемый семейный центр отдыха, расположенный в Новханы на берегу Каспийского моря.",
     statRoom: "Номеров",
     statRest: "Ресторана",
-    statRating: "Рейтинг",
+    statPool: "Бассейнов",
     welcome: "Добро пожаловать",
     subtitle: "Войдите в свой аккаунт",
     googleBtn: "Войти через Google",
@@ -74,11 +74,11 @@ const translations = {
     errorGoogle: "Произошла ошибка при входе через Google"
   },
   en: {
-    heroTitle: "The most luxurious\nvacation on the Caspian",
-    heroDesc: "Experience an unforgettable stay in a 5-star hotel with a water park, 3 restaurants, and a private beach.",
+    heroTitle: "Welcome to\nAF Hotel & Aqua Park",
+    heroDesc: "An unforgettable family recreation center located in Novxani on the coast of the Caspian Sea.",
     statRoom: "Rooms",
     statRest: "Restaurants",
-    statRating: "Rating",
+    statPool: "Pools",
     welcome: "Welcome back",
     subtitle: "Sign in to your account",
     googleBtn: "Sign in with Google",
@@ -160,7 +160,7 @@ function SignInContent() {
       {/* Левая декоративная панель (Компьютерная версия) */}
       <div className="hidden lg:flex flex-1 relative overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=85"
+          src="/AF-hotel.jpg"
           alt="AF Hotel"
           fill
           className="object-cover"
@@ -217,7 +217,7 @@ function SignInContent() {
             {t.heroDesc}
           </p>
           <div className="mt-8 flex gap-6">
-            {[["500+", t.statRoom], ["3", t.statRest], ["5★", t.statRating]].map(([num, label]) => (
+            {[["345+", t.statRoom], ["4", t.statRest], ["4", t.statPool]].map(([num, label]) => (
               <div key={label}>
                 <div className="text-2xl font-bold">{num}</div>
                 <div className="text-white/60 text-xs">{label}</div>

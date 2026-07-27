@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     if (user.role !== "admin") {
       throw new Error("Only admins can view all reviews");
     }
-    return ReviewController.getAll();
+    return await ReviewController.getAll();
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message }, { status: 403 });
   }

@@ -203,9 +203,9 @@ function VerifyOTPContent() {
           <div className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
             <Shield className="w-7 h-7 text-white" />
           </div>
-          <h2 className="text-4xl font-bold mb-3 leading-tight whitespace-pre-line">{t.heroTitle}</h2>
+          <h2 className="text-4xl font-bold mb-3 text-white/70 leading-tight whitespace-pre-line">{t.heroTitle}</h2>
           <p className="text-white/70 text-sm leading-relaxed max-w-xs">{t.heroDesc}</p>
-        </div>
+        </div> 
       </div>
 
       {/* Right panel */}

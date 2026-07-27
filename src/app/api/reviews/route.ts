@@ -5,9 +5,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   await connectDB();
-  return ReviewController.getAproved();
+  return await ReviewController.getAproved();
 }
 export async function POST(req: Request) {
   await connectDB();
-  return ReviewController.create(req);
+  return await ReviewController.create(req);
 }

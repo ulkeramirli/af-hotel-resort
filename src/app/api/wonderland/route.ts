@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   await connectDB();
 
-  return WonderlandController.get();
+  return await WonderlandController.get();
 }
 
 export async function PATCH(req: Request) {
@@ -19,7 +19,7 @@ export async function PATCH(req: Request) {
       throw new Error("Only admin can update wonderland");
     }
 
-    return WonderlandController.update(req);
+    return await WonderlandController.update(req);
   } catch (error: any) {
     return NextResponse.json(
       {

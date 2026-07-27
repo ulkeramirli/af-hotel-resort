@@ -40,7 +40,7 @@ export class DashboardController {
     }).populate("room");
 
     const totalRevenue = confirmedRevenueBookings.reduce(
-      (sum: number, booking: { room?: { price?: number } }) => sum + (booking.room?.price || 0),
+      (sum: number, booking: { amount?: number }) => sum + (booking.amount || 0),
       0,
     );
 

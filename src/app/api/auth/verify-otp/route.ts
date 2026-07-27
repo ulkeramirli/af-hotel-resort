@@ -3,5 +3,5 @@ import { connectDB } from "@/lib/db";
 
 export async function POST(req: Request) {
   await connectDB();
-  return AuthController.verifyOTP(req);
+  return await AuthController.verifyOTP(req);
 }

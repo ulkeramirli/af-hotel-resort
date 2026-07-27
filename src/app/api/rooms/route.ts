@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     if (user.role !== "admin") {
       throw new Error("Only admin can create rooms");
     }
-    return RoomController.create(req, user);
+    return await RoomController.create(req, user);
   } catch (error: any) {
     return NextResponse.json(
       {
@@ -30,5 +30,5 @@ export async function POST(req: Request) {
 
 export async function GET() {
   await connectDB();
-  return RoomController.getAllRooms();
+  return await RoomController.getAllRooms();
 }

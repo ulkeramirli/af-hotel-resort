@@ -31,7 +31,7 @@ export async function GET(req: Request) {
     if (user.role !== "admin") {
       throw new Error("Only admin can view all bookings");
     }
-    return BookingController.getAll(req);
+    return await BookingController.getAll(req);
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message },

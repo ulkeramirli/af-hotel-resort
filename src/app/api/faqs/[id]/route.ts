@@ -9,7 +9,7 @@ export async function GET(
 ) {
   await connectDB();
   const { id } = await params;
-  return FaqController.getById(id);
+  return await FaqController.getById(id);
 }
 
 export async function PUT(
@@ -24,7 +24,7 @@ export async function PUT(
     }
     const { id } = await params;
     const body = await req.json();
-    return FaqController.update(id, body);
+    return await FaqController.update(id, body);
   } catch (error: any) {
     return NextResponse.json(
       {
@@ -48,7 +48,7 @@ export async function DELETE(
       throw new Error("Only admin can deleted FAQ");
     }
     const { id } = await params;
-    return FaqController.delete(id);
+    return await FaqController.delete(id);
   } catch (error: any) {
     return NextResponse.json(
       {

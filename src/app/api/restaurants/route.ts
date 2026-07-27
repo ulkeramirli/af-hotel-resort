@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   await connectDB();
-  return RestaurantController.getAll(req);
+  return await RestaurantController.getAll(req);
 }
 
 export async function POST(req: Request) {
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     if (user.role !== "admin") {
       throw new Error("Only admin can create restaurant");
     }
-    return RestaurantController.create(req);
+    return await RestaurantController.create(req);
   } catch (error: any) {
     return NextResponse.json(
       {

@@ -11,7 +11,7 @@ export async function GET(
 
   const { id } = await params;
 
-  return RoomTypeController.getById(id);
+  return await RoomTypeController.getById(id);
 }
 
 export async function PUT(
@@ -30,7 +30,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
-    return RoomTypeController.update(id, body);
+    return await RoomTypeController.update(id, body);
   } catch (error: any) {
     return NextResponse.json(
       {
@@ -59,7 +59,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    return RoomTypeController.delete(id);
+    return await RoomTypeController.delete(id);
   } catch (error: any) {
     return NextResponse.json(
       {

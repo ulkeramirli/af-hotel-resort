@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   await connectDB();
 
-  return RoomTypeController.getAll();
+  return await RoomTypeController.getAll();
 }
 
 export async function POST(req: Request) {
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       throw new Error("Only admin can create room type");
     }
 
-    return RoomTypeController.create(req);
+    return await RoomTypeController.create(req);
   } catch (error: any) {
     return NextResponse.json(
       {

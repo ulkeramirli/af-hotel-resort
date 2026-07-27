@@ -55,14 +55,12 @@ export default function Footer() {
 
             {/* Contact info */}
             <div className="space-y-3 pt-1">
-              {settings?.phone && (
-                <a href={`tel:${settings.phone}`} className="flex items-center gap-3 text-xs text-stone-600 hover:text-[#ff6c02] transition-colors group">
-                  <div className="w-7 h-7 rounded-full bg-[#00b5d5]/10 flex items-center justify-center group-hover:bg-[#ff6c02]/10 group-hover:scale-110 transition-all">
-                    <Phone className="w-3 h-3 text-[#00b5d5] group-hover:text-[#ff6c02] transition-colors" />
-                  </div>
-                  <span className="font-medium tracking-wide">{settings.phone}</span>
-                </a>
-              )}
+              <a href={`tel:${settings?.phone || '+994502233285'}`} className="flex items-center gap-3 text-xs text-stone-600 hover:text-[#ff6c02] transition-colors group">
+                <div className="w-7 h-7 rounded-full bg-[#00b5d5]/10 flex items-center justify-center group-hover:bg-[#ff6c02]/10 group-hover:scale-110 transition-all">
+                  <Phone className="w-3 h-3 text-[#00b5d5] group-hover:text-[#ff6c02] transition-colors" />
+                </div>
+                <span className="font-medium tracking-wide">{settings?.phone || '+994 50 223 32 85'}</span>
+              </a>
               <div className="flex items-start gap-3 text-xs text-stone-600 group">
                 <div className="w-7 h-7 rounded-full bg-[#00b5d5]/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all">
                   <MapPin className="w-3 h-3 text-[#00b5d5]" />
@@ -180,7 +178,7 @@ export default function Footer() {
                 <button
                   type="submit"
                   disabled={subStatus === 'loading'}
-                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#ff6c02] to-[#e55f00] hover:from-[#e55f00] hover:to-[#cc5500] text-white font-medium text-xs uppercase tracking-wide px-5 py-2.5 rounded-lg transition-all cursor-pointer disabled:opacity-50 shadow-md hover:shadow-lg hover:shadow-[#ff6c02]/20 hover:-translate-y-0.5 duration-300"
+                  className="w-full flex items-center justify-center gap-2 bg-linear-to-r from-[#ff6c02] to-[#e55f00] hover:from-[#e55f00] hover:to-[#cc5500] text-white font-medium text-xs uppercase tracking-wide px-5 py-2.5 rounded-lg transition-all cursor-pointer disabled:opacity-50 shadow-md hover:shadow-lg hover:shadow-[#ff6c02]/20 hover:-translate-y-0.5 duration-300"
                 >
                   {subStatus === 'loading' ? '...' : t.footer.subBtn}
                   <ArrowRight className="w-3.5 h-3.5" />

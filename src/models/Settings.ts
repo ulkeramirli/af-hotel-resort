@@ -25,5 +25,6 @@ const settingsSchema = new mongoose.Schema(
   },
 );
 
-const Settings = mongoose.models.Settings || mongoose.model("Settings", settingsSchema);
+delete mongoose.models.Settings;
+const Settings = mongoose.model("Settings", settingsSchema);
 export default Settings;

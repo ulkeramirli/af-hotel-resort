@@ -35,7 +35,7 @@ export async function PUT(
     }
     const { id } = await params;
     const body = await req.json();
-    return ReviewController.update(id, body);
+    return await ReviewController.update(id, body);
   } catch (error: any) {
     return NextResponse.json(
       {
@@ -60,7 +60,7 @@ export async function DELETE(
       throw new Error("Only admin deleted Review");
     }
     const { id } = await params;
-    return ReviewController.delete(id);
+    return await ReviewController.delete(id);
   } catch (error: any) {
     return NextResponse.json(
       {

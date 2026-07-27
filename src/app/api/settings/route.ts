@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   await connectDB();
 
-  return SettingsController.get();
+  return await SettingsController.get();
 }
 
 export async function PATCH(req: Request) {
@@ -19,7 +19,7 @@ export async function PATCH(req: Request) {
       throw new Error("Only admin can update settings");
     }
 
-    return SettingsController.update(req);
+    return await SettingsController.update(req);
   } catch (error: any) {
     return NextResponse.json(
       {

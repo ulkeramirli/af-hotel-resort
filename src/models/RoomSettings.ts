@@ -2,13 +2,14 @@ import mongoose from "mongoose";
 
 const roomSettingsSchema = new mongoose.Schema(
   {
-    tag: { type: String, default: "OTAQLAR & KOTECLƏR" },
-    title: { type: String, default: "Mükəmməl İstirahət Məkanı" },
-    subtitle: { type: String, default: "Hər zövqə uyğun rahat otaqlar" },
+    tag: { type: mongoose.Schema.Types.Mixed, default: {} },
+    title: { type: mongoose.Schema.Types.Mixed, default: {} },
+    subtitle: { type: mongoose.Schema.Types.Mixed, default: {} },
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.models.RoomSettings || mongoose.model("RoomSettings", roomSettingsSchema);
+delete mongoose.models.RoomSettings;
+export default mongoose.model("RoomSettings", roomSettingsSchema);

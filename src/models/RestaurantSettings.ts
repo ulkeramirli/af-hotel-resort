@@ -3,16 +3,16 @@ import mongoose from "mongoose";
 const restaurantSettingsSchema = new mongoose.Schema(
   {
     tag: {
-      type: String,
-      default: "",
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
     },
     title: {
-      type: String,
-      default: "",
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
     },
     subtitle: {
-      type: String,
-      default: "",
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
     },
   },
   {
@@ -20,5 +20,5 @@ const restaurantSettingsSchema = new mongoose.Schema(
   },
 );
 
-export default mongoose.models.RestaurantSettings ||
-  mongoose.model("RestaurantSettings", restaurantSettingsSchema);
+delete mongoose.models.RestaurantSettings;
+export default mongoose.model("RestaurantSettings", restaurantSettingsSchema);

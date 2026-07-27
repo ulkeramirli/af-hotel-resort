@@ -9,7 +9,7 @@ export async function GET(
 ) {
   await connectDB();
   const { id } = await params;
-  return ActivityController.getById(id);
+  return await ActivityController.getById(id);
 }
 export async function PUT(
   req: Request,
@@ -23,7 +23,7 @@ export async function PUT(
     }
     const { id } = await params;
     const body = await req.json();
-    return ActivityController.update(id, body);
+    return await ActivityController.update(id, body);
   } catch (error: any) {
     return NextResponse.json(
       {
@@ -47,7 +47,7 @@ export async function DELETE(
       throw new Error("Only admin can delete activity");
     }
     const { id } = await params;
-    return ActivityController.delete(id);
+    return await ActivityController.delete(id);
   } catch (error: any) {
     return NextResponse.json(
       {

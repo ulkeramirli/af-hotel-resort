@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   await connectDB();
-  return TicketController.getAll();
+  return await TicketController.getAll();
 }
 export async function POST(req: Request) {
   await connectDB();
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     if (user.role !== "admin") {
       throw new Error("Only admin create ticket");
     }
-    return TicketController.create(req);
+    return await TicketController.create(req);
   } catch (error: any) {
     return NextResponse.json(
       {

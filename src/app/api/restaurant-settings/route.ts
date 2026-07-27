@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   await connectDB();
-  return RestaurantSettingsController.get();
+  return await RestaurantSettingsController.get();
 }
 
 export async function PATCH(req: Request) {
@@ -15,7 +15,7 @@ export async function PATCH(req: Request) {
     if (user.role !== "admin") {
       throw new Error("Only admin can update restaurant settings");
     }
-    return RestaurantSettingsController.update(req);
+    return await RestaurantSettingsController.update(req);
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message },

@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   await connectDB();
-  return AboutController.get();
+  return await AboutController.get();
 }
 
 export async function PATCH(req: Request) {
@@ -26,7 +26,7 @@ export async function PATCH(req: Request) {
         },
       );
     }
-    return AboutController.update(req);
+    return await AboutController.update(req);
   } catch (error: any) {
     return NextResponse.json(
       {

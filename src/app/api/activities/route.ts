@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   await connectDB();
-  return ActivityController.getAll(req);
+  return await ActivityController.getAll(req);
 }
 export async function POST(req: Request) {
   await connectDB();
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     if (user.role !== "admin") {
       throw new Error("Only admin can create activity");
     }
-    return ActivityController.create(req);
+    return await ActivityController.create(req);
   } catch (error: any) {
     return NextResponse.json(
       {

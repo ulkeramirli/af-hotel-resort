@@ -9,7 +9,7 @@ export async function GET(
 ) {
   await connectDB();
   const { id } = await params;
-  return RestaurantController.getById(id);
+  return await RestaurantController.getById(id);
 }
 
 export async function PUT(
@@ -24,7 +24,7 @@ export async function PUT(
     }
     const { id } = await params;
     const body = await req.json();
-    return RestaurantController.update(id, body);
+    return await RestaurantController.update(id, body);
   } catch (error: any) {
     return NextResponse.json(
       {
@@ -49,7 +49,7 @@ export async function DELETE(
       throw new Error("Only admin can delete restaurant");
     }
     const { id } = await params;
-    return RestaurantController.delete(id);
+    return await RestaurantController.delete(id);
   } catch (error: any) {
     return NextResponse.json(
       {

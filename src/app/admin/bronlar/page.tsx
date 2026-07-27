@@ -171,13 +171,13 @@ export default function AdminBookingsPage() {
             <table className="w-full text-left text-sm min-w-[900px]">
               <thead>
                 <tr className="border-b border-stone-100 text-xs text-stone-400 uppercase">
-                  <th className="pb-3">Qonaq</th>
-                  <th className="pb-3">Əlaqə</th>
-                  <th className="pb-3">Otaq</th>
-                  <th className="pb-3">Məbləğ</th>
-                  <th className="pb-3">Qeyd</th>
-                  <th className="pb-3">Tarix</th>
-                  <th className="pb-3 text-right">Status & Əməliyyat</th>
+                  <th className="pb-3 px-3 font-semibold">Qonaq</th>
+                  <th className="pb-3 px-3 font-semibold">Əlaqə</th>
+                  <th className="pb-3 px-3 font-semibold">Otaq</th>
+                  <th className="pb-3 px-3 font-semibold">Məbləğ</th>
+                  <th className="pb-3 px-3 font-semibold">Qeyd</th>
+                  <th className="pb-3 px-3 font-semibold">Tarix</th>
+                  <th className="pb-3 px-3 text-right font-semibold">Status & Əməliyyat</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-50">
@@ -187,47 +187,51 @@ export default function AdminBookingsPage() {
                   </tr>
                 ) : filtered.map((b) => (
                   <tr key={b._id} className="hover:bg-stone-50/50">
-                    <td className="py-4 flex items-center gap-2">
-                      <User className="w-3.5 h-3.5 text-stone-400" />
-                      <span className="font-semibold">{b.guestName}</span>
+                    <td className="py-4 px-3 align-top">
+                      <div className="flex items-center gap-2">
+                        <User className="w-3.5 h-3.5 text-stone-400 flex-shrink-0" />
+                        <span className="font-semibold truncate max-w-[120px]" title={b.guestName}>{b.guestName}</span>
+                      </div>
                     </td>
-                    <td className="py-4 text-xs text-stone-500">
-                      {b.email}<br />
-                      <span className="text-[10px] text-stone-400">{b.phone}</span>
+                    <td className="py-4 px-3 align-top text-xs text-stone-500">
+                      <div className="truncate max-w-[140px]" title={b.email}>{b.email}</div>
+                      <div className="text-[10px] text-stone-400 mt-0.5">{b.phone}</div>
                     </td>
-                    <td className="py-4">
+                    <td className="py-4 px-3 align-top">
                       {b.room ? (
                         <div>
-                          <p className="font-medium text-[#1e325c]">{loc(b.room.name)}</p>
-                          <p className="text-[10px] text-stone-400">{loc(b.room.type?.name || b.room.type)}</p>
+                          <p className="font-medium text-[#1e325c] truncate max-w-[140px]" title={loc(b.room.name)}>{loc(b.room.name)}</p>
+                          <p className="text-[10px] text-stone-400 truncate max-w-[140px]" title={loc(b.room.type?.name || b.room.type)}>{loc(b.room.type?.name || b.room.type)}</p>
                         </div>
                       ) : (
                         <span className="text-xs text-stone-400">Silinmiş otaq</span>
                       )}
                     </td>
-                    <td className="py-4 text-sm font-bold text-[#1e325c]">
+                    <td className="py-4 px-3 align-top text-sm font-bold text-[#1e325c] whitespace-nowrap">
                       {b.amount} {b.currency || "AZN"}
-                      <div className="text-[10px] text-stone-400 font-normal">
+                      <div className="text-[10px] text-stone-400 font-normal mt-0.5">
                         {b.paymentStatus === "paid" ? "Ödənilib" : b.paymentStatus === "refunded" ? "Geri qaytarılıb" : b.paymentStatus === "failed" ? "Ödəniş Uğursuz" : "Gözləyir"}
                       </div>
                     </td>
-                    <td className="py-4 text-xs text-stone-500 group">
-                      <div className="flex items-center gap-2">
+                    <td className="py-4 px-3 align-top text-xs text-stone-500 group">
+                      <div className="flex items-start gap-2">
                         <span className="truncate max-w-[120px]" title={b.notes}>{b.notes || "-"}</span>
                         <button 
                           onClick={() => handleEditNotes(b._id, b.notes || "", b.status)}
-                          className="p-1.5 text-stone-400 hover:text-[#00b5d5] bg-stone-100 hover:bg-blue-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                          className="p-1.5 text-stone-400 hover:text-[#00b5d5] bg-stone-100 hover:bg-blue-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all -mt-1"
                           title="Qeydi sürətli redaktə et"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </td>
-                    <td className="py-4 text-xs text-stone-500 flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {new Date(b.checkIn).toLocaleDateString("az-AZ")} → {new Date(b.checkOut).toLocaleDateString("az-AZ")}
+                    <td className="py-4 px-3 align-top text-xs text-stone-500">
+                      <div className="flex items-center gap-1 whitespace-nowrap">
+                        <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
+                        {new Date(b.checkIn).toLocaleDateString("az-AZ")} → {new Date(b.checkOut).toLocaleDateString("az-AZ")}
+                      </div>
                     </td>
-                    <td className="py-4 text-right">
+                    <td className="py-4 px-3 align-top text-right">
                       <div className="flex items-center justify-end gap-2">
                         <select
                           value={b.status}

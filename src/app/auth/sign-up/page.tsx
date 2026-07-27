@@ -34,11 +34,11 @@ type LangType = "az" | "en" | "ru";
 
 const translations = {
   az: {
-    heroTitle: "Bizə qoşulun.\nXüsusi olun.",
-    heroDesc: "Hesab açın və bron endirimlərindən, erkən check-in üstünlüklərindən faydalanın.",
-    benefit1: "Sürətli bron prosesi",
-    benefit2: "Sevimli otaqlar siyahısı",
-    benefit3: "Eksklüziv üzv endirimləri",
+    heroTitle: "İstirahətinizi İndi\nPlanlaşdırın",
+    heroDesc: "AF Hotel-də qeydiyyatdan keçərək xüsusi təkliflərdən və Akvapark əyləncələrindən ilk siz xəbərdar olun.",
+    benefit1: "Otaqların asan və sürətli bronu",
+    benefit2: "Akvapark və çimərlik üçün xüsusi endirimlər",
+    benefit3: "Restoranlarda eksklüziv təkliflər",
     createAccount: "Hesab yarat",
     joinFamily: "AF Hotel ailəsinə qoşulun",
     googleBtn: "Google ilə davam et",
@@ -61,11 +61,11 @@ const translations = {
     goToSignIn: "Daxil ol"
   },
   ru: {
-    heroTitle: "Присоединяйтесь к нам.\nБудьте особенными.",
-    heroDesc: "Создайте аккаунт и пользуйтесь скидками на бронирование и привилегиями раннего заезда.",
-    benefit1: "Быстрый процесс бронирования",
-    benefit2: "Список избранных номеров",
-    benefit3: "Эксклюзивные скидки для участников",
+    heroTitle: "Спланируйте свой\nотдых сейчас",
+    heroDesc: "Зарегистрируйтесь в AF Hotel и первыми узнавайте о специальных предложениях и развлечениях в Аквапарке.",
+    benefit1: "Простое и быстрое бронирование номеров",
+    benefit2: "Специальные скидки на аквапарк и пляж",
+    benefit3: "Эксклюзивные предложения в ресторанах",
     createAccount: "Создать аккаунт",
     joinFamily: "Присоединяйтесь к семье AF Hotel",
     googleBtn: "Продолжить через Google",
@@ -88,11 +88,11 @@ const translations = {
     goToSignIn: "Войти"
   },
   en: {
-    heroTitle: "Join us.\nBe special.",
-    heroDesc: "Create an account and enjoy booking discounts and early check-in privileges.",
-    benefit1: "Fast booking process",
-    benefit2: "Favorite rooms list",
-    benefit3: "Exclusive member discounts",
+    heroTitle: "Plan Your Vacation\nRight Now",
+    heroDesc: "Register at AF Hotel and be the first to know about special offers and Aqua Park entertainment.",
+    benefit1: "Easy and fast room booking",
+    benefit2: "Special discounts for the Aqua Park and beach",
+    benefit3: "Exclusive offers in restaurants",
     createAccount: "Create account",
     joinFamily: "Join the AF Hotel family",
     googleBtn: "Continue with Google",
@@ -193,7 +193,7 @@ export default function SignUpPage() {
       {/* Левая панель (Компьютерная версия) */}
       <div className="hidden lg:flex flex-1 relative overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1200&q=85"
+          src="/AF-hero.jpg"
           alt="AF Hotel Resort"
           fill
           className="object-cover"

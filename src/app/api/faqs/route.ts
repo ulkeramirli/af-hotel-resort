@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   await connectDB();
-  return FaqController.getAll();
+  return await FaqController.getAll();
 }
 export async function POST(req: Request) {
   await connectDB();
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     if (user.role !== "admin") {
       throw new Error("Only admin create FAQ");
     }
-    return FaqController.create(req);
+    return await FaqController.create(req);
   } catch (error: any) {
     return NextResponse.json(
       {

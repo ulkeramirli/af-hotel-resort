@@ -18,7 +18,7 @@ export async function GET(req: Request) {
         },
       );
     }
-    return DashboardController.getStats();
+    return await DashboardController.getStats();
   } catch (error: any) {
     return NextResponse.json(
       {

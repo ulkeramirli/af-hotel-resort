@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   await connectDB();
-  return RoomSettingsController.getSettings();
+  return await RoomSettingsController.getSettings();
 }
 
 export async function PATCH(req: Request) {
@@ -15,7 +15,7 @@ export async function PATCH(req: Request) {
     if (user.role !== "admin") {
       throw new Error("Only admin can update room settings");
     }
-    return RoomSettingsController.updateSettings(req);
+    return await RoomSettingsController.updateSettings(req);
   } catch (error: any) {
     return NextResponse.json(
       {

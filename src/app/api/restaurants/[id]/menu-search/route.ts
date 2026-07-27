@@ -19,7 +19,7 @@ export async function GET(
       );
     }
 
-    return RestaurantController.searchMenu(id, query);
+    return await RestaurantController.searchMenu(id, query);
   } catch (error: any) {
     return NextResponse.json(
       {

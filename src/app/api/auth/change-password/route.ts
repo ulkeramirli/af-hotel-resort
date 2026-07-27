@@ -3,5 +3,5 @@ import { connectDB } from "@/lib/db";
 
 export async function PATCH(req: Request) {
   await connectDB();
-  return AuthController.changePassword(req);
+  return await AuthController.changePassword(req);
 }
