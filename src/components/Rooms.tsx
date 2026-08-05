@@ -218,6 +218,12 @@ export default function Rooms() {
   const l = (language as "az" | "en" | "ru") || "az";
   const c = content[l];
 
+  const loc = useCallback((field: any) => {
+    if (!field) return "";
+    if (typeof field === "string") return field;
+    return field[l] || field.az || "";
+  }, [l]);
+
   const [rooms, setRooms] = useState<PublicRoom[]>([]);
   const [types, setTypes] = useState<RoomType[]>([]);
   const [settings, setSettings] = useState<RoomSettings | null>(null);
@@ -351,14 +357,14 @@ export default function Rooms() {
             <div className="flex items-center gap-4 justify-center">
               <div className="w-8 h-px bg-[#00b5d5]" />
               <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5]">
-                {settings?.tag || c.tag}
+                {loc(settings?.tag) || c.tag}
               </span>
               <div className="w-8 h-px bg-[#00b5d5]" />
             </div>
             <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight">
-              <TextReveal text={settings?.title || c.title} delay={0.1} />
+              <TextReveal text={loc(settings?.title) || c.title} delay={0.1} />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto wrap-break-word whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: settings?.subtitle || c.subtitle }} />
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto wrap-break-word whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
           </motion.div>
 
           <motion.div
