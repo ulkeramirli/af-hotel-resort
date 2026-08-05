@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
   /* Brand colors */
@@ -17,6 +17,7 @@
 }
 
 html, body {
+  overflow-x: hidden;
   background-color: var(--color-hotel-light);
   color: var(--color-hotel-dark);
   font-family: var(--font-sans);
@@ -66,3 +67,4 @@ html, body {
     background: #94a3b8;
   }
 }
+
