@@ -297,6 +297,7 @@ export async function updateRoomSettings(
   }
   if (!res.ok || !data.success)
     throw new Error(data.message || "Tənziməmələr yenilənmədi");
+  if (typeof window !== 'undefined') roomSettingsCache = null;
   return data.settings;
 }
 
@@ -431,6 +432,7 @@ export async function createRoomType(name: any) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Kateqoriya yaradılmadı");
+  if (typeof window !== 'undefined') roomTypesCache = null;
   return data;
 }
 
@@ -443,6 +445,7 @@ export async function updateRoomType(id: string, name: any) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Kateqoriya yenilənmədi");
+  if (typeof window !== 'undefined') roomTypesCache = null;
   return data;
 }
 
@@ -454,6 +457,7 @@ export async function deleteRoomType(id: string) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Kateqoriya silinmədi");
+  if (typeof window !== 'undefined') roomTypesCache = null;
   return data;
 }
 
@@ -486,6 +490,7 @@ export async function createActivity(payload: Partial<Activity>) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Fəaliyyət yaradılmadı");
+  if (typeof window !== 'undefined') activitiesCache = null;
   return data;
 }
 
@@ -498,6 +503,7 @@ export async function updateActivity(id: string, payload: Partial<Activity>) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Fəaliyyət yenilənmədi");
+  if (typeof window !== 'undefined') activitiesCache = null;
   return data;
 }
 
@@ -509,6 +515,7 @@ export async function deleteActivity(id: string) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Fəaliyyət silinmədi");
+  if (typeof window !== 'undefined') activitiesCache = null;
   return data;
 }
 
@@ -538,6 +545,7 @@ export async function createActivityCategory(
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Kateqoriya yaradılmadı");
+  if (typeof window !== 'undefined') activityCategoriesCache = null;
   return data;
 }
 
@@ -553,6 +561,7 @@ export async function updateActivityCategory(
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Kateqoriya yenilənmədi");
+  if (typeof window !== 'undefined') activityCategoriesCache = null;
   return data;
 }
 
@@ -564,6 +573,7 @@ export async function deleteActivityCategory(id: string) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Kateqoriya silinmədi");
+  if (typeof window !== 'undefined') activityCategoriesCache = null;
   return data;
 }
 
@@ -591,6 +601,7 @@ export async function updateActivitySettings(
   const data = await res.json();
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yenilənmədi");
+  if (typeof window !== 'undefined') activitySettingsCache = null;
   return data.settings;
 }
 
@@ -732,6 +743,7 @@ export async function createFaq(payload: Partial<Faq>) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Sual yaradılmadı");
+  if (typeof window !== 'undefined') faqsCache = null;
   return data;
 }
 
@@ -744,6 +756,7 @@ export async function updateFaq(id: string, payload: Partial<Faq>) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Sual yenilənmədi");
+  if (typeof window !== 'undefined') faqsCache = null;
   return data;
 }
 
@@ -755,6 +768,7 @@ export async function deleteFaq(id: string) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Sual silinmədi");
+  if (typeof window !== 'undefined') faqsCache = null;
   return data;
 }
 
@@ -779,6 +793,7 @@ export async function createTicket(payload: Partial<Ticket>) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Bilet yaradılmadı");
+  if (typeof window !== 'undefined') ticketsCache = null;
   return data;
 }
 
@@ -791,6 +806,7 @@ export async function updateTicket(id: string, payload: Partial<Ticket>) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Bilet yenilənmədi");
+  if (typeof window !== 'undefined') ticketsCache = null;
   return data;
 }
 
@@ -802,6 +818,7 @@ export async function deleteTicket(id: string) {
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.message || "Bilet silinmədi");
+  if (typeof window !== 'undefined') ticketsCache = null;
   return data;
 }
 
@@ -832,6 +849,7 @@ export async function updateSettings(payload: Partial<Settings>) {
   const data = await res.json();
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yadda saxlanılmadı");
+  if (typeof window !== 'undefined') settingsCache = null;
   return data;
 }
 
@@ -861,6 +879,7 @@ export async function updateAbout(payload: Partial<About>) {
   const data = await res.json();
   if (!data.success)
     throw new Error(data.message || "Haqqımızda yadda saxlanılmadı");
+  if (typeof window !== 'undefined') aboutCache = null;
   return data;
 }
 
