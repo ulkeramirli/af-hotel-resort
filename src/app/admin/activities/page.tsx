@@ -82,7 +82,7 @@ export default function AdminActivitiesPage() {
       setActivities(aData);
       setCategories(cData);
       if (sData) {
-        const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
+        const parseLoc = (val: any) => typeof val === 'object' && val !== null ? val : { az: val||"", en: val||"", ru: val||"" };
         setSettingsForm({
           tag: parseLoc(sData.tag),
           title: parseLoc(sData.title),
@@ -146,7 +146,7 @@ export default function AdminActivitiesPage() {
 
   const startEditActivity = (activity: Activity) => {
     setEditActivityId(activity._id);
-    const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
+    const parseLoc = (val: any) => typeof val === 'object' && val !== null ? val : { az: val||"", en: val||"", ru: val||"" };
     setActivityForm({
       title: parseLoc(activity.title),
       category: typeof activity.category === 'object' ? (activity.category as any)._id : activity.category,
@@ -191,7 +191,7 @@ export default function AdminActivitiesPage() {
 
   const startEditCategory = (cat: ActivityCategory) => {
     setEditCategoryId(cat._id);
-    const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
+    const parseLoc = (val: any) => typeof val === 'object' && val !== null ? val : { az: val||"", en: val||"", ru: val||"" };
     setCategoryForm({
       name: parseLoc(cat.name),
       description: parseLoc(cat.description),

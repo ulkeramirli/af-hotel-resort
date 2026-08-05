@@ -75,7 +75,7 @@ export default function AdminWonderlandPage() {
   const [editGameIdx, setEditGameIdx] = useState<number | null>(null);
   const [activeGameBigIdx, setActiveGameBigIdx] = useState<number | null>(null);
 
-  const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
+  const parseLoc = (val: any) => typeof val === 'object' && val !== null ? val : { az: val||"", en: val||"", ru: val||"" };
 
   const loadData = async () => {
     try {

@@ -83,7 +83,7 @@ export default function DashboardPage() {
   const filteredBookings = (stats?.recentBookings || []).filter((b) => {
     const matchFilter = activeFilter === "Hamısı" || b.status === statusMap[activeFilter];
     const matchSearch =
-      b.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (b.guestName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (typeof b.room?.name === 'object' ? ((b.room.name as any)?.az || "") : (b.room?.name || "")).toLowerCase().includes(searchQuery.toLowerCase());
     return matchFilter && matchSearch;
   });

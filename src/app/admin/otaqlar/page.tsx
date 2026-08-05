@@ -95,9 +95,9 @@ export default function AdminRoomsPage() {
       setRoomTypes(tData);
       if (sData) {
         setSettingsForm({
-          tag: typeof sData.tag === 'object' ? sData.tag : { az: sData.tag, en: sData.tag, ru: sData.tag },
-          title: typeof sData.title === 'object' ? sData.title : { az: sData.title, en: sData.title, ru: sData.title },
-          subtitle: typeof sData.subtitle === 'object' ? sData.subtitle : { az: sData.subtitle, en: sData.subtitle, ru: sData.subtitle }
+          tag: typeof sData.tag === 'object' && sData.tag !== null ? sData.tag : { az: sData.tag, en: sData.tag, ru: sData.tag },
+          title: typeof sData.title === 'object' && sData.title !== null ? sData.title : { az: sData.title, en: sData.title, ru: sData.title },
+          subtitle: typeof sData.subtitle === 'object' && sData.subtitle !== null ? sData.subtitle : { az: sData.subtitle, en: sData.subtitle, ru: sData.subtitle }
         });
       }
       if (tData.length > 0) {
@@ -178,15 +178,15 @@ export default function AdminRoomsPage() {
     setEditRoomId(room._id);
     let amAz = "", amEn = "", amRu = "";
     if (Array.isArray(room.amenities)) {
-      amAz = room.amenities.map((a:any) => typeof a === 'object' ? a.az : a).filter(Boolean).join(", ");
-      amEn = room.amenities.map((a:any) => typeof a === 'object' ? a.en : a).filter(Boolean).join(", ");
-      amRu = room.amenities.map((a:any) => typeof a === 'object' ? a.ru : a).filter(Boolean).join(", ");
+      amAz = room.amenities.map((a:any) => typeof a === 'object' && a !== null ? a.az : a).filter(Boolean).join(", ");
+      amEn = room.amenities.map((a:any) => typeof a === 'object' && a !== null ? a.en : a).filter(Boolean).join(", ");
+      amRu = room.amenities.map((a:any) => typeof a === 'object' && a !== null ? a.ru : a).filter(Boolean).join(", ");
     }
     setRoomForm({
       ...emptyRoomForm,
-      name: typeof room.name === 'object' ? room.name : { az: room.name, en: room.name, ru: room.name },
+      name: typeof room.name === 'object' && room.name !== null ? room.name : { az: room.name, en: room.name, ru: room.name },
       type: room.type ? (typeof room.type === 'object' ? (room.type as any)._id : room.type) : "",
-      description: typeof room.description === 'object' ? room.description : { az: room.description, en: room.description, ru: room.description },
+      description: typeof room.description === 'object' && room.description !== null ? room.description : { az: room.description, en: room.description, ru: room.description },
       price: room.price,
       priceUsd: room.priceUsd || 0,
       priceEur: room.priceEur || 0,
@@ -197,8 +197,8 @@ export default function AdminRoomsPage() {
       beds: room.beds || 1,
       baths: room.baths || 1,
       sqft: room.sqft || 350,
-      rulesCheckIn: typeof room.rulesCheckIn === 'object' ? room.rulesCheckIn : { az: room.rulesCheckIn||"", en: room.rulesCheckIn||"", ru: room.rulesCheckIn||"" },
-      rulesCheckOut: typeof room.rulesCheckOut === 'object' ? room.rulesCheckOut : { az: room.rulesCheckOut||"", en: room.rulesCheckOut||"", ru: room.rulesCheckOut||"" },
+      rulesCheckIn: typeof room.rulesCheckIn === 'object' && room.rulesCheckIn !== null ? room.rulesCheckIn : { az: room.rulesCheckIn||"", en: room.rulesCheckIn||"", ru: room.rulesCheckIn||"" },
+      rulesCheckOut: typeof room.rulesCheckOut === 'object' && room.rulesCheckOut !== null ? room.rulesCheckOut : { az: room.rulesCheckOut||"", en: room.rulesCheckOut||"", ru: room.rulesCheckOut||"" },
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -233,7 +233,7 @@ export default function AdminRoomsPage() {
 
   const startEditType = (type: RoomType) => {
     setEditTypeId(type._id);
-    setTypeFormName(typeof type.name === 'object' ? type.name : { az: type.name, en: type.name, ru: type.name } as any);
+    setTypeFormName(typeof type.name === 'object' && type.name !== null ? type.name : { az: type.name, en: type.name, ru: type.name } as any);
   };
 
   const handleDeleteType = async (id: string) => {

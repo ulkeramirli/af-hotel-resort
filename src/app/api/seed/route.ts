@@ -12,6 +12,7 @@ export async function GET() {
 
   try {
     // 1. Wipe collections
+    return NextResponse.json({ success: false, message: "Seeding is disabled to protect real data" });
     await RoomType.deleteMany({});
     await Room.deleteMany({});
     await ActivityCategory.deleteMany({});

@@ -80,7 +80,7 @@ export default function AdminRestaurantsPage() {
   const [settingsForm, setSettingsForm] = useState<any>(emptySettings);
   const [savingSettings, setSavingSettings] = useState(false);
 
-  const parseLoc = (val: any) => typeof val === 'object' ? val : { az: val||"", en: val||"", ru: val||"" };
+  const parseLoc = (val: any) => typeof val === 'object' && val !== null ? val : { az: val||"", en: val||"", ru: val||"" };
 
   const loadData = async () => {
     try {
