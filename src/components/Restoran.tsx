@@ -210,7 +210,7 @@ export default function Restoran() {
             transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
             className="flex justify-center w-full mt-4"
           >
-            <div className="flex flex-row overflow-x-auto no-scrollbar snap-x snap-mandatory gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
+            <div className="flex flex-row flex-wrap justify-center gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
               {restaurants.map((r, i) => {
                 const isActive = activeRest === i;
                 const IconComponent = getCategoryIcon(loc(r.name));
@@ -218,7 +218,7 @@ export default function Restoran() {
                   <button
                     key={i}
                     onClick={() => handleRestaurantChange(i)}
-                    className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer flex-1 shrink-0 snap-center min-w-[140px] md:min-w-0 ${
+                    className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer flex-1 shrink-0 min-w-[140px] md:min-w-0 ${
                       isActive
                         ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
                         : "hover:bg-white/60 border border-transparent"
@@ -349,7 +349,7 @@ export default function Restoran() {
                 </div>
 
                 {/* Yeməklər */}
-                <div className="max-h-[580px] overflow-y-auto pr-2 space-y-3.5 scrollbar-thin scrollbar-thumb-stone-200/80">
+                <div className="space-y-3.5">
                   {filteredItems.length > 0 ? (
                     <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <AnimatePresence mode="popLayout">
