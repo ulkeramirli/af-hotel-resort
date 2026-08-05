@@ -210,7 +210,7 @@ export default function Restoran() {
             transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
             className="flex justify-center w-full mt-4"
           >
-            <div className="flex flex-col md:flex-row gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
+            <div className="flex flex-row overflow-x-auto no-scrollbar snap-x snap-mandatory gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
               {restaurants.map((r, i) => {
                 const isActive = activeRest === i;
                 const IconComponent = getCategoryIcon(loc(r.name));
@@ -218,7 +218,7 @@ export default function Restoran() {
                   <button
                     key={i}
                     onClick={() => handleRestaurantChange(i)}
-                    className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer flex-1 ${
+                    className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer flex-1 shrink-0 snap-center min-w-[140px] md:min-w-0 ${
                       isActive
                         ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
                         : "hover:bg-white/60 border border-transparent"
@@ -349,7 +349,7 @@ export default function Restoran() {
                 </div>
 
                 {/* Yeməklər */}
-                <div className="max-h-145 overflow-y-auto pr-2 space-y-3.5 scrollbar-thin scrollbar-thumb-stone-200/80">
+                <div className="max-h-[580px] overflow-y-auto pr-2 space-y-3.5 scrollbar-thin scrollbar-thumb-stone-200/80">
                   {filteredItems.length > 0 ? (
                     <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <AnimatePresence mode="popLayout">
@@ -363,7 +363,7 @@ export default function Restoran() {
                             transition={{ duration: 0.25, delay: i * 0.05 }}
                           >
                             <TiltCard tiltAmount={3}>
-                            <div className="bg-white p-3.5 rounded-2xl border border-stone-100/80 shadow-2xs hover:shadow-md hover:border-stone-200/60 transition-all duration-300 flex justify-between items-center gap-4 min-h-27.5">
+                            <div className="bg-white p-3.5 rounded-2xl border border-stone-100/80 shadow-2xs hover:shadow-md hover:border-stone-200/60 transition-all duration-300 flex justify-between items-center gap-4 min-h-[110px]">
                             <div className="space-y-1.5 flex-1">
                               <div className="flex flex-col gap-0.5">
                                 <h4 className="font-semibold text-xs md:text-sm text-[#1e325c] leading-snug">
