@@ -154,6 +154,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Lang>("az");
 
   useEffect(() => {
+
     const params = new URLSearchParams(window.location.search);
     const langParam = params.get('lang') as Lang | null;
 
@@ -168,6 +169,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       } else {
         localStorage.setItem(LANG_KEY, "az");
       }
+
     }
   }, []);
 
