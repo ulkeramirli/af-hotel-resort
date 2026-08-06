@@ -165,6 +165,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       if (saved && ["az", "ru", "en"].includes(saved)) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setLanguageState(saved);
+      } else {
+        localStorage.setItem(LANG_KEY, "az");
       }
     }
   }, []);
