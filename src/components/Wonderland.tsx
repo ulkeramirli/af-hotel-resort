@@ -81,7 +81,7 @@ export default function Wonderland() {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-stone-100 to-transparent -translate-x-full group-hover:animate-shimmer" />
               <Wand2 className="w-4 h-4 text-[#ff6c02] animate-pulse" />
               <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#1e325c]">
-                {(wonderland?.tag as any)?.[l] || (wonderland?.tag as any)?.name || wonderland?.tag || "WONDERLAND"}
+                {typeof wonderland?.tag === 'object' ? (wonderland.tag[l] || wonderland.tag.az || "WONDERLAND") : (wonderland?.tag || "WONDERLAND")}
               </span>
             </div>
           </ScrollReveal>
@@ -108,7 +108,7 @@ export default function Wonderland() {
           </ScrollReveal>
 
           <ScrollReveal type="zoomIn" delay={0.3}>
-            <div className="text-sm md:text-base text-stone-500 font-light leading-relaxed prose prose-stone max-w-2xl mx-auto [&>p]:mb-2 mt-4" dangerouslySetInnerHTML={{ __html: (wonderland?.description as any)?.[l] || (wonderland?.description as any)?.name || wonderland?.description || "Description" }} />
+            <div className="text-sm md:text-base text-stone-500 font-light leading-relaxed prose prose-stone max-w-2xl mx-auto [&>p]:mb-2 mt-4" dangerouslySetInnerHTML={{ __html: typeof wonderland?.description === 'object' ? (wonderland.description[l] || wonderland.description.az || "Description") : (wonderland?.description || "Description") }} />
           </ScrollReveal>
         </div>
 
@@ -245,7 +245,7 @@ export default function Wonderland() {
                         <div className="absolute -top-4 right-8 w-12 h-12 bg-[#ff6c02] rounded-2xl rotate-12 flex items-center justify-center text-white shadow-[0_8px_20px_rgba(255,108,2,0.4)] group-hover:rotate-[24deg] group-hover:scale-110 transition-all duration-500">
                           <Ticket className="w-6 h-6" />
                         </div>
-                        <div className="text-sm md:text-base text-stone-500 font-medium leading-relaxed prose prose-stone [&>p]:mb-0 pt-2" dangerouslySetInnerHTML={{ __html: (game.description as any)?.[l] || (game as any)?.description || "Desc" }} />
+                        <div className="text-sm md:text-base text-stone-500 font-medium leading-relaxed prose prose-stone [&>p]:mb-0 pt-2" dangerouslySetInnerHTML={{ __html: typeof game.description === 'object' ? (game.description[l] || game.description.az || "Desc") : (game.description || "Desc") }} />
                       </div>
 
                     </div>
@@ -279,7 +279,7 @@ export default function Wonderland() {
                   
                   <div className="flex justify-between items-center px-4 py-2 border-l-2 border-dashed border-stone-200 group-hover/ticket:border-[#ff6c02]/40 ml-3 transition-colors">
                     <span className="text-sm font-medium text-stone-700 pr-4">
-                      {(ticket.name as any)?.[l] || (ticket.name as any)?.az || ticket.name || "Ticket"}
+                      {typeof ticket.name === 'object' ? (ticket.name[l] || ticket.name.az || "Ticket") : (ticket.name || "Ticket")}
                     </span>
                     <span className="text-sm md:text-base font-bold text-[#ff6c02] whitespace-nowrap">
                       {ticket.price}

@@ -1,26 +1,24 @@
-'use client';
+import { Metadata } from 'next';
+import AboutPageClient from './AboutPageClient';
 
-import AboutComponent from "@/components/About";
-import PageHero from "@/components/PageHero";
-import { useLanguage } from "@/contexts/LanguageContext";
+export const metadata: Metadata = {
+  title: 'Haqqımızda | AF Hotel, Aqua Park & AF Park Complex',
+  description: 'AF Hotel & Aqua Park haqqında məlumat. Azərbaycanın ən böyük ailəvi istirahət və əyləncə mərkəzi.',
+  openGraph: {
+    title: 'Haqqımızda | AF Hotel & Aqua Park',
+    description: 'AF Hotel & Aqua Park haqqında məlumat. Azərbaycanın ən böyük ailəvi istirahət və əyləncə mərkəzi.',
+    url: 'https://afhotel.az/about',
+    images: [
+      {
+        url: '/AF-hero.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'AF Hotel & Aqua Park Haqqımızda',
+      },
+    ],
+  },
+};
 
 export default function AboutPage() {
-  const { language } = useLanguage();
-  const l = language;
-  const titles = { az: 'Haqqımızda', en: 'About Us', ru: 'О нас' };
-  const subs = { az: 'AF HOTEL & AQUA PARK KOMPLEKSİ', en: 'AF HOTEL & AQUA PARK COMPLEX', ru: 'AF HOTEL & AQUA PARK КОМПЛЕКС' };
-  return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
-      <PageHero
-        title={titles[l]}
-        subtitle={subs[l]}
-        imagePath="/AF-aqua.jpg"
-        variant="about"
-        imageClassName="object-cover object-center"
-      />
-      <div className="py-12">
-        <AboutComponent />
-      </div>
-    </div>
-  );
+  return <AboutPageClient />;
 }

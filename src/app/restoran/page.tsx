@@ -1,25 +1,24 @@
-'use client';
+import { Metadata } from 'next';
+import RestoranPageClient from './RestoranPageClient';
 
-import RestoranComponent from "@/components/Restoran";
-import PageHero from "@/components/PageHero";
-import { useLanguage } from "@/contexts/LanguageContext";
+export const metadata: Metadata = {
+  title: 'Restoranlar və Barlar | AF Hotel Novxanı',
+  description: 'AF Hotel-in restoranlarında Azərbaycan, Avropa və Gürcü mətbəxinin ən dadlı təamlarını dada, barlarında dincələ bilərsiniz.',
+  openGraph: {
+    title: 'Restoranlar və Barlar | AF Hotel & Aqua Park',
+    description: 'AF Hotel-in restoranlarında Azərbaycan, Avropa və Gürcü mətbəxinin ən dadlı təamlarını dada, barlarında dincələ bilərsiniz.',
+    url: 'https://afhotel.az/restoran',
+    images: [
+      {
+        url: '/AF-hotel.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Restoranlar və Barlar - AF Hotel Novkhani',
+      },
+    ],
+  },
+};
 
 export default function RestoranPage() {
-  const { language } = useLanguage();
-  const l = language;
-  const titles = { az: 'Restoranlar', en: 'Restaurants', ru: 'Рестораны' };
-  const subs = { az: 'LƏZİZ MƏTBƏX & MÜKƏMMƏL XİDMƏT', en: 'FINE DINING & PERFECT SERVICE', ru: 'ИЗЫСКАННАЯ КУХНЯ & ПРЕМИУМ СЕРВИС' };
-  return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
-      <PageHero
-        title={titles[l]}
-        subtitle={subs[l]}
-        imagePath="/AF-hotel.jpg"
-        variant="restoran"
-      />
-      <div className="py-12">
-        <RestoranComponent />
-      </div>
-    </div>
-  );
+  return <RestoranPageClient />;
 }

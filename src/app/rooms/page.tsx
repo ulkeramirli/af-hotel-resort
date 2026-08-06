@@ -1,25 +1,24 @@
-'use client';
+import { Metadata } from 'next';
+import RoomsPageClient from './RoomsPageClient';
 
-import RoomsComponent from "@/components/Rooms";
-import PageHero from "@/components/PageHero";
-import { useLanguage } from "@/contexts/LanguageContext";
+export const metadata: Metadata = {
+  title: 'Otaqlar və Koteclər | AF Hotel & Aqua Park Resort',
+  description: 'AF Hotel & Aqua Park-da rahat otaqlar və koteclər. Ailəvi istirahət üçün dəniz mənzərəli nömrələr və lüks koteclər sərfəli qiymətlərlə.',
+  openGraph: {
+    title: 'Otaqlar və Koteclər | AF Hotel & Aqua Park',
+    description: 'AF Hotel & Aqua Park-da rahat otaqlar və koteclər. Ailəvi istirahət üçün dəniz mənzərəli nömrələr və lüks koteclər sərfəli qiymətlərlə.',
+    url: 'https://afhotel.az/rooms',
+    images: [
+      {
+        url: '/AF-hotel.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Otaqlar və Koteclər - AF Hotel',
+      },
+    ],
+  },
+};
 
 export default function RoomsPage() {
-  const { language } = useLanguage();
-  const l = language;
-  const titles = { az: 'Otaqlar & Koteclər', en: 'Rooms & Cottages', ru: 'Номера и Коттеджи' };
-  const subs = { az: 'RAHATLIĞI YENİDƏN KƏŞF EDİN', en: 'REDEFINE COMFORT', ru: 'ПЕРЕОСМЫСЛИТЕ КОМФОРТ' };
-  return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
-      <PageHero
-        title={titles[l]}
-        subtitle={subs[l]}
-        imagePath="/AF-hotel.jpg"
-        variant="rooms"
-      />
-      <div className="py-12">
-        <RoomsComponent />
-      </div>
-    </div>
-  );
+  return <RoomsPageClient />;
 }

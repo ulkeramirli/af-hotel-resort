@@ -1,25 +1,24 @@
-'use client';
+import { Metadata } from 'next';
+import ContactsPageClient from './ContactsPageClient';
 
-import ContactsComponent from "@/components/Contacts";
-import PageHero from "@/components/PageHero";
-import { useLanguage } from "@/contexts/LanguageContext";
+export const metadata: Metadata = {
+  title: 'Əlaqə | AF Hotel & Aqua Park Resort',
+  description: 'AF Hotel & Aqua Park ilə əlaqə saxlayın. Ünvan, telefon nömrələri və e-poçt ünvanımız. Bizimlə əlaqəyə keçin və rezervasiya edin.',
+  openGraph: {
+    title: 'Əlaqə | AF Hotel & Aqua Park',
+    description: 'AF Hotel & Aqua Park ilə əlaqə saxlayın. Ünvan, telefon nömrələri və e-poçt ünvanımız. Bizimlə əlaqəyə keçin və rezervasiya edin.',
+    url: 'https://afhotel.az/contacts',
+    images: [
+      {
+        url: '/AF-hero.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'AF Hotel Əlaqə - Novxanı',
+      },
+    ],
+  },
+};
 
 export default function ContactsPage() {
-  const { language } = useLanguage();
-  const l = language;
-  const titles = { az: 'Əlaqə', en: 'Contact Us', ru: 'Контакты' };
-  const subs = { az: 'BİZİMLƏ ƏLAQƏ SAXLAYIN', en: "LET'S STAY IN TOUCH", ru: 'СВЯЖИТЕСЬ С НАМИ' };
-  return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
-      <PageHero
-        title={titles[l]}
-        subtitle={subs[l]}
-        imagePath="/AF-aqua.jpg"
-        variant="contacts"
-      />
-      <div className="py-12">
-        <ContactsComponent />
-      </div>
-    </div>
-  );
+  return <ContactsPageClient />;
 }

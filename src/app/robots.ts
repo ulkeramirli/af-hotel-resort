@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/api/', '/auth/'],
     },
-    sitemap: 'https://af-hotel.az/sitemap.xml',
+    sitemap: 'https://afhotel.az/sitemap.xml',
   };
 }

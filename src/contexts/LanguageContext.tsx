@@ -154,10 +154,18 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Lang>("az");
 
   useEffect(() => {
-    const saved = localStorage.getItem(LANG_KEY) as Lang | null;
-    if (saved && ["az", "ru", "en"].includes(saved)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLanguageState(saved);
+    const params = new URLSearchParams(window.location.search);
+    const langParam = params.get('lang') as Lang | null;
+
+    if (langParam && ["az", "ru", "en"].includes(langParam)) {
+      setLanguageState(langParam);
+      localStorage.setItem(LANG_KEY, langParam);
+    } else {
+      const saved = localStorage.getItem(LANG_KEY) as Lang | null;
+      if (saved && ["az", "ru", "en"].includes(saved)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setLanguageState(saved);
+      }
     }
   }, []);
 

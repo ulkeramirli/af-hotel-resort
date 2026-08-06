@@ -1,7 +1,9 @@
 import { MetadataRoute } from 'next';
+import { connectDB } from '@/lib/db';
+import Room from '@/models/Room';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://af-hotel.az';
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = 'https://afhotel.az';
   const lastModified = new Date();
 
   const mainRoutes = [
@@ -18,7 +20,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/booking-policy', priority: 0.4, changeFrequency: 'monthly' as const },
   ];
 
-  return mainRoutes.flatMap(({ path, priority, changeFrequency }) => [
+  // Fetch dynamic room routes
+  let roomRoutes: { path: string; priority: number; changeFrequency: "weekly" }[] = [];
+  try {
+    await connectDB();
+    const rooms = await Room.find({}, '_id').lean();
+    roomRoutes = rooms.map(room => ({
+      path: `/rooms/${room._id}`,
+      priority: 0.8,
+      changeFrequency: 'weekly' as const,
+    }));
+  } catch (error) {
+    console.warn("Failed to fetch rooms for sitemap:", error);
+  }
+
+  const allRoutes = [...mainRoutes, ...roomRoutes];
+
+  return allRoutes.flatMap(({ path, priority, changeFrequency }) => [
     {
       url: `${baseUrl}${path}`,
       lastModified,

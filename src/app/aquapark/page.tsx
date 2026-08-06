@@ -1,25 +1,24 @@
-'use client';
+import { Metadata } from 'next';
+import AquaparkPageClient from './AquaparkPageClient';
 
-import AquaparkComponent from "@/components/Aquapark";
-import PageHero from "@/components/PageHero";
-import { useLanguage } from "@/contexts/LanguageContext";
+export const metadata: Metadata = {
+  title: 'Aqua Park | AF Hotel & Aqua Park Resort',
+  description: 'Azərbaycanın ən böyük su əyləncə mərkəzlərindən biri olan Aqua Park-da 25-dən çox su atraksionu və hovuzlar sizi gözləyir.',
+  openGraph: {
+    title: 'Aqua Park | AF Hotel & Aqua Park',
+    description: 'Azərbaycanın ən böyük su əyləncə mərkəzlərindən biri olan Aqua Park-da 25-dən çox su atraksionu və hovuzlar sizi gözləyir.',
+    url: 'https://afhotel.az/aquapark',
+    images: [
+      {
+        url: '/AF-aqua2.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Aqua Park - AF Hotel Novkhani',
+      },
+    ],
+  },
+};
 
 export default function AquaparkPage() {
-  const { language } = useLanguage();
-  const l = language;
-  const titles = { az: 'Aqua Park', en: 'Aqua Park', ru: 'Аквапарк' };
-  const subs = { az: '25+ SU ƏYLƏNCƏSİ', en: '25+ WATER ATTRACTIONS', ru: '25+ ВОДНЫХ АТТРАКЦИОНОВ' };
-  return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
-      <PageHero
-        title={titles[l]}
-        subtitle={subs[l]}
-        imagePath="/AF-aqua2.jpg"
-        variant="aquapark"
-      />
-      <div className="py-12">
-        <AquaparkComponent />
-      </div>
-    </div>
-  );
+  return <AquaparkPageClient />;
 }

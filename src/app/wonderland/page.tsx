@@ -1,25 +1,24 @@
-'use client';
+import { Metadata } from 'next';
+import WonderlandPageClient from './WonderlandPageClient';
 
-import WonderlandComponent from "@/components/Wonderland";
-import PageHero from "@/components/PageHero";
-import { useLanguage } from "@/contexts/LanguageContext";
+export const metadata: Metadata = {
+  title: 'AF Park Wonderland | Əyləncə Mərkəzi - AF Hotel',
+  description: 'Tezliklə açılacaq AF Park Wonderland əyləncə mərkəzində hər yaşdan uşaqlar və böyüklər üçün karusellər, atraksionlar və unudulmaz anlar olacaq.',
+  openGraph: {
+    title: 'AF Park Wonderland | Əyləncə Mərkəzi',
+    description: 'Tezliklə açılacaq AF Park Wonderland əyləncə mərkəzində hər yaşdan uşaqlar və böyüklər üçün karusellər, atraksionlar və unudulmaz anlar olacaq.',
+    url: 'https://afhotel.az/wonderland',
+    images: [
+      {
+        url: '/AF-aqua2.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'AF Park Wonderland - Baku, Novkhani',
+      },
+    ],
+  },
+};
 
 export default function WonderlandPage() {
-  const { language } = useLanguage();
-  const l = language;
-  const titles = { az: 'AF Park', en: 'AF Park', ru: 'AF Park' };
-  const subs = { az: 'SEHRLI ALƏM — AİLƏ ÜÇÜN', en: 'MAGICAL WORLD — FOR FAMILIES', ru: 'ВОЛШЕБНЫЙ МИР — ДЛЯ СЕМЬИ' };
-  return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
-      <PageHero
-        title={titles[l]}
-        subtitle={subs[l]}
-        imagePath="/AF-aqua.jpg"
-        variant="wonderland"
-      />
-      <div className="py-12">
-        <WonderlandComponent />
-      </div>
-    </div>
-  );
+  return <WonderlandPageClient />;
 }
