@@ -36,24 +36,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const allRoutes = [...mainRoutes, ...roomRoutes];
 
-  return allRoutes.flatMap(({ path, priority, changeFrequency }) => [
-    {
-      url: `${baseUrl}${path}`,
-      lastModified,
-      changeFrequency,
-      priority,
-    },
-    {
-      url: `${baseUrl}${path}?lang=en`,
-      lastModified,
-      changeFrequency,
-      priority: priority - 0.05,
-    },
-    {
-      url: `${baseUrl}${path}?lang=ru`,
-      lastModified,
-      changeFrequency,
-      priority: priority - 0.05,
-    },
-  ]);
+  return allRoutes.map(({ path, priority, changeFrequency }) => ({
+    url: `${baseUrl}${path}`,
+    lastModified,
+    changeFrequency,
+    priority,
+  }));
 }

@@ -38,14 +38,6 @@ export const metadata: Metadata = {
   creator: "AF Hotel, Aqua Park & AF Park Complex",
   publisher: "AF Hotel, Aqua Park & AF Park Complex",
   metadataBase: new URL("https://afhotel.az"),
-  alternates: {
-    canonical: "/",
-    languages: {
-      "az": "/",
-      "en": "/?lang=en",
-      "ru": "/?lang=ru",
-    }
-  },
   openGraph: {
     type: "website",
     locale: "az_AZ",
