@@ -355,9 +355,10 @@ export default function AdminWonderlandPage() {
           <div>
             <label className="block text-xs font-bold text-stone-600 mb-1">Təsvir [{formLang.toUpperCase()}]</label>
             <RichTextEditor
+              key={`desc-${formLang}`}
               placeholder="AF Park haqqında geniş məlumat daxil edin..."
               value={form.description[formLang]}
-              onChange={(val) => setForm({ ...form, description: { ...form.description, [formLang]: val } })}
+              onChange={(val) => setForm(prev => ({ ...prev, description: { ...prev.description, [formLang]: val } }))}
             />
           </div>
 
@@ -514,9 +515,10 @@ export default function AdminWonderlandPage() {
                 <div>
                   <label className="text-xs font-semibold text-stone-500 mb-1 block">Təsvir [{formLang}]</label>
                   <RichTextEditor
+                    key={`small-desc-${formLang}`}
                     placeholder="Attraksion haqqında qısa məlumat..."
                     value={smallForm.description[formLang]}
-                    onChange={(val) => setSmallForm({ ...smallForm, description: { ...smallForm.description, [formLang]: val } })}
+                    onChange={(val) => setSmallForm(prev => ({ ...prev, description: { ...prev.description, [formLang]: val } }))}
                   />
                 </div>
                 <div>

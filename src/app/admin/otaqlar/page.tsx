@@ -385,9 +385,10 @@ export default function AdminRoomsPage() {
                 />
                 <div className="md:col-span-3">
                   <RichTextEditor
+                    key={`desc-${formLang}`}
                     placeholder={`Təsvir (${formLang.toUpperCase()})`}
                     value={roomForm.description[formLang]}
-                    onChange={(val) => setRoomForm({ ...roomForm, description: { ...roomForm.description, [formLang]: val } })}
+                    onChange={(val) => setRoomForm(prev => ({ ...prev, description: { ...prev.description, [formLang]: val } }))}
                   />
                 </div>
                 <input
@@ -623,8 +624,9 @@ export default function AdminRoomsPage() {
             <div>
               <label className="block text-xs font-bold text-stone-600 mb-1">Alt Başlıq [{formLang.toUpperCase()}]</label>
               <RichTextEditor
+                key={`subtitle-${formLang}`}
                 value={settingsForm.subtitle[formLang]}
-                onChange={(val) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: val } })}
+                onChange={(val) => setSettingsForm(prev => ({ ...prev, subtitle: { ...prev.subtitle, [formLang]: val } }))}
               />
             </div>
             <div className="pt-4 flex justify-end">

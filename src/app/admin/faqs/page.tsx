@@ -140,9 +140,10 @@ export default function AdminFaqsPage() {
               <div>
                 <label className="text-xs font-semibold text-stone-500 mb-1 block">Cavab [{formLang.toUpperCase()}]</label>
                 <RichTextEditor
+                  key={`ans-${formLang}`}
                   placeholder="Məs: Giriş (Check-in) 14:00, çıxış (Check-out) 12:00-dadır."
                   value={form.answer[formLang]}
-                  onChange={(val) => setForm({ ...form, answer: { ...form.answer, [formLang]: val } })}
+                  onChange={(val) => setForm(prev => ({ ...prev, answer: { ...prev.answer, [formLang]: val } }))}
                 />
               </div>
               <div className="flex gap-2 pt-2">

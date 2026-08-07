@@ -297,9 +297,10 @@ export default function AdminActivitiesPage() {
               <div className="md:col-span-2">
                 <label className="text-xs font-semibold text-stone-500 mb-1 block">Açıqlama [{formLang.toUpperCase()}]</label>
                 <RichTextEditor
+                  key={`settings-sub-${formLang}`}
                   placeholder="Səhifənin alt başlığı..."
                   value={settingsForm.subtitle[formLang]}
-                  onChange={(val) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: val } })}
+                  onChange={(val) => setSettingsForm(prev => ({ ...prev, subtitle: { ...prev.subtitle, [formLang]: val } }))}
                 />
               </div>
             </div>
@@ -451,9 +452,10 @@ export default function AdminActivitiesPage() {
                 </div>
                 <div className="md:col-span-2">
                   <RichTextEditor
+                    key={`act-desc-${formLang}`}
                     placeholder={`Təsvir (${formLang.toUpperCase()})`}
                     value={activityForm.description[formLang]}
-                    onChange={(val) => setActivityForm({ ...activityForm, description: { ...activityForm.description, [formLang]: val } })}
+                    onChange={(val) => setActivityForm(prev => ({ ...prev, description: { ...prev.description, [formLang]: val } }))}
                   />
                 </div>
                 
@@ -541,9 +543,10 @@ export default function AdminActivitiesPage() {
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 />
                 <RichTextEditor
+                  key={`cat-desc-${formLang}`}
                   placeholder={`Açıqlama (${formLang.toUpperCase()})`}
                   value={categoryForm.description[formLang]}
-                  onChange={(val) => setCategoryForm({ ...categoryForm, description: { ...categoryForm.description, [formLang]: val } })}
+                  onChange={(val) => setCategoryForm(prev => ({ ...prev, description: { ...prev.description, [formLang]: val } }))}
                 />
                 <div className="flex gap-2">
                   <button type="submit" className="flex-1 px-4 py-2 text-white text-xs font-bold rounded-xl transition-opacity hover:opacity-90" style={{ background: "var(--color-hotel-blue)" }}>

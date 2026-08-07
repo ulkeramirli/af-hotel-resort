@@ -120,9 +120,10 @@ export default function AdminAboutPage() {
           <div>
             <label className="block text-xs font-bold text-stone-600 mb-1">Təsvir (Mətn) [{formLang.toUpperCase()}]</label>
             <RichTextEditor
+              key={`desc-${formLang}`}
               placeholder="Geniş mətn daxil edin..."
               value={form.description[formLang]}
-              onChange={(val) => setForm({ ...form, description: { ...form.description, [formLang]: val } })}
+              onChange={(val) => setForm(prev => ({ ...prev, description: { ...prev.description, [formLang]: val } }))}
             />
           </div>
 
