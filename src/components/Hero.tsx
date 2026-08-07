@@ -141,7 +141,7 @@
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ ease: "easeOut" as const, duration: 0.6, delay: 0.3 }}
-              className="lg:col-span-6 xl:col-span-5 w-full flex justify-center lg:justify-end mt-4 lg:mt-0"
+              className="lg:col-span-6 xl:col-span-5 w-full flex justify-start lg:justify-end mt-4 lg:mt-0"
             >
               <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-5 sm:p-7 w-full max-w-md shadow-[0_16px_40px_rgba(30,50,92,0.10)] border border-white/60 space-y-4 sm:space-y-5">
 

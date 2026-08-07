@@ -43,7 +43,7 @@ export default function TextReveal({ text, className = '', delay = 0 }: TextReve
       className={className}
     >
       {words.map((word, index) => (
-        <span key={index} style={{ overflow: 'hidden', display: 'inline-block' }}>
+        <span key={index} style={{ overflow: 'hidden', display: 'inline-block', paddingRight: '0.15em', marginRight: '-0.15em', paddingBottom: '0.1em', marginBottom: '-0.1em' }}>
           <motion.span variants={child} style={{ display: 'inline-block' }}>
             {word}
           </motion.span>

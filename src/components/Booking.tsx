@@ -599,7 +599,7 @@ function BookingContent() {
             </div>
 
             <div className="bg-linear-to-br from-slate-50 to-stone-50 border border-slate-200/60 rounded-3xl p-6 mb-6 shadow-inner">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+              <div className="flex flex-row justify-between items-center gap-4">
                 <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">
                   {dict.totalPrice}
                 </span>
