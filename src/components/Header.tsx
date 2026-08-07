@@ -175,7 +175,7 @@ export default function Header() {
             } 
           }
         }}
-        className={`fixed top-0 left-0 w-full z-50 px-4 lg:px-12 py-1.5 flex justify-between items-center transition-all duration-500 ${
+        className={`fixed top-0 left-0 w-full z-50 px-4 lg:px-6 xl:px-8 2xl:px-12 py-1.5 flex justify-between items-center transition-all duration-500 ${
           scrolled
             ? "bg-white/95 backdrop-blur-md border-b border-stone-200/60 shadow-sm"
             : "bg-white border-b border-stone-100"
@@ -195,7 +195,7 @@ export default function Header() {
           </motion.div>
         </MagneticButton>
 
-        <nav className="hidden lg:flex items-center space-x-1 xl:space-x-3 text-[10.5px] font-bold uppercase tracking-[0.18em] text-slate-600">
+        <nav className="hidden lg:flex items-center space-x-1 xl:space-x-1.5 2xl:space-x-3 text-[9.5px] xl:text-[10px] 2xl:text-[10.5px] font-bold uppercase tracking-widest 2xl:tracking-[0.15em] text-slate-600">
           {navLinks.map((item) => {
             const isActive = pathname === item.href || (pathname === '/' && item.href === '/');
             return (
@@ -221,7 +221,7 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center space-x-2 md:space-x-4">
-          <div className="hidden xl:flex flex-col gap-1.5">
+          <div className="hidden 2xl:flex flex-col gap-1.5">
             <a
               href={`tel:+994502233285`}
               className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 hover:text-[#ff6c02] transition-colors border border-stone-200/60 px-3 py-1.5 rounded-lg bg-stone-50/50"
