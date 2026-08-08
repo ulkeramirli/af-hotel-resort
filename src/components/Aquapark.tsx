@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Compass, MapPin, Palmtree, Tv } from "lucide-react";
+import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Compass, MapPin, Palmtree, Tv, Clapperboard } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence, useInView } from "framer-motion";
@@ -411,10 +411,10 @@ export default function Aquapark() {
   const displaySubtitle = loc(settings?.subtitle) || c.subtitle;
 
   const dynamicStats = [
-    { icon: Waves, label: loc(settings?.stats?.[0]?.value) || "25+", sub1: loc(settings?.stats?.[0]?.label) || (l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов"), sub2: loc(settings?.stats?.[0]?.sub) },
-    { icon: Users, label: loc(settings?.stats?.[1]?.value) || "2500+", sub1: loc(settings?.stats?.[1]?.label) || (l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день"), sub2: loc(settings?.stats?.[1]?.sub) },
+    { icon: Waves, label: loc(settings?.stats?.[0]?.value) || "", sub1: loc(settings?.stats?.[0]?.label) || (l === "az" ? "" : l === "en" ? "" : ""), sub2: loc(settings?.stats?.[0]?.sub) },
+    { icon: Users, label: loc(settings?.stats?.[1]?.value) || "", sub1: loc(settings?.stats?.[1]?.label) || (l === "az" ? "" : l === "en" ? "" : ""), sub2: loc(settings?.stats?.[1]?.sub) },
     { icon: Clock, label: loc(settings?.stats?.[2]?.value) || c.openHours, sub1: loc(settings?.stats?.[2]?.label) || c.season, sub2: loc(settings?.stats?.[2]?.sub) },
-    { icon: Star, label: loc(settings?.stats?.[3]?.value) || "5.0", sub1: loc(settings?.stats?.[3]?.label) || (l === "az" ? "Yüksək Xidmət" : l === "en" ? "High Quality Service" : "Высокий Сервис"), sub2: loc(settings?.stats?.[3]?.sub) },
+    { icon: Clapperboard, label: loc(settings?.stats?.[3]?.value) || "", sub1: loc(settings?.stats?.[3]?.label) || (l === "az" ? "" : l === "en" ? "" : ""), sub2: loc(settings?.stats?.[3]?.sub) },
   ];
 
   // Функции для управления слайдером по стрелкам

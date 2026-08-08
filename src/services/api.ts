@@ -164,6 +164,16 @@ export async function loginWithGoogle(
   }
 }
 
+function normalizeI18n(field: any, defaultText = ""): { az: string; en: string; ru: string } {
+  if (!field) return { az: defaultText, en: defaultText, ru: defaultText };
+  if (typeof field === "string") return { az: field, en: field, ru: field };
+  return {
+    az: field.az || field.en || field.ru || defaultText,
+    en: field.en || field.az || field.ru || defaultText,
+    ru: field.ru || field.az || field.en || defaultText,
+  };
+}
+
 // ─── PUBLIC ROOM TYPES (for frontend pages) ───
 const publicRoomsCache = new Map<string, PublicRoom>();
 
@@ -221,12 +231,12 @@ export async function getPublicRooms(): Promise<PublicRoom[]> {
           typeof r.type === "object" && r.type !== null
             ? (r.type as any)._id
             : String(r.type),
-        categoryName:
-          typeof r.type === "object" && r.type !== null
-            ? (r.type as any).name
-            : { az: "Otaq", en: "Room", ru: "Номер" },
-        title: (r.name as any) || { az: "", en: "", ru: "" },
-        desc: (r.description as any) || { az: "", en: "", ru: "" },
+        categoryName: normalizeI18n(
+          typeof r.type === "object" && r.type !== null ? (r.type as any).name : null,
+          "Otaq"
+        ),
+        title: normalizeI18n(r.name),
+        desc: normalizeI18n(r.description),
         capacity: {
           az: `${r.capacity} nəfər`,
           en: `${r.capacity} persons`,
@@ -318,12 +328,12 @@ export async function getPublicRoomById(
         typeof r.type === "object" && r.type !== null
           ? (r.type as any)._id
           : String(r.type),
-      categoryName:
-        typeof r.type === "object" && r.type !== null
-          ? (r.type as any).name
-          : { az: "Otaq", en: "Room", ru: "Номер" },
-      title: (r.name as any) || { az: "", en: "", ru: "" },
-      desc: (r.description as any) || { az: "", en: "", ru: "" },
+      categoryName: normalizeI18n(
+        typeof r.type === "object" && r.type !== null ? (r.type as any).name : null,
+        "Otaq"
+      ),
+      title: normalizeI18n(r.name),
+      desc: normalizeI18n(r.description),
       capacity: {
         az: `${r.capacity} nəfər`,
         en: `${r.capacity} persons`,
