@@ -477,7 +477,7 @@ export default function Aquapark() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl text-center [&>p]:mb-0 mx-auto px-4 w-full [&_*]:!whitespace-normal [&_*]:!break-words" dangerouslySetInnerHTML={{ __html: displaySubtitle.replace(/&nbsp;/g, ' ') }}
+              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl text-center [&>p]:mb-0 mx-auto px-4 w-full **:whitespace-normal! **:wrap-break-word!" dangerouslySetInnerHTML={{ __html: displaySubtitle.replace(/&nbsp;/g, ' ') }}
             />
           </motion.div>
         </div>

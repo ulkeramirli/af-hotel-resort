@@ -9,16 +9,17 @@ interface PageHeroProps {
   imagePath: string;
   /** Style variant for unique look per page */
   variant?: 'rooms' | 'aquapark' | 'wonderland' | 'restoran' | 'about' | 'contacts' | 'default';
+  containImage?: boolean;
 }
 
 const gradients: Record<string, string> = {
-  rooms:     'from-[#1e325c]/80 via-[#1e325c]/30 to-transparent',
-  aquapark:  'from-[#00b5d5]/70 via-[#003d5c]/40 to-transparent',
-  wonderland:'from-[#3d1060]/80 via-[#6b21a8]/30 to-transparent',
-  restoran:  'from-[#3d1a00]/80 via-[#7c3a00]/30 to-transparent',
-  about:     'from-[#1e325c]/80 via-[#1e325c]/30 to-transparent',
-  contacts:  'from-stone-900/80 via-stone-900/30 to-transparent',
-  default:   'from-stone-900/80 via-stone-900/30 to-transparent',
+  rooms:     'from-stone-900/45 via-stone-900/15 to-transparent',
+  aquapark:  'from-stone-900/45 via-stone-900/15 to-transparent',
+  wonderland:'from-stone-900/45 via-stone-900/15 to-transparent',
+  restoran:  'from-stone-900/45 via-stone-900/15 to-transparent',
+  about:     'from-stone-900/45 via-stone-900/15 to-transparent',
+  contacts:  'from-stone-900/45 via-stone-900/15 to-transparent',
+  default:   'from-stone-900/45 via-stone-900/15 to-transparent',
 };
 
 const accentColors: Record<string, string> = {
@@ -89,37 +90,51 @@ const decorativeElements: Record<string, React.ReactNode> = {
   default: null,
 };
 
-export default function PageHero({ title, subtitle, imagePath, variant = 'default', imageClassName = "object-cover object-center" }: PageHeroProps & { imageClassName?: string }) {
+export default function PageHero({ title, subtitle, imagePath, variant = 'default', containImage = false, imageClassName = "object-cover object-center" }: PageHeroProps & { imageClassName?: string }) {
   const grad = gradients[variant] || gradients.default;
   const accent = accentColors[variant] || accentColors.default;
   const deco = decorativeElements[variant] || null;
 
   return (
-    <div className="relative w-full h-[55vh] md:h-[65vh] min-h-[420px] flex items-end justify-start overflow-hidden bg-stone-900">
+    <div className="relative w-full h-[55vh] md:h-[65vh] min-h-105 flex items-end justify-start overflow-hidden bg-stone-900">
       {/* Background Image — Ken Burns zoom */}
       <div className="absolute inset-0 w-full h-full">
         <motion.div
           initial={{ scale: 1.12 }}
           animate={{ scale: 1 }}
           transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full h-full"
+          className="w-full h-full relative"
         >
-          <Image
-            src={imagePath}
-            alt={title}
-            fill
-            priority
-            sizes="100vw"
-            className={imageClassName}
-          />
+          {containImage ? (
+            <>
+              {/* Blurred background + Light Gray Tulle */}
+              <div className="absolute inset-0 overflow-hidden">
+                <Image src={imagePath} alt="Background" fill priority sizes="100vw" className="object-cover blur-2xl opacity-70 scale-125" />
+                <div className="absolute inset-0 bg-stone-200/50" />
+              </div>
+              {/* Foreground Image */}
+              <Image src={imagePath} alt={title} fill priority sizes="100vw" className="relative z-10 object-contain object-center drop-shadow-xl" />
+            </>
+          ) : (
+            <Image
+              src={imagePath}
+              alt={title}
+              fill
+              priority
+              sizes="100vw"
+              className={imageClassName}
+            />
+          )}
         </motion.div>
 
+        {/* Thin gray tulle over the whole image for readability */}
+        <div className="absolute inset-0 bg-stone-900/15" />
         {/* Left-side dark gradient for text readability */}
-        <div className={`absolute inset-0 bg-gradient-to-r ${grad}`} />
-        {/* Bottom dark fade */}
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-stone-900/20" />
+        <div className={`absolute inset-0 bg-linear-to-r ${grad}`} />
+        {/* Bottom dark fade (more concentrated at the bottom for text) */}
+        <div className="absolute inset-0 bg-linear-to-t from-stone-900/60 via-stone-900/10 to-transparent" />
         {/* Subtle vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,transparent_40%,rgba(0,0,0,0.4)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,transparent_60%,rgba(0,0,0,0.2)_100%)]" />
       </div>
 
       {/* Decorative element per page */}
@@ -135,8 +150,8 @@ export default function PageHero({ title, subtitle, imagePath, variant = 'defaul
             transition={{ duration: 0.8, ease: "easeOut" as const, delay: 0.3 }}
             className={`flex items-center gap-3 mb-5`}
           >
-            <div className={`w-10 h-[1px] border-t ${accent}`} />
-            <span className={`text-xs font-bold uppercase tracking-[0.35em] drop-shadow-md ${accent.split(' ')[0]}`}>
+            <div className={`w-10 h-px border-t ${accent}`} />
+            <span className={`text-xs font-bold uppercase tracking-[0.35em] drop-shadow-md py-1 leading-normal ${accent.split(' ')[0]}`}>
               {subtitle}
             </span>
           </motion.div>
@@ -157,7 +172,7 @@ export default function PageHero({ title, subtitle, imagePath, variant = 'defaul
           initial={{ scaleX: 0, originX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" as const, delay: 0.6 }}
-          className={`mt-6 w-16 h-[2px] ${accent.split(' ')[0].replace('text-', 'bg-')}`}
+          className={`mt-6 w-16 h-0.5 ${accent.split(' ')[0].replace('text-', 'bg-')}`}
           style={{ background: variant === 'wonderland' ? '#a855f7' : variant === 'restoran' ? '#f59e0b' : '#00b5d5' }}
         />
       </div>

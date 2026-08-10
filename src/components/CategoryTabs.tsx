@@ -29,7 +29,7 @@ export default function CategoryTabs({
         <button
           key={cat.id}
           onClick={() => onSelect(cat.id)}
-          className={`shrink-0 px-6 py-2.5 rounded-xl text-[13px] font-bold transition-all duration-300 border ${
+          className={`shrink-0 px-5 py-2 sm:px-6 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-[13px] font-bold transition-all duration-300 border ${
             activeId === cat.id
               ? "bg-[#00b5d5] text-white border-[#00b5d5] shadow-md shadow-[#00b5d5]/20 scale-105"
               : "bg-white text-stone-500 border-stone-200 hover:border-[#00b5d5]/40 hover:text-[#00b5d5] hover:bg-[#00b5d5]/5"

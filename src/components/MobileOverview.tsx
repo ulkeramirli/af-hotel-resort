@@ -21,7 +21,7 @@ const sections = [
     key: "rooms",
     href: "/rooms",
     icon: BedDouble,
-    image: "/AF-hero.jpg",
+    image: "/rooms.jpg",
     gradient: "from-[#1e325c]/80 via-[#1e325c]/60 to-[#0f1b35]/80",
     accent: "#c5a880",
     glow: "rgba(197,168,128,0.25)",
@@ -34,10 +34,26 @@ const sections = [
     large: true,
   },
   {
+    key: "about",
+    href: "/about",
+    icon: Info,
+    image: "/AF-aqua.jpg",
+    gradient: "from-[#143314]/80 via-[#1a4d1a]/60 to-[#1f5c1f]/80",
+    accent: "#4ade80",
+    glow: "rgba(74,222,128,0.2)",
+    labels: {
+      az: { title: "Haqqımızda", sub: "AF Hotel kompleksi" },
+      en: { title: "About Us", sub: "AF Hotel Complex" },
+      ru: { title: "О Нас", sub: "Комплекс AF Hotel" },
+    },
+    badge: { az: "Kəşf Et", en: "Explore", ru: "Узнать" },
+    large: false,
+  },
+  {
     key: "aquapark",
     href: "/aquapark",
     icon: Waves,
-    image: "/AF-aqua.jpg",
+    image: "/aqua.jpg",
     gradient: "from-[#004e7c]/80 via-[#006fa5]/60 to-[#0097c4]/80",
     accent: "#5dd8f4",
     glow: "rgba(0,181,213,0.3)",
@@ -81,22 +97,7 @@ const sections = [
     badge: { az: "Açıqdır", en: "Open", ru: "Открыто" },
     large: false,
   },
-  {
-    key: "about",
-    href: "/about",
-    icon: Info,
-    image: "/AF-aqua.jpg",
-    gradient: "from-[#143314]/80 via-[#1a4d1a]/60 to-[#1f5c1f]/80",
-    accent: "#4ade80",
-    glow: "rgba(74,222,128,0.2)",
-    labels: {
-      az: { title: "Haqqımızda", sub: "AF Hotel kompleksi" },
-      en: { title: "About Us", sub: "AF Hotel Complex" },
-      ru: { title: "О Нас", sub: "Комплекс AF Hotel" },
-    },
-    badge: { az: "Kəşf Et", en: "Explore", ru: "Узнать" },
-    large: false,
-  },
+  
 ];
 
 const stats = [
@@ -141,7 +142,7 @@ export default function MobileOverview() {
           className="mb-10 space-y-3 md:space-y-4"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-[2px] bg-[#00b5d5]" />
+            <div className="w-10 h-0.5 bg-[#00b5d5]" />
             <p className="text-sm sm:text-base font-bold tracking-[0.3em] text-[#00b5d5] uppercase">{heading.tag}</p>
           </div>
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#1e325c] leading-tight tracking-tight drop-shadow-sm">{heading.title}</h2>
@@ -159,7 +160,7 @@ export default function MobileOverview() {
           {stats.map((s) => (
             <div
               key={s.key}
-              className="flex-none flex flex-col items-center gap-1.5 bg-white border border-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] rounded-[20px] px-5 py-4 min-w-[85px]"
+              className="flex-none flex flex-col items-center gap-1.5 bg-white border border-stone-100 shadow-[0_2px_12px_rgba(0,0,0,0.04)] rounded-[20px] px-5 py-4 min-w-21.25"
             >
               <s.icon className="w-5 h-5 text-[#00b5d5]" />
               <span className="text-base font-black text-[#1e325c]">{s.value}</span>
@@ -194,9 +195,9 @@ export default function MobileOverview() {
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   {/* Color gradient overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${sec.gradient}`} />
+                  <div className={`absolute inset-0 bg-linear-to-br ${sec.gradient}`} />
                   {/* Extra dark bottom gradient for text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
 
                   {/* Glow */}
                   <div
@@ -205,7 +206,7 @@ export default function MobileOverview() {
                   />
 
                   {/* Content */}
-                  <div className={`relative z-10 flex flex-col justify-between ${sec.large ? "p-6 min-h-[220px]" : "p-5 min-h-[170px]"}`}>
+                  <div className={`relative z-10 flex flex-col justify-between ${sec.large ? "p-6 min-h-55" : "p-5 min-h-42.5"}`}>
                     {/* Top */}
                     <div className="flex items-start justify-between">
                       <div
@@ -227,10 +228,10 @@ export default function MobileOverview() {
                       >
                         {badgeText}
                       </span>
-                      <h3 className={`font-bold text-white leading-tight [text-shadow:_0_2px_8px_rgba(0,0,0,0.8)] ${sec.large ? "text-xl sm:text-2xl" : "text-base sm:text-lg"}`}>
+                      <h3 className={`font-bold text-white leading-tight [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] ${sec.large ? "text-xl sm:text-2xl" : "text-base sm:text-lg"}`}>
                         {label.title}
                       </h3>
-                      <p className={`text-white/90 font-medium leading-snug [text-shadow:_0_1px_4px_rgba(0,0,0,0.8)] ${sec.large ? "text-sm" : "text-xs"}`}>
+                      <p className={`text-white/90 font-medium leading-snug [text-shadow:0_1px_4px_rgba(0,0,0,0.8)] ${sec.large ? "text-sm" : "text-xs"}`}>
                         {label.sub}
                       </p>
                     </div>
