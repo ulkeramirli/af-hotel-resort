@@ -470,7 +470,7 @@ export default function Aquapark() {
               />
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight wrap-break-word whitespace-normal text-center max-w-3xl">
-              <TextReveal text={displayTitle} delay={0.1} />
+              <TextReveal text={displayTitle} delay={0.1} center />
             </h2>
             <motion.div
               initial={{ opacity: 0, y: 12 }}

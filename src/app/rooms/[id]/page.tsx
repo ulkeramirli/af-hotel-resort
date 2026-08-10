@@ -157,7 +157,7 @@ export default function RoomDetailPage({
       <div className="min-h-screen flex flex-col justify-center items-center gap-4 text-stone-400 bg-white">
         <p className="text-sm font-semibold text-stone-500">{c.notFound}</p>
         <Link
-          href="/rooms"
+          href="/#rooms"
           className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1e325c] text-white rounded-xl shadow-md hover:bg-[#1e325c]/90 transition-all font-semibold text-sm cursor-pointer"
         >
           {c.back}
@@ -203,7 +203,7 @@ export default function RoomDetailPage({
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Кнопка Назад */}
         <Link
-          href="/rooms"
+          href="/#rooms"
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-stone-200 shadow-sm rounded-xl text-sm font-semibold text-stone-600 hover:text-[#1e325c] hover:border-[#1e325c]/30 hover:bg-stone-50 transition-all cursor-pointer mb-2 w-fit"
         >
           <ArrowLeft className="w-4 h-4" />

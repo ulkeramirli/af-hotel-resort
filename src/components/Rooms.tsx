@@ -361,8 +361,8 @@ export default function Rooms() {
               </span>
               <div className="w-8 h-px bg-[#00b5d5]" />
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight">
-              <TextReveal text={loc(settings?.title) || c.title} delay={0.1} />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight">
+              <TextReveal text={loc(settings?.title) || c.title} delay={0.1} center />
             </h2>
             <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto wrap-break-word whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
           </motion.div>
