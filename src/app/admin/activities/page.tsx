@@ -12,7 +12,10 @@ import {
   uploadImage
 } from "@/services/api";
 import type { Activity, ActivityCategory, ActivitySettings } from "@/types/api";
+import { useLanguage } from "@/contexts/LanguageContext";
 import RichTextEditor from "@/components/RichTextEditor";
+import DynamicIcon from "@/components/DynamicIcon";
+import IconPicker from "@/components/IconPicker";
 
 const emptyActivityForm = {
   title: { az: "", en: "", ru: "" },
@@ -537,11 +540,9 @@ export default function AdminActivitiesPage() {
                   onChange={(e) => setCategoryForm({ ...categoryForm, name: { ...categoryForm.name, [formLang]: e.target.value } })}
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 />
-                <input
-                  placeholder="Emoji (məs: 🌊)"
+                <IconPicker 
                   value={categoryForm.emoji}
-                  onChange={(e) => setCategoryForm({ ...categoryForm, emoji: e.target.value })}
-                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                  onChange={(val) => setCategoryForm({ ...categoryForm, emoji: val })}
                 />
                 <RichTextEditor
                   key={`cat-desc-${formLang}`}
@@ -569,7 +570,7 @@ export default function AdminActivitiesPage() {
                 <div key={cat._id} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-start">
                   <div className="flex gap-3">
                     <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-xl shrink-0">
-                      {cat.emoji || <Tags className="w-5 h-5 text-[#00b5d5]" />}
+                      {cat.emoji ? <DynamicIcon name={cat.emoji} className="w-5 h-5 text-[#00b5d5]" /> : <Tags className="w-5 h-5 text-[#00b5d5]" />}
                     </div>
                     <div>
                       <span className="font-bold text-sm text-[#1e325c] block">{typeof cat.name === 'object' ? ((cat.name as any)?.az || "") : cat.name}</span>

@@ -7,6 +7,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import TiltCard from "./TiltCard";
 import MagneticButton from "./MagneticButton";
+import DynamicIcon from "./DynamicIcon";
 import TextReveal from "./TextReveal";
 import { getActivities, getActivityCategories, getActivitySettings, getTickets, getFaqs } from "@/services/api";
 import type { Activity, ActivityCategory, ActivitySettings, Ticket, Faq } from "@/types/api";
@@ -546,7 +547,7 @@ export default function Aquapark() {
                   <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-1.5 md:gap-2 mb-0.5 md:mb-1 text-center md:text-left w-full">
                     <div className="flex items-center gap-1.5">
                       {zone.emoji ? (
-                        <span className="text-xl md:text-xl">{zone.emoji}</span>
+                        <DynamicIcon name={zone.emoji} className="w-5 h-5 md:w-5 md:h-5" />
                       ) : IconComponent ? (
                         <IconComponent className={`w-5 h-5 md:w-5 md:h-5 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
                       ) : null}

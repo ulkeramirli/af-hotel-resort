@@ -11,6 +11,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
 import TiltCard from "./TiltCard";
 import MagneticButton from "./MagneticButton";
+import DynamicIcon from "./DynamicIcon";
 
 const content = {
   az: { highlightsTitle: "Parkın Möhtəşəm Attrksionları", tickets: "Bilet Qiymətləri" },
@@ -145,7 +146,7 @@ export default function Wonderland() {
                       {/* Top row: icon + number badge */}
                       <div className="flex items-start justify-between mb-5">
                         <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-stone-50 to-stone-100 flex items-center justify-center text-3xl border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500">
-                          {h?.icon}
+                          <DynamicIcon name={h?.icon} />
                         </div>
                         <span className={`${g.num} text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center shadow-md`}>{i + 1}</span>
                       </div>
