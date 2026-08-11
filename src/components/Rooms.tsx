@@ -61,7 +61,7 @@ function RoomCarousel({ images, alt, priority = false }: { images: string[]; alt
 export const content = {
   az: {
     tag: "OTAQLAR & KOTECLƏR",
-    title: "Mükəmməl İstirahət Məkanı",
+    title: "Rahat və Komfortlu Otaqlar",
     subtitle: "Hər zövqə uyğun rahat otaqlar",
     all: "Hamısı",
     single: "Single",
