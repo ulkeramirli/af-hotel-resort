@@ -69,7 +69,7 @@ const sections = [
     key: "wonderland",
     href: "/wonderland",
     icon: FerrisWheel,
-    image: "/AF-aqua.jpg",
+    image: "/af-park.jpg",
     gradient: "from-[#5b1a8b]/80 via-[#7c2e9e]/60 to-[#9b44c0]/80",
     accent: "#f59e0b",
     glow: "rgba(245,158,11,0.25)",
