@@ -16,11 +16,15 @@ const activityCategorySchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
   },
 );
 
-// delete mongoose.models.ActivityCategory;
-export default mongoose.models.ActivityCategory || mongoose.model("ActivityCategory", activityCategorySchema);
+delete mongoose.models.ActivityCategory;
+export default mongoose.model("ActivityCategory", activityCategorySchema);

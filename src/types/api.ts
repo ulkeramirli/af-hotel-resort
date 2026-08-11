@@ -126,6 +126,7 @@ export interface ActivityCategory {
   name: any;
   description?: any;
   emoji?: string;
+  order?: number;
   createdAt?: string;
   updatedAt?: string;
 }

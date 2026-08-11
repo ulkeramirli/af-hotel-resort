@@ -59,7 +59,8 @@ export default function AdminActivitiesPage() {
   const emptyCategoryForm = { 
     name: { az: "", en: "", ru: "" }, 
     description: { az: "", en: "", ru: "" }, 
-    emoji: "" 
+    emoji: "",
+    order: 0
   };
   const [editCategoryId, setEditCategoryId] = useState<string | null>(null);
   const [categoryForm, setCategoryForm] = useState(emptyCategoryForm);
@@ -200,6 +201,7 @@ export default function AdminActivitiesPage() {
       name: parseLoc(cat.name),
       description: parseLoc(cat.description),
       emoji: cat.emoji || "",
+      order: cat.order || 0,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -510,7 +512,7 @@ export default function AdminActivitiesPage() {
                   </div>
                 </div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#00b5d5] mb-2">
-                  {typeof act.category === 'object' ? ((act.category as any).name?.az || "") : act.category}
+                  {act.category && typeof act.category === 'object' ? ((act.category as any).name?.az || "") : (act.category || "")}
                 </p>
                 <div 
                   className="text-xs text-stone-500 line-clamp-3 [&>p]:m-0" 
@@ -543,6 +545,13 @@ export default function AdminActivitiesPage() {
                 <IconPicker 
                   value={categoryForm.emoji}
                   onChange={(val) => setCategoryForm({ ...categoryForm, emoji: val })}
+                />
+                <input
+                  type="number"
+                  placeholder="Sıra (məs: 1)"
+                  value={categoryForm.order}
+                  onChange={(e) => setCategoryForm({ ...categoryForm, order: Number(e.target.value) })}
+                  className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
                 />
                 <RichTextEditor
                   key={`cat-desc-${formLang}`}
