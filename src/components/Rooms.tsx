@@ -60,9 +60,9 @@ function RoomCarousel({ images, alt, priority = false }: { images: string[]; alt
 
 export const content = {
   az: {
-    tag: "OTAQLAR & KOTECLƏR",
-    title: "Rahat və Komfortlu Otaqlar",
-    subtitle: "Hər zövqə uyğun rahat otaqlar",
+    tag: "",
+    title: "",
+    subtitle: "",
     all: "Hamısı",
     single: "Single",
     double: "Standard Double",
@@ -75,9 +75,9 @@ export const content = {
     book: "Rezervasiya",
   },
   en: {
-    tag: "ROOMS & COTTAGES",
-    title: "A New Level of Comfort",
-    subtitle: "Comfortable rooms for every taste",
+    tag: "",
+    title: "",
+    subtitle: "",
     all: "All",
     single: "Single",
     double: "Standard Double",
@@ -90,9 +90,9 @@ export const content = {
     book: "Book",
   },
   ru: {
-    tag: "НОМЕРА И КОТТЕДЖИ",
-    title: "Новый Уровень Комфорта",
-    subtitle: "Комфортные номера на любой вкус",
+    tag: "",
+    title: "",
+    subtitle: "",
     all: "Все",
     single: "Single",
     double: "Standard Double",

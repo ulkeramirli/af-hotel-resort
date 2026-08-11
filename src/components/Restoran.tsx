@@ -43,9 +43,9 @@ interface LanguageLabels {
 
 const labels: Record<LangType, LanguageLabels> = {
   az: {
-    tag: "RESTORANLARIMIZ & BAR",
-    title: "Unudulmaz Qastrofəza Səyahəti",
-    subtitle: "AF Hotel & Resort ərazisində istirahətinizin hər anı üçün yaradılmış unikal konseptual məkanlar.",
+    tag: "",
+    title: "",
+    subtitle: "",
     hours: "İş saatları",
     breakfast: "Səhər yeməyi",
     lunch: "Nahar",
@@ -59,9 +59,9 @@ const labels: Record<LangType, LanguageLabels> = {
     noRestaurants: "Restoran tapılmadı.",
   },
   ru: {
-    tag: "НАШИ РЕСТОРАНЫ & БАР",
-    title: "Незабываемое Гастрономическое Путешествие",
-    subtitle: "Уникальные концептуальные пространства на территории AF Hotel & Resort, созданные для каждого мгновения вашего отдыха.",
+    tag: "",
+    title: "",
+    subtitle: "",
     hours: "Часы работы",
     breakfast: "Завтрак",
     lunch: "Обед",
@@ -75,9 +75,9 @@ const labels: Record<LangType, LanguageLabels> = {
     noRestaurants: "Ресторан не найден.",
   },
   en: {
-    tag: "OUR RESTAURANTS & BAR",
-    title: "An Unforgettable Dining Journey",
-    subtitle: "Unique conceptual spaces within AF Hotel & Resort, crafted for every moment of your leisure.",
+    tag: "",
+    title: "",
+    subtitle: "",
     hours: "Opening Hours",
     breakfast: "Breakfast",
     lunch: "Lunch",

@@ -83,9 +83,9 @@ const CardImageSlider = ({ images, itemName, priority = false }: { images: strin
 
 const content = {
   az: {
-    tag: "AQUA & BEACH RESORT",
-    title: "Eksklüziv Su Dünyası",
-    subtitle: "Xəzər sahilində ailənizlə unudulmaz anlar yaşayacağınız gözəl əyləncə, hovuz və özəl çimərlik kompleksi",
+    tag: "",
+    title: "",
+    subtitle: "",
     openHours: "10:00 – 20:00",
     season: "Yay mövsümü: May – Oktyabr",
     tickets: "Bilet qiymətləri",
@@ -155,9 +155,9 @@ const content = {
     ],
   },
   en: {
-    tag: "AQUA & BEACH RESORT",
-    title: "Exclusive Water World",
-    subtitle: "A beautiful entertainment, pool, and private beach complex on the Caspian coast for an unforgettable family vacation",
+    tag: "",
+    title: "",
+    subtitle: "",
     openHours: "10:00 – 20:00",
     season: "Summer season: May – October",
     tickets: "Ticket prices",
@@ -227,9 +227,9 @@ const content = {
     ],
   },
   ru: {
-    tag: "AQUA & BEACH RESORT",
-    title: "Эксклюзивный Водный Мир",
-    subtitle: "Премиальный комплекс развлечений, бассейнов и частного пляжа на побережье Каспия для всей семьи",
+    tag: "",
+    title: "",
+    subtitle: "",
     openHours: "10:00 – 20:00",
     season: "Летний сезон: Май – Октябрь",
     tickets: "Стоимость билетов",
