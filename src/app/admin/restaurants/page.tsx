@@ -349,7 +349,7 @@ export default function AdminRestaurantsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-stone-600 mb-1 flex items-center gap-1">
+              <label className="block text-xs font-bold text-stone-600 mb-1 items-center gap-1">
                 <Phone className="w-3 h-3" /> Əlaqə Nömrəsi
               </label>
               <input

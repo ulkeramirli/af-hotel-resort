@@ -191,16 +191,16 @@ export default function Restoran() {
             className="space-y-4 flex flex-col items-center max-w-3xl"
           >
             <div className="flex items-center justify-center gap-4">
-              <div className="w-8 h-[1px] bg-[#00b5d5]" />
+              <div className="w-8 h-px bg-[#00b5d5]" />
               <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5]">
                 {loc(settings?.tag) || c.tag}
               </span>
-              <div className="w-8 h-[1px] bg-[#00b5d5]" />
+              <div className="w-8 h-px bg-[#00b5d5]" />
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight break-words whitespace-normal">
+            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight wrap-break-word whitespace-normal">
               <TextReveal text={loc(settings?.title) || c.title} delay={0.1} center />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto break-words whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto wrap-break-word whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
           </motion.div>
 
           <motion.div
@@ -210,7 +210,7 @@ export default function Restoran() {
             transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
             className="flex justify-center w-full mt-4"
           >
-            <div className="flex flex-row flex-wrap justify-center gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-[2rem] border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
+            <div className="flex flex-row flex-wrap justify-center gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-4xl border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
               {restaurants.map((r, i) => {
                 const isActive = activeRest === i;
                 const IconComponent = getCategoryIcon(loc(r.name));
@@ -218,7 +218,7 @@ export default function Restoran() {
                   <button
                     key={i}
                     onClick={() => handleRestaurantChange(i)}
-                    className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer flex-1 shrink-0 min-w-[140px] md:min-w-0 ${
+                    className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer flex-1 shrink-0 min-w-35 md:min-w-0 ${
                       isActive
                         ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
                         : "hover:bg-white/60 border border-transparent"
@@ -256,7 +256,7 @@ export default function Restoran() {
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#1e325c] to-[#00b5d5]" />
+                <div className="w-full h-full bg-linear-to-br from-[#1e325c] to-[#00b5d5]" />
               )}
               <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 text-white">
@@ -363,7 +363,7 @@ export default function Restoran() {
                             transition={{ duration: 0.25, delay: i * 0.05 }}
                           >
                             <TiltCard tiltAmount={3}>
-                            <div className="bg-white p-3.5 rounded-2xl border border-stone-100/80 shadow-2xs hover:shadow-md hover:border-stone-200/60 transition-all duration-300 flex justify-between items-center gap-4 min-h-[110px]">
+                            <div className="bg-white p-3.5 rounded-2xl border border-stone-100/80 shadow-2xs hover:shadow-md hover:border-stone-200/60 transition-all duration-300 flex justify-between items-center gap-4 min-h-27.5">
                             <div className="space-y-1.5 flex-1">
                               <div className="flex flex-col gap-0.5">
                                 <h4 className="font-semibold text-xs md:text-sm text-[#1e325c] leading-snug">

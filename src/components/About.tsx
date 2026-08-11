@@ -117,7 +117,7 @@ export default function About() {
         <div className="lg:col-span-7 flex flex-col items-center gap-4 lg:gap-6 w-full py-4">
           <motion.div custom={0} variants={collageVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="w-full">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={images[0]} className="w-full h-auto rounded-2xl lg:rounded-[2rem] shadow-xl hover:scale-[1.02] transition-transform duration-700" alt="1" />
+            <img src={images[0]} className="w-full h-auto rounded-2xl lg:rounded-4xl shadow-xl hover:scale-[1.02] transition-transform duration-700" alt="1" />
           </motion.div>
           
           <div className="grid grid-cols-2 gap-3 lg:gap-5 w-full">

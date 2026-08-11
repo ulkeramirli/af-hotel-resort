@@ -68,8 +68,8 @@ export default function Wonderland() {
     <section id="wonderland" className="py-24 md:py-32 relative overflow-hidden scroll-mt-10 bg-[#f8fafc] perspective-1000">
       {/* Background Magic Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[10%] left-[5%] w-[40%] h-[40%] rounded-full bg-gradient-to-r from-[#00b5d5]/10 to-[#ff6c02]/5 blur-[120px]" />
-        <div className="absolute bottom-[20%] right-[5%] w-[50%] h-[50%] rounded-full bg-gradient-to-l from-[#ff6c02]/10 to-transparent blur-[120px]" />
+        <div className="absolute top-[10%] left-[5%] w-[40%] h-[40%] rounded-full bg-linear-to-r from-[#00b5d5]/10 to-[#ff6c02]/5 blur-[120px]" />
+        <div className="absolute bottom-[20%] right-[5%] w-[50%] h-[50%] rounded-full bg-linear-to-l from-[#ff6c02]/10 to-transparent blur-[120px]" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10 space-y-20 md:space-y-28">
@@ -78,7 +78,7 @@ export default function Wonderland() {
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-4">
           <ScrollReveal type="dropIn" delay={0.1}>
             <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-stone-200 shadow-sm relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-stone-100 to-transparent -translate-x-full group-hover:animate-shimmer" />
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-stone-100 to-transparent -translate-x-full group-hover:animate-shimmer" />
               <Wand2 className="w-4 h-4 text-[#ff6c02] animate-pulse" />
               <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#1e325c]">
                 {typeof wonderland?.tag === 'object' ? (wonderland.tag[l] || wonderland.tag.az || "WONDERLAND") : (wonderland?.tag || "WONDERLAND")}
@@ -93,7 +93,7 @@ export default function Wonderland() {
             </h2>
             <div className="mt-6 flex justify-center">
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#ff6c02] to-[#ff9800] rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity duration-500 animate-pulse" />
+                <div className="absolute inset-0 bg-linear-to-r from-[#ff6c02] to-[#ff9800] rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity duration-500 animate-pulse" />
                 <div className="relative flex items-center gap-2.5 px-6 py-2.5 bg-white/90 backdrop-blur-md border border-[#ff6c02]/30 rounded-full shadow-[0_8px_20px_rgba(255,108,2,0.1)]">
                   <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff6c02] opacity-75"></span>
@@ -115,11 +115,11 @@ export default function Wonderland() {
         {/* Highlights / Small Attractions */}
         <div className="space-y-10">
           <div className="flex items-center justify-center gap-4">
-            <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#00b5d5]/60 to-transparent" />
+            <div className="h-px w-16 bg-linear-to-r from-transparent via-[#00b5d5]/60 to-transparent" />
             <h3 className="text-xs uppercase font-semibold tracking-[0.2em] text-stone-500">
               {c.highlightsTitle}
             </h3>
-            <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#ff6c02]/60 to-transparent" />
+            <div className="h-px w-16 bg-linear-to-r from-transparent via-[#ff6c02]/60 to-transparent" />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -136,15 +136,15 @@ export default function Wonderland() {
                     className={`h-full relative group bg-white rounded-3xl border border-stone-100 ${g.border} shadow-[0_4px_24px_rgba(30,50,92,0.04)] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_48px_rgba(30,50,92,0.10)] hover:-translate-y-1 flex flex-col`}
                   >
                     {/* Top gradient stripe */}
-                    <div className={`h-1.5 w-full bg-gradient-to-r ${g.bg.replace('/10', '').replace('/5', '')} bg-gradient-to-r from-current to-current`} style={{ background: `linear-gradient(90deg, ${g.accent}99, ${g.accent}33)` }} />
+                    <div className={`h-1.5 w-full bg-linear-to-r ${g.bg.replace('/10', '').replace('/5', '')} bg-linear-to-r from-current to-current`} style={{ background: `linear-gradient(90deg, ${g.accent}99, ${g.accent}33)` }} />
 
                     {/* Blurred background blob */}
-                    <div className={`absolute -right-6 -top-6 w-28 h-28 rounded-full bg-gradient-to-br ${g.bg} blur-2xl group-hover:scale-125 transition-transform duration-700`} />
+                    <div className={`absolute -right-6 -top-6 w-28 h-28 rounded-full bg-linear-to-br ${g.bg} blur-2xl group-hover:scale-125 transition-transform duration-700`} />
 
                     <div className="relative z-10 p-6 sm:p-7 flex flex-col flex-1">
                       {/* Top row: icon + number badge */}
                       <div className="flex items-start justify-between mb-5">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center text-3xl border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500">
+                        <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-stone-50 to-stone-100 flex items-center justify-center text-3xl border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500">
                           {h?.icon}
                         </div>
                         <span className={`${g.num} text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center shadow-md`}>{i + 1}</span>
@@ -158,7 +158,7 @@ export default function Wonderland() {
 
                       {/* Bottom accent line */}
                       <div className="mt-5 pt-4 border-t border-stone-100">
-                        <div className="w-8 h-[2px] rounded-full transition-all duration-500 group-hover:w-16" style={{ background: g.accent }} />
+                        <div className="w-8 h-0.5 rounded-full transition-all duration-500 group-hover:w-16" style={{ background: g.accent }} />
                       </div>
                     </div>
                   </ScrollReveal>
@@ -173,7 +173,7 @@ export default function Wonderland() {
           <div className="bg-white rounded-[3rem] p-6 md:p-12 lg:p-16 border border-stone-100 shadow-[0_20px_60px_rgba(30,50,92,0.06)] relative overflow-hidden">
             
             {/* Background glowing blob for slider area */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-[#00b5d5]/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-125 h-125 bg-linear-to-br from-[#00b5d5]/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 mb-12">
               {wonderland?.bigAttractions?.length > 0 && (
@@ -230,7 +230,7 @@ export default function Wonderland() {
                       {/* Image Container */}
                       <div className="relative h-72 md:h-80 overflow-hidden bg-stone-100">
                         <Image src={game.image} alt={(game.name as any)?.[l] || (game.name as any)?.az || "Game"} fill sizes="(max-width: 640px) 85vw, 40vw" className="object-cover transition-transform duration-1000 group-hover:scale-110" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent" />
                         
                         {/* Title overlaying image for dramatic effect */}
                         <div className="absolute bottom-6 left-6 right-6">
@@ -242,7 +242,7 @@ export default function Wonderland() {
 
                       {/* Content */}
                       <div className="p-8 flex-1 bg-white relative">
-                        <div className="absolute -top-4 right-8 w-12 h-12 bg-[#ff6c02] rounded-2xl rotate-12 flex items-center justify-center text-white shadow-[0_8px_20px_rgba(255,108,2,0.4)] group-hover:rotate-[24deg] group-hover:scale-110 transition-all duration-500">
+                        <div className="absolute -top-4 right-8 w-12 h-12 bg-[#ff6c02] rounded-2xl rotate-12 flex items-center justify-center text-white shadow-[0_8px_20px_rgba(255,108,2,0.4)] group-hover:rotate-24 group-hover:scale-110 transition-all duration-500">
                           <Ticket className="w-6 h-6" />
                         </div>
                         <div className="text-sm md:text-base text-stone-500 font-medium leading-relaxed prose prose-stone [&>p]:mb-0 pt-2" dangerouslySetInnerHTML={{ __html: typeof game.description === 'object' ? (game.description[l] || game.description.az || "Desc") : (game.description || "Desc") }} />
@@ -259,7 +259,7 @@ export default function Wonderland() {
         {/* Tickets & Info Area */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
           {/* Tickets */}
-          <ScrollReveal type="slideRight" delay={0.3} className="xl:col-span-7 bg-white border border-stone-100 rounded-[2rem] p-5 md:p-6 relative overflow-hidden group shadow-sm">
+          <ScrollReveal type="slideRight" delay={0.3} className="xl:col-span-7 bg-white border border-stone-100 rounded-4xl p-5 md:p-6 relative overflow-hidden group shadow-sm">
             <div className="absolute top-0 right-0 w-80 h-80 bg-stone-50 rounded-full blur-3xl group-hover:bg-[#00b5d5]/5 transition-colors duration-1000" />
             
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 relative z-10 border-b border-stone-100 pb-4">
@@ -271,7 +271,7 @@ export default function Wonderland() {
             
             <div className="flex flex-col gap-3 relative z-10">
               {wonderland?.tickets?.map((ticket: any) => (
-                <div key={ticket._id} className="relative bg-stone-50/50 rounded-xl border border-stone-200 hover:border-[#00b5d5]/50 transition-all duration-300 hover:shadow-sm overflow-hidden group/ticket flex flex-col justify-center min-h-[50px]">
+                <div key={ticket._id} className="relative bg-stone-50/50 rounded-xl border border-stone-200 hover:border-[#00b5d5]/50 transition-all duration-300 hover:shadow-sm overflow-hidden group/ticket flex flex-col justify-center min-h-12.5">
                   
                   {/* Perforations for real ticket look */}
                   <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-r border-stone-200 group-hover/ticket:border-[#00b5d5]/50 transition-colors" />
@@ -292,7 +292,7 @@ export default function Wonderland() {
 
           {/* Special Offer & Info */}
           <ScrollReveal type="slideLeft" delay={0.4} className="xl:col-span-5 flex flex-col gap-6">
-            <div className="bg-white rounded-[2rem] p-5 md:p-6 border border-stone-100 flex items-center gap-5 shadow-sm hover:shadow-md transition-all duration-500 group">
+            <div className="bg-white rounded-4xl p-5 md:p-6 border border-stone-100 flex items-center gap-5 shadow-sm hover:shadow-md transition-all duration-500 group">
               <div className="w-12 h-12 rounded-xl bg-stone-50 flex items-center justify-center text-stone-600 shrink-0 border border-stone-100 group-hover:bg-[#1e325c] group-hover:text-white transition-colors duration-500">
                 <Clock className="w-5 h-5" />
               </div>
@@ -303,7 +303,7 @@ export default function Wonderland() {
             </div>
 
             {wonderland?.discount?.enabled && (
-              <div className="flex-1 rounded-[2rem] p-6 md:p-8 relative overflow-hidden bg-[#1e325c] shadow-md group cursor-default border border-[#1e325c]">
+              <div className="flex-1 rounded-4xl p-6 md:p-8 relative overflow-hidden bg-[#1e325c] shadow-md group cursor-default border border-[#1e325c]">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-[#00b5d5]/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#ff6c02]/5 rounded-full blur-3xl" />
                 
@@ -314,7 +314,7 @@ export default function Wonderland() {
                   <h4 className="font-serif text-white text-4xl md:text-5xl font-medium tracking-wide mb-3 drop-shadow-sm">
                     {wonderland.discount.percentage}% Endirim
                   </h4>
-                  <p className="text-white/80 text-sm font-light mb-6 max-w-[220px] leading-relaxed">
+                  <p className="text-white/80 text-sm font-light mb-6 max-w-55 leading-relaxed">
                     {(wonderland as any)?.specialOffer?.text?.[l] || "Xüsusi təklif mətni"}
                   </p>
                   <MagneticButton>

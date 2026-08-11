@@ -329,7 +329,7 @@ export default function AdminWonderlandPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-stone-600 mb-1 flex items-center gap-1">
+              <label className="block text-xs font-bold text-stone-600 mb-1 items-center gap-1">
                 <Tag className="w-3 h-3" /> Teq [{formLang.toUpperCase()}]
               </label>
               <input
@@ -342,7 +342,7 @@ export default function AdminWonderlandPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-stone-600 mb-1 flex items-center gap-1">
+            <label className="block text-xs font-bold text-stone-600 mb-1 items-center gap-1">
               <Clock className="w-3 h-3" /> İş Saatları (Ümumi)
             </label>
             <input

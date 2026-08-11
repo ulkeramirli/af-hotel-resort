@@ -169,7 +169,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="font-sans antialiased overflow-x-hidden w-full bg-[var(--color-hotel-light)] text-[var(--color-hotel-dark)]">
+      <body className="font-sans antialiased overflow-x-hidden w-full bg-(--color-hotel-light) text-(--color-hotel-dark)">
         <Providers>
           <Header />
           <main className="flex-1 w-full flex flex-col min-h-screen">
