@@ -23,13 +23,13 @@ const gradients: Record<string, string> = {
 };
 
 const accentColors: Record<string, string> = {
-  rooms:     'text-[#00b5d5] border-[#00b5d5]/50',
-  aquapark:  'text-cyan-300 border-cyan-300/50',
-  wonderland:'text-purple-300 border-purple-300/50',
-  restoran:  'text-amber-300 border-amber-300/50',
-  about:     'text-[#00b5d5] border-[#00b5d5]/50',
-  contacts:  'text-[#00b5d5] border-[#00b5d5]/50',
-  default:   'text-[#00b5d5] border-[#00b5d5]/50',
+  rooms:     'text-[#b7d1ea] border-[#b7d1ea]/50 bg-[#b7d1ea]',
+  aquapark:  'text-cyan-300 border-cyan-300/50 bg-cyan-300',
+  wonderland:'text-purple-300 border-purple-300/50 bg-purple-300',
+  restoran:  'text-amber-300 border-amber-300/50 bg-amber-300',
+  about:     'text-[#b7d1ea] border-[#b7d1ea]/50 bg-[#b7d1ea]',
+  contacts:  'text-[#b7d1ea] border-[#b7d1ea]/50 bg-[#b7d1ea]',
+  default:   'text-[#b7d1ea] border-[#b7d1ea]/50 bg-[#b7d1ea]',
 };
 
 const decorativeElements: Record<string, React.ReactNode> = {
@@ -173,7 +173,6 @@ export default function PageHero({ title, subtitle, imagePath, variant = 'defaul
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" as const, delay: 0.6 }}
           className={`mt-6 w-16 h-0.5 ${accent.split(' ')[0].replace('text-', 'bg-')}`}
-          style={{ background: variant === 'wonderland' ? '#a855f7' : variant === 'restoran' ? '#f59e0b' : '#00b5d5' }}
         />
       </div>
     </div>

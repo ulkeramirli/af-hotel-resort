@@ -14,7 +14,7 @@ export default function WonderlandPage() {
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}
-        imagePath="/af-park.jpg"
+        imagePath="/karusel.jpg"
         variant="wonderland"
       />
       <div className="py-12">
