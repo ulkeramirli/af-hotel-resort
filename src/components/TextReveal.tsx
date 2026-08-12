@@ -11,7 +11,7 @@ interface TextRevealProps {
 
 export default function TextReveal({ text, className = '', delay = 0, center = false }: TextRevealProps) {
   // Split text by any whitespace to handle non-breaking spaces safely.
-  const words = text.split(/\s+/).filter(Boolean);
+  const words = text.split(' ').filter(Boolean);
 
   const container = {
     hidden: { opacity: 0 },

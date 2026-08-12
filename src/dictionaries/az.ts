@@ -48,7 +48,7 @@ export const az: TranslationSchema = {
     exploreBtn: "Kəşf Et",
     scrollDown: "Daha Çox",
     line1: "XƏZƏR SAHİLİNƏ",
-    line2: "AF HOTELƏ XOŞ GƏLMİSİNİZ",
+    line2: "AF\u00A0HOTELƏ XOŞ GƏLMİSİNİZ",
     sub: "Novxanı, Xəzər Sahili • Bakı",
     f1: "Dəniz mənzərəli otaqlar",
     f2: " Möhtəşəm AquaPark",
