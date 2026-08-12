@@ -739,7 +739,7 @@ export default function Aquapark() {
                   </button>
                   {openFaq === i && (
                     <div className="px-4 pb-4 bg-white/50">
-                      <div className="text-xs text-stone-500 leading-relaxed font-medium prose prose-stone max-w-none break-words [&>p]:mb-2 [&>p]:break-words [&>p]:whitespace-normal" dangerouslySetInnerHTML={{ __html: faqAnswer }} />
+                      <div className="text-xs text-stone-500 leading-relaxed font-medium prose prose-stone max-w-none wrap-break-word [&>p]:mb-2 [&>p]:wrap-break-word [&>p]:whitespace-normal" dangerouslySetInnerHTML={{ __html: faqAnswer }} />
                     </div>
                   )}
                 </div>
