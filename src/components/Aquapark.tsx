@@ -489,7 +489,7 @@ export default function Aquapark() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl text-center [&>p]:mb-0 mx-auto px-4 w-full **:whitespace-normal! **:wrap-break-word!" dangerouslySetInnerHTML={{ __html: displaySubtitle.replace(/&nbsp;/g, ' ') }}
+              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl text-center [&>p]:mb-0 mx-auto px-4 w-full break-words whitespace-normal [&>p]:break-words [&>p]:whitespace-normal" dangerouslySetInnerHTML={{ __html: displaySubtitle.replace(/&nbsp;/g, ' ') }}
             />
           </motion.div>
         </div>
@@ -625,7 +625,7 @@ export default function Aquapark() {
                       <div>
                         <h4 className="font-extrabold text-[#1e325c] text-base md:text-lg leading-tight mb-2 group-hover:text-[#00b5d5] transition-colors">{itemName}</h4>
                         <div 
-                          className="text-[11px] md:text-xs text-stone-500 font-medium leading-relaxed whitespace-normal wrap-break-word [&>p]:mb-1 [&>p]:line-clamp-3 line-clamp-3" 
+                          className="text-[11px] md:text-xs text-stone-500 font-medium leading-relaxed break-words whitespace-normal [&>p]:mb-1 [&>p]:line-clamp-3 line-clamp-3 [&>p]:break-words [&>p]:whitespace-normal" 
                           dangerouslySetInnerHTML={{ __html: itemDesc }} 
                         />
                       </div>
@@ -739,7 +739,7 @@ export default function Aquapark() {
                   </button>
                   {openFaq === i && (
                     <div className="px-4 pb-4 bg-white/50">
-                      <div className="text-xs text-stone-500 leading-relaxed font-medium prose prose-stone max-w-none wrap-break-word [&>p]:mb-2 [&>p]:wrap-break-word [&>p]:whitespace-normal" dangerouslySetInnerHTML={{ __html: faqAnswer }} />
+                      <div className="text-xs text-stone-500 leading-relaxed font-medium prose prose-stone max-w-none break-words [&>p]:mb-2 [&>p]:break-words [&>p]:whitespace-normal" dangerouslySetInnerHTML={{ __html: faqAnswer }} />
                     </div>
                   )}
                 </div>

@@ -165,7 +165,7 @@ export default function About() {
 
           <div className="space-y-4 text-xs md:text-sm text-stone-500 font-light leading-relaxed max-w-xl">
             {dbAbout ? (
-              <div className="prose prose-stone prose-lg text-stone-500 leading-relaxed font-light wrap-break-word whitespace-normal" dangerouslySetInnerHTML={{ __html: (dbAbout.description as any)?.[l] || "" }} />
+              <div className="prose prose-stone prose-lg text-stone-500 leading-relaxed font-light break-words whitespace-normal [&>p]:break-words [&>p]:whitespace-normal px-4" dangerouslySetInnerHTML={{ __html: (dbAbout.description as any)?.[l] || "" }} />
             ) : (
               <>
                 <p>{about.p1}</p>
