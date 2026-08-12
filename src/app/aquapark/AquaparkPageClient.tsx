@@ -14,7 +14,7 @@ export default function AquaparkPage() {
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}
-        imagePath="/aqua.jpg"
+        imagePath="/aquapark.jpg"
         variant="aquapark"
       />
       <div className="py-12">

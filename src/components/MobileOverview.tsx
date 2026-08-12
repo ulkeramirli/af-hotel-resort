@@ -53,7 +53,7 @@ const sections = [
     key: "aquapark",
     href: "/aquapark",
     icon: Waves,
-    image: "/aqua.jpg",
+    image: "/aquapark.jpg",
     gradient: "from-[#004e7c]/80 via-[#006fa5]/60 to-[#0097c4]/80",
     accent: "#5dd8f4",
     glow: "rgba(0,181,213,0.3)",

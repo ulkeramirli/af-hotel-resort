@@ -65,6 +65,9 @@ export default function Wonderland() {
 
   const active = wonderland?.bigAttractions?.[activeTab];
 
+  const isFree = (p: string | number) => ['0', 'ödənişsiz', 'free', 'бесплатно'].includes(String(p).toLowerCase().trim());
+  const freeText = { az: 'Ödənişsiz', en: 'Free', ru: 'Бесплатно' }[l] || 'Ödənişsiz';
+
   return (
     <section id="wonderland" className="py-24 md:py-32 relative overflow-hidden scroll-mt-10 bg-[#f8fafc] perspective-1000">
       {/* Background Magic Elements */}
@@ -283,7 +286,7 @@ export default function Wonderland() {
                       {typeof ticket.name === 'object' ? (ticket.name[l] || ticket.name.az || "Ticket") : (ticket.name || "Ticket")}
                     </span>
                     <span className="text-sm md:text-base font-bold text-[#ff6c02] whitespace-nowrap">
-                      {ticket.price}
+                      {isFree(ticket.price) ? freeText : ticket.price}
                     </span>
                   </div>
                 </div>

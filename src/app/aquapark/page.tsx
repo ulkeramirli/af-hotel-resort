@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     url: 'https://afhotel.az/aquapark',
     images: [
       {
-        url: '/AF-aqua2.jpg',
+        url: '/aquapark.jpg',
         width: 1200,
         height: 630,
         alt: 'Aqua Park - AF Hotel Novxani',

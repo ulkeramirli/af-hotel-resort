@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import ExchangeRate from "@/models/ExchangeRate";
 import Room from "@/models/Room";
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   await connectDB();
   try {

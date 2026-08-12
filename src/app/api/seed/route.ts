@@ -7,6 +7,8 @@ import Restaurant from "@/models/Restaurant";
 import Wonderland from "@/models/Wonderland";
 import { NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   await connectDB();
 
