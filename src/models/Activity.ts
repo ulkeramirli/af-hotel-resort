@@ -21,6 +21,10 @@ const activitySchema = new mongoose.Schema(
       ref: "ActivityCategory",
       required: true,
     },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

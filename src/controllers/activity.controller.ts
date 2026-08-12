@@ -6,7 +6,7 @@ export class ActivityController {
   static async create(req: Request) {
     const body = await req.json();
 
-    const { title, description, image, images, category } = body;
+    const { title, description, image, images, category, order } = body;
 
     const activity = await Activity.create({
       title,
@@ -14,6 +14,7 @@ export class ActivityController {
       image,
       images,
       category,
+      order: order || 0,
     });
     return NextResponse.json(
       {
@@ -31,6 +32,7 @@ export class ActivityController {
     const filter = category ? { category } : {};
 
     const activities = await Activity.find(filter).populate("category").sort({
+      order: 1,
       createdAt: -1,
     });
 

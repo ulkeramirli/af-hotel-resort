@@ -370,6 +370,7 @@ export default function Aquapark() {
             icon: Waves,
             items: acts
               .filter(a => a.category && (typeof a.category === 'object' ? (a.category as any)._id : a.category) === cat._id)
+              .sort((a, b) => (a.order || 0) - (b.order || 0))
               .map(a => ({
                 name: a.title,
                 icon: "✨",
@@ -606,8 +607,7 @@ export default function Aquapark() {
                         <Image src={item.images?.[0] || item.img} alt={itemName} fill priority={i < 2} sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
                       )}
                       <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity z-10" />
-                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#1e325c] shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center gap-1.5 z-20">
-                        <span className="text-sm">{item.icon}</span>
+                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-[#1e325c] shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center z-20">
                         <span>{itemName}</span>
                       </div>
                     </div>

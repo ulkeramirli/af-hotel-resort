@@ -23,6 +23,7 @@ const emptyActivityForm = {
   description: { az: "", en: "", ru: "" },
   image: "",
   images: [] as string[],
+  order: 0,
 };
 
 const LangSwitcher = ({ lang, setLang }: { lang: "az" | "en" | "ru"; setLang: (l: "az" | "en" | "ru") => void }) => (
@@ -158,6 +159,7 @@ export default function AdminActivitiesPage() {
       description: parseLoc(activity.description),
       image: activity.image || "",
       images: activity.images || [],
+      order: activity.order || 0,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -383,6 +385,15 @@ export default function AdminActivitiesPage() {
                     <option key={c._id} value={c._id}>{typeof c.name === 'object' ? ((c.name as any)?.az || "") : c.name}</option>
                   ))}
                 </select>
+                <div className="md:col-span-2">
+                  <input
+                    type="number"
+                    placeholder="Sıra (məs: 1)"
+                    value={activityForm.order ?? 0}
+                    onChange={(e) => setActivityForm({ ...activityForm, order: Number(e.target.value) })}
+                    className="w-full md:w-1/2 px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs focus:outline-none focus:border-[#00b5d5]"
+                  />
+                </div>
                 <div className="md:col-span-2 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-bold text-[#1e325c]">Şəkillər <span className="text-stone-400 font-normal">({activityForm.images.length} şəkil)</span></p>
