@@ -614,7 +614,10 @@ export default function Aquapark() {
                     <div className="p-5 md:p-6 grow flex flex-col justify-between space-y-3 relative z-20">
                       <div>
                         <h4 className="font-extrabold text-[#1e325c] text-base md:text-lg leading-tight mb-2 group-hover:text-[#00b5d5] transition-colors">{itemName}</h4>
-                        <div className="text-[11px] md:text-xs text-stone-500 font-medium leading-relaxed line-clamp-3 prose prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: itemDesc }} />
+                        <div 
+                          className="text-[11px] md:text-xs text-stone-500 font-medium leading-relaxed whitespace-normal wrap-break-word [&>p]:mb-1 [&>p]:line-clamp-3 line-clamp-3" 
+                          dangerouslySetInnerHTML={{ __html: itemDesc }} 
+                        />
                       </div>
                       <div className="pt-3 border-t border-stone-200/50 flex items-center gap-1.5 text-stone-400 group-hover:text-[#00b5d5]/80 transition-colors">
                         <MapPin className="w-3.5 h-3.5" />
