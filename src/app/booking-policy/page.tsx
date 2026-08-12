@@ -76,7 +76,7 @@ export default function BookingPolicy() {
     <div className="bg-white min-h-screen antialiased selection:bg-[#00b5d5] selection:text-white flex flex-col">
       <Header />
       
-      <main className="flex-grow pt-32 pb-20 px-6 lg:px-16 max-w-4xl mx-auto w-full">
+      <main className="grow pt-32 pb-20 px-6 lg:px-16 max-w-4xl mx-auto w-full">
         <h1 className="text-3xl md:text-5xl font-bold text-stone-800 mb-10 text-center tracking-tight">{t.title}</h1>
         
         <div className="space-y-8 text-stone-600 leading-relaxed font-light">

@@ -60,9 +60,9 @@ function RoomCarousel({ images, alt, priority = false }: { images: string[]; alt
 
 export const content = {
   az: {
-    tag: "OTAQLAR & KOTECLƏR",
-    title: "Mükəmməl İstirahət Məkanı",
-    subtitle: "Hər zövqə uyğun rahat otaqlar",
+    tag: "",
+    title: "",
+    subtitle: "",
     all: "Hamısı",
     single: "Single",
     double: "Standard Double",
@@ -75,9 +75,9 @@ export const content = {
     book: "Rezervasiya",
   },
   en: {
-    tag: "ROOMS & COTTAGES",
-    title: "A New Level of Comfort",
-    subtitle: "Comfortable rooms for every taste",
+    tag: "",
+    title: "",
+    subtitle: "",
     all: "All",
     single: "Single",
     double: "Standard Double",
@@ -90,9 +90,9 @@ export const content = {
     book: "Book",
   },
   ru: {
-    tag: "НОМЕРА И КОТТЕДЖИ",
-    title: "Новый Уровень Комфорта",
-    subtitle: "Комфортные номера на любой вкус",
+    tag: "",
+    title: "",
+    subtitle: "",
     all: "Все",
     single: "Single",
     double: "Standard Double",
@@ -356,15 +356,15 @@ export default function Rooms() {
           >
             <div className="flex items-center gap-4 justify-center">
               <div className="w-8 h-px bg-[#00b5d5]" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5]">
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5] leading-normal py-1">
                 {loc(settings?.tag) || c.tag}
               </span>
               <div className="w-8 h-px bg-[#00b5d5]" />
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight">
-              <TextReveal text={loc(settings?.title) || c.title} delay={0.1} />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-normal py-1">
+              <TextReveal text={loc(settings?.title) || c.title} delay={0.1} center />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto wrap-break-word whitespace-normal [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
+            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto **:wrap-break-word whitespace-normal [&>p]:mb-0 py-1" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
           </motion.div>
 
           <motion.div

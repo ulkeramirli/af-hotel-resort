@@ -9,6 +9,7 @@ export class ActivityCategoryController {
       name: body.name,
       description: body.description || "",
       emoji: body.emoji || "",
+      order: body.order || 0,
     });
 
     return NextResponse.json(
@@ -24,6 +25,7 @@ export class ActivityCategoryController {
 
   static async getAll() {
     const categories = await ActivityCategory.find().sort({
+      order: 1,
       createdAt: -1,
     });
 

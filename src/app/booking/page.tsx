@@ -21,12 +21,12 @@ export default function BookingPage() {
     <div className="min-h-screen bg-[#f7f5f0] relative overflow-hidden">
       {/* Decorative Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-[#00b5d5]/5 blur-[150px]" />
-        <div className="absolute top-[50%] -left-[10%] w-[50%] h-[50%] rounded-full bg-[#c5a880]/5 blur-[150px]" />
+        <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#00b5d5]/5 blur-[150px]" />
+        <div className="absolute top-[50%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#c5a880]/5 blur-[150px]" />
       </div>
 
       {/* Hero Banner */}
-      <div className="relative h-[400px] md:h-[480px] w-full overflow-hidden">
+      <div className="relative h-100 md:h-120 w-full overflow-hidden">
         <motion.div 
           initial={{ scale: 1.05 }}
           animate={{ scale: 1 }}
@@ -44,8 +44,8 @@ export default function BookingPage() {
         </motion.div>
         
         {/* Subtle Gradients for Left-Aligned Text */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1e]/95 via-[#0a0f1e]/60 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f1e]/10 to-[#f7f5f0] pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#0a0f1e]/95 via-[#0a0f1e]/60 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-[#0a0f1e]/10 to-[#f7f5f0] pointer-events-none" />
         
         <div className="relative z-10 w-full h-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-end pb-16 md:pb-20 pt-32 md:pt-40">
           {/* Minimalist Back Button */}
@@ -78,7 +78,7 @@ export default function BookingPage() {
               <span className="text-[10px] md:text-xs font-bold tracking-[0.25em] text-[#c5a880] uppercase drop-shadow-md">
                 {texts.tag}
               </span>
-              <div className="w-16 h-px bg-gradient-to-r from-[#c5a880]/50 to-transparent hidden sm:block" />
+              <div className="w-16 h-px bg-linear-to-r from-[#c5a880]/50 to-transparent hidden sm:block" />
             </motion.div>
             
             <motion.h1 

@@ -1,45 +1,27 @@
 import { MetadataRoute } from 'next';
-import { connectDB } from '@/lib/db';
-import Room from '@/models/Room';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://afhotel.az';
-  const lastModified = new Date();
 
-  const mainRoutes = [
-    { path: '', priority: 1.0, changeFrequency: 'daily' as const },
-    { path: '/rooms', priority: 0.9, changeFrequency: 'weekly' as const },
-    { path: '/aquapark', priority: 0.9, changeFrequency: 'weekly' as const },
-    { path: '/wonderland', priority: 0.9, changeFrequency: 'weekly' as const },
-    { path: '/booking', priority: 0.95, changeFrequency: 'weekly' as const },
-    { path: '/restoran', priority: 0.8, changeFrequency: 'weekly' as const },
-    { path: '/about', priority: 0.7, changeFrequency: 'monthly' as const },
-    { path: '/contacts', priority: 0.7, changeFrequency: 'monthly' as const },
-    { path: '/privacy', priority: 0.3, changeFrequency: 'yearly' as const },
-    { path: '/terms', priority: 0.3, changeFrequency: 'yearly' as const },
-    { path: '/booking-policy', priority: 0.4, changeFrequency: 'monthly' as const },
+  const routes = [
+    { url: '', priority: 1.0, changeFrequency: 'daily' as const },
+    { url: '/rooms', priority: 0.9, changeFrequency: 'daily' as const },
+    { url: '/aquapark', priority: 0.9, changeFrequency: 'weekly' as const },
+    { url: '/wonderland', priority: 0.8, changeFrequency: 'weekly' as const },
+    { url: '/restoran', priority: 0.8, changeFrequency: 'weekly' as const },
+    { url: '/about', priority: 0.7, changeFrequency: 'monthly' as const },
+    { url: '/booking', priority: 0.8, changeFrequency: 'always' as const },
+    { url: '/contacts', priority: 0.7, changeFrequency: 'monthly' as const },
+    { url: '/privacy', priority: 0.3, changeFrequency: 'yearly' as const },
+    { url: '/terms', priority: 0.3, changeFrequency: 'yearly' as const },
   ];
 
-  // Fetch dynamic room routes
-  let roomRoutes: { path: string; priority: number; changeFrequency: "weekly" }[] = [];
-  try {
-    await connectDB();
-    const rooms = await Room.find({}, '_id').lean();
-    roomRoutes = rooms.map(room => ({
-      path: `/rooms/${room._id}`,
-      priority: 0.8,
-      changeFrequency: 'weekly' as const,
-    }));
-  } catch (error) {
-    console.warn("Failed to fetch rooms for sitemap:", error);
-  }
-
-  const allRoutes = [...mainRoutes, ...roomRoutes];
-
-  return allRoutes.map(({ path, priority, changeFrequency }) => ({
-    url: `${baseUrl}${path}`,
-    lastModified,
-    changeFrequency,
-    priority,
+  const sitemapEntries = routes.map((route) => ({
+    url: `${baseUrl}${route.url}`,
+    lastModified: new Date(),
+    changeFrequency: route.changeFrequency,
+    priority: route.priority,
   }));
+
+  return sitemapEntries;
 }

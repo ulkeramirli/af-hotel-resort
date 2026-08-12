@@ -10,12 +10,13 @@ export default function RoomsPage() {
   const titles = { az: 'Otaqlar & Koteclər', en: 'Rooms & Cottages', ru: 'Номера и Коттеджи' };
   const subs = { az: 'RAHATLIĞI YENİDƏN KƏŞF EDİN', en: 'REDEFINE COMFORT', ru: 'ПЕРЕОСМЫСЛИТЕ КОМФОРТ' };
   return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
+    <div className="w-full min-h-screen bg-(--color-hotel-light)">
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}
-        imagePath="/AF-hotel.jpg"
+        imagePath="/rooms.jpg"
         variant="rooms"
+        imageClassName="object-cover object-center"
       />
       <div className="py-12">
         <RoomsComponent />

@@ -1,12 +1,13 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Compass, MapPin, Palmtree, Tv } from "lucide-react";
+import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Compass, MapPin, Palmtree, Tv, Clapperboard } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import TiltCard from "./TiltCard";
 import MagneticButton from "./MagneticButton";
+import DynamicIcon from "./DynamicIcon";
 import TextReveal from "./TextReveal";
 import { getActivities, getActivityCategories, getActivitySettings, getTickets, getFaqs } from "@/services/api";
 import type { Activity, ActivityCategory, ActivitySettings, Ticket, Faq } from "@/types/api";
@@ -83,9 +84,9 @@ const CardImageSlider = ({ images, itemName, priority = false }: { images: strin
 
 const content = {
   az: {
-    tag: "AQUA & BEACH RESORT",
-    title: "Eksklüziv Su Dünyası",
-    subtitle: "Xəzər sahilində ailənizlə unudulmaz anlar yaşayacağınız gözəl əyləncə, hovuz və özəl çimərlik kompleksi",
+    tag: "",
+    title: "",
+    subtitle: "",
     openHours: "10:00 – 20:00",
     season: "Yay mövsümü: May – Oktyabr",
     tickets: "Bilet qiymətləri",
@@ -155,9 +156,9 @@ const content = {
     ],
   },
   en: {
-    tag: "AQUA & BEACH RESORT",
-    title: "Exclusive Water World",
-    subtitle: "A beautiful entertainment, pool, and private beach complex on the Caspian coast for an unforgettable family vacation",
+    tag: "",
+    title: "",
+    subtitle: "",
     openHours: "10:00 – 20:00",
     season: "Summer season: May – October",
     tickets: "Ticket prices",
@@ -227,9 +228,9 @@ const content = {
     ],
   },
   ru: {
-    tag: "AQUA & BEACH RESORT",
-    title: "Эксклюзивный Водный Мир",
-    subtitle: "Премиальный комплекс развлечений, бассейнов и частного пляжа на побережье Каспия для всей семьи",
+    tag: "",
+    title: "",
+    subtitle: "",
     openHours: "10:00 – 20:00",
     season: "Летний сезон: Май – Октябрь",
     tickets: "Стоимость билетов",
@@ -369,6 +370,7 @@ export default function Aquapark() {
             icon: Waves,
             items: acts
               .filter(a => a.category && (typeof a.category === 'object' ? (a.category as any)._id : a.category) === cat._id)
+              .sort((a, b) => (a.order || 0) - (b.order || 0))
               .map(a => ({
                 name: a.title,
                 icon: "✨",
@@ -411,10 +413,10 @@ export default function Aquapark() {
   const displaySubtitle = loc(settings?.subtitle) || c.subtitle;
 
   const dynamicStats = [
-    { icon: Waves, label: loc(settings?.stats?.[0]?.value) || "25+", sub1: loc(settings?.stats?.[0]?.label) || (l === "az" ? "Su Əyləncəsi" : l === "en" ? "Water Attractions" : "Водных объектов"), sub2: loc(settings?.stats?.[0]?.sub) },
-    { icon: Users, label: loc(settings?.stats?.[1]?.value) || "2500+", sub1: loc(settings?.stats?.[1]?.label) || (l === "az" ? "Günlük Qonaq" : l === "en" ? "Daily Guests" : "Гостей в день"), sub2: loc(settings?.stats?.[1]?.sub) },
+    { icon: Waves, label: loc(settings?.stats?.[0]?.value) || "", sub1: loc(settings?.stats?.[0]?.label) || (l === "az" ? "" : l === "en" ? "" : ""), sub2: loc(settings?.stats?.[0]?.sub) },
+    { icon: Users, label: loc(settings?.stats?.[1]?.value) || "", sub1: loc(settings?.stats?.[1]?.label) || (l === "az" ? "" : l === "en" ? "" : ""), sub2: loc(settings?.stats?.[1]?.sub) },
     { icon: Clock, label: loc(settings?.stats?.[2]?.value) || c.openHours, sub1: loc(settings?.stats?.[2]?.label) || c.season, sub2: loc(settings?.stats?.[2]?.sub) },
-    { icon: Star, label: loc(settings?.stats?.[3]?.value) || "5.0", sub1: loc(settings?.stats?.[3]?.label) || (l === "az" ? "Yüksək Xidmət" : l === "en" ? "High Quality Service" : "Высокий Сервис"), sub2: loc(settings?.stats?.[3]?.sub) },
+    { icon: Clapperboard, label: loc(settings?.stats?.[3]?.value) || "", sub1: loc(settings?.stats?.[3]?.label) || (l === "az" ? "" : l === "en" ? "" : ""), sub2: loc(settings?.stats?.[3]?.sub) },
   ];
 
   // Функции для управления слайдером по стрелкам
@@ -470,14 +472,14 @@ export default function Aquapark() {
               />
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight wrap-break-word whitespace-normal text-center max-w-3xl">
-              <TextReveal text={displayTitle} delay={0.1} />
+              <TextReveal text={displayTitle} delay={0.1} center />
             </h2>
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl text-center [&>p]:mb-0 mx-auto px-4 w-full [&_*]:!whitespace-normal [&_*]:!break-words" dangerouslySetInnerHTML={{ __html: displaySubtitle.replace(/&nbsp;/g, ' ') }}
+              className="text-sm md:text-base font-medium text-stone-500 prose prose-sm prose-stone max-w-2xl text-center [&>p]:mb-0 mx-auto px-4 w-full **:whitespace-normal! **:wrap-break-word!" dangerouslySetInnerHTML={{ __html: displaySubtitle.replace(/&nbsp;/g, ' ') }}
             />
           </motion.div>
         </div>
@@ -546,7 +548,7 @@ export default function Aquapark() {
                   <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-1.5 md:gap-2 mb-0.5 md:mb-1 text-center md:text-left w-full">
                     <div className="flex items-center gap-1.5">
                       {zone.emoji ? (
-                        <span className="text-xl md:text-xl">{zone.emoji}</span>
+                        <DynamicIcon name={zone.emoji} className="w-5 h-5 md:w-5 md:h-5" />
                       ) : IconComponent ? (
                         <IconComponent className={`w-5 h-5 md:w-5 md:h-5 ${activeTab === i ? "text-[#00b5d5]" : "text-stone-400"}`} />
                       ) : null}
@@ -605,15 +607,17 @@ export default function Aquapark() {
                         <Image src={item.images?.[0] || item.img} alt={itemName} fill priority={i < 2} sizes="(max-width: 768px) 85vw, 33vw" className="object-cover group-hover:scale-110 transition-transform duration-700" />
                       )}
                       <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity z-10" />
-                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-[#1e325c] shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center gap-1.5 z-20">
-                        <span className="text-sm">{item.icon}</span>
+                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-[#1e325c] shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center z-20">
                         <span>{itemName}</span>
                       </div>
                     </div>
                     <div className="p-5 md:p-6 grow flex flex-col justify-between space-y-3 relative z-20">
                       <div>
                         <h4 className="font-extrabold text-[#1e325c] text-base md:text-lg leading-tight mb-2 group-hover:text-[#00b5d5] transition-colors">{itemName}</h4>
-                        <div className="text-[11px] md:text-xs text-stone-500 font-medium leading-relaxed line-clamp-3 prose prose-stone [&>p]:mb-1" dangerouslySetInnerHTML={{ __html: itemDesc }} />
+                        <div 
+                          className="text-[11px] md:text-xs text-stone-500 font-medium leading-relaxed whitespace-normal wrap-break-word [&>p]:mb-1 [&>p]:line-clamp-3 line-clamp-3" 
+                          dangerouslySetInnerHTML={{ __html: itemDesc }} 
+                        />
                       </div>
                       <div className="pt-3 border-t border-stone-200/50 flex items-center gap-1.5 text-stone-400 group-hover:text-[#00b5d5]/80 transition-colors">
                         <MapPin className="w-3.5 h-3.5" />

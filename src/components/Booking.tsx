@@ -205,7 +205,27 @@ function BookingContent() {
   }, []);
 
   useEffect(() => {
-    if (searchParams) {
+    // 1. Try loading from localStorage first
+    let hasDraft = false;
+    const saved = localStorage.getItem("af_booking_draft");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.checkIn) setCheckIn(parsed.checkIn);
+        if (parsed.checkOut) setCheckOut(parsed.checkOut);
+        if (parsed.adults) setAdults(parsed.adults);
+        if (parsed.kids) setKids(parsed.kids);
+        if (parsed.selectedRoomId && rooms.some(r => r.id === parsed.selectedRoomId)) {
+           setSelectedRoomId(parsed.selectedRoomId);
+        }
+        if (parsed.phone && !phone) setPhone(parsed.phone);
+        if (parsed.email && !email) setEmail(parsed.email);
+        hasDraft = true;
+      } catch (e) {}
+    }
+
+    // 2. Override with searchParams if any
+    if (searchParams && searchParams.toString() !== "") {
       const ci = searchParams.get("checkIn");
       const co = searchParams.get("checkOut");
       const a = searchParams.get("adults");
@@ -228,6 +248,14 @@ function BookingContent() {
       }
     }
   }, [searchParams, rooms, currentLang]);
+
+  // Save to localStorage whenever form data changes
+  useEffect(() => {
+    if (checkIn || checkOut || selectedRoomId) {
+      const draft = { checkIn, checkOut, adults, kids, selectedRoomId, phone, email };
+      localStorage.setItem("af_booking_draft", JSON.stringify(draft));
+    }
+  }, [checkIn, checkOut, adults, kids, selectedRoomId, phone, email]);
 
   useEffect(() => {
     if (selectedRoomId) {
@@ -599,7 +627,7 @@ function BookingContent() {
             </div>
 
             <div className="bg-linear-to-br from-slate-50 to-stone-50 border border-slate-200/60 rounded-3xl p-6 mb-6 shadow-inner">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+              <div className="flex flex-row justify-between items-center gap-4">
                 <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">
                   {dict.totalPrice}
                 </span>

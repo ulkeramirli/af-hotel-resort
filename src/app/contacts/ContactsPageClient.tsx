@@ -10,7 +10,7 @@ export default function ContactsPage() {
   const titles = { az: 'Əlaqə', en: 'Contact Us', ru: 'Контакты' };
   const subs = { az: 'BİZİMLƏ ƏLAQƏ SAXLAYIN', en: "LET'S STAY IN TOUCH", ru: 'СВЯЖИТЕСЬ С НАМИ' };
   return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
+    <div className="w-full min-h-screen bg-(--color-hotel-light)">
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}

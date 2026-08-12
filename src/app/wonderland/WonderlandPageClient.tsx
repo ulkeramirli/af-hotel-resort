@@ -10,11 +10,11 @@ export default function WonderlandPage() {
   const titles = { az: 'AF Park', en: 'AF Park', ru: 'AF Park' };
   const subs = { az: 'SEHRLI ALƏM — AİLƏ ÜÇÜN', en: 'MAGICAL WORLD — FOR FAMILIES', ru: 'ВОЛШЕБНЫЙ МИР — ДЛЯ СЕМЬИ' };
   return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
+    <div className="w-full min-h-screen bg-(--color-hotel-light)">
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}
-        imagePath="/AF-aqua.jpg"
+        imagePath="/karusel.jpg"
         variant="wonderland"
       />
       <div className="py-12">

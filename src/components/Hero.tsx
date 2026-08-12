@@ -65,14 +65,14 @@
             <div className="absolute inset-0 hidden lg:block" style={{background: 'linear-gradient(105deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.70) 40%, rgba(0,0,0,0.05) 100%)'}} />
           </motion.div>
 
-          <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 grid grid-cols-1 lg:grid-cols-12 gap-4 xl:gap-8 items-center">
 
             {/* Left: Text + feature cards */}
             <motion.div 
               variants={containerVariants}
               initial="hidden"
               animate="show"
-              className="lg:col-span-7 space-y-6 lg:space-y-8 text-left"
+              className="lg:col-span-6 xl:col-span-7 space-y-6 lg:space-y-8 text-left"
             >
               <motion.div variants={itemVariants} className="space-y-4 md:space-y-5">
                 {/* Small elegant badge */}
@@ -86,7 +86,7 @@
                 {/* Main heading */}
                 <div>
                   <h1 
-                    className="text-4xl sm:text-5xl lg:text-6xl font-serif font-medium leading-[1.1] tracking-wide text-[#1e325c] filter-[drop-shadow(0_0_15px_rgba(255,255,255,0.8))_drop-shadow(0_0_30px_rgba(255,255,255,0.8))] lg:filter-none"
+                    className="text-4xl sm:text-5xl lg:text-[3.2rem] xl:text-6xl font-serif font-medium leading-[1.1] tracking-wide text-[#1e325c] wrap-break-word whitespace-normal filter-[drop-shadow(0_0_15px_rgba(255,255,255,0.8))_drop-shadow(0_0_30px_rgba(255,255,255,0.8))] lg:filter-none"
                     style={{ fontFamily: 'var(--font-cormorant), serif' }}
                   >
                     <TextReveal text={t.hero.line2} delay={0.2} />
@@ -141,7 +141,7 @@
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ ease: "easeOut" as const, duration: 0.6, delay: 0.3 }}
-              className="lg:col-span-5 w-full flex justify-center lg:justify-end mt-4 lg:mt-0"
+              className="lg:col-span-6 xl:col-span-5 w-full flex justify-start lg:justify-end mt-4 lg:mt-0"
             >
               <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-5 sm:p-7 w-full max-w-md shadow-[0_16px_40px_rgba(30,50,92,0.10)] border border-white/60 space-y-4 sm:space-y-5">
 

@@ -6,12 +6,12 @@ interface TextRevealProps {
   text: string;
   className?: string;
   delay?: number;
+  center?: boolean;
 }
 
-export default function TextReveal({ text, className = '', delay = 0 }: TextRevealProps) {
-  // Split text by lines (e.g. if we pass in a small paragraph) or just words. 
-  // Let's do a word split for a smooth staggered effect.
-  const words = text.split(' ');
+export default function TextReveal({ text, className = '', delay = 0, center = false }: TextRevealProps) {
+  // Split text by any whitespace to handle non-breaking spaces safely.
+  const words = text.split(/\s+/).filter(Boolean);
 
   const container = {
     hidden: { opacity: 0 },
@@ -35,7 +35,7 @@ export default function TextReveal({ text, className = '', delay = 0 }: TextReve
 
   return (
     <motion.div
-      style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25em' }}
+      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: center ? 'center' : 'flex-start' }}
       variants={container}
       initial="hidden"
       whileInView="visible"
@@ -43,8 +43,8 @@ export default function TextReveal({ text, className = '', delay = 0 }: TextReve
       className={className}
     >
       {words.map((word, index) => (
-        <span key={index} style={{ overflow: 'hidden', display: 'inline-block' }}>
-          <motion.span variants={child} style={{ display: 'inline-block' }}>
+        <span key={index} style={{ display: 'inline-block', paddingRight: '0.25em' }}>
+          <motion.span variants={child} style={{ display: 'inline-block', paddingRight: '0.15em' }}>
             {word}
           </motion.span>
         </span>

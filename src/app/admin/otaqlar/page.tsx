@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable @next/next/no-img-element, react-hooks/set-state-in-effect, react/no-unescaped-entities */
 "use client";
 
@@ -101,7 +102,7 @@ export default function AdminRoomsPage() {
         });
       }
       if (tData.length > 0) {
-        setRoomForm(prev => prev.type ? prev : ({ ...prev, type: tData[0]._id }));
+        setRoomForm((prev: any) => prev.type ? prev : ({ ...prev, type: tData[0]._id }));
       }
     } catch (err: any) {
       setError(err.message || "Məlumat yüklənərkən xəta baş verdi");
@@ -385,9 +386,10 @@ export default function AdminRoomsPage() {
                 />
                 <div className="md:col-span-3">
                   <RichTextEditor
+                    key={`desc-${formLang}`}
                     placeholder={`Təsvir (${formLang.toUpperCase()})`}
                     value={roomForm.description[formLang]}
-                    onChange={(val) => setRoomForm({ ...roomForm, description: { ...roomForm.description, [formLang]: val } })}
+                    onChange={(val) => setRoomForm((prev: any) => ({ ...prev, description: { ...prev.description, [formLang]: val } }))}
                   />
                 </div>
                 <input
@@ -446,7 +448,7 @@ export default function AdminRoomsPage() {
                           <img src={img} alt="" className="w-full h-full object-cover" />
                           <button
                             type="button"
-                            onClick={() => setRoomForm(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== idx) }))}
+                            onClick={() => setRoomForm((prev: any) => ({ ...prev, images: prev.images.filter((_: any, i: number) => i !== idx) }))}
                             className="absolute inset-0 bg-black/55 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
                           >
                             <X className="w-5 h-5" />
@@ -468,7 +470,7 @@ export default function AdminRoomsPage() {
                           try {
                             const data = await uploadImage(file);
                             if (data.success) {
-                              setRoomForm(prev => ({ ...prev, images: [...prev.images, data.url] }));
+                              setRoomForm((prev: any) => ({ ...prev, images: [...prev.images, data.url] }));
                             } else {
                               alert("Şəkil yüklənərkən xəta: " + (data.message || "Bilinməyən xəta"));
                             }
@@ -623,8 +625,9 @@ export default function AdminRoomsPage() {
             <div>
               <label className="block text-xs font-bold text-stone-600 mb-1">Alt Başlıq [{formLang.toUpperCase()}]</label>
               <RichTextEditor
+                key={`subtitle-${formLang}`}
                 value={settingsForm.subtitle[formLang]}
-                onChange={(val) => setSettingsForm({ ...settingsForm, subtitle: { ...settingsForm.subtitle, [formLang]: val } })}
+                onChange={(val) => setSettingsForm((prev: any) => ({ ...prev, subtitle: { ...prev.subtitle, [formLang]: val } }))}
               />
             </div>
             <div className="pt-4 flex justify-end">

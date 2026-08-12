@@ -10,7 +10,7 @@ export default function AboutPage() {
   const titles = { az: 'Haqqımızda', en: 'About Us', ru: 'О нас' };
   const subs = { az: 'AF HOTEL & AQUA PARK KOMPLEKSİ', en: 'AF HOTEL & AQUA PARK COMPLEX', ru: 'AF HOTEL & AQUA PARK КОМПЛЕКС' };
   return (
-    <div className="w-full min-h-screen bg-[var(--color-hotel-light)]">
+    <div className="w-full min-h-screen bg-(--color-hotel-light)">
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}
