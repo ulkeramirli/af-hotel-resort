@@ -160,14 +160,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
     if (langParam && ["az", "ru", "en"].includes(langParam)) {
       setLanguageState(langParam);
-      localStorage.setItem(LANG_KEY, langParam);
+      sessionStorage.setItem(LANG_KEY, langParam);
     } else {
-      const saved = localStorage.getItem(LANG_KEY) as Lang | null;
+      // Use sessionStorage so language resets to default 'az' on a fresh open,
+      // while still persisting across page reloads in the same session.
+      const saved = sessionStorage.getItem(LANG_KEY) as Lang | null;
       if (saved && ["az", "ru", "en"].includes(saved)) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setLanguageState(saved);
       } else {
-        localStorage.setItem(LANG_KEY, "az");
+        sessionStorage.setItem(LANG_KEY, "az");
       }
 
     }
@@ -175,7 +177,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = (lang: Lang) => {
     setLanguageState(lang);
-    localStorage.setItem(LANG_KEY, lang);
+    sessionStorage.setItem(LANG_KEY, lang);
   };
 
   const t = translations[language] ?? translations.az;
