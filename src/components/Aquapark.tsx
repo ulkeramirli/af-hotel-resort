@@ -423,7 +423,17 @@ export default function Aquapark() {
   const scrollSlider = (direction: "left" | "right") => {
     if (photoSliderRef.current) {
       const container = photoSliderRef.current;
-      const scrollAmount = container.clientWidth * 0.85; // Прокрутка на 85% ширины видимой области
+      const firstCard = container.firstElementChild as HTMLElement;
+      const secondCard = container.children[1] as HTMLElement;
+      
+      let scrollAmount = 300; // default fallback
+      if (firstCard && secondCard) {
+        scrollAmount = secondCard.offsetLeft - firstCard.offsetLeft;
+      } else if (firstCard) {
+        const gap = 24; // gap-6
+        scrollAmount = firstCard.offsetWidth + gap;
+      }
+      
       container.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth"
@@ -729,7 +739,7 @@ export default function Aquapark() {
                   </button>
                   {openFaq === i && (
                     <div className="px-4 pb-4 bg-white/50">
-                      <div className="text-xs text-stone-500 leading-relaxed font-medium prose prose-stone max-w-none [&>p]:mb-2" dangerouslySetInnerHTML={{ __html: faqAnswer }} />
+                      <div className="text-xs text-stone-500 leading-relaxed font-medium prose prose-stone max-w-none break-words [&>p]:mb-2 [&>p]:break-words [&>p]:whitespace-normal" dangerouslySetInnerHTML={{ __html: faqAnswer }} />
                     </div>
                   )}
                 </div>
