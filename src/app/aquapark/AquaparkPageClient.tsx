@@ -14,8 +14,9 @@ export default function AquaparkPage() {
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}
-        imagePath="/aquapark.jpg"
+        imagePath="/AF-aqua3.jpg"
         variant="aquapark"
+        imageClassName="object-cover object-[50%_0%] translate-y-20 md:translate-y-0 md:object-center"
       />
       <div className="py-12">
         <AquaparkComponent />

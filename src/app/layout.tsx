@@ -161,12 +161,24 @@ export default function RootLayout({
     }
   };
 
+  const webSiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'AF Hotel, Aqua Park & AF Park Complex',
+    url: 'https://afhotel.az',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://afhotel.az/rooms?q={search_term_string}',
+      'query-input': 'required name=search_term_string'
+    }
+  };
+
   return (
     <html lang="az" className={`${cormorant.variable} ${montserrat.variable} ${greatVibes.variable}`} data-scroll-behavior="smooth">
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, webSiteJsonLd]) }}
         />
       </head>
       <body className="font-sans antialiased overflow-x-hidden w-full bg-(--color-hotel-light) text-(--color-hotel-dark)">
