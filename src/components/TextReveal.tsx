@@ -14,20 +14,18 @@ export default function TextReveal({ text, className = '', delay = 0, center = f
 
   const container = {
     hidden: { opacity: 0 },
-    visible: (i = 1) => ({
-      opacity: 1,
-      transition: { staggerChildren: 0.08, delayChildren: delay * i },
-    }),
+    visible: { opacity: 1, transition: { duration: 0.1 } },
   };
 
   const child = {
-    visible: {
+    visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { ease: "easeOut" as const, duration: 0.45 },
-    },
+      transition: { ease: "easeOut" as const, duration: 0.45, delay: delay + i * 0.08 },
+    }),
     hidden: {
       opacity: 0,
+      y: 40,
     },
   };
 
@@ -45,7 +43,7 @@ export default function TextReveal({ text, className = '', delay = 0, center = f
     >
       {words.map((word, index) => (
         <span key={index} style={{ display: 'inline-block', paddingRight: '0.25em' }}>
-          <motion.span variants={child} style={{ display: 'inline-block', paddingRight: '0.15em' }}>
+          <motion.span custom={index} variants={child} style={{ display: 'inline-block', paddingRight: '0.15em' }}>
             {word}
           </motion.span>
         </span>
