@@ -96,7 +96,7 @@ export default function PageHero({ title, subtitle, imagePath, variant = 'defaul
   const deco = decorativeElements[variant] || null;
 
   return (
-    <div className="relative w-full h-[65vh] md:h-auto md:aspect-video min-h-100 flex items-end justify-start overflow-hidden bg-stone-900">
+    <div className="relative w-full h-[65vh] md:h-[55vh] lg:h-[60vh] min-h-[400px] flex items-end justify-start overflow-hidden bg-stone-900">
       {/* Background Image — Ken Burns zoom */}
       <div className="absolute inset-0 w-full h-full">
         <motion.div

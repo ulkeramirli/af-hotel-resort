@@ -23,7 +23,7 @@ import type { PublicRoom } from "@/services/api";
 import { toggleFavorite, isFavorite } from "@/lib/favorites";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCurrency } from "@/contexts/CurrencyContext";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import Modal from "./Modal";
 
 const content = {
   az: {
@@ -112,7 +112,6 @@ export default function RoomDetailPage({
   const l: LanguageKey = (language && language in content) ? (language as LanguageKey) : "az";
   const c = content[l];
   const router = useRouter();
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const [room, setRoom] = useState<PublicRoom | null>(null);
   const [loading, setLoading] = useState(true);
@@ -146,33 +145,23 @@ export default function RoomDetailPage({
     router.push(`/booking?roomId=${room.id}`);
   };
 
-  const handleBack = () => {
-    if (typeof window !== "undefined" && document.referrer && document.referrer.includes(window.location.host)) {
-      router.back();
-    } else {
-      router.push(isDesktop ? "/#rooms" : "/rooms");
-    }
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-white">
-        <Loader2 className="w-6 h-6 animate-spin text-stone-400" />
-      </div>
+      <Modal>
+        <div className="flex justify-center items-center py-32 bg-stone-50">
+          <Loader2 className="w-6 h-6 animate-spin text-stone-400" />
+        </div>
+      </Modal>
     );
   }
 
   if (!room) {
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center gap-4 text-stone-400 bg-white">
-        <p className="text-sm font-semibold text-stone-500">{c.notFound}</p>
-        <button
-          onClick={handleBack}
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1e325c] text-white rounded-xl shadow-md hover:bg-[#1e325c]/90 transition-all font-semibold text-sm cursor-pointer border-none"
-        >
-          {c.back}
-        </button>
-      </div>
+      <Modal>
+        <div className="flex flex-col justify-center items-center gap-4 py-32 text-stone-400 bg-stone-50">
+          <p className="text-sm font-semibold text-stone-500">{c.notFound}</p>
+        </div>
+      </Modal>
     );
   }
 
@@ -183,7 +172,8 @@ export default function RoomDetailPage({
   const roomIncludes = room.includes[l] || room.includes["az"] || room.includes["en"] || [];
 
   return (
-    <div className="min-h-screen bg-stone-50/40 text-stone-800 antialiased font-sans selection:bg-stone-100 pb-20 pt-28 relative">
+    <Modal>
+      <div className="bg-stone-50/40 text-stone-800 antialiased font-sans selection:bg-stone-100 pb-10 pt-10 relative">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -211,14 +201,6 @@ export default function RoomDetailPage({
         }}
       />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        {/* Кнопка Назад */}
-        <button
-          onClick={handleBack}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-stone-200 shadow-sm rounded-xl text-sm font-semibold text-stone-600 hover:text-[#1e325c] hover:border-[#1e325c]/30 hover:bg-stone-50 transition-all cursor-pointer mb-2 w-fit outline-none"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {c.back}
-        </button>
 
         {/* СЕТКА ГАЛЕРЕИ */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -481,5 +463,6 @@ export default function RoomDetailPage({
         </motion.div>
       </div>
     </div>
+    </Modal>
   );
 }

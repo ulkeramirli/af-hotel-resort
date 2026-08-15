@@ -1,8 +1,10 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Compass, MapPin, Palmtree, Tv, Clapperboard } from "lucide-react";
+import Link from "next/link";
+import { Waves, Clock, Users, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Compass, MapPin, Palmtree, Tv, Clapperboard, CalendarCheck } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import TiltCard from "./TiltCard";
@@ -303,6 +305,7 @@ const content = {
 
 export default function Aquapark() {
   const { language } = useLanguage();
+  const { currency } = useCurrency();
   const l = (language as "az" | "en" | "ru") || "az";
   const c = content[l];
   const [activeTab, setActiveTab] = useState(0);
@@ -442,7 +445,14 @@ export default function Aquapark() {
   };
 
   const isFree = (p: string | number) => ['0', 'ödənişsiz', 'free', 'бесплатно'].includes(String(p).toLowerCase().trim());
-  const getPriceDisplay = (p: string | number) => isFree(p) ? c.infantPrice : String(p) + " ₼";
+  const getPriceDisplay = (p: string | number) => {
+    if (isFree(p)) return c.infantPrice;
+    const num = typeof p === "string" ? parseFloat(p.replace(/[^0-9.]/g, "")) : p;
+    if (isNaN(num)) return String(p);
+    if (currency === "USD") return `$${Math.ceil(num / 1.7)}`;
+    if (currency === "EUR") return `€${Math.ceil(num / 1.85)}`;
+    return `${num} ₼`;
+  };
 
   return (
     <section id="aquapark" className="py-12 md:py-32 bg-transparent scroll-mt-20 overflow-hidden">
