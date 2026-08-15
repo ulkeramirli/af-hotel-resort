@@ -23,6 +23,16 @@ import type {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 const BASE = typeof window === "undefined" ? `${API_URL}/api` : "/api";
 
+async function safeJson(res: Response) {
+  const text = await res.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch (error) {
+    console.error("API response is not JSON:", text.substring(0, 200));
+    return { success: false, message: "Gözlənilməz server xətası baş verdi. Zəhmət olmasa biraz sonra yenidən cəhd edin." };
+  }
+}
+
 function setToken(token: string) {
   if (typeof window === "undefined") return;
 
@@ -60,7 +70,7 @@ export async function login(email: string, password: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (data.success) {
     setToken(data.data.token);
   }
@@ -88,7 +98,7 @@ export async function register(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
     });
-    return await res.json();
+    return await safeJson(res);
   } catch (error: any) {
     return { success: false, message: error.message };
   }
@@ -101,7 +111,7 @@ export async function forgotPassword(email: string): Promise<any> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
-    return await res.json();
+    return await safeJson(res);
   } catch (error: any) {
     return { success: false, message: error.message };
   }
@@ -118,7 +128,7 @@ export async function resetPassword(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, otp, newPassword }),
     });
-    return await res.json();
+    return await safeJson(res);
   } catch (error: any) {
     return { success: false, message: error.message };
   }
@@ -131,7 +141,7 @@ export async function updateProfile(name: string, email: string): Promise<any> {
       headers: authHeaders(),
       body: JSON.stringify({ name, email }),
     });
-    const data = await res.json();
+    const data = await safeJson(res);
 
     return data;
   } catch (error: any) {
@@ -154,7 +164,7 @@ export async function loginWithGoogle(
         googleId: "123456789",
       }),
     });
-    const data = await res.json();
+    const data = await safeJson(res);
     if (data.success) {
       setToken(data.data.token);
     }
@@ -221,7 +231,7 @@ function sanitizeImages(images: string[] | undefined): string[] {
 export async function getPublicRooms(): Promise<PublicRoom[]> {
   try {
     const res = await fetch(`${BASE}/rooms`);
-    const data = await res.json();
+    const data = await safeJson(res);
     if (!data.success) return [];
     const rooms: Room[] = data.rooms ?? [];
     const publicRooms = rooms.map(
@@ -282,7 +292,7 @@ let roomSettingsCache: RoomSettings | null = null;
 export async function getRoomSettings(): Promise<RoomSettings> {
   if (typeof window !== "undefined" && roomSettingsCache) return roomSettingsCache;
   const res = await fetch(`${BASE}/room-settings`);
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yüklənmədi");
   if (typeof window !== "undefined") roomSettingsCache = data.settings;
@@ -319,7 +329,7 @@ export async function getPublicRoomById(
   }
   try {
     const res = await fetch(`${BASE}/rooms/${id}`);
-    const data = await res.json();
+    const data = await safeJson(res);
     if (!data.success || !data.room) return null;
     const r: Room = data.room;
     return {
@@ -373,7 +383,7 @@ export async function getPublicRoomById(
 // GET /api/rooms → { success, rooms[] }
 export async function getRooms(): Promise<Room[]> {
   const res = await fetch(`${BASE}/rooms`, { headers: authHeaders() });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Otaqlar yüklənmədi");
   return data.rooms ?? [];
 }
@@ -385,7 +395,7 @@ export async function createRoom(payload: Partial<Room>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Otaq yaradılmadı");
   return data;
 }
@@ -397,7 +407,7 @@ export async function updateRoom(id: string, payload: Partial<Room>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Otaq yenilənmədi");
   return data;
 }
@@ -408,7 +418,7 @@ export async function deleteRoom(id: string) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Otaq silinmədi");
   return data;
 }
@@ -440,7 +450,7 @@ export async function createRoomType(name: any) {
     headers: authHeaders(),
     body: JSON.stringify({ name }),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Kateqoriya yaradılmadı");
   if (typeof window !== 'undefined') roomTypesCache = null;
   return data;
@@ -453,7 +463,7 @@ export async function updateRoomType(id: string, name: any) {
     headers: authHeaders(),
     body: JSON.stringify({ name }),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Kateqoriya yenilənmədi");
   if (typeof window !== 'undefined') roomTypesCache = null;
   return data;
@@ -465,7 +475,7 @@ export async function deleteRoomType(id: string) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Kateqoriya silinmədi");
   if (typeof window !== 'undefined') roomTypesCache = null;
   return data;
@@ -498,7 +508,7 @@ export async function createActivity(payload: Partial<Activity>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Fəaliyyət yaradılmadı");
   if (typeof window !== 'undefined') activitiesCache = null;
   return data;
@@ -511,7 +521,7 @@ export async function updateActivity(id: string, payload: Partial<Activity>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Fəaliyyət yenilənmədi");
   if (typeof window !== 'undefined') activitiesCache = null;
   return data;
@@ -523,7 +533,7 @@ export async function deleteActivity(id: string) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Fəaliyyət silinmədi");
   if (typeof window !== 'undefined') activitiesCache = null;
   return data;
@@ -537,7 +547,7 @@ export async function getActivityCategories(): Promise<ActivityCategory[]> {
   const res = await fetch(`${BASE}/activity-categories`, {
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Kateqoriyalar yüklənmədi");
   if (typeof window !== "undefined") activityCategoriesCache = data.categories ?? [];
@@ -553,7 +563,7 @@ export async function createActivityCategory(
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Kateqoriya yaradılmadı");
   if (typeof window !== 'undefined') activityCategoriesCache = null;
   return data;
@@ -569,7 +579,7 @@ export async function updateActivityCategory(
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Kateqoriya yenilənmədi");
   if (typeof window !== 'undefined') activityCategoriesCache = null;
   return data;
@@ -581,7 +591,7 @@ export async function deleteActivityCategory(id: string) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Kateqoriya silinmədi");
   if (typeof window !== 'undefined') activityCategoriesCache = null;
   return data;
@@ -592,7 +602,7 @@ let activitySettingsCache: ActivitySettings | null = null;
 export async function getActivitySettings(): Promise<ActivitySettings> {
   if (typeof window !== "undefined" && activitySettingsCache) return activitySettingsCache;
   const res = await fetch(`${BASE}/activity-settings`);
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yüklənmədi");
   if (typeof window !== "undefined") activitySettingsCache = data.settings;
@@ -608,7 +618,7 @@ export async function updateActivitySettings(
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yenilənmədi");
   if (typeof window !== 'undefined') activitySettingsCache = null;
@@ -620,7 +630,7 @@ export async function getBookings(): Promise<Booking[]> {
   const res = await fetch(`${BASE}/bookings?limit=100`, {
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Bronlar yüklənmədi");
   return data.bookings ?? [];
 }
@@ -629,7 +639,7 @@ export async function getBookedDates(
   roomId: string,
 ): Promise<{ checkIn: string; checkOut: string }[]> {
   const res = await fetch(`${BASE}/bookings/dates?roomId=${roomId}`);
-  const data = await res.json();
+  const data = await safeJson(res);
   return data.dates ?? [];
 }
 
@@ -641,7 +651,7 @@ export async function createPayment(payload: any): Promise<any> {
       body: JSON.stringify(payload),
     });
 
-    return await res.json();
+    return await safeJson(res);
   } catch (error: any) {
     return {
       success: false,
@@ -657,7 +667,7 @@ export async function updateBooking(id: string, payload: unknown) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Bron yenilənmədi");
   return data;
 }
@@ -668,7 +678,7 @@ export async function deleteBooking(id: string) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Bron silinmədi");
   return data;
 }
@@ -677,7 +687,7 @@ export async function deleteBooking(id: string) {
 // GET /api/reviews → { success, totalReviews, review[] }  ← KEY IS "review" (singular)
 export async function getReviews(): Promise<Review[]> {
   const res = await fetch(`${BASE}/reviews`, { headers: authHeaders() });
-  const data = await res.json();
+  const data = await safeJson(res);
   // Backend returns key "review" (singular), not "reviews"
   return data.review ?? data.reviews ?? [];
 }
@@ -685,7 +695,7 @@ export async function getReviews(): Promise<Review[]> {
 // GET /api/admin/reviews → all reviews regardless of status (admin only)
 export async function getAllReviews(): Promise<Review[]> {
   const res = await fetch(`${BASE}/admin/reviews`, { headers: authHeaders() });
-  const data = await res.json();
+  const data = await safeJson(res);
   return data.reviews ?? data.review ?? [];
 }
 
@@ -716,7 +726,7 @@ export async function updateReviewStatus(
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Rəy yenilənmədi");
   return data;
 }
@@ -727,7 +737,7 @@ export async function deleteReview(id: string) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Rəy silinmədi");
   return data;
 }
@@ -738,7 +748,7 @@ let faqsCache: Faq[] | null = null;
 export async function getFaqs(): Promise<Faq[]> {
   if (typeof window !== "undefined" && faqsCache) return faqsCache;
   const res = await fetch(`${BASE}/faqs`, { headers: authHeaders() });
-  const data = await res.json();
+  const data = await safeJson(res);
   const faqs = data.faq ?? data.faqs ?? [];
   if (typeof window !== "undefined") faqsCache = faqs;
   return faqs;
@@ -751,7 +761,7 @@ export async function createFaq(payload: Partial<Faq>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Sual yaradılmadı");
   if (typeof window !== 'undefined') faqsCache = null;
   return data;
@@ -764,7 +774,7 @@ export async function updateFaq(id: string, payload: Partial<Faq>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Sual yenilənmədi");
   if (typeof window !== 'undefined') faqsCache = null;
   return data;
@@ -776,7 +786,7 @@ export async function deleteFaq(id: string) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Sual silinmədi");
   if (typeof window !== 'undefined') faqsCache = null;
   return data;
@@ -788,7 +798,7 @@ let ticketsCache: Ticket[] | null = null;
 export async function getTickets(): Promise<Ticket[]> {
   if (typeof window !== "undefined" && ticketsCache) return ticketsCache;
   const res = await fetch(`${BASE}/tickets`, { headers: authHeaders() });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Biletlər yüklənmədi");
   if (typeof window !== "undefined") ticketsCache = data.tickets ?? [];
   return data.tickets ?? [];
@@ -801,7 +811,7 @@ export async function createTicket(payload: Partial<Ticket>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Bilet yaradılmadı");
   if (typeof window !== 'undefined') ticketsCache = null;
   return data;
@@ -814,7 +824,7 @@ export async function updateTicket(id: string, payload: Partial<Ticket>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Bilet yenilənmədi");
   if (typeof window !== 'undefined') ticketsCache = null;
   return data;
@@ -826,7 +836,7 @@ export async function deleteTicket(id: string) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Bilet silinmədi");
   if (typeof window !== 'undefined') ticketsCache = null;
   return data;
@@ -840,7 +850,7 @@ export async function getSettings(): Promise<Settings | null> {
   try {
     const res = await fetch(`${BASE}/settings`, { headers: authHeaders() });
     if (!res.ok) return null;
-    const data = await res.json();
+    const data = await safeJson(res);
     if (typeof window !== "undefined") settingsCache = data.settings ?? null;
     return data.settings ?? null;
   } catch (error) {
@@ -856,7 +866,7 @@ export async function updateSettings(payload: Partial<Settings>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yadda saxlanılmadı");
   if (typeof window !== 'undefined') settingsCache = null;
@@ -871,7 +881,7 @@ export async function getAbout(): Promise<About | null> {
   try {
     const res = await fetch(`${BASE}/about`, { headers: authHeaders() });
     if (!res.ok) return null;
-    const data = await res.json();
+    const data = await safeJson(res);
     if (typeof window !== "undefined") aboutCache = data.about ?? null;
     return data.about ?? null;
   } catch {
@@ -886,7 +896,7 @@ export async function updateAbout(payload: Partial<About>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Haqqımızda yadda saxlanılmadı");
   if (typeof window !== 'undefined') aboutCache = null;
@@ -900,7 +910,7 @@ export async function getDashboardStats(): Promise<DashboardStats | null> {
   try {
     const res = await fetch(`${BASE}/dashboard`, { headers: authHeaders() });
     if (!res.ok) return null;
-    const data = await res.json();
+    const data = await safeJson(res);
     if (!data.success) return null;
     return {
       ...data.stats,
@@ -928,7 +938,7 @@ export async function getWonderland(): Promise<Wonderland | null> {
   try {
     const res = await fetch(`${BASE}/wonderland`, { headers: authHeaders() });
     if (!res.ok) return null;
-    const data = await res.json();
+    const data = await safeJson(res);
     if (!data.success) return null;
     return data.wonderland ?? null;
   } catch {
@@ -943,7 +953,7 @@ export async function updateWonderland(payload: Partial<Wonderland>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Wonderland yadda saxlanılmadı");
   return data;
@@ -956,7 +966,7 @@ export async function getRestaurants(search?: string): Promise<Restaurant[]> {
   const res = await fetch(`${BASE}/restaurants${query}`, {
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Restoranlar yüklənmədi");
   return data.restaurants ?? [];
 }
@@ -968,7 +978,7 @@ export async function getRestaurantById(
   const res = await fetch(`${BASE}/restaurants/${id}`, {
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Restoran tapılmadı");
   return data.restaurant ?? null;
 }
@@ -980,7 +990,7 @@ export async function createRestaurant(payload: Partial<Restaurant>) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Restoran yaradılmadı");
   return data;
 }
@@ -995,7 +1005,7 @@ export async function updateRestaurant(
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Restoran yenilənmədi");
   return data;
 }
@@ -1006,7 +1016,7 @@ export async function deleteRestaurant(id: string) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success) throw new Error(data.message || "Restoran silinmədi");
   return data;
 }
@@ -1019,7 +1029,7 @@ export async function searchRestaurantMenu(
   const res = await fetch(
     `${BASE}/restaurants/${id}/menu-search?q=${encodeURIComponent(query)}`,
   );
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Menyü axtarışı uğursuz oldu");
   return data.menu ?? [];
@@ -1028,7 +1038,7 @@ export async function searchRestaurantMenu(
 // GET /api/restaurant-settings → { success, settings }
 export async function getRestaurantSettings(): Promise<RestaurantSettings> {
   const res = await fetch(`${BASE}/restaurant-settings`);
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yüklənmədi");
   return data.settings;
@@ -1043,7 +1053,7 @@ export async function updateRestaurantSettings(
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   if (!data.success)
     throw new Error(data.message || "Tənzimləmələr yenilənmədi");
   return data.settings;
@@ -1070,6 +1080,6 @@ export async function getCurrentUser() {
   const res = await fetch(`${BASE}/auth/me`, {
     headers,
   });
-  const data = await res.json();
+  const data = await safeJson(res);
   return data.success ? data.data : null;
 }

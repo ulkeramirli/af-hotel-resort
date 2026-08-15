@@ -37,7 +37,7 @@ export default function ApiDocs() {
         try {
           // @ts-ignore
           window.SwaggerUIBundle({
-            url: '/api/swagger.json',
+            url: '/api/swagger',
             dom_id: '#swagger-ui',
             deepLinking: true,
             presets: [

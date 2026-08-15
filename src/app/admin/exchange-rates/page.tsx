@@ -13,7 +13,10 @@ export default function ExchangeRatesPage() {
   const fetchRates = async () => {
     try {
       const res = await fetch("/api/exchange-rates");
-      const json = await res.json();
+      let json = { success: false, data: null };
+      if (res.headers.get("content-type")?.includes("application/json")) {
+        json = await res.json();
+      }
       if (json.success && json.data) {
         setRates(json.data);
       }
@@ -34,7 +37,10 @@ export default function ExchangeRatesPage() {
     setMessage("");
     try {
       const res = await fetch("/api/exchange-rates", { method: "POST" });
-      const json = await res.json();
+      let json = { success: false, data: null, error: "Server xətası" };
+      if (res.headers.get("content-type")?.includes("application/json")) {
+        json = await res.json();
+      }
       if (json.success) {
         setRates(json.data);
         setMessage("Məzənnələr CBAR-dan uğurla yeniləndi!");

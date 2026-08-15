@@ -164,7 +164,7 @@ function BookingContent() {
 
   useEffect(() => {
     fetch("/api/exchange-rates")
-      .then(res => res.json())
+      .then(res => res.headers.get("content-type")?.includes("application/json") ? res.json() : { success: false })
       .then(data => {
         if (data.success) setRates(data.data);
       })

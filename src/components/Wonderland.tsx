@@ -46,8 +46,9 @@ export default function Wonderland() {
 
   useEffect(() => {
     fetch("/api/wonderland")
-      .then((res) => res.json())
-      .then((data) => setWonderland(data.wonderland));
+      .then((res) => res.headers.get("content-type")?.includes("application/json") ? res.json() : { wonderland: null })
+      .then((data) => setWonderland(data.wonderland))
+      .catch(console.error);
   }, []);
 
   useEffect(() => {

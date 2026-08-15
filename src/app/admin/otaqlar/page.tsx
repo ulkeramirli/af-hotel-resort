@@ -114,7 +114,7 @@ export default function AdminRoomsPage() {
   useEffect(() => {
     loadData();
     fetch("/api/exchange-rates")
-      .then((res) => res.json())
+      .then((res) => res.headers.get("content-type")?.includes("application/json") ? res.json() : { success: false, data: null })
       .then((json) => {
         if (json.success && json.data) {
           setExchangeRates(json.data);
