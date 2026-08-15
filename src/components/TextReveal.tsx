@@ -28,33 +28,28 @@ export default function TextReveal({ text, className = '', delay = 0, center = f
     },
     hidden: {
       opacity: 0,
-      y: 40,
     },
   };
 
+  // Split by whitespace but keep `<br>` intact.
+  const words = text.split(' ').filter(Boolean);
+
   return (
     <motion.div
-      style={{ display: 'flex', flexDirection: 'column', alignItems: center ? 'center' : 'flex-start' }}
+      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: center ? 'center' : 'flex-start' }}
       variants={container}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "0px" }}
       className={className}
     >
-      {text.split('<br>').map((line, lineIndex) => {
-        const words = line.split(' ').filter(Boolean);
-        return (
-          <div key={lineIndex} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: center ? 'center' : 'flex-start', width: '100%' }}>
-            {words.map((word, wordIndex) => (
-              <span key={`${lineIndex}-${wordIndex}`} style={{ display: 'inline-block', paddingRight: '0.25em' }}>
-                <motion.span variants={child} style={{ display: 'inline-block', paddingRight: '0.15em' }}>
-                  {word}
-                </motion.span>
-              </span>
-            ))}
-          </div>
-        );
-      })}
+      {words.map((word, index) => (
+        <span key={index} style={{ display: 'inline-block', paddingRight: '0.25em' }}>
+          <motion.span variants={child} style={{ display: 'inline-block', paddingRight: '0.15em' }}>
+            {word}
+          </motion.span>
+        </span>
+      ))}
     </motion.div>
   );
 }

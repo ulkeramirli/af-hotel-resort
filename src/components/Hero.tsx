@@ -89,7 +89,11 @@
                     className="text-4xl sm:text-5xl lg:text-[3.2rem] xl:text-6xl font-serif font-medium leading-[1.1] tracking-wide text-[#1e325c] wrap-break-word whitespace-normal filter-[drop-shadow(0_0_15px_rgba(255,255,255,0.8))_drop-shadow(0_0_30px_rgba(255,255,255,0.8))] lg:filter-none"
                     style={{ fontFamily: 'var(--font-cormorant), serif' }}
                   >
-                    <TextReveal text={t.hero.line2} delay={0.2} />
+                    {t.hero.line2.split('<br>').map((line, idx) => (
+                      <div key={idx}>
+                        <TextReveal text={line.trim()} delay={0.2 + idx * 0.15} />
+                      </div>
+                    ))}
                   </h1>
                 </div>
 
