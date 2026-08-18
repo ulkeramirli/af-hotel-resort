@@ -90,11 +90,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  icons: {
-    icon: "/favicon-new.png",
-    shortcut: "/favicon-new.png",
-    apple: "/favicon-new.png",
-  },
   category: "travel",
   manifest: "/manifest.json"
 };
