@@ -94,7 +94,7 @@ export default function Wonderland() {
           <ScrollReveal type="flipUp" delay={0.2}>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight relative inline-block mt-2">
               AF PARK
-              <Sparkles className="absolute -top-4 -right-6 w-8 h-8 text-[#ff6c02] opacity-70" />
+              <Sparkles className="absolute -top-6 -right-10 w-8 h-8 text-[#ff6c02] opacity-70" />
             </h2>
             <div className="mt-6 flex justify-center">
               <div className="relative group">
@@ -113,21 +113,21 @@ export default function Wonderland() {
           </ScrollReveal>
 
           <ScrollReveal type="zoomIn" delay={0.3}>
-            <div className="text-sm md:text-base text-stone-500 font-light leading-relaxed prose prose-stone max-w-2xl mx-auto [&>p]:mb-2 mt-4" dangerouslySetInnerHTML={{ __html: typeof wonderland?.description === 'object' ? (wonderland.description[l] || wonderland.description.az || "Description") : (wonderland?.description || "Description") }} />
+            <div className="text-sm md:text-base text-stone-500 font-light leading-relaxed prose prose-stone max-w-2xl mx-auto [&>p]:mb-2 mt-4 text-center" dangerouslySetInnerHTML={{ __html: typeof wonderland?.description === 'object' ? (wonderland.description[l] || wonderland.description.az || "Description") : (wonderland?.description || "Description") }} />
           </ScrollReveal>
         </div>
 
         {/* Highlights / Small Attractions */}
         <div className="space-y-10">
           <div className="flex items-center justify-center gap-4">
-            <div className="h-px w-16 bg-linear-to-r from-transparent via-[#00b5d5]/60 to-transparent" />
-            <h3 className="text-xs uppercase font-semibold tracking-[0.2em] text-stone-500">
+            <div className="h-px w-10 sm:w-16 bg-linear-to-r from-transparent via-[#00b5d5]/60 to-transparent shrink-0" />
+            <h3 className="text-xs uppercase font-semibold tracking-[0.2em] text-stone-500 text-center">
               {c.highlightsTitle}
             </h3>
-            <div className="h-px w-16 bg-linear-to-r from-transparent via-[#ff6c02]/60 to-transparent" />
+            <div className="h-px w-10 sm:w-16 bg-linear-to-r from-transparent via-[#ff6c02]/60 to-transparent shrink-0" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
             {wonderland?.smallAttractions?.map((h:any, i:any) => {
               const gradients = [
                 { bg: 'from-[#00b5d5]/10 to-[#00b5d5]/5', border: 'hover:border-[#00b5d5]/40', accent: '#00b5d5', num: 'bg-[#00b5d5]' },
@@ -139,35 +139,35 @@ export default function Wonderland() {
               return (
                 <TiltCard key={i} tiltAmount={4}>
                   <ScrollReveal type="zoomIn" delay={i * 0.12}
-                    className={`h-full relative group bg-white rounded-3xl border border-stone-100 ${g.border} shadow-[0_4px_24px_rgba(30,50,92,0.04)] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_48px_rgba(30,50,92,0.10)] hover:-translate-y-1 flex flex-col`}
+                    className={`h-full relative group bg-white rounded-2xl sm:rounded-3xl border border-stone-100 ${g.border} shadow-[0_4px_24px_rgba(30,50,92,0.04)] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_48px_rgba(30,50,92,0.10)] hover:-translate-y-1 flex flex-col`}
                   >
                     {/* Top gradient stripe */}
                     <div className={`h-1.5 w-full bg-linear-to-r from-current to-current`} style={{ background: `linear-gradient(90deg, ${g.accent}99, ${g.accent}33)` }} />
 
                     {/* Blurred background blob */}
-                    <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full bg-linear-to-br ${g.bg} blur-xl group-hover:scale-125 transition-transform duration-700`} />
+                    <div className={`absolute -right-6 -top-6 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-linear-to-br ${g.bg} blur-xl group-hover:scale-125 transition-transform duration-700`} />
 
-                    <div className="relative z-10 p-5 sm:p-6 flex flex-col flex-1">
+                    <div className="relative z-10 p-4 sm:p-5 md:p-6 flex flex-col flex-1">
                       {/* Top row: icon + number badge */}
-                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start justify-between mb-3 sm:mb-4">
                         <div 
-                          className={`w-14 h-14 rounded-2xl bg-linear-to-br ${g.bg} flex items-center justify-center border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500`}
+                          className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-linear-to-br ${g.bg} flex items-center justify-center border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500`}
                           style={{ color: g.accent }}
                         >
-                          <DynamicIcon name={h?.icon} className="w-7 h-7" />
+                          <DynamicIcon name={h?.icon} className="w-5 h-5 sm:w-7 sm:h-7" />
                         </div>
-                        <span className={`${g.num} text-white text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-md`}>{i + 1}</span>
+                        <span className={`${g.num} text-white text-[9px] sm:text-[10px] font-bold w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shadow-md shrink-0`}>{i + 1}</span>
                       </div>
 
                       {/* Text */}
-                      <h4 className="text-[15px] sm:text-base font-bold text-[#1e325c] mb-2 leading-snug group-hover:text-[#00b5d5] transition-colors duration-300">
+                      <h4 className="text-xs sm:text-[15px] md:text-base font-bold text-[#1e325c] mb-1.5 sm:mb-2 leading-snug group-hover:text-[#00b5d5] transition-colors duration-300 line-clamp-2">
                         {(h?.name as any)?.[l] || (h?.name as any)?.az || 'Name'}
                       </h4>
-                      <div className="text-xs sm:text-[13px] text-stone-500 leading-relaxed prose prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || 'Desc' }} />
+                      <div className="text-[10px] sm:text-xs md:text-[13px] text-stone-500 leading-relaxed prose prose-stone [&>p]:mb-0 line-clamp-3" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || 'Desc' }} />
 
                       {/* Bottom accent line */}
-                      <div className="mt-4 pt-4 border-t border-stone-100">
-                        <div className="w-8 h-0.5 rounded-full transition-all duration-500 group-hover:w-16" style={{ background: g.accent }} />
+                      <div className="mt-auto pt-3 sm:pt-4 border-t border-stone-100">
+                        <div className="w-6 sm:w-8 h-0.5 rounded-full transition-all duration-500 group-hover:w-12 sm:group-hover:w-16" style={{ background: g.accent }} />
                       </div>
                     </div>
                   </ScrollReveal>
@@ -302,12 +302,12 @@ export default function Wonderland() {
           {/* Special Offer & Info */}
           <ScrollReveal type="slideLeft" delay={0.4} className="xl:col-span-5 flex flex-col gap-6">
             <div className="bg-white rounded-4xl p-5 md:p-6 border border-stone-100 flex items-center gap-5 shadow-sm hover:shadow-md transition-all duration-500 group">
-              <div className="w-12 h-12 rounded-xl bg-stone-50 flex items-center justify-center text-stone-600 shrink-0 border border-stone-100 group-hover:bg-[#1e325c] group-hover:text-white transition-colors duration-500">
+              <div className="w-12 h-12 rounded-xl bg-stone-50 flex items-center justify-center text-[#00b5d5] shrink-0 border border-stone-200 shadow-sm group-hover:scale-110 transition-transform duration-500">  
                 <Clock className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-[0.15em] text-stone-500 font-semibold mb-0.5">İş Saatları</p>
-                <p className="text-lg font-medium text-[#1e325c] tracking-wide">{wonderland?.workingHours}</p>
+                <p className="text-[10px] uppercase tracking-[0.15em] text-stone-500 font-medium mb-0.5">İş Saatları</p>
+                <p className="text-lg font-bold text-[#1e325c] tracking-wide">{wonderland?.workingHours}</p>
               </div>
             </div>
 
