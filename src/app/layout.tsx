@@ -25,16 +25,16 @@ const greatVibes = Great_Vibes({
 
 export const metadata: Metadata = {
   title: {
-    default: "AF Hotel, Aqua Park & AF Park | Novxanı, Bakı İstirahət Mərkəzi",
-    template: "%s | AF Hotel, Aqua Park & AF Park Complex"
+    default: "AF Hotel, Aqua Park & AF Park - Rəsmi Sayt | Novxanı, Bakı",
+    template: "%s | AF Hotel & Aqua Park - Rəsmi Sayt"
   },
-  description: "Baku və Novxanıda ən yaxşı ailəvi istirahət mərkəzi! AF Hotel, ən böyük Aqua Park, lüks otaqlar, restoranlar və atraksionlarla dolu AF Park. Booking-dən daha sərfəli qiymətlərlə birbaşa bron edin.",
+  description: "Baku və Novxanıda ən yaxşı ailəvi istirahət mərkəzi! AF Hotel, ən böyük Aqua Park, lüks otaqlar və AF Park (Amusement Park). Booking.com-dan daha ucuz qiymətə birbaşa rəsmi saytdan bron edin və qazanın.",
   keywords: [
-    "AF Hotel", "af hotel novxani", "af hotel aqua park", "af hotel booking", "af park",
+    "AF Hotel", "af hotel novxani", "af hotel aqua park", "af hotel rəsmi sayt", "af park",
     "novxani istirahet", "novxani hotel", "novxani resort", "istirahət mərkəzi", 
     "baku hotel", "baku resort", "aqua park baku", "su parkı", "hovuzlu hotel",
-    "ailəvi istirahət", "atraksionlar", "af hotel qiymetleri", "ucuz hotel", 
-    "luxury resort baku", "booking af hotel"
+    "ailəvi istirahət", "atraksionlar", "af hotel qiymetleri", "af hotel əlaqə", 
+    "luxury resort baku", "af hotel novkhani booking", "af hotel azerbaijan"
   ],
   authors: [{ name: "AF Hotel & Aqua Park Resort", url: "https://afhotel.az" }],
   creator: "AF Hotel & Aqua Park Resort",
@@ -54,27 +54,27 @@ export const metadata: Metadata = {
     alternateLocale: ["en_US", "ru_RU"],
     url: "https://afhotel.az",
     siteName: "AF Hotel, Aqua Park & AF Park | İstirahət və Əyləncə",
-    title: "AF Hotel, Aqua Park & AF Park | Novxanıda İstirahət",
-    description: "Novxanıda ən yaxşı otel və aquapark. Booking.com yerinə birbaşa rəsmi saytdan bron edib qazanın. Hər yaş üçün mükəmməl istirahət.",
+    title: "AF Hotel, Aqua Park & AF Park - Rəsmi Sayt | Novxanıda İstirahət",
+    description: "Novxanıda ən yaxşı otel və aquapark. Booking.com yerinə birbaşa rəsmi saytdan bron edib daha ucuz qiymətlər əldə edin. Hər yaş qrupu üçün mükəmməl istirahət.",
     images: [
       {
         url: "/AF-hero.jpg",
         width: 1200,
         height: 630,
-        alt: "AF Hotel, Aqua Park & AF Park Complex — Resort and Amusement Park in Baku",
+        alt: "AF Hotel, Aqua Park & AF Park Complex - Resort and Amusement Park in Baku",
       },
       {
         url: "/AF-aqua.jpg",
         width: 1200,
         height: 630,
-        alt: "AF Aqua Park & AF Park — Water Park and Wonderland in Novkhani",
+        alt: "AF Aqua Park & AF Park - Water Park and Wonderland in Novkhani",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AF Hotel, Aqua Park & AF Park | Novxanı İstirahət",
-    description: "AF Hotel & Aqua Park, eləcə də möhtəşəm AF Park ilə əyləncə və rahat istirahət — hamısı bir yerdə!",
+    title: "AF Hotel, Aqua Park & AF Park | Novxanı İstirahət Mərkəzi",
+    description: "AF Hotel & Aqua Park, eləcə də möhtəşəm AF Park ilə əyləncə və rahat istirahət - hamısı bir yerdə!",
     images: ["/AF-hero.jpg"],
     creator: "@AFHotelBaku",
   },
@@ -96,11 +96,7 @@ export const metadata: Metadata = {
     apple: "/favicon-new.png",
   },
   category: "travel",
-  manifest: "/manifest.json",
-  verification: {
-    google: "google-site-verification=...", 
-    yandex: "yandex-verification=...", 
-  },
+  manifest: "/manifest.json"
 };
 
 export default function RootLayout({
@@ -110,10 +106,10 @@ export default function RootLayout({
 }) {
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': ['Hotel', 'Resort', 'EntertainmentBusiness', 'AmusementPark', 'LocalBusiness'],
-    name: 'AF Hotel, Aqua Park & AF Park Complex',
-    alternateName: ['AF Hotel', 'AF Park', 'AF Aqua Park'],
-    description: 'Baku və Novxanıda ən yaxşı ailəvi istirahət mərkəzi! AF Hotel, ən böyük Aqua Park, lüks otaqlar, restoranlar və atraksionlarla dolu AF Park.',
+    '@type': ['Hotel', 'Resort', 'AmusementPark'],
+    name: 'AF Hotel, Aqua Park & AF Park',
+    alternateName: ['AF Hotel', 'AF Park', 'AF Hotel & Aqua Park'],
+    description: 'Baku və Novxanıda ən yaxşı ailəvi istirahət mərkəzi. AF Hotel, Aqua Park və attraksionlarla dolu AF Park.',
     url: 'https://afhotel.az',
     logo: 'https://afhotel.az/loqo-af.png',
     image: 'https://afhotel.az/AF-hero.jpg',
@@ -122,8 +118,8 @@ export default function RootLayout({
     starRating: { '@type': 'Rating', ratingValue: '4' },
     aggregateRating: {
       '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      reviewCount: '1250'
+      ratingValue: '4.8',
+      reviewCount: '1350'
     },
     address: {
       '@type': 'PostalAddress',
@@ -140,24 +136,32 @@ export default function RootLayout({
     amenityFeature: [
       { '@type': 'LocationFeatureSpecification', name: 'AF Park (Amusement Park)', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Aqua Park', value: true },
-      { '@type': 'LocationFeatureSpecification', name: 'Wonderland Theme Park', value: true },
-      { '@type': 'LocationFeatureSpecification', name: 'Istirahət Mərkəzi', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Restaurant', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Swimming Pool', value: true },
       { '@type': 'LocationFeatureSpecification', name: 'Free Parking', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Free WiFi', value: true }
     ],
-    sameAs: ['https://www.instagram.com/afhotel.az', 'https://www.facebook.com/afhotel'],
+    sameAs: [
+      'https://www.instagram.com/afhotel.az', 
+      'https://www.facebook.com/afhotel',
+      'https://www.tiktok.com/@afhotel'
+    ],
     contactPoint: {
       '@type': 'ContactPoint',
       telephone: '+994502233285',
-      contactType: 'customer service'
+      contactType: 'customer service',
+      availableLanguage: ['Azerbaijani', 'English', 'Russian']
     },
     makesOffer: {
       '@type': 'Offer',
       priceCurrency: 'AZN',
       price: '50.00',
       availability: 'https://schema.org/InStock',
-      url: 'https://afhotel.az/booking'
+      url: 'https://afhotel.az/booking',
+      itemOffered: {
+        '@type': 'Service',
+        name: 'Hotel Booking - Best Rate Guarantee'
+      }
     }
   };
 
