@@ -414,7 +414,7 @@ export default function AdminWonderlandPage() {
           <div className="lg:col-span-1">
             <div className="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-[#1e325c] text-lg flex items-center gap-2">
+                <h3 className="font-bold text-[#1e325c] text-2xl flex items-center gap-2">
                   <Plus className="w-4 h-4" style={{ color: "var(--color-hotel-gold)" }} />
                   {editTicketIdx !== null ? "Bileti Redaktə Et" : "Yeni Bilet Əlavə Et"}
                 </h3>
