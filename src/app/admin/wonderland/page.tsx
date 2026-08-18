@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import {
   Loader2, Check, AlertCircle, Castle, Plus, Trash2, Pencil, X,
   Ticket, Sparkles, Star, Gamepad2, ChevronDown, ChevronUp, Percent,
-  Clock, Tag, ImagePlus, Globe
+  Clock, Tag, ImagePlus, Globe, ArrowUp, ArrowDown
 } from "lucide-react";
 import { getWonderland, updateWonderland, uploadImage } from "@/services/api";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -134,7 +134,7 @@ export default function AdminWonderlandPage() {
   };
 
   // ─── TICKET HELPERS ───
-  const addOrUpdateTicket = () => {
+  const addOrUpdateTicket = async () => {
     if (!ticketForm.name.az || !ticketForm.price) {
       alert("Biletin adı AZ dilində və qiyməti daxil edilməlidir!");
       return;
@@ -146,13 +146,17 @@ export default function AdminWonderlandPage() {
     } else {
       updated.push(ticketForm);
     }
-    setForm({ ...form, tickets: updated });
+    const newForm = { ...form, tickets: updated };
+    setForm(newForm);
     setTicketForm({ name: { az: "", en: "", ru: "" }, price: "" });
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
   };
 
-  const deleteTicket = (idx: number) => {
+  const deleteTicket = async (idx: number) => {
     const updated = form.tickets.filter((_: any, i: number) => i !== idx);
-    setForm({ ...form, tickets: updated });
+    const newForm = { ...form, tickets: updated };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
   };
 
   const startEditTicket = (idx: number) => {
@@ -161,8 +165,30 @@ export default function AdminWonderlandPage() {
     setEditTicketIdx(idx);
   };
 
+  const moveTicketUp = async (idx: number) => {
+    if (idx === 0) return;
+    const updated = [...form.tickets];
+    const temp = updated[idx];
+    updated[idx] = updated[idx - 1];
+    updated[idx - 1] = temp;
+    const newForm = { ...form, tickets: updated };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
+  };
+
+  const moveTicketDown = async (idx: number) => {
+    if (idx === form.tickets.length - 1) return;
+    const updated = [...form.tickets];
+    const temp = updated[idx];
+    updated[idx] = updated[idx + 1];
+    updated[idx + 1] = temp;
+    const newForm = { ...form, tickets: updated };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
+  };
+
   // ─── SMALL ATTRACTION HELPERS ───
-  const addOrUpdateSmall = () => {
+  const addOrUpdateSmall = async () => {
     if (!smallForm.name.az || !smallForm.description.az) {
       alert("Ad və təsvir AZ dilində daxil edilməlidir!");
       return;
@@ -174,13 +200,17 @@ export default function AdminWonderlandPage() {
     } else {
       updated.push(smallForm);
     }
-    setForm({ ...form, smallAttractions: updated });
+    const newForm = { ...form, smallAttractions: updated };
+    setForm(newForm);
     setSmallForm({ name: { az: "", en: "", ru: "" }, description: { az: "", en: "", ru: "" }, icon: "" });
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
   };
 
-  const deleteSmall = (idx: number) => {
+  const deleteSmall = async (idx: number) => {
     const updated = form.smallAttractions.filter((_: any, i: number) => i !== idx);
-    setForm({ ...form, smallAttractions: updated });
+    const newForm = { ...form, smallAttractions: updated };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
   };
 
   const startEditSmall = (idx: number) => {
@@ -189,8 +219,30 @@ export default function AdminWonderlandPage() {
     setEditSmallIdx(idx);
   };
 
+  const moveSmallUp = async (idx: number) => {
+    if (idx === 0) return;
+    const updated = [...form.smallAttractions];
+    const temp = updated[idx];
+    updated[idx] = updated[idx - 1];
+    updated[idx - 1] = temp;
+    const newForm = { ...form, smallAttractions: updated };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
+  };
+
+  const moveSmallDown = async (idx: number) => {
+    if (idx === form.smallAttractions.length - 1) return;
+    const updated = [...form.smallAttractions];
+    const temp = updated[idx];
+    updated[idx] = updated[idx + 1];
+    updated[idx + 1] = temp;
+    const newForm = { ...form, smallAttractions: updated };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
+  };
+
   // ─── BIG ATTRACTION HELPERS ───
-  const addOrUpdateBig = () => {
+  const addOrUpdateBig = async () => {
     if (!bigForm.title.az) {
       alert("Attraksion başlığı AZ dilində daxil edilməlidir!");
       return;
@@ -202,14 +254,18 @@ export default function AdminWonderlandPage() {
     } else {
       updated.push({ title: bigForm.title, games: [] });
     }
-    setForm({ ...form, bigAttractions: updated });
+    const newForm = { ...form, bigAttractions: updated };
+    setForm(newForm);
     setBigForm({ title: { az: "", en: "", ru: "" } });
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
   };
 
-  const deleteBig = (idx: number) => {
+  const deleteBig = async (idx: number) => {
     const updated = form.bigAttractions.filter((_: any, i: number) => i !== idx);
-    setForm({ ...form, bigAttractions: updated });
+    const newForm = { ...form, bigAttractions: updated };
+    setForm(newForm);
     if (expandedBig === idx) setExpandedBig(null);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
   };
 
   const startEditBig = (idx: number) => {
@@ -218,8 +274,30 @@ export default function AdminWonderlandPage() {
     setEditBigIdx(idx);
   };
 
+  const moveBigUp = async (idx: number) => {
+    if (idx === 0) return;
+    const updated = [...form.bigAttractions];
+    const temp = updated[idx];
+    updated[idx] = updated[idx - 1];
+    updated[idx - 1] = temp;
+    const newForm = { ...form, bigAttractions: updated };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
+  };
+
+  const moveBigDown = async (idx: number) => {
+    if (idx === form.bigAttractions.length - 1) return;
+    const updated = [...form.bigAttractions];
+    const temp = updated[idx];
+    updated[idx] = updated[idx + 1];
+    updated[idx + 1] = temp;
+    const newForm = { ...form, bigAttractions: updated };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
+  };
+
   // ─── GAME HELPERS (within big attraction) ───
-  const addOrUpdateGame = (bigIdx: number) => {
+  const addOrUpdateGame = async (bigIdx: number) => {
     if (!gameForm.name.az || !gameForm.description.az) {
       alert("Oyun adı və təsviri AZ dilində daxil edilməlidir!");
       return;
@@ -233,16 +311,20 @@ export default function AdminWonderlandPage() {
       games.push(gameForm);
     }
     updatedBig[bigIdx] = { ...updatedBig[bigIdx], games };
-    setForm({ ...form, bigAttractions: updatedBig });
+    const newForm = { ...form, bigAttractions: updatedBig };
+    setForm(newForm);
     setGameForm({ name: { az: "", en: "", ru: "" }, image: "", description: { az: "", en: "", ru: "" } });
     setActiveGameBigIdx(null);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
   };
 
-  const deleteGame = (bigIdx: number, gameIdx: number) => {
+  const deleteGame = async (bigIdx: number, gameIdx: number) => {
     const updatedBig = [...form.bigAttractions];
     const games = updatedBig[bigIdx].games.filter((_: any, i: number) => i !== gameIdx);
     updatedBig[bigIdx] = { ...updatedBig[bigIdx], games };
-    setForm({ ...form, bigAttractions: updatedBig });
+    const newForm = { ...form, bigAttractions: updatedBig };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
   };
 
   const startEditGame = (bigIdx: number, gameIdx: number) => {
@@ -250,6 +332,32 @@ export default function AdminWonderlandPage() {
     setGameForm({ name: parseLoc(g.name), image: g.image || "", description: parseLoc(g.description) });
     setEditGameIdx(gameIdx);
     setActiveGameBigIdx(bigIdx);
+  };
+
+  const moveGameUp = async (bigIdx: number, gameIdx: number) => {
+    if (gameIdx === 0) return;
+    const updatedBig = [...form.bigAttractions];
+    const games = [...updatedBig[bigIdx].games];
+    const temp = games[gameIdx];
+    games[gameIdx] = games[gameIdx - 1];
+    games[gameIdx - 1] = temp;
+    updatedBig[bigIdx] = { ...updatedBig[bigIdx], games };
+    const newForm = { ...form, bigAttractions: updatedBig };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
+  };
+
+  const moveGameDown = async (bigIdx: number, gameIdx: number) => {
+    if (gameIdx === form.bigAttractions[bigIdx].games.length - 1) return;
+    const updatedBig = [...form.bigAttractions];
+    const games = [...updatedBig[bigIdx].games];
+    const temp = games[gameIdx];
+    games[gameIdx] = games[gameIdx + 1];
+    games[gameIdx + 1] = temp;
+    updatedBig[bigIdx] = { ...updatedBig[bigIdx], games };
+    const newForm = { ...form, bigAttractions: updatedBig };
+    setForm(newForm);
+    try { await updateWonderland(newForm); } catch (e) { console.error(e); }
   };
 
   if (loading) {
@@ -467,7 +575,7 @@ export default function AdminWonderlandPage() {
                 Bilet tapılmadı. Sol tərəfdən yeni bilet əlavə edin.
               </div>
             ) : form.tickets.map((ticket: any, idx: number) => (
-              <div key={idx} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
+              <div key={`ticket-${idx}-${ticket.name?.az || ticket.name}`} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white" style={{ background: "var(--color-hotel-blue)" }}>
                     <Ticket className="w-5 h-5" />
@@ -480,6 +588,12 @@ export default function AdminWonderlandPage() {
                   </div>
                 </div>
                 <div className="flex gap-2">
+                  <button onClick={() => moveTicketUp(idx)} disabled={idx === 0} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                    <ArrowUp className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => moveTicketDown(idx)} disabled={idx === form.tickets.length - 1} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                    <ArrowDown className="w-4 h-4" />
+                  </button>
                   <button onClick={() => startEditTicket(idx)} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <Pencil className="w-4 h-4" />
                   </button>
@@ -557,17 +671,23 @@ export default function AdminWonderlandPage() {
                 Kiçik attraksion tapılmadı.
               </div>
             ) : form.smallAttractions.map((sa: any, idx: number) => (
-              <div key={idx} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
+              <div key={`sa-${idx}-${sa.name?.az || sa.name}`} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg, #00b5d5, #1e325c)" }}>
                     {sa.icon ? <DynamicIcon name={sa.icon} className="w-5 h-5 text-white" /> : <Star className="w-5 h-5" />}
                   </div>
                   <div>
                     <h4 className="font-bold text-sm text-[#1e325c]">{typeof sa.name === 'object' ? ((sa.name as any)?.az || "") : sa.name}</h4>
-                    <p className="text-xs text-stone-400 mt-0.5 line-clamp-1">{typeof sa.description === 'object' ? ((sa.description as any)?.az || "") : sa.description}</p>
+                    <div className="text-xs text-stone-400 mt-0.5 line-clamp-1" dangerouslySetInnerHTML={{ __html: typeof sa.description === 'object' ? ((sa.description as any)?.az || "") : sa.description }} />
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">
+                  <button onClick={() => moveSmallUp(idx)} disabled={idx === 0} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                    <ArrowUp className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => moveSmallDown(idx)} disabled={idx === form.smallAttractions.length - 1} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                    <ArrowDown className="w-4 h-4" />
+                  </button>
                   <button onClick={() => startEditSmall(idx)} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <Pencil className="w-4 h-4" />
                   </button>
@@ -626,7 +746,7 @@ export default function AdminWonderlandPage() {
               Böyük attraksion tapılmadı.
             </div>
           ) : form.bigAttractions.map((ba: any, bigIdx: number) => (
-            <div key={bigIdx} className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
+            <div key={`big-${bigIdx}-${ba.title?.az || ba.title}`} className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
               {/* Big Attraction Header */}
               <div
                 className="p-4 flex justify-between items-center cursor-pointer hover:bg-stone-50/50 transition-colors"
@@ -642,6 +762,20 @@ export default function AdminWonderlandPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); moveBigUp(bigIdx); }}
+                    disabled={bigIdx === 0}
+                    className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    <ArrowUp className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); moveBigDown(bigIdx); }}
+                    disabled={bigIdx === form.bigAttractions.length - 1}
+                    className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    <ArrowDown className="w-4 h-4" />
+                  </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); startEditBig(bigIdx); }}
                     className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors"
@@ -764,7 +898,7 @@ export default function AdminWonderlandPage() {
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {ba.games.map((game: any, gameIdx: number) => (
-                        <div key={gameIdx} className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
+                        <div key={`game-${gameIdx}-${game.name?.az || game.name}`} className="bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
                           {game.image && (
                             <div className="h-32 overflow-hidden">
                               <img src={game.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -777,6 +911,20 @@ export default function AdminWonderlandPage() {
                                 <p className="text-[10px] text-stone-400 mt-0.5 line-clamp-2">{typeof game.description === 'object' ? ((game.description as any)?.az || "") : game.description}</p>
                               </div>
                               <div className="flex gap-1 ml-2 shrink-0">
+                                <button
+                                  onClick={() => moveGameUp(bigIdx, gameIdx)}
+                                  disabled={gameIdx === 0}
+                                  className="p-1.5 bg-stone-50 text-stone-400 rounded-lg hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
+                                  <ArrowUp className="w-3 h-3" />
+                                </button>
+                                <button
+                                  onClick={() => moveGameDown(bigIdx, gameIdx)}
+                                  disabled={gameIdx === ba.games.length - 1}
+                                  className="p-1.5 bg-stone-50 text-stone-400 rounded-lg hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                >
+                                  <ArrowDown className="w-3 h-3" />
+                                </button>
                                 <button
                                   onClick={() => startEditGame(bigIdx, gameIdx)}
                                   className="p-1.5 bg-stone-50 text-stone-400 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"

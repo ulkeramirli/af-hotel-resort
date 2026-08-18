@@ -23,7 +23,7 @@ export class SettingsController {
     if (!settings) {
       settings = await Settings.create(body);
     } else {
-      Object.assign(settings, body);
+      settings.set(body);
       await settings.save();
     }
 

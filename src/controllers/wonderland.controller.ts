@@ -35,7 +35,7 @@ export class WonderlandController {
     if (!wonderland) {
       wonderland = await Wonderland.create(body);
     } else {
-      Object.assign(wonderland, body);
+      wonderland.set(body);
 
       await wonderland.save();
     }

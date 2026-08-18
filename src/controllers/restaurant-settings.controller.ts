@@ -27,7 +27,7 @@ export class RestaurantSettingsController {
     if (!settings) {
       settings = await RestaurantSettings.create(body);
     } else {
-      Object.assign(settings, body);
+      settings.set(body);
       await settings.save();
     }
 

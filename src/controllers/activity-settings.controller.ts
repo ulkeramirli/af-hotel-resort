@@ -33,7 +33,7 @@ export class ActivitySettingsController {
     if (!settings) {
       settings = await ActivitySettings.create(body);
     } else {
-      Object.assign(settings, body);
+      settings.set(body);
       await settings.save();
     }
 
