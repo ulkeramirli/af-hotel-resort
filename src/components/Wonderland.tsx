@@ -127,42 +127,46 @@ export default function Wonderland() {
             <div className="h-px w-16 bg-linear-to-r from-transparent via-[#ff6c02]/60 to-transparent" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
             {wonderland?.smallAttractions?.map((h:any, i:any) => {
               const gradients = [
                 { bg: 'from-[#00b5d5]/10 to-[#00b5d5]/5', border: 'hover:border-[#00b5d5]/40', accent: '#00b5d5', num: 'bg-[#00b5d5]' },
                 { bg: 'from-[#ff6c02]/10 to-[#ff6c02]/5', border: 'hover:border-[#ff6c02]/40', accent: '#ff6c02', num: 'bg-[#ff6c02]' },
                 { bg: 'from-[#1e325c]/10 to-[#1e325c]/5', border: 'hover:border-[#1e325c]/40', accent: '#1e325c', num: 'bg-[#1e325c]' },
+                { bg: 'from-[#10b981]/10 to-[#10b981]/5', border: 'hover:border-[#10b981]/40', accent: '#10b981', num: 'bg-[#10b981]' }, // Added 4th color (emerald)
               ];
-              const g = gradients[i % 3];
+              const g = gradients[i % 4];
               return (
                 <TiltCard key={i} tiltAmount={4}>
                   <ScrollReveal type="zoomIn" delay={i * 0.12}
                     className={`h-full relative group bg-white rounded-3xl border border-stone-100 ${g.border} shadow-[0_4px_24px_rgba(30,50,92,0.04)] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_48px_rgba(30,50,92,0.10)] hover:-translate-y-1 flex flex-col`}
                   >
                     {/* Top gradient stripe */}
-                    <div className={`h-1.5 w-full bg-linear-to-r ${g.bg.replace('/10', '').replace('/5', '')} bg-linear-to-r from-current to-current`} style={{ background: `linear-gradient(90deg, ${g.accent}99, ${g.accent}33)` }} />
+                    <div className={`h-1.5 w-full bg-linear-to-r from-current to-current`} style={{ background: `linear-gradient(90deg, ${g.accent}99, ${g.accent}33)` }} />
 
                     {/* Blurred background blob */}
-                    <div className={`absolute -right-6 -top-6 w-28 h-28 rounded-full bg-linear-to-br ${g.bg} blur-2xl group-hover:scale-125 transition-transform duration-700`} />
+                    <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full bg-linear-to-br ${g.bg} blur-xl group-hover:scale-125 transition-transform duration-700`} />
 
-                    <div className="relative z-10 p-6 sm:p-7 flex flex-col flex-1">
+                    <div className="relative z-10 p-5 sm:p-6 flex flex-col flex-1">
                       {/* Top row: icon + number badge */}
-                      <div className="flex items-start justify-between mb-5">
-                        <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-stone-50 to-stone-100 flex items-center justify-center text-3xl border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500">
-                          <DynamicIcon name={h?.icon} />
+                      <div className="flex items-start justify-between mb-4">
+                        <div 
+                          className={`w-14 h-14 rounded-2xl bg-linear-to-br ${g.bg} flex items-center justify-center border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500`}
+                          style={{ color: g.accent }}
+                        >
+                          <DynamicIcon name={h?.icon} className="w-7 h-7" />
                         </div>
-                        <span className={`${g.num} text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center shadow-md`}>{i + 1}</span>
+                        <span className={`${g.num} text-white text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-md`}>{i + 1}</span>
                       </div>
 
                       {/* Text */}
-                      <h4 className="text-base sm:text-[17px] font-bold text-[#1e325c] mb-2 leading-snug group-hover:text-[#00b5d5] transition-colors duration-300">
+                      <h4 className="text-[15px] sm:text-base font-bold text-[#1e325c] mb-2 leading-snug group-hover:text-[#00b5d5] transition-colors duration-300">
                         {(h?.name as any)?.[l] || (h?.name as any)?.az || 'Name'}
                       </h4>
-                      <div className="text-[13px] text-stone-500 leading-relaxed prose prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || 'Desc' }} />
+                      <div className="text-xs sm:text-[13px] text-stone-500 leading-relaxed prose prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || 'Desc' }} />
 
                       {/* Bottom accent line */}
-                      <div className="mt-5 pt-4 border-t border-stone-100">
+                      <div className="mt-4 pt-4 border-t border-stone-100">
                         <div className="w-8 h-0.5 rounded-full transition-all duration-500 group-hover:w-16" style={{ background: g.accent }} />
                       </div>
                     </div>
