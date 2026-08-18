@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import TiltCard from "./TiltCard";
 import MagneticButton from "./MagneticButton";
 import DynamicIcon from "./DynamicIcon";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 const content = {
   az: { highlightsTitle: "Parkın Möhtəşəm Attrksionları", tickets: "Bilet Qiymətləri" },
@@ -21,6 +22,7 @@ const content = {
 
 export default function Wonderland() {
   const { language } = useLanguage();
+  const { currency } = useCurrency();
   const l = (language as "az" | "en" | "ru") || "az";
   const c = content[l];
   const [activeTab, setActiveTab] = useState(0);
@@ -43,11 +45,19 @@ export default function Wonderland() {
   }, []);
 
   const [wonderland, setWonderland] = useState<any>(null);
+  const [rates, setRates] = useState<{ usd: number; eur: number } | null>(null);
 
   useEffect(() => {
     fetch("/api/wonderland")
       .then((res) => res.headers.get("content-type")?.includes("application/json") ? res.json() : { wonderland: null })
       .then((data) => setWonderland(data.wonderland))
+      .catch(console.error);
+      
+    fetch("/api/exchange-rates")
+      .then(res => res.headers.get("content-type")?.includes("application/json") ? res.json() : { success: false })
+      .then(data => {
+        if (data.success) setRates(data.data);
+      })
       .catch(console.error);
   }, []);
 
@@ -68,6 +78,25 @@ export default function Wonderland() {
 
   const isFree = (p: string | number) => ['0', 'ödənişsiz', 'free', 'бесплатно'].includes(String(p).toLowerCase().trim());
   const freeText = { az: 'Ödənişsiz', en: 'Free', ru: 'Бесплатно' }[l] || 'Ödənişsiz';
+
+  const formatPriceString = (price: string | number) => {
+    if (!price) return price;
+    if (isFree(price)) return freeText;
+    
+    let str = String(price);
+    let usdRate = rates?.usd || 1.7;
+    let eurRate = rates?.eur || 1.85;
+    
+    if (currency === "USD") {
+      str = str.replace(/\d+/g, (match) => Math.ceil(parseInt(match) / usdRate).toString());
+      str = str.replace(/AZN|azn|₼/g, "$");
+    } else if (currency === "EUR") {
+      str = str.replace(/\d+/g, (match) => Math.ceil(parseInt(match) / eurRate).toString());
+      str = str.replace(/AZN|azn|₼/g, "€");
+    }
+    
+    return str;
+  };
 
   return (
     <section id="wonderland" className="py-24 md:py-32 relative overflow-hidden scroll-mt-10 bg-[#f8fafc] perspective-1000">
@@ -291,7 +320,7 @@ export default function Wonderland() {
                       {typeof ticket.name === 'object' ? (ticket.name[l] || ticket.name.az || "Ticket") : (ticket.name || "Ticket")}
                     </span>
                     <span className="text-sm md:text-base font-bold text-[#ff6c02] whitespace-nowrap">
-                      {isFree(ticket.price) ? freeText : ticket.price}
+                      {formatPriceString(ticket.price)}
                     </span>
                   </div>
                 </div>
