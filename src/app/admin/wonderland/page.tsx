@@ -299,7 +299,11 @@ export default function AdminWonderlandPage() {
   // ─── GAME HELPERS (within big attraction) ───
   const addOrUpdateGame = async (bigIdx: number) => {
     if (!gameForm.name.az || !gameForm.description.az) {
-      alert("Oyun adı və təsviri AZ dilində daxil edilməlidir!");
+      alert("Şəkil/Oyun adı və təsviri AZ dilində daxil edilməlidir!");
+      return;
+    }
+    if (!gameForm.image) {
+      alert("Zəhmət olmasa şəkil yükləyin!");
       return;
     }
     const updatedBig = [...form.bigAttractions];
@@ -802,7 +806,7 @@ export default function AdminWonderlandPage() {
                   {/* Add Game Form */}
                   <div className="bg-white p-4 rounded-xl border border-stone-100 shadow-sm">
                     <div className="flex justify-between items-center mb-3">
-                      <h5 className="text-xs font-bold text-[#1e325c] flex items-center gap-2">
+                      <h5 className="text-md font-bold text-[#1e325c] flex items-center gap-2">
                         <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                         {editGameIdx !== null && activeGameBigIdx === bigIdx ? "Şəkil/Oyunu Redaktə Et" : "Yeni Şəkil/Oyun Əlavə Et"}
                       </h5>

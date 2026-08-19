@@ -213,9 +213,9 @@ export default function Wonderland() {
             {/* Background glowing blob for slider area */}
             <div className="absolute top-0 right-0 w-125 h-125 bg-linear-to-br from-[#00b5d5]/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 mb-12">
+            <div className="relative z-10 flex justify-start mb-8 md:mb-12">
               {wonderland?.bigAttractions?.length > 0 && (
-                <div className="w-full lg:w-auto flex justify-center lg:justify-start">
+                <div className="w-full flex justify-start pl-4 md:pl-2">
                   <CategoryTabs
                     categories={wonderland.bigAttractions.map((t:any, i:any) => ({
                       id: String(i),
@@ -226,70 +226,70 @@ export default function Wonderland() {
                       setActiveTab(Number(id));
                       emblaApi?.scrollTo(0);
                     }}
-                    className="justify-center lg:justify-start gap-3"
+                    className="justify-start gap-3"
                   />
                 </div>
               )}
-
-              <div className="flex gap-3 shrink-0 w-full lg:w-auto justify-center lg:justify-end mt-4 lg:mt-0">
-                <button
-                  onClick={scrollPrev}
-                  disabled={!prevBtnEnabled}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-2 shadow-md hover:scale-110 active:scale-95 ${
-                    prevBtnEnabled
-                      ? 'bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e05e00] hover:border-[#e05e00] shadow-[0_4px_16px_rgba(255,108,2,0.35)]'
-                      : 'bg-stone-50 border-stone-200 text-stone-300 cursor-not-allowed opacity-50'
-                  }`}
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={scrollNext}
-                  disabled={!nextBtnEnabled}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-2 shadow-md hover:scale-110 active:scale-95 ${
-                    nextBtnEnabled
-                      ? 'bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e05e00] hover:border-[#e05e00] shadow-[0_4px_16px_rgba(255,108,2,0.35)]'
-                      : 'bg-stone-50 border-stone-200 text-stone-300 cursor-not-allowed opacity-50'
-                  }`}
-                >
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              </div>
             </div>
 
             <div className="overflow-hidden -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16" ref={emblaRef}>
               <div className="flex gap-6 md:gap-10 py-6">
                 {active?.games?.map((game: any, i: number) => (
-                  <div key={i} className="flex-none w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[32vw] group relative rounded-[2.5rem] cursor-grab active:cursor-grabbing hover:-translate-y-4 transition-all duration-500 ease-out perspective-1000">
+                  <div key={i} className="flex-none w-[80vw] sm:w-[45vw] md:w-[35vw] lg:w-[28vw] xl:w-[22vw] group relative rounded-[2.5rem] cursor-grab active:cursor-grabbing hover:-translate-y-4 transition-all duration-500 ease-out perspective-1000">
                     <div className="absolute inset-0 bg-[#ff6c02]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl scale-95 -z-10" />
                     
                     <div className="relative bg-white rounded-[2.5rem] border border-stone-100 shadow-[0_10px_30px_rgba(30,50,92,0.08)] group-hover:shadow-[0_30px_60px_rgba(0,181,213,0.15)] h-full flex flex-col overflow-hidden transition-all duration-500 transform-gpu group-hover:rotate-y-2 group-hover:rotate-x-2">
                       
                       {/* Image Container */}
-                      <div className="relative h-72 md:h-80 overflow-hidden bg-stone-100">
+                      <div className="relative h-60 md:h-64 overflow-hidden bg-stone-100">
                         <Image src={game.image} alt={(game.name as any)?.[l] || (game.name as any)?.az || "Game"} fill sizes="(max-width: 640px) 85vw, 40vw" className="object-cover transition-transform duration-1000 group-hover:scale-110" />
                         <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent" />
                         
                         {/* Title overlaying image for dramatic effect */}
                         <div className="absolute bottom-6 left-6 right-6">
-                          <h3 className="font-serif font-semibold text-2xl text-white group-hover:text-[#00b5d5] transition-colors drop-shadow-lg">
+                          <h3 className="font-serif font-semibold text-lg md:text-xl text-white group-hover:text-[#00b5d5] transition-colors drop-shadow-lg">
                         {(game.name as any)?.[l] || (game.name as any)?.az || "Game"}
                       </h3>
                         </div>
                       </div>
 
                       {/* Content */}
-                      <div className="p-8 flex-1 bg-white relative">
+                      <div className="p-6 flex-1 bg-white relative">
                         <div className="absolute -top-4 right-8 w-12 h-12 bg-[#ff6c02] rounded-2xl rotate-12 flex items-center justify-center text-white shadow-[0_8px_20px_rgba(255,108,2,0.4)] group-hover:rotate-24 group-hover:scale-110 transition-all duration-500">
                           <Ticket className="w-6 h-6" />
                         </div>
-                        <div className="text-sm md:text-base text-stone-500 font-medium leading-relaxed prose prose-stone [&>p]:mb-0 pt-2" dangerouslySetInnerHTML={{ __html: typeof game.description === 'object' ? (game.description[l] || game.description.az || "Desc") : (game.description || "Desc") }} />
+                        <div className="text-xs md:text-sm text-stone-500 font-medium leading-relaxed prose prose-stone [&>p]:mb-0 pt-2" dangerouslySetInnerHTML={{ __html: typeof game.description === 'object' ? (game.description[l] || game.description.az || "Desc") : (game.description || "Desc") }} />
                       </div>
 
                     </div>
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div className="flex gap-4 justify-center mt-6 lg:mt-8 relative z-10">
+              <button
+                onClick={scrollPrev}
+                disabled={!prevBtnEnabled}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-2 shadow-md hover:scale-110 active:scale-95 ${
+                  prevBtnEnabled
+                    ? 'bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e05e00] hover:border-[#e05e00] shadow-[0_4px_16px_rgba(255,108,2,0.35)]'
+                    : 'bg-stone-50 border-stone-200 text-stone-300 cursor-not-allowed opacity-50'
+                }`}
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={scrollNext}
+                disabled={!nextBtnEnabled}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border-2 shadow-md hover:scale-110 active:scale-95 ${
+                  nextBtnEnabled
+                    ? 'bg-[#ff6c02] border-[#ff6c02] text-white hover:bg-[#e05e00] hover:border-[#e05e00] shadow-[0_4px_16px_rgba(255,108,2,0.35)]'
+                    : 'bg-stone-50 border-stone-200 text-stone-300 cursor-not-allowed opacity-50'
+                }`}
+              >
+                <ArrowRight className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </ScrollReveal>
