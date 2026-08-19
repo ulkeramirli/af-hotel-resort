@@ -213,9 +213,9 @@ export default function Wonderland() {
             {/* Background glowing blob for slider area */}
             <div className="absolute top-0 right-0 w-125 h-125 bg-linear-to-br from-[#00b5d5]/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-            <div className="relative z-10 flex justify-start mb-8 md:mb-12">
+            <div className="relative z-10 flex justify-center mb-8 md:mb-12">
               {wonderland?.bigAttractions?.length > 0 && (
-                <div className="w-full flex justify-start pl-4 md:pl-2">
+                <div className="w-full flex justify-center">
                   <CategoryTabs
                     categories={wonderland.bigAttractions.map((t:any, i:any) => ({
                       id: String(i),
@@ -226,7 +226,7 @@ export default function Wonderland() {
                       setActiveTab(Number(id));
                       emblaApi?.scrollTo(0);
                     }}
-                    className="justify-start gap-3"
+                    className="justify-center gap-3"
                   />
                 </div>
               )}
