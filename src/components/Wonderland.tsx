@@ -120,7 +120,7 @@ export default function Wonderland() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal type="flipUp" delay={0.2}>
+          <ScrollReveal type="fadeUp" delay={0.2}>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight relative inline-block mt-2">
               AF PARK
               <Sparkles className="absolute -top-6 -right-10 w-8 h-8 text-[#ff6c02] opacity-70" />
@@ -176,27 +176,27 @@ export default function Wonderland() {
                     {/* Blurred background blob */}
                     <div className={`absolute -right-6 -top-6 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-linear-to-br ${g.bg} blur-xl group-hover:scale-125 transition-transform duration-700`} />
 
-                    <div className="relative z-10 p-4 sm:p-5 md:p-6 flex flex-col flex-1">
+                    <div className="relative z-10 p-5 sm:p-6 flex flex-col flex-1 min-h-[140px] sm:min-h-[160px]">
                       {/* Top row: icon + number badge */}
-                      <div className="flex items-start justify-between mb-3 sm:mb-4">
+                      <div className="flex items-start justify-between mb-4">
                         <div 
-                          className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-linear-to-br ${g.bg} flex items-center justify-center border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500`}
+                          className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-linear-to-br ${g.bg} flex items-center justify-center border border-stone-100 shadow-sm group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500`}
                           style={{ color: g.accent }}
                         >
-                          <DynamicIcon name={h?.icon} className="w-5 h-5 sm:w-7 sm:h-7" />
+                          <DynamicIcon name={h?.icon} className="w-6 h-6 sm:w-7 sm:h-7" />
                         </div>
-                        <span className={`${g.num} text-white text-[9px] sm:text-[10px] font-bold w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shadow-md shrink-0`}>{i + 1}</span>
+                        <span className={`${g.num} text-white text-[10px] sm:text-[11px] font-bold w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shadow-md shrink-0`}>{i + 1}</span>
                       </div>
 
                       {/* Text */}
-                      <h4 className="text-xs sm:text-[15px] md:text-base font-bold text-[#1e325c] mb-1.5 sm:mb-2 leading-snug group-hover:text-[#00b5d5] transition-colors duration-300 line-clamp-2">
+                      <h4 className="text-[13px] sm:text-[15px] md:text-base font-bold text-[#1e325c] mb-2 leading-snug group-hover:text-[#00b5d5] transition-colors duration-300 line-clamp-2">
                         {(h?.name as any)?.[l] || (h?.name as any)?.az || 'Name'}
                       </h4>
-                      <div className="text-[10px] sm:text-xs md:text-[13px] text-stone-500 leading-relaxed prose prose-stone [&>p]:mb-0 line-clamp-3" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || 'Desc' }} />
+                      <div className="text-[11px] sm:text-xs md:text-[13px] text-stone-500 leading-relaxed prose prose-stone [&>p]:mb-0 line-clamp-3" dangerouslySetInnerHTML={{ __html: (h?.description as any)?.[l] || (h?.description as any)?.az || 'Desc' }} />
 
                       {/* Bottom accent line */}
-                      <div className="mt-auto pt-3 sm:pt-4 border-t border-stone-100">
-                        <div className="w-6 sm:w-8 h-0.5 rounded-full transition-all duration-500 group-hover:w-12 sm:group-hover:w-16" style={{ background: g.accent }} />
+                      <div className="mt-auto pt-4 border-t border-stone-100">
+                        <div className="w-8 h-0.5 rounded-full transition-all duration-500 group-hover:w-14" style={{ background: g.accent }} />
                       </div>
                     </div>
                   </ScrollReveal>
@@ -207,13 +207,13 @@ export default function Wonderland() {
         </div>
 
         {/* Dynamic Attractions Slider */}
-        <ScrollReveal type="flipUp" delay={0.2} className="relative z-20">
+        <ScrollReveal type="fadeUp" delay={0.1} className="relative z-20">
           <div className="bg-white rounded-[3rem] p-6 md:p-12 lg:p-16 border border-stone-100 shadow-[0_20px_60px_rgba(30,50,92,0.06)] relative overflow-hidden">
             
             {/* Background glowing blob for slider area */}
             <div className="absolute top-0 right-0 w-125 h-125 bg-linear-to-br from-[#00b5d5]/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-            <div className="relative z-10 flex justify-center mb-8 md:mb-12">
+            <ScrollReveal type="fadeDown" delay={0.3} className="relative z-10 flex justify-center mb-8 md:mb-12">
               {wonderland?.bigAttractions?.length > 0 && (
                 <div className="w-full flex justify-center">
                   <CategoryTabs
@@ -230,24 +230,25 @@ export default function Wonderland() {
                   />
                 </div>
               )}
-            </div>
+            </ScrollReveal>
 
-            <div className="overflow-hidden -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16" ref={emblaRef}>
-              <div className="flex gap-6 md:gap-10 py-6">
-                {active?.games?.map((game: any, i: number) => (
-                  <div key={i} className="flex-none w-[80vw] sm:w-[45vw] md:w-[35vw] lg:w-[28vw] xl:w-[22vw] group relative rounded-[2.5rem] cursor-grab active:cursor-grabbing hover:-translate-y-4 transition-all duration-500 ease-out perspective-1000">
-                    <div className="absolute inset-0 bg-[#ff6c02]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl scale-95 -z-10" />
-                    
-                    <div className="relative bg-white rounded-[2.5rem] border border-stone-100 shadow-[0_10px_30px_rgba(30,50,92,0.08)] group-hover:shadow-[0_30px_60px_rgba(0,181,213,0.15)] h-full flex flex-col overflow-hidden transition-all duration-500 transform-gpu group-hover:rotate-y-2 group-hover:rotate-x-2">
+            <ScrollReveal type="slideLeft" delay={0.4} className="overflow-hidden -mx-6 md:-mx-12 lg:-mx-16 px-6 md:px-12 lg:px-16">
+              <div ref={emblaRef}>
+                <div className="flex gap-6 md:gap-10 py-6">
+                  {active?.games?.map((game: any, i: number) => (
+                    <div key={i} className="flex-none w-[80vw] sm:w-[45vw] md:w-[35vw] lg:w-[28vw] xl:w-[22vw] group relative rounded-[2.5rem] cursor-grab active:cursor-grabbing hover:-translate-y-4 transition-all duration-500 ease-out perspective-1000">
+                      <div className="absolute inset-0 bg-[#ff6c02]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl scale-95 -z-10" />
                       
-                      {/* Image Container */}
-                      <div className="relative h-60 md:h-64 overflow-hidden bg-stone-100">
-                        <Image src={game.image} alt={(game.name as any)?.[l] || (game.name as any)?.az || "Game"} fill sizes="(max-width: 640px) 85vw, 40vw" className="object-cover transition-transform duration-1000 group-hover:scale-110" />
-                        <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent" />
+                      <div className="relative bg-white rounded-[2.5rem] border border-stone-100 shadow-[0_10px_30px_rgba(30,50,92,0.08)] group-hover:shadow-[0_30px_60px_rgba(0,181,213,0.15)] h-full flex flex-col overflow-hidden transition-all duration-500 transform-gpu group-hover:rotate-y-2 group-hover:rotate-x-2">
                         
-                        {/* Title overlaying image for dramatic effect */}
-                        <div className="absolute bottom-6 left-6 right-6">
-                          <h3 className="font-serif font-semibold text-lg md:text-xl text-white group-hover:text-[#00b5d5] transition-colors drop-shadow-lg">
+                        {/* Image Container */}
+                        <div className="relative h-60 md:h-64 overflow-hidden bg-stone-100">
+                          <Image src={game.image} alt={(game.name as any)?.[l] || (game.name as any)?.az || "Game"} fill sizes="(max-width: 640px) 85vw, 40vw" className="object-cover transition-transform duration-1000 group-hover:scale-110" />
+                          <div className="absolute inset-0 bg-linear-to-t from-[#1e325c]/90 via-[#1e325c]/20 to-transparent" />
+                          
+                          {/* Title overlaying image for dramatic effect */}
+                          <div className="absolute bottom-6 left-6 right-6">
+                            <h3 className="font-serif font-semibold text-lg md:text-xl text-white group-hover:text-[#00b5d5] transition-colors drop-shadow-lg">
                         {(game.name as any)?.[l] || (game.name as any)?.az || "Game"}
                       </h3>
                         </div>
@@ -266,8 +267,9 @@ export default function Wonderland() {
                 ))}
               </div>
             </div>
+            </ScrollReveal>
 
-            <div className="flex gap-4 justify-center mt-6 lg:mt-8 relative z-10">
+            <ScrollReveal type="fadeUp" delay={0.5} className="flex gap-4 justify-center mt-6 lg:mt-8 relative z-10">
               <button
                 onClick={scrollPrev}
                 disabled={!prevBtnEnabled}
@@ -290,7 +292,7 @@ export default function Wonderland() {
               >
                 <ArrowRight className="w-5 h-5" />
               </button>
-            </div>
+            </ScrollReveal>
           </div>
         </ScrollReveal>
 

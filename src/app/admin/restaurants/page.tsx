@@ -349,8 +349,8 @@ export default function AdminRestaurantsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-stone-600 mb-1 items-center gap-1">
-                <Phone className="w-3 h-3" /> Əlaqə Nömrəsi
+              <label className="flex items-center gap-1.5 text-xs font-bold text-stone-600 mb-1">
+                <Phone className="w-3.5 h-3.5 text-stone-400" /> Əlaqə Nömrəsi
               </label>
               <input
                 placeholder="+994 12 448 00 00"
@@ -900,7 +900,10 @@ export default function AdminRestaurantsPage() {
                     </div>
                   </div>
                   {(typeof rest.description === 'object' ? (rest.description as any)?.az : rest.description) && (
-                    <p className="text-[11px] text-stone-400 mt-1 line-clamp-2">{typeof rest.description === 'object' ? ((rest.description as any)?.az || "") : rest.description}</p>
+                    <div 
+                      className="text-[11px] text-stone-400 mt-1 line-clamp-2 prose prose-stone prose-p:my-0 prose-p:leading-snug"
+                      dangerouslySetInnerHTML={{ __html: typeof rest.description === 'object' ? ((rest.description as any)?.az || "") : rest.description }}
+                    />
                   )}
                   <div className="flex flex-wrap gap-2 mt-2">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">

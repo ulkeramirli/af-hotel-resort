@@ -203,41 +203,43 @@ export default function Restoran() {
             <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto break-words whitespace-normal [&>p]:mb-0 [&>p]:break-words [&>p]:whitespace-normal px-4" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
-            className="flex justify-center w-full mt-4"
-          >
-            <div className="flex flex-row flex-wrap justify-center gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-4xl border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
-              {restaurants.map((r, i) => {
-                const isActive = activeRest === i;
-                const IconComponent = getCategoryIcon(loc(r.name));
-                return (
-                  <button
-                    key={i}
-                    onClick={() => handleRestaurantChange(i)}
-                    className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer flex-1 shrink-0 min-w-35 md:min-w-0 ${
-                      isActive
-                        ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
-                        : "hover:bg-white/60 border border-transparent"
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5 md:gap-2">
-                      <IconComponent className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isActive ? "text-[#00b5d5]" : "text-stone-400"}`} />
-                      <span className={`text-[12px] md:text-[13px] font-semibold tracking-wide ${isActive ? "text-[#1e325c]" : "text-stone-500"}`}>
-                        {loc(r.name)}
-                      </span>
-                    </div>
-                    {loc(r.description) && (
-                      <span className="text-[10px] md:text-[11px] text-stone-400 font-medium line-clamp-1 w-full text-center md:text-left mt-0.5" dangerouslySetInnerHTML={{ __html: loc(r.description) }} />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
+          {restaurants.length > 1 && (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
+              className="flex justify-center w-full mt-4"
+            >
+              <div className="flex flex-row flex-wrap justify-center gap-2 md:gap-4 bg-stone-100/50 p-2 md:p-3 rounded-2xl md:rounded-4xl border border-stone-200/60 backdrop-blur-md shadow-sm w-full max-w-4xl">
+                {restaurants.map((r, i) => {
+                  const isActive = activeRest === i;
+                  const IconComponent = getCategoryIcon(loc(r.name));
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handleRestaurantChange(i)}
+                      className={`relative p-3 md:p-5 rounded-xl md:rounded-3xl flex flex-col items-center md:items-start text-center md:text-left gap-1 transition-all cursor-pointer flex-1 shrink-0 min-w-35 md:min-w-0 ${
+                        isActive
+                          ? "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-stone-100 scale-[1.02]"
+                          : "hover:bg-white/60 border border-transparent"
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 md:gap-2">
+                        <IconComponent className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isActive ? "text-[#00b5d5]" : "text-stone-400"}`} />
+                        <span className={`text-[12px] md:text-[13px] font-semibold tracking-wide ${isActive ? "text-[#1e325c]" : "text-stone-500"}`}>
+                          {loc(r.name)}
+                        </span>
+                      </div>
+                      {loc(r.description) && (
+                        <span className="text-[10px] md:text-[11px] text-stone-400 font-medium line-clamp-1 w-full text-center md:text-left mt-0.5" dangerouslySetInnerHTML={{ __html: loc(r.description) }} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
         </div>
 
         {/* Əsas Grid */}
@@ -263,7 +265,7 @@ export default function Restoran() {
                 <span className="text-[10px] uppercase tracking-widest font-bold bg-[#00b5d5] px-2.5 py-1 rounded-md">
                   Hotel Concept
                 </span>
-                <h3 className="text-xl md:text-2xl font-serif font-light mt-2">{loc(currentRestaurant.name)}</h3>
+                <h3 className="text-xl md:text-2xl font-bold mt-2 text-white">{loc(currentRestaurant.name)}</h3>
               </div>
             </div>
 
