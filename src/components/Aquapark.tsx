@@ -389,7 +389,7 @@ export default function Aquapark() {
       }
     };
     fetchActivities();
-  }, []);
+  }, [l]);
 
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);

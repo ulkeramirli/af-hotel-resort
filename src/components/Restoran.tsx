@@ -121,7 +121,7 @@ export default function Restoran() {
       }
     };
     load();
-  }, []);
+  }, [l]);
 
   const currentRestaurant = restaurants[activeRest] || restaurants[0];
   const activeMenu = currentRestaurant?.menu?.[activeMenuTab] || currentRestaurant?.menu?.[0];

@@ -278,7 +278,7 @@ export default function Rooms() {
       })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, []);
+  }, [l]);
 
   const buildFavSet = useCallback(
     (roomList: PublicRoom[]) => new Set(roomList.map((r) => r.id).filter((id) => isFavorite(id))),

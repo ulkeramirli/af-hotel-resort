@@ -59,7 +59,7 @@ export default function Wonderland() {
         if (data.success) setRates(data.data);
       })
       .catch(console.error);
-  }, []);
+  }, [l]);
 
   useEffect(() => {
     if (!emblaApi) return;
