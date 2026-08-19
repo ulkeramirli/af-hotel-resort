@@ -758,7 +758,7 @@ export default function AdminWonderlandPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-sm text-[#1e325c]">{typeof ba.title === 'object' ? ((ba.title as any)?.az || "") : ba.title}</h4>
-                    <p className="text-[10px] text-stone-400 mt-0.5">{ba.games.length} oyun</p>
+                    <p className="text-[10px] text-stone-400 mt-0.5">{ba.games.length} şəkil / oyun</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -804,14 +804,14 @@ export default function AdminWonderlandPage() {
                     <div className="flex justify-between items-center mb-3">
                       <h5 className="text-xs font-bold text-[#1e325c] flex items-center gap-2">
                         <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                        {editGameIdx !== null && activeGameBigIdx === bigIdx ? "Oyunu Redaktə Et" : "Yeni Oyun Əlavə Et"}
+                        {editGameIdx !== null && activeGameBigIdx === bigIdx ? "Şəkil/Oyunu Redaktə Et" : "Yeni Şəkil/Oyun Əlavə Et"}
                       </h5>
                       <LangSwitcher lang={formLang} setLang={setFormLang} />
                     </div>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-[10px] font-semibold text-stone-500 mb-1 block">Oyun Adı [{formLang}]</label>
+                        <label className="text-[10px] font-semibold text-stone-500 mb-1 block">Şəkil/Oyun Adı [{formLang}]</label>
                         <input
                           placeholder="Məs: Tornado"
                           value={activeGameBigIdx === bigIdx || editGameIdx === null ? gameForm.name[formLang] : ""}
@@ -879,7 +879,7 @@ export default function AdminWonderlandPage() {
                         className="px-4 py-2 text-white text-xs font-bold rounded-lg transition-opacity hover:opacity-90"
                         style={{ background: "var(--color-hotel-blue)" }}
                       >
-                        {editGameIdx !== null && activeGameBigIdx === bigIdx ? "Yadda Saxla" : "Oyun Əlavə Et"}
+                        {editGameIdx !== null && activeGameBigIdx === bigIdx ? "Yadda Saxla" : "Əlavə Et"}
                       </button>
                       {editGameIdx !== null && activeGameBigIdx === bigIdx && (
                         <button
@@ -894,7 +894,7 @@ export default function AdminWonderlandPage() {
 
                   {/* Games List */}
                   {ba.games.length === 0 ? (
-                    <p className="text-xs text-stone-400 text-center py-4">Bu attraksiyonda hələ oyun yoxdur</p>
+                    <p className="text-xs text-stone-400 text-center py-4">Bu attraksiyonda hələ şəkil / oyun yoxdur</p>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {ba.games.map((game: any, gameIdx: number) => (
