@@ -14,7 +14,7 @@ export default function RestoranPage() {
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}
-        imagePath="/AF-hotel.jpg"
+        imagePath="/restoran1.jpg"
         variant="restoran"
       />
       <div className="py-12">

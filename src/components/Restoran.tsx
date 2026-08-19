@@ -178,7 +178,7 @@ export default function Restoran() {
   const schedule = getSchedule();
 
   return (
-    <section id="restoran" className="py-24 md:py-32 bg-transparent scroll-mt-20">
+    <section id="restoran" className="pt-8 pb-16 md:pt-12 md:pb-24 bg-transparent scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-12 md:space-y-16">
         
         {/* Header & Tabs Container */}
@@ -188,7 +188,7 @@ export default function Restoran() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ ease: 'easeOut', duration: 0.45 }}
-            className="space-y-4 flex flex-col items-center max-w-3xl"
+            className="space-y-4 flex flex-col items-center w-full max-w-3xl px-4"
           >
             <div className="flex items-center justify-center gap-4">
               <div className="w-8 h-px bg-[#00b5d5]" />
@@ -197,10 +197,10 @@ export default function Restoran() {
               </span>
               <div className="w-8 h-px bg-[#00b5d5]" />
             </div>
-            <h2 className="text-3xl md:text-5xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight break-words whitespace-normal">
+            <h2 className="text-2xl md:text-4xl lg:text-4xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight text-center w-full max-w-2xl mx-auto">
               <TextReveal key={loc(settings?.title)} text={loc(settings?.title) || c.title} delay={0.1} center />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto break-words whitespace-normal [&>p]:mb-0 [&>p]:break-words [&>p]:whitespace-normal px-4" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
+            <div className="text-[13px] md:text-sm font-medium text-stone-500 leading-relaxed max-w-lg mx-auto w-full text-center" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
           </motion.div>
 
           {restaurants.length > 1 && (

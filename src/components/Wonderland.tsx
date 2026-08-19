@@ -99,7 +99,7 @@ export default function Wonderland() {
   };
 
   return (
-    <section id="wonderland" className="py-24 md:py-32 relative overflow-hidden scroll-mt-10 bg-[#f8fafc] perspective-1000">
+    <section id="wonderland" className="pt-8 pb-16 md:pt-12 md:pb-24 relative overflow-hidden scroll-mt-10 bg-[#f8fafc] perspective-1000">
       {/* Background Magic Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[10%] left-[5%] w-[40%] h-[40%] rounded-full bg-linear-to-r from-[#00b5d5]/10 to-[#ff6c02]/5 blur-[120px]" />
@@ -141,8 +141,8 @@ export default function Wonderland() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal type="zoomIn" delay={0.3}>
-            <div className="text-sm md:text-base text-stone-500 font-light leading-relaxed prose prose-stone max-w-2xl mx-auto [&>p]:mb-2 mt-4 text-center" dangerouslySetInnerHTML={{ __html: typeof wonderland?.description === 'object' ? (wonderland.description[l] || wonderland.description.az || "Description") : (wonderland?.description || "Description") }} />
+          <ScrollReveal type="zoomIn" delay={0.3} className="w-full px-4">
+            <div className="text-sm md:text-base text-stone-500 font-light leading-relaxed max-w-lg mx-auto mt-4 text-center w-full" dangerouslySetInnerHTML={{ __html: typeof wonderland?.description === 'object' ? (wonderland.description[l] || wonderland.description.az || "Description") : (wonderland?.description || "Description") }} />
           </ScrollReveal>
         </div>
 
@@ -176,7 +176,7 @@ export default function Wonderland() {
                     {/* Blurred background blob */}
                     <div className={`absolute -right-6 -top-6 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-linear-to-br ${g.bg} blur-xl group-hover:scale-125 transition-transform duration-700`} />
 
-                    <div className="relative z-10 p-5 sm:p-6 flex flex-col flex-1 min-h-[140px] sm:min-h-[160px]">
+                    <div className="relative z-10 p-5 sm:p-6 flex flex-col flex-1 min-h-35 sm:min-h-40">
                       {/* Top row: icon + number badge */}
                       <div className="flex items-start justify-between mb-4">
                         <div 

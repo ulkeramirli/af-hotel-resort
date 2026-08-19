@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env" });
-const uri = process.env.DATABASE_URL || "mongodb://127.0.0.1:27017/afhotel";
+const uri = process.env.MONGO_URI || "";
 
 async function run() {
   await mongoose.connect(uri);
@@ -33,7 +33,10 @@ async function run() {
 
   const Restaurant = mongoose.models.Restaurant || mongoose.model("Restaurant", RestaurantSchema);
 
-  const rest = await Restaurant.findOne({});
+  let rest = await Restaurant.findOne({ "name.en": "AF Beach" });
+  if (!rest) {
+    rest = await Restaurant.findOne({});
+  }
   if (!rest) {
     console.log("No restaurant found");
     process.exit(1);
