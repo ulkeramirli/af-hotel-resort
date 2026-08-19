@@ -31,17 +31,17 @@ export default function CategoryTabs({
           <button
             key={cat.id}
             onClick={() => onSelect(cat.id)}
-            className={`relative px-5 py-2.5 sm:px-6 sm:py-3 rounded-full text-xs sm:text-[13px] font-bold transition-colors duration-300 outline-none select-none ${
+            className={`relative px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl text-xs sm:text-[13px] font-bold transition-all duration-300 outline-none select-none border ${
               isActive
-                ? "text-white"
-                : "text-stone-500 hover:text-[#00b5d5] hover:bg-stone-50"
+                ? "text-white border-transparent"
+                : "text-stone-500 border-stone-200 hover:border-[#00b5d5]/40 hover:text-[#00b5d5] hover:bg-stone-50"
             }`}
             style={{ WebkitTapHighlightColor: 'transparent' }}
           >
             {isActive && (
               <motion.div
                 layoutId="activeCategoryTab"
-                className="absolute inset-0 bg-linear-to-r from-[#00b5d5] to-[#0096b1] rounded-full shadow-lg shadow-[#00b5d5]/25"
+                className="absolute inset-0 bg-linear-to-r from-[#00b5d5] to-[#0096b1] rounded-xl shadow-lg shadow-[#00b5d5]/25"
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />
             )}
