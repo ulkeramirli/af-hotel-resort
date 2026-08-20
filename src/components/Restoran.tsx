@@ -191,11 +191,31 @@ export default function Restoran() {
             className="space-y-4 flex flex-col items-center w-full max-w-3xl px-4"
           >
             <div className="flex items-center justify-center gap-4">
-              <div className="w-8 h-px bg-[#00b5d5]" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5]">
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+                style={{ originX: 0.5 }}
+                className="w-12 h-px bg-[#00b5d5]"
+              />
+              <motion.span
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-[#00b5d5]"
+              >
                 {loc(settings?.tag) || c.tag}
-              </span>
-              <div className="w-8 h-px bg-[#00b5d5]" />
+              </motion.span>
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+                style={{ originX: 0.5 }}
+                className="w-12 h-px bg-[#00b5d5]"
+              />
             </div>
             <h2 className="text-2xl md:text-4xl lg:text-4xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight text-center w-full max-w-2xl mx-auto">
               <TextReveal key={loc(settings?.title)} text={loc(settings?.title) || c.title} delay={0.1} center />

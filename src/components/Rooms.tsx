@@ -357,15 +357,35 @@ export default function Rooms({ className }: { className?: string }) {
             transition={{ ease: 'easeOut', duration: 0.45 }}
             className="space-y-4 flex flex-col items-center max-w-3xl"
           >
-            <div className="flex items-center gap-4 justify-center">
-              <div className="w-8 h-px bg-[#00b5d5]" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#00b5d5] leading-normal py-1">
+            <div className="flex items-center justify-center gap-4">
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+                style={{ originX: 0.5 }}
+                className="w-12 h-px bg-[#00b5d5]"
+              />
+              <motion.span
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-[#00b5d5]"
+              >
                 {loc(settings?.tag) || c.tag}
-              </span>
-              <div className="w-8 h-px bg-[#00b5d5]" />
+              </motion.span>
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+                style={{ originX: 0.5 }}
+                className="w-12 h-px bg-[#00b5d5]"
+              />
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-normal py-1">
-              <TextReveal key={loc(settings?.title) || 'default'} text={loc(settings?.title) || c.title} delay={0.1} center />
+              <TextReveal key={loc(settings?.title) || c.title} text={loc(settings?.title) || c.title} delay={0.1} center />
             </h2>
             <div 
               className="text-sm text-center font-medium text-stone-400 max-w-2xl mx-auto break-words whitespace-normal py-1 px-4 w-full sm:w-[90%]"

@@ -232,7 +232,7 @@ export default function Header() {
           </div>
 
           {/* Currency Switcher */}
-          <div className="relative" ref={currRef}>
+          <div className="relative translate-x-3 md:translate-x-0" ref={currRef}>
             <button
               onClick={() => setCurrOpen(!currOpen)}
               className="flex items-center space-x-1.5 font-bold text-[11px] tracking-wider text-slate-700 outline-none uppercase p-2 hover:bg-stone-50 rounded-xl transition-all duration-300 border-none bg-transparent cursor-pointer"
@@ -259,7 +259,7 @@ export default function Header() {
             )}
           </div>
 
-          <div className="relative" ref={langRef}>
+          <div className="relative translate-x-3 md:translate-x-0" ref={langRef}>
             <button
               onClick={() => setLangOpen(!langOpen)}
               className="flex items-center space-x-1.5 font-bold text-[11px] tracking-wider text-slate-700 outline-none uppercase p-2 hover:bg-stone-50 rounded-xl transition-all duration-300 border-none bg-transparent cursor-pointer"
