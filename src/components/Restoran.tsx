@@ -178,7 +178,7 @@ export default function Restoran() {
   const schedule = getSchedule();
 
   return (
-    <section id="restoran" className="pt-8 pb-16 md:pt-12 md:pb-24 bg-transparent scroll-mt-20">
+    <section id="restoran" className="pt-12 pb-16 md:pt-20 md:pb-24 bg-transparent scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 space-y-12 md:space-y-16">
         
         {/* Header & Tabs Container */}

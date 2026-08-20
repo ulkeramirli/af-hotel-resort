@@ -99,7 +99,7 @@ export default function Wonderland() {
   };
 
   return (
-    <section id="wonderland" className="pt-8 pb-16 md:pt-12 md:pb-24 relative overflow-hidden scroll-mt-10 bg-[#f8fafc] perspective-1000">
+    <section id="wonderland" className="pt-12 pb-16 md:pt-20 md:pb-24 relative overflow-hidden scroll-mt-10 bg-[#f8fafc] perspective-1000">
       {/* Background Magic Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[10%] left-[5%] w-[40%] h-[40%] rounded-full bg-linear-to-r from-[#00b5d5]/10 to-[#ff6c02]/5 blur-[120px]" />
