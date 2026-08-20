@@ -85,7 +85,7 @@ const sections = [
     key: "restoran",
     href: "/restoran",
     icon: UtensilsCrossed,
-    image: "/restoran1  .jpg",
+    image: "/restoran1.jpg",
     gradient: "from-[#5c2200]/80 via-[#7a3000]/60 to-[#9c4200]/80",
     accent: "#fb923c",
     glow: "rgba(249,115,22,0.25)",
