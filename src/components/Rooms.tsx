@@ -325,7 +325,7 @@ export default function Rooms({ className }: { className?: string }) {
     // Fallback: If DB stored the name instead of the ID
     const selectedType = types.find(t => t._id === category);
     if (selectedType) {
-      if (r.category === selectedType.name) return true;
+      if (r.category === (selectedType.name as any)) return true;
       if (r.category === (selectedType.name as any)?.az) return true;
       if (r.category === (selectedType.name as any)?.en) return true;
       if (r.category === (selectedType.name as any)?.ru) return true;
