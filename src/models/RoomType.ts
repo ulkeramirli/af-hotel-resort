@@ -7,6 +7,10 @@ const roomTypeSchema = new mongoose.Schema(
       en: { type: String, required: true },
       ru: { type: String, required: true },
     },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

@@ -61,8 +61,8 @@ function RoomCarousel({ images, alt, priority = false }: { images: string[]; alt
 export const content = {
   az: {
     tag: "OTAQLAR VƏ KOTECLƏR",
-    title: "Sizin Rahatlığınız Üçün",
-    subtitle: "Mükəmməl istirahətiniz üçün ən uyğun otağı seçin. Hər bir otaq fərqli dizayn və müasir avadanlıqlarla təchiz olunub.",
+    title: "Rahat və Komfortlu Otaqlar",
+    subtitle: "Unudulmaz istirahətiniz üçün xüsusi dizayn edilmiş rahat otaqlar və ailəvi koteclər.",
     all: "Hamısı",
     single: "Single",
     double: "Standard Double",
@@ -134,7 +134,10 @@ export function RoomCard({
 }) {
   return (
     <div className="h-full">
-      <div className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col h-full">
+      <div 
+        onClick={() => onDetails(room.id)}
+        className="group bg-white rounded-2xl overflow-hidden border border-stone-200/60 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col h-full cursor-pointer"
+      >
       {/* Image */}
       <div className="relative aspect-video overflow-hidden bg-stone-100 border-b border-stone-100">
         <RoomCarousel images={room.images} alt={(room.title as any)?.[l] || ""} priority={priority} />
@@ -211,7 +214,7 @@ export function RoomCard({
   );
 }
 
-export default function Rooms() {
+export default function Rooms({ className }: { className?: string }) {
   const { language } = useLanguage();
   const { currency } = useCurrency();
   const router = useRouter();
@@ -342,7 +345,7 @@ export default function Rooms() {
 
 
   return (
-    <section id="rooms" className="py-20 md:py-32 scroll-mt-20 bg-transparent text-stone-800 antialiased selection:bg-stone-100">
+    <section id="rooms" className={className || "py-20 md:py-32 scroll-mt-20 bg-transparent text-stone-800 antialiased selection:bg-stone-100"}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header & Tabs Container */}
@@ -364,7 +367,10 @@ export default function Rooms() {
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-[#1e325c] tracking-wide font-serif leading-normal py-1">
               <TextReveal key={loc(settings?.title) || 'default'} text={loc(settings?.title) || c.title} delay={0.1} center />
             </h2>
-            <div className="text-sm font-medium text-stone-400 prose prose-sm prose-stone max-w-2xl mx-auto wrap-break-word whitespace-normal [&>p]:wrap-break-word [&>p]:whitespace-normal [&>p]:mb-0 py-1 px-4" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
+            <div 
+              className="text-sm text-center font-medium text-stone-400 max-w-2xl mx-auto break-words whitespace-normal py-1 px-4 w-full sm:w-[90%]"
+              dangerouslySetInnerHTML={{ __html: String(loc(settings?.subtitle) || c.subtitle || "").replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ') }}
+            />
           </motion.div>
 
           <motion.div
@@ -372,7 +378,7 @@ export default function Rooms() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ ease: 'easeOut', duration: 0.45, delay: 0.15 }}
-            className="flex justify-center w-full mt-2"
+            className="flex justify-center w-full mt-8 md:mt-10"
           >
             <CategoryTabs
               categories={categories}
@@ -439,7 +445,7 @@ export default function Rooms() {
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ ease: "easeOut" as const, duration: 0.45 }}
                         key={room.id}
-                        className="w-[80vw] sm:w-[320px] md:w-full shrink-0 h-full"
+                        className="w-[75vw] sm:w-[320px] md:w-full shrink-0 h-full"
                       >
                         <RoomCard
                           room={room}

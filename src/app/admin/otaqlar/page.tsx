@@ -4,10 +4,10 @@
 
 import React, { useState, useEffect } from "react";
 
-import { Plus, Trash2, BedDouble, Loader2, Pencil, X, Check, Tags, Globe } from "lucide-react";
+import { Plus, Trash2, BedDouble, Loader2, Pencil, X, Check, Tags, Globe, ArrowUp, ArrowDown } from "lucide-react";
 import { 
   getRooms, createRoom, updateRoom, deleteRoom,
-  getRoomTypes, createRoomType, updateRoomType, deleteRoomType,
+  getRoomTypes, createRoomType, updateRoomType, deleteRoomType, reorderRoomTypes,
   uploadImage,
   getRoomSettings, updateRoomSettings
 } from "@/services/api";
@@ -244,6 +244,38 @@ export default function AdminRoomsPage() {
       loadData();
     } catch (err: any) {
       alert(err.message || "Silərkən xəta baş verdi");
+    }
+  };
+
+  const handleMoveType = async (index: number, direction: "up" | "down") => {
+    if (
+      (direction === "up" && index === 0) ||
+      (direction === "down" && index === roomTypes.length - 1)
+    )
+      return;
+
+    const newTypes = [...roomTypes];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    
+    // Swap
+    const temp = newTypes[index];
+    newTypes[index] = newTypes[targetIndex];
+    newTypes[targetIndex] = temp;
+
+    // Optimistic UI update
+    setRoomTypes(newTypes);
+
+    // Build order payload
+    const orderPayload = newTypes.map((t, i) => ({
+      id: t._id,
+      order: i,
+    }));
+
+    try {
+      await reorderRoomTypes(orderPayload);
+    } catch (err: any) {
+      alert(err.message || "Sıralama dəyişdirilərkən xəta baş verdi");
+      loadData(); // Revert on failure
     }
   };
 
@@ -579,10 +611,28 @@ export default function AdminRoomsPage() {
             </div>
           </div>
           <div className="lg:col-span-2 space-y-3">
-             {roomTypes.map((type) => (
+             {roomTypes.map((type, index) => (
                 <div key={type._id} className="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <span className="font-bold text-sm text-[#1e325c]">{loc(type.name)}</span>
+                    <div className="flex flex-col border border-stone-200 rounded-lg overflow-hidden">
+                      <button 
+                        onClick={() => handleMoveType(index, "up")} 
+                        disabled={index === 0}
+                        className="p-1 bg-stone-50 text-stone-500 hover:bg-stone-100 disabled:opacity-30 border-b border-stone-200"
+                        title="Yuxarı qaldır"
+                      >
+                        <ArrowUp className="w-3 h-3" />
+                      </button>
+                      <button 
+                        onClick={() => handleMoveType(index, "down")} 
+                        disabled={index === roomTypes.length - 1}
+                        className="p-1 bg-stone-50 text-stone-500 hover:bg-stone-100 disabled:opacity-30"
+                        title="Aşağı sal"
+                      >
+                        <ArrowDown className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <span className="font-bold text-sm text-[#1e325c] ml-2">{loc(type.name)}</span>
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => startEditType(type)} className="p-2 bg-stone-50 text-stone-500 rounded-xl hover:bg-blue-50">

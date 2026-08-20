@@ -18,8 +18,8 @@ export default function RoomsPage() {
         variant="rooms"
         imageClassName="object-cover object-center"
       />
-      <div className="py-12">
-        <RoomsComponent />
+      <div>
+        <RoomsComponent className="pt-24 pb-20 md:pt-28 md:pb-32 scroll-mt-20 bg-transparent text-stone-800 antialiased selection:bg-stone-100" />
       </div>
     </div>
   );

@@ -200,7 +200,10 @@ export default function Restoran() {
             <h2 className="text-2xl md:text-4xl lg:text-4xl font-medium text-[#1e325c] tracking-wide font-serif leading-tight text-center w-full max-w-2xl mx-auto">
               <TextReveal key={loc(settings?.title)} text={loc(settings?.title) || c.title} delay={0.1} center />
             </h2>
-            <div className="text-[13px] md:text-sm font-medium text-stone-500 leading-relaxed max-w-lg mx-auto w-[85%] sm:w-full text-center **:text-center!" dangerouslySetInnerHTML={{ __html: loc(settings?.subtitle) || c.subtitle }} />
+            <div 
+              className="text-[13px] md:text-sm font-medium text-stone-500 leading-relaxed max-w-lg mx-auto w-[95%] sm:w-full text-center px-2"
+              dangerouslySetInnerHTML={{ __html: String(loc(settings?.subtitle) || c.subtitle || "").replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ') }}
+            />
           </motion.div>
 
           {restaurants.length > 1 && (

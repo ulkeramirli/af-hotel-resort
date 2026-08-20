@@ -469,6 +469,18 @@ export async function updateRoomType(id: string, name: any) {
   return data;
 }
 
+export async function reorderRoomTypes(order: { id: string; order: number }[]) {
+  const res = await fetch(`${BASE}/room-types/reorder`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({ order }),
+  });
+  const data = await safeJson(res);
+  if (!data.success) throw new Error(data.message || "Kateqoriyalar sıralanmadı");
+  if (typeof window !== 'undefined') roomTypesCache = null;
+  return data;
+}
+
 // DELETE /api/room-types/[id]
 export async function deleteRoomType(id: string) {
   const res = await fetch(`${BASE}/room-types/${id}`, {

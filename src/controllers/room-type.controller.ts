@@ -20,8 +20,32 @@ export class RoomTypeController {
     );
   }
 
+  static async reorder(req: Request) {
+    const body = await req.json();
+    const { order } = body; // Array of { id: string, order: number }
+
+    if (!Array.isArray(order)) {
+      throw new Error("Invalid payload");
+    }
+
+    const bulkOps = order.map((item) => ({
+      updateOne: {
+        filter: { _id: item.id },
+        update: { $set: { order: item.order } },
+      },
+    }));
+
+    await RoomType.bulkWrite(bulkOps);
+
+    return NextResponse.json({
+      success: true,
+      message: "Room types reordered successfully",
+    });
+  }
+
   static async getAll() {
     const roomTypes = await RoomType.find().sort({
+      order: 1,
       createdAt: -1,
     });
 

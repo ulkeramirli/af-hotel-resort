@@ -10,14 +10,14 @@ export default function RestoranPage() {
   const titles = { az: 'Restoranlar', en: 'Restaurants', ru: 'Рестораны' };
   const subs = { az: 'LƏZİZ MƏTBƏX & MÜKƏMMƏL XİDMƏT', en: 'FINE DINING & PERFECT SERVICE', ru: 'ИЗЫСКАННАЯ КУХНЯ & ПРЕМИУМ СЕРВИС' };
   return (
-    <div className="w-full min-h-screen bg-(--color-hotel-light)">
+    <div className="w-full min-h-screen">
       <PageHero
         title={titles[l]}
         subtitle={subs[l]}
         imagePath="/restoran1.jpg"
         variant="restoran"
       />
-      <div className="py-12">
+      <div className="py-12 bg-white">
         <RestoranComponent />
       </div>
     </div>

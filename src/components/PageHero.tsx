@@ -151,7 +151,7 @@ export default function PageHero({ title, subtitle, imagePath, variant = 'defaul
             className={`flex items-center gap-3 mb-5`}
           >
             <div className={`w-10 h-px border-t ${accent}`} />
-            <span className={`text-xs font-bold uppercase tracking-[0.35em] drop-shadow-md py-1 leading-normal ${accent.split(' ')[0]}`}>
+            <span className={`text-[11px] md:text-xs font-bold uppercase tracking-[0.35em] drop-shadow-md py-1 leading-normal ${accent.split(' ')[0]}`}>
               {subtitle}
             </span>
           </motion.div>
@@ -162,7 +162,7 @@ export default function PageHero({ title, subtitle, imagePath, variant = 'defaul
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium text-white drop-shadow-2xl tracking-tight leading-none max-w-3xl"
+          className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium text-white drop-shadow-2xl tracking-tight leading-none max-w-3xl"
         >
           {title}
         </motion.h1>

@@ -16,7 +16,12 @@ export interface About {
 
 export interface RoomType {
   _id: string;
-  name: any;
+  name: {
+    az: string;
+    en: string;
+    ru: string;
+  };
+  order?: number;
   createdAt?: string;
   updatedAt?: string;
 }

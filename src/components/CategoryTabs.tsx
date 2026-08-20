@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useId } from "react";
 
 interface Category {
   id: string;
@@ -13,6 +14,7 @@ interface CategoryTabsProps {
   activeId: string;
   onSelect: (id: string) => void;
   className?: string;
+  layoutIdPrefix?: string;
 }
 
 export default function CategoryTabs({
@@ -20,7 +22,11 @@ export default function CategoryTabs({
   activeId,
   onSelect,
   className = "",
+  layoutIdPrefix,
 }: CategoryTabsProps) {
+  const generatedId = useId();
+  const idPrefix = layoutIdPrefix || generatedId;
+
   if (!categories || categories.length === 0) return null;
 
   return (
@@ -40,7 +46,7 @@ export default function CategoryTabs({
           >
             {isActive && (
               <motion.div
-                layoutId="activeCategoryTab"
+                layoutId={`activeCategoryTab-${idPrefix}`}
                 className="absolute inset-0 bg-linear-to-r from-[#00b5d5] to-[#0096b1] rounded-xl shadow-lg shadow-[#00b5d5]/25"
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />

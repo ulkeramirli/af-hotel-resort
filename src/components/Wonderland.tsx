@@ -142,7 +142,10 @@ export default function Wonderland() {
           </ScrollReveal>
 
           <ScrollReveal type="zoomIn" delay={0.3} className="w-full">
-            <div className="text-sm md:text-base text-stone-500 font-light leading-relaxed max-w-lg mx-auto mt-4 text-center w-[85%] sm:w-full **:text-center!" dangerouslySetInnerHTML={{ __html: typeof wonderland?.description === 'object' ? (wonderland.description[l] || wonderland.description.az || "Description") : (wonderland?.description || "Description") }} />
+            <div 
+              className="text-sm md:text-base text-stone-500 font-light leading-relaxed max-w-lg mx-auto mt-4 text-center w-[95%] sm:w-full px-2"
+              dangerouslySetInnerHTML={{ __html: String(typeof wonderland?.description === 'object' ? (wonderland.description[l] || wonderland.description.az || "Description") : (wonderland?.description || "Description")).replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ') }}
+            />
           </ScrollReveal>
         </div>
 
