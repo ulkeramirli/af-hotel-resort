@@ -334,42 +334,46 @@ export default function Restoran() {
           <ScrollReveal direction="right" delay={0.4} className="lg:col-span-7 space-y-6">
             {currentRestaurant.menu && currentRestaurant.menu.length > 0 ? (
               <>
-                <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center border-b border-stone-200/60 pb-3">
-                  <h3 className="text-lg font-serif font-medium text-[#1e325c] tracking-wide flex items-center gap-2">
-                    <Utensils className="w-4 h-4 text-[#00b5d5]" />
-                    {c.viewMenu}
-                  </h3>
+                <div className="flex flex-col gap-3 border-b border-stone-200/60 pb-3">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h3 className="text-base font-serif font-medium text-[#1e325c] tracking-wide flex items-center gap-1.5 shrink-0">
+                      <Utensils className="w-3.5 h-3.5 text-[#00b5d5]" />
+                      {c.viewMenu}
+                    </h3>
 
-                  <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-                    <div className="flex gap-1 flex-wrap">
-                      {currentRestaurant.menu.map((cat: ApiMenuCategory, idx: number) => {
-                        const catName = loc(cat.name);
-                        const Icon = getCategoryIcon(typeof cat.name === 'string' ? cat.name : catName);
-                        return (
-                          <button
-                            key={cat._id || idx}
-                            onClick={() => { setActiveMenuTab(idx); setSearchQuery(""); }}
-                            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border-none cursor-pointer ${
-                              activeMenuTab === idx ? "bg-[#00b5d5] text-white shadow-xs" : "bg-stone-100 text-stone-500 hover:bg-stone-200/70"
-                            }`}
-                          >
-                            <Icon className="w-3.5 h-3.5 shrink-0" />
-                            <span>{catName}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    <div className="relative w-full sm:w-40 mt-2 sm:mt-0">
-                      <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    <div className="relative w-full sm:w-36 shrink-0">
+                      <Search className="w-3 h-3 text-stone-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                       <input
                         type="text"
                         placeholder={c.searchPlaceholder}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-stone-100/80 border border-transparent rounded-xl pl-8 pr-3 py-1.5 text-xs text-stone-700 outline-none focus:border-[#00b5d5] focus:bg-white transition-all font-medium"
+                        className="w-full bg-stone-100/80 border border-transparent rounded-lg pl-7 pr-2.5 py-1 text-[11px] text-stone-700 outline-none focus:border-[#00b5d5] focus:bg-white transition-all font-medium"
                       />
                     </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-1 w-full">
+                    {currentRestaurant.menu.map((cat: ApiMenuCategory, idx: number) => {
+                      const rawCatName = loc(cat.name);
+                      const catName = rawCatName ? rawCatName.charAt(0).toUpperCase() + rawCatName.slice(1).toLowerCase() : "";
+                      const Icon = getCategoryIcon(typeof cat.name === 'string' ? cat.name : rawCatName);
+                      const isActive = activeMenuTab === idx;
+                      return (
+                        <button
+                          key={cat._id || idx}
+                          onClick={() => { setActiveMenuTab(idx); setSearchQuery(""); }}
+                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all border-none cursor-pointer ${
+                            isActive
+                              ? "bg-[#00b5d5] text-white shadow-xs"
+                              : "bg-stone-100 text-stone-500 hover:bg-stone-200/70"
+                          }`}
+                        >
+                          <Icon className={`w-3 h-3 shrink-0 ${isActive ? "text-white" : "text-stone-400"}`} />
+                          <span>{catName}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
