@@ -91,7 +91,11 @@ export const metadata: Metadata = {
     },
   },
   category: "travel",
-  manifest: "/manifest.json"
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon-new.png",
+    apple: "/apple-icon.png"
+  }
 };
 
 export default function RootLayout({
