@@ -405,17 +405,19 @@ export default function Restoran() {
                               <div className="text-[11px] text-stone-400 font-medium leading-normal line-clamp-2 md:line-clamp-3 prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(item.description) }} />
                             </div>
 
-                            {item.image && (
-                              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 shadow-2xs bg-stone-50">
-                                <Image
-                                  src={item.image}
-                                  alt={loc(item.name)}
-                                  fill
-                                  sizes="(max-width: 640px) 80px, 96px"
-                                  className="object-cover transition-transform duration-500 hover:scale-105"
-                                />
-                              </div>
-                            )}
+                                <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 shadow-2xs bg-stone-50 flex items-center justify-center border border-stone-100/50">
+                                  {item.image ? (
+                                    <Image
+                                      src={item.image}
+                                      alt={loc(item.name)}
+                                      fill
+                                      sizes="(max-width: 640px) 80px, 96px"
+                                      className="object-cover transition-transform duration-500 hover:scale-105"
+                                    />
+                                  ) : (
+                                    <Utensils className="w-6 h-6 text-stone-300/60" />
+                                  )}
+                                </div>
                             </div>
                             </TiltCard>
                           </motion.div>

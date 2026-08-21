@@ -39,7 +39,7 @@ export default function BookingPage() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-bottom"
           />
         </motion.div>
         
@@ -47,7 +47,7 @@ export default function BookingPage() {
         <div className="absolute inset-0 bg-linear-to-r from-[#0a0f1e]/95 via-[#0a0f1e]/60 to-transparent pointer-events-none" />
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-[#0a0f1e]/10 to-[#f7f5f0] pointer-events-none" />
         
-        <div className="relative z-10 w-full h-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-end pb-16 md:pb-20 pt-32 md:pt-40">
+        <div className="relative z-10 w-full h-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col justify-end pb-24 md:pb-28 pt-32 md:pt-40">
           {/* Minimalist Back Button */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
