@@ -18,6 +18,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            set -e
             export NVM_DIR="$HOME/.nvm"
             source "$NVM_DIR/nvm.sh"
 
@@ -27,12 +28,14 @@ jobs:
 
             cd /var/www/afhotel
 
-            git pull origin Ali-backend
+            git fetch origin Ali-backend
+            git reset --hard origin/Ali-backend
 
             npm install
 
             npm run build
 
-            pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
+            pm2 delete afhotel || true
+            pm2 start ecosystem.config.js
 
             pm2 save

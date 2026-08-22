@@ -1,0 +1,1 @@
+fetch('https://afhotel.az/auth/sign-in').then(r=>r.text()).then(t=>{ const matches = [...t.matchAll(/src="([^"]+\.js)"/g)]; Promise.all(matches.map(m => fetch('https://afhotel.az' + m[1]).then(r=>r.text()))).then(scripts => { scripts.forEach((s, i) => { if(s.includes('loqo-af')) console.log('Found in', matches[i][1], s.includes('h-28'), s.includes('h-40')); }); }); })
