@@ -82,7 +82,7 @@ export default function Contacts() {
               <p className="text-xs text-stone-500 max-w-xs font-light leading-relaxed mx-auto">{content.success}</p>
             </div>
           ) : (
-            <form onSubmit={handleSend} className="space-y-6 bg-[#fdfbf7]/90 backdrop-blur-md border border-white rounded-2xl p-6 md:p-8 shadow-xl shadow-stone-300/20">
+            <form onSubmit={handleSend} className="space-y-6 bg-[#fdfbf7] backdrop-blur-md border border-white rounded-2xl p-6 md:p-8 shadow-xl shadow-stone-300/20">
               <div className="space-y-5">
                 
                 <div className="space-y-1 text-left relative group">
