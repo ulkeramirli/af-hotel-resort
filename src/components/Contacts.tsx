@@ -69,7 +69,7 @@ export default function Contacts() {
   };
 
   return (
-    <section id="contacts" className="py-24 bg-[#f4f1eb] text-stone-800 border-t border-stone-200/40 scroll-mt-20 select-none relative overflow-hidden">
+    <section id="contacts" className="py-10 lg:py-24 bg-[#f4f1eb] text-stone-800 border-t border-stone-200/40 scroll-mt-20 select-none relative overflow-hidden">
       
       <div className="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative z-10">
         

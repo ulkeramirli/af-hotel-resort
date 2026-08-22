@@ -17,7 +17,7 @@ export default function ContactsPage() {
         imagePath="/AF-aqua.jpg"
         variant="contacts"
       />
-      <div className="py-12">
+      <div>
         <ContactsComponent />
       </div>
     </div>
