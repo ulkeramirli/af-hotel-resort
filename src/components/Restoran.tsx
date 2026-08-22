@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Clock, Phone, ChefHat, Utensils, Coffee, Wine, Calendar, Search, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import CategoryTabs from "./CategoryTabs";
 import ScrollReveal from "@/components/ScrollReveal";
 import { motion, AnimatePresence } from "framer-motion";
@@ -94,6 +95,7 @@ const labels: Record<LangType, LanguageLabels> = {
 
 export default function Restoran() {
   const { language } = useLanguage();
+  const { currency } = useCurrency();
   const l = language || "az";
   const c = labels[l] || labels.az;
 
@@ -103,24 +105,36 @@ export default function Restoran() {
   const [activeRest, setActiveRest] = useState<number>(0);
   const [activeMenuTab, setActiveMenuTab] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [rates, setRates] = useState<{ usd: number; eur: number } | null>(null);
+
+  const formatPrice = (priceAzn: number) => {
+    if (currency === "USD" && rates?.usd) {
+      return `$${(priceAzn / rates.usd).toFixed(2)}`;
+    } else if (currency === "EUR" && rates?.eur) {
+      return `€${(priceAzn / rates.eur).toFixed(2)}`;
+    }
+    return `${priceAzn} AZN`;
+  };
 
   useEffect(() => {
-    const load = async () => {
+    async function loadData() {
       try {
         setLoading(true);
-        const [data, settingsData] = await Promise.all([
+        const [rests, sets, ratesRes] = await Promise.all([
           getRestaurants(),
           getRestaurantSettings(),
+          fetch("/api/exchange-rates").then(r => r.json())
         ]);
-        setRestaurants(data);
-        setSettings(settingsData);
-      } catch {
-        // silent — empty list
+        setRestaurants(rests);
+        if (sets) setSettings(sets);
+        if (ratesRes?.success && ratesRes?.data) setRates(ratesRes.data);
+      } catch (error) {
+        console.error("Restoran məlumatları yüklənmədi:", error);
       } finally {
         setLoading(false);
       }
-    };
-    load();
+    }
+    loadData();
   }, [l]);
 
   const currentRestaurant = restaurants[activeRest] || restaurants[0];
@@ -399,7 +413,7 @@ export default function Restoran() {
                                   {loc(item.name)}
                                 </h4>
                                 <span className="text-xs font-semibold text-[#00b5d5] font-mono mt-0.5">
-                                  {item.price} AZN
+                                  {formatPrice(item.price)}
                                 </span>
                               </div>
                               <div className="text-[11px] text-stone-400 font-medium leading-normal line-clamp-2 md:line-clamp-3 prose prose-sm prose-stone [&>p]:mb-0" dangerouslySetInnerHTML={{ __html: loc(item.description) }} />
