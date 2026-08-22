@@ -236,10 +236,10 @@ function SignInContent() {
           
           {/* Мобильный блок логотипа */}
           <div className="lg:hidden flex flex-col items-center mb-10 -mt-10">
-            <div className="w-40 h-24 relative">
+            <div className="w-40 h-28 relative">
               <Image src="/loqo-af.png" alt="AF Hotel" fill className="object-contain" priority />
             </div>
-            <span className="text-[11px] font-medium text-stone-400 tracking-wider italic text-center opacity-90 -mt-2">
+            <span className="text-[11px] font-medium text-stone-400 tracking-wider italic text-center opacity-90">
               AF Hotel & Aqua Park Resort
             </span>
           </div>
