@@ -266,8 +266,8 @@ export default function SignUpPage() {
         <div className="max-w-sm w-full mx-auto space-y-6">
           
           {/* Мобильный блок логотипа */}
-          <div className="lg:hidden flex flex-col items-center mb-12 -mt-10">
-            <div className="w-40 h-40 relative">
+          <div className="lg:hidden flex flex-col items-center mb-10 -mt-10">
+            <div className="w-40 h-24 relative">
               <Image src="/loqo-af.png" alt="AF Hotel" fill className="object-contain" priority />
             </div>
             <span className="text-[11px] font-medium text-stone-400 tracking-wider italic text-center opacity-90 -mt-2">
