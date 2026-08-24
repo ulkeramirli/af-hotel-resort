@@ -158,7 +158,9 @@ export default function Contacts() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left text-xs">
             <div className="p-4 bg-white/40 border border-white/60 rounded-xl md:col-span-2 space-y-1 backdrop-blur-xs">
               <span className="block text-[9px] text-stone-400 font-bold uppercase tracking-widest">{content.loc}</span>
-              <p className="text-stone-800 font-light text-sm leading-snug whitespace-pre-line">{settings?.address || content.address}</p>
+              <p className="text-stone-800 font-light text-sm leading-snug whitespace-pre-line">
+                {(settings?.address as any)?.[currentLang] || content.address}
+              </p>
             </div>
 
             <div className="p-4 bg-white/40 border border-white/60 rounded-xl space-y-1 backdrop-blur-xs">
