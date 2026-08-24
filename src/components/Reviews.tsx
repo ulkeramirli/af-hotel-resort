@@ -5,7 +5,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Star, Quote } from 'lucide-react';
 import { getReviews } from '@/services/api';
 import type { Review as ApiReview } from '@/types/api';
-import useEmblaCarousel from 'embla-carousel-react';
 import ScrollReveal from './ScrollReveal';
 import { motion } from 'framer-motion';
 
@@ -35,7 +34,6 @@ export default function Reviews() {
   const c = content[l];
   const [reviews, setReviews] = useState<ApiReview[]>([]);
   const [loading, setLoading] = useState(true);
-  const [emblaRef] = useEmblaCarousel({ align: 'start', containScroll: 'trimSnaps', dragFree: true });
 
   useEffect(() => {
     let cancelled = false;
@@ -73,7 +71,7 @@ export default function Reviews() {
           </ScrollReveal>
 
           <ScrollReveal type="zoomIn" delay={0.3}>
-            <div className="flex items-center gap-5 bg-white border border-stone-200/60 rounded-2xl px-8 py-5 shadow-sm">
+            <div className="flex items-center gap-4 sm:gap-5 bg-white border border-stone-200/60 rounded-2xl px-5 py-4 sm:px-8 sm:py-5 shadow-sm">
               <div>
                 <span className="text-4xl md:text-5xl font-light text-[#1e325c] font-serif">{avgRating}</span>
                 <span className="text-stone-300 font-light text-lg ml-1">/ 5</span>
@@ -104,10 +102,9 @@ export default function Reviews() {
             <p className="text-stone-400 text-sm">{c.empty}</p>
           </div>
         ) : (
-          /* Mobile: swipeable, Desktop: grid */
+          /* Mobile: horizontal scroll, Desktop: grid */
           <div
-            className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 overflow-x-auto md:overflow-visible pb-3 md:pb-0 -mx-2 px-2 md:mx-0 md:px-0"
-            ref={emblaRef}
+            className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 overflow-x-auto md:overflow-visible pb-4 md:pb-0 snap-x snap-mandatory no-scrollbar -mx-6 px-6 md:mx-0 md:px-0"
           >
             {answeredReviews.slice(0, 6).map((review, idx) => {
               const palette = avatarPalettes[idx % avatarPalettes.length];
@@ -118,7 +115,7 @@ export default function Reviews() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: idx * 0.08, ease: 'easeOut' }}
-                  className="min-w-[80vw] sm:min-w-[55vw] md:min-w-0 flex-none bg-white rounded-2xl p-6 border border-stone-100/80 shadow-sm hover:shadow-md transition-all duration-300 snap-start md:snap-align-none mr-4 md:mr-0 last:mr-0 flex flex-col"
+                  className="flex-[0_0_85%] sm:flex-[0_0_60%] md:flex-none snap-center md:snap-align-none bg-white rounded-2xl p-5 sm:p-6 border border-stone-100/80 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col"
                 >
                   {/* Header: Avatar, Info, and Quote */}
                   <div className="flex items-start justify-between gap-3 mb-4">

@@ -37,6 +37,7 @@ export interface TranslationSchema {
     contacts: string;
     about: string;
     wonderland: string;
+    reviews: string;
     book: string;
     login: string;
     myAccount: string;
