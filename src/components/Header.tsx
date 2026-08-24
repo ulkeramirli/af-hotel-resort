@@ -196,7 +196,7 @@ export default function Header() {
           </motion.div>
         </MagneticButton>
 
-        <nav className="hidden lg:flex items-center space-x-2 lg:space-x-3 xl:space-x-4 2xl:space-x-6 text-[9.5px] xl:text-[10px] 2xl:text-[10.5px] font-bold uppercase tracking-widest 2xl:tracking-[0.15em] text-slate-600">
+        <nav className="hidden lg:flex items-center space-x-2 lg:space-x-2.5 xl:space-x-3 2xl:space-x-4 text-[9.5px] xl:text-[10px] 2xl:text-[10.5px] font-bold uppercase tracking-widest 2xl:tracking-[0.15em] text-slate-600">
           {navLinks.map((item) => {
             const isActive = pathname === item.href || (pathname === '/' && item.href === '/');
             return (
